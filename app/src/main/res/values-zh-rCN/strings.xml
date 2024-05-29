@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="title_activity_login">登录</string>
+    <string name="title_activity_first_start">首次启动</string>
+    <string name="title_media_list">上传</string>
+
+    <!-- Alert Values -->
+
+    <string name="action_settings">设置</string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
+
+    <!-- MainFragment -->
+
+    <!-- ViewMediaActivity -->
+    <string name="iv_content_desc">主要图像</string>
+
+    <!-- Errors -->
+
+    <!-- Server -->
+    <string name="lbl_Cancel">取消</string>
+    <string name="lbl_ok">好</string>
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">允许任何人再混合并共享？</string>
+    <string name="info_license_sharealike">要求他们像您一样分享？</string>
+    <string name="info_license_comm">允许商业使用？</string>
+
+    <string name="answer_yes">是的</string>
+    <string name="answer_no">不</string>
+
+    <string name="action_cancel">取消</string>
+
+    <string name="error">错误</string>
+
+    <string name="prefs_prohibit_screenshots_title">禁止截屏</string>
+    <string name="prefs_theme_title">主题</string>
+    <string name="prefs_theme_light">亮色主题</string>
+    <string name="prefs_theme_dark">深色主题</string>
+    <!-- Strings for nearby sharing -->
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">用户名</string>
+    <string name="prompt_password">密码</string>
+    <string name="error_incorrect_username_or_password">密码或者用户名错误</string>
+    <string name="error_field_required">该字段必填</string>
+
+    <string name="title_welcome">欢迎</string>
+
+    <string name="action_privacy">隐私政策</string>
+    <string name="uploads">上传</string>
+    <string name="action_upload">上传</string>
+
+    <string name="action_next">下一步</string>
+    <string name="action_done">完成</string>
+    <string name="edit">编辑</string>
+    <string name="menu_done">完成</string>
+    <string name="remove">移除</string>
+    <string name="new_folder">新文件夹</string>
+    <string name="metadata">元数据</string>
+
+    <string name="action_install">安装</string>
+    <string name="login_activity_logging_message">正在登录…</string>
+    <string name="folders">文件夹</string>
+    <string name="create">创建</string>
+    <string name="add">添加</string>
+    <string name="authenticate">认证</string>
+    <string name="back">返回</string>
+    <string name="account">账号</string>
+    <string name="general">常规</string>
+    <string name="security">安全　</string>
+    <string name="next">下一步</string>
+    <string name="done">完成</string>
+    <string name="get_started">开始</string>
+    <string name="refresh">刷新</string>
+    <string name="select_all">全选</string>
+    <string name="got_it">知道了</string>
+    <string name="skip">跳过</string>
+    <string name="retry">重试</string>
+
+    <string name="edit_media">编辑媒体</string>
+    <string name="files">解密文件</string>
+    <string name="no_thanks">下次再说</string>
+    </resources>

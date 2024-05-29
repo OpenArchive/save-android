@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="title_activity_login">Inloggen</string>
+    <string name="title_media_list">Uploads</string>
+
+    <!-- Alert Values -->
+
+    <string name="action_settings">Instellingen</string>
+
+    <!-- Errors -->
+
+    <!-- Server -->
+    <string name="lbl_Cancel">Annuleren</string>
+    <string name="lbl_ok">Oke</string>
+    <string name="answer_yes">Ja</string>
+    <string name="answer_no">Nee</string>
+
+    <string name="action_cancel">Annuleren</string>
+
+    <string name="error">Fout</string>
+
+    <string name="prefs_prohibit_screenshots_title">Blokkeer screenshots</string>
+    <string name="prefs_user_interface_title">Presentatie</string>
+    <string name="prefs_theme_title">Thema</string>
+    <string name="prefs_theme_light">Licht</string>
+    <string name="prefs_theme_dark">Donker</string>
+    <!-- Strings for nearby sharing -->
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Gebruikersnaam</string>
+    <string name="prompt_password">Wachtwoord</string>
+    <string name="action_sign_in_short">Inloggen</string>
+    <string name="error_incorrect_username_or_password">Gebruikersnaam of wachtwoord verkeerd</string>
+    <string name="error_field_required">Dit veld is verplicht</string>
+
+    <string name="title_welcome">Welkom</string>
+
+    <string name="action_privacy">Privacybeleid</string>
+    <string name="uploads">Uploads</string>
+    <string name="uploading">Uploaden…</string>
+    <string name="action_upload">Uploaden</string>
+
+    <string name="action_next">Volgende</string>
+    <string name="action_done">Gereed</string>
+    <string name="edit">Bewerken</string>
+    <string name="menu_done">Gereed</string>
+    <string name="remove">Verwijderen</string>
+    <string name="secret_key">Geheime Sleutel</string>
+    <string name="new_folder">Nieuwe map</string>
+    <string name="metadata">Metadata</string>
+
+    <string name="action_install">Installeren</string>
+    <string name="login_activity_logging_message">Inloggen…</string>
+    <string name="folders">Mappen</string>
+    <string name="create">Maken</string>
+    <string name="add">Toevoegen</string>
+    <string name="authenticate">Authenticeren</string>
+    <string name="back">Terug</string>
+    <string name="account">Account</string>
+    <string name="general">Algemeen</string>
+    <string name="security">Beveiliging</string>
+    <string name="next">Volgende</string>
+    <string name="done">Gereed</string>
+    <string name="get_started">Beginnen</string>
+    <string name="refresh">Vernieuwen</string>
+    <string name="select_all">Alles selecteren</string>
+    <string name="got_it">Begrepen</string>
+    <string name="skip">Overslaan</string>
+    <string name="retry">Opnieuw proberen</string>
+
+    <string name="files">Bestanden</string>
+    <string name="no_thanks">Nee bedankt</string>
+    <string name="undo">Ongedaan maken</string>
+
+</resources>

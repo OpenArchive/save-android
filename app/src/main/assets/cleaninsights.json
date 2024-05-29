@@ -1,0 +1,16 @@
+{
+    "server": "https://metrics.cleaninsights.org/cleaninsights.php",
+    "siteId": 15,
+    "timeout": 5,
+    "persistEveryNTimes": 1,
+    "debug": true,
+    "campaigns": {
+        "main": {
+            "start": "2023-01-01T00:00:00Z",
+            "end": "2030-12-31T23:59:59Z",
+            "aggregationPeriodLength": 7,
+            "numberOfPeriods": 8,
+            "eventAggregationRule": "sum"
+        }
+    }
+}

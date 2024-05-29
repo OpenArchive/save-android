@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="title_activity_login">Entrar</string>
+    <string name="title_activity_first_start">Iniciar pela primeira vez</string>
+    <string name="title_media_list">Transferências </string>
+
+    <!-- Alert Values -->
+
+    <string name="action_settings">Configurações </string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
+
+    <!-- MainFragment -->
+
+    <!-- ViewMediaActivity -->
+    <string name="iv_content_desc">Imagem Principal</string>
+
+    <!-- Errors -->
+
+    <!-- Server -->
+    <string name="lbl_Cancel">Cancelar </string>
+    <string name="lbl_ok">OK</string>
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">Permitir que outros misturem e partilhem?</string>
+    <string name="info_license_sharealike">Obrigatório partilhar conforme apresentado?</string>
+    <string name="info_license_comm">Permitir o uso comercial?</string>
+
+    <string name="answer_yes">Sim</string>
+    <string name="answer_no">Não</string>
+
+    <string name="action_cancel">Cancelar</string>
+
+    <string name="error">Erro</string>
+
+    <string name="prefs_prohibit_screenshots_title">Bloquear capturas de tela</string>
+    <string name="prefs_user_interface_title">Apresentação</string>
+    <string name="prefs_theme_title">Tema</string>
+    <string name="prefs_theme_light">Claro</string>
+    <string name="prefs_theme_dark">Escuro</string>
+    <!-- Strings for nearby sharing -->
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Nome de usuário</string>
+    <string name="prompt_password">Palavra-passe</string>
+    <string name="action_sign_in_short">Registar</string>
+    <string name="error_incorrect_username_or_password">Usuário ou senha incorretos</string>
+    <string name="error_field_required">Este campo é obrigatório</string>
+
+    <string name="title_welcome">Boas-vindas</string>
+
+    <string name="action_privacy">Política De Privacidade</string>
+    <string name="uploads">Envios</string>
+    <string name="uploading">Enviando…</string>
+    <string name="action_upload">Carregar</string>
+
+    <string name="action_next">Próximo</string>
+    <string name="action_done">Pronto</string>
+    <string name="edit">Editar</string>
+    <string name="menu_done">Pronto</string>
+    <string name="remove">Remover</string>
+    <string name="new_folder">Nova Pasta</string>
+    <string name="metadata">Metadados</string>
+
+    <string name="action_install">Instalar</string>
+    <string name="folders">Pastas</string>
+    <string name="create">Criar</string>
+    <string name="add">Adicionar</string>
+    <string name="authenticate">Autenticar</string>
+    <string name="back">Voltar</string>
+    <string name="account">Conta</string>
+    <string name="general">Geral</string>
+    <string name="security">Segurança</string>
+    <string name="next">Próximo</string>
+    <string name="done">Pronto</string>
+    <string name="get_started">Começar</string>
+    <string name="refresh">Atualizar</string>
+    <string name="select_all">Selecionar todos</string>
+    <string name="got_it">Entendi</string>
+    <string name="skip">Pular</string>
+    <string name="retry">Tentar novamente</string>
+
+    <string name="edit_media">Editar Média </string>
+    <string name="files">Arquivos</string>
+    <string name="no_thanks">Não, obrigado!</string>
+    <string name="undo">Desfazer</string>
+
+</resources>

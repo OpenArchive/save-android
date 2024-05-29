@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-files-path
+        name="files"
+        path="/" />
+
+    <external-files-path
+        name="files2"
+        path="." />
+
+    <external-path
+        name="files3"
+        path="." />
+
+    <files-path
+        name="sdcard"
+        path="/storage/sdcard" />
+
+    <files-path
+        name="sdcard1"
+        path="/storage/sdcard1" />
+
+    <files-path
+        name="internal"
+        path="/data/data" />
+
+</paths>

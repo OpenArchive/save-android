@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="title_activity_login">Connexion</string>
+    <string name="title_media_list">Téléversements</string>
+
+    <!-- Alert Values -->
+
+    <string name="action_settings">Paramètres</string>
+
+    <!-- FirstStartActivity -->
+    <string name="internet_archive">Archive Internet</string>
+
+    <!-- Errors -->
+
+    <!-- Server -->
+    <string name="lbl_Cancel">Annuler</string>
+    <string name="lbl_ok">Valider</string>
+    <string name="menu_delete">Supprimer le contenu multimédia</string>
+
+    <string name="hint_flag">Touchez pour marquer comme contenu important</string>
+    <string name="answer_yes">Oui</string>
+    <string name="answer_no">Non</string>
+
+    <string name="action_cancel">Annuler</string>
+
+    <string name="error">Erreur</string>
+
+    <string name="prefs_prohibit_screenshots_title">Bloquer les captures d’écran</string>
+    <string name="prefs_theme_title">Thème</string>
+    <string name="prefs_theme_light">Clair</string>
+    <string name="prefs_theme_dark">Sombre</string>
+    <!-- Strings for nearby sharing -->
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Nom d’utilisateur</string>
+    <string name="prompt_password">Mot de passe</string>
+    <string name="action_sign_in_short">Connexion</string>
+    <string name="error_incorrect_username_or_password">Le nom d’utilisateur ou le mot de passe est erroné</string>
+    <string name="error_field_required">Ce champ est obligatoire</string>
+
+    <string name="title_welcome">Bienvenue</string>
+
+    <string name="action_privacy">Politique de confidentialité</string>
+    <string name="uploads">Téléversements</string>
+    <string name="uploading">Téléversement…</string>
+    <string name="action_upload">Téléversement</string>
+
+    <string name="action_next">Suivant</string>
+    <string name="action_done">Terminé</string>
+    <string name="status_flagged">Contenu important</string>
+    <string name="edit">Modifier</string>
+    <string name="menu_done">Terminé</string>
+    <string name="remove_from_app">Supprimer de l’appli</string>
+    <string name="remove">Supprimer</string>
+    <string name="action_archive_project">Archiver le projet</string>
+    <string name="action_unarchive_project">Désarchiver le projet</string>
+    <string name="access_key">Clé d’accès</string>
+    <string name="secret_key">Clé secrète</string>
+    <string name="action_acquire_keys">Obtenir les clés</string>
+    <string name="new_folder">Nouveau dossier</string>
+    <string name="dropbox">Dropbox</string>
+    <string name="metadata">Métadonnées</string>
+
+    <string name="popup_flag_desc">Quand vous marquez un élément, il est acheminé vers un sous-dossier dans le dossier désigné du projet sur le serveur privé.</string>
+
+    <string name="action_install">Installer</string>
+    <string name="login_activity_logging_message">Connexion…</string>
+    <string name="folders">Dossiers</string>
+    <string name="create">Créer</string>
+    <string name="add">Ajouter</string>
+    <string name="upload_to_dropbox">Téléverser vers Dropbox</string>
+    <string name="authenticate">S’authentifier</string>
+    <string name="back">Retour</string>
+    <string name="account">Compte</string>
+    <string name="general">Général</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">Ne téléverser des médias que connecté au Wi-Fi</string>
+    <string name="security">Sécurité</string>
+    <string name="next">Suivant</string>
+    <string name="done">Terminé</string>
+    <string name="secure_mobile_media_preservation">Préservation sécurisée de médias sur appareil mobile</string>
+    <string name="get_started">Commençons</string>
+    <string name="refresh">Actualiser</string>
+    <string name="select_all">Tout sélectionner</string>
+    <string name="got_it">D’accord</string>
+    <string name="skip">Ignorer</string>
+    <string name="retry">Ressayer</string>
+
+    <string name="files">Fichiers</string>
+    <string name="health_checks">Bilans de santé</string>
+    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Aidez à améliorer l’appli en effectuant des bilans de santé quand les téléversements ne réussissent pas.</string>
+    <string name="health_checks_help_us_understand_why_uploads_fail">Les bilans de santé nous permettent de comprendre pourquoi les téléversements ne réussissent pas.</string>
+    <string name="contribute_your_data_to_be_part_of_the_solution">Partagez vos données pour faire partie de la solution.</string>
+    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">Si vous l’autorisez, nous effectuerons un bilan de santé chaque fois que vous rencontrerez un problème de téléchargement.</string>
+    <string name="health_checks_capture">Capture de bilans de santé</string>
+    <string name="allow_health_checks">Permettre les bilans de santé ?</string>
+    <string name="no_thanks">Non merci</string>
+    <string name="undo">Annuler</string>
+
+</resources>

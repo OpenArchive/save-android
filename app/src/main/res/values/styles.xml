@@ -1,0 +1,110 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- themes -->
+
+    <style name="AppTheme.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:textColor">@color/colorOnBackground</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/dayMode</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/dayMode</item>
+        <item name="navigationViewStyle">@style/NavigationViewStyle</item>
+        <item name="appBarLayoutStyle">@style/AppBarStyle</item>
+        <item name="android:textViewStyle">@style/OATextViewStyle</item>
+        <item name="buttonStyle">@style/OAButtonStyle</item>
+        <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
+        <item name="dialogTheme">@style/AppDialogTheme</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetTheme</item>
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+        <item name="materialAlertDialogTheme">@style/AlertMaterialDialogTheme</item>
+        <item name="switchPreferenceCompatStyle">@style/Foo</item>
+    </style>
+
+
+<!--    <style name="MainTheme.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">-->
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+<!--        <item name="colorOnPrimary">@color/colorOnPrimary</item>-->
+<!--        <item name="android:colorBackground">@color/colorBackground</item>-->
+<!--        <item name="android:textColor">@color/colorOnBackground</item>-->
+<!--        <item name="android:statusBarColor">@color/colorBackground</item>-->
+<!--        <item name="android:navigationBarColor">@color/colorBottomNavbar</item>-->
+<!--        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/dayMode</item>-->
+<!--        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/dayMode</item>-->
+<!--        <item name="navigationViewStyle">@style/NavigationViewStyle</item>-->
+<!--        <item name="appBarLayoutStyle">@style/AppBarStyle</item>-->
+<!--        <item name="android:textViewStyle">@style/OATextViewStyle</item>-->
+<!--    </style>-->
+
+    <style name="AppBottomSheetTheme" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
+        <item name="buttonStyle">@style/OAButtonStyle</item>
+        <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
+    </style>
+
+    <style name="AppDialogTheme" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="buttonStyle">@style/OAButtonStyle</item>
+        <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
+    </style>
+
+    <style name="AppMaterialDialogTheme" parent="Theme.Material3.DayNight.Dialog">
+        <item name="buttonStyle">@style/OAButtonStyle</item>
+        <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
+    </style>
+
+    <!-- widgets / dialogs / alerts -->
+
+    <style name="Foo" parent="Preference.SwitchPreferenceCompat">
+        <item name="android:textAppearance">@null</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textColorSecondary">@color/red</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="AppBarStyle" parent="Widget.Material3.AppBarLayout">
+        <item name="android:background">@color/colorBackground</item>
+    </style>
+
+    <style name="NavigationViewStyle" parent="Widget.Material3.NavigationView">
+        <item name="android:background">@color/colorNavigationDrawerBackground</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="AlertMaterialDialogTheme" parent="ThemeOverlay.Material3.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="OATextViewStyle">
+        <item name="fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="OAMaterialButtonStyle" parent="Widget.Material3.Button">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/button</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="OAButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/button</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+</resources>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="title_activity_login">ورود</string>
+    <string name="title_activity_first_start">اولین آغاز</string>
+    <string name="title_media_list">آپلود</string>
+
+    <!-- Alert Values -->
+
+    <string name="action_settings">تنظیمات</string>
+
+    <!-- FirstStartActivity -->
+    <string name="internet_archive">بایگانی اینترنت</string>
+
+    <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
+
+    <!-- MainFragment -->
+
+    <!-- ViewMediaActivity -->
+    <string name="iv_content_desc">عکس اصلی</string>
+
+    <!-- Errors -->
+
+    <!-- Server -->
+    <string name="lbl_Cancel">لغو</string>
+    <string name="lbl_ok">قابل قبول</string>
+    <!-- original CC license questions
+    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
+    <string name="info_license_sharealike">Require modified versions to also share?</string>
+    <string name="info_license_comm">Allow commercial uses of your work?</string>
+    -->
+
+    <string name="info_license_deriv">به هر کسی اجازه بازنشر و استفاده داده شود؟</string>
+    <string name="info_license_sharealike">بخواه که مانند خودت به اشتراک بگذارند؟</string>
+    <string name="info_license_comm">اجازه استفاده تجاری بده؟</string>
+
+    <string name="menu_delete">حذف فایل رسانه‌ای</string>
+
+    <string name="hint_flag">برای نشانه‌گذاری به عنوان محتوای مهم، روی پرچم بزنید.</string>
+    <string name="answer_yes">بله</string>
+    <string name="answer_no">خیر</string>
+
+    <string name="action_cancel">لغو</string>
+
+    <string name="error">خطا</string>
+
+    <string name="prefs_prohibit_screenshots_title">جلوگیری از اسکرین‌شات گرفتن</string>
+    <string name="prefs_user_interface_title">ارائه</string>
+    <string name="prefs_theme_title">قالب</string>
+    <string name="prefs_theme_light">روشن</string>
+    <string name="prefs_theme_dark">تاریک</string>
+    <!-- Strings for nearby sharing -->
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">نام کاربری</string>
+    <string name="prompt_password">گذرواژه</string>
+    <string name="action_sign_in_short">ورود</string>
+    <string name="error_incorrect_username_or_password">نام کاربری یا گذرواژه‌ نادرست است</string>
+    <string name="error_field_required">این فیلد ضروری می باشد</string>
+
+    <string name="title_welcome">خوش آمدید</string>
+
+    <string name="action_privacy">حریم خصوصی</string>
+    <string name="uploads">آپلودها</string>
+    <string name="uploading">بارگذاری.......</string>
+    <string name="action_upload">آپلود</string>
+
+    <string name="action_next">بعدی</string>
+    <string name="action_done">انجام شد</string>
+    <string name="status_flagged">محتوای مهم</string>
+    <string name="edit">ویرایش</string>
+    <string name="menu_done">انجام شد</string>
+    <string name="remove_from_app">حذف از برنامه</string>
+    <string name="remove">حذف </string>
+    <string name="action_archive_project">بایگانی کردن پروژه</string>
+    <string name="action_unarchive_project">خروج پروژه از بایگانی</string>
+    <string name="access_key">کلید دسترسی</string>
+    <string name="secret_key">کلید خصوصی</string>
+    <string name="action_acquire_keys">به دست آوردن کلیدها</string>
+    <string name="new_folder">New Folder</string>
+    <string name="dropbox">Dropbox</string>
+    <string name="metadata">فرا داده</string>
+
+    <string name="popup_flag_title">نشانه‌گذاری محتوای مهم</string>
+    <string name="popup_flag_desc">هنگامی که یک مورد را نشانه‌گذاری می‌کنید، به یک زیرپوشه در پروژه‌ی انتخابی در سرور خصوصی منتقل می‌شود.</string>
+
+    <string name="action_install">نصب</string>
+    <string name="login_activity_logging_message">در حال ورود…</string>
+    <string name="folders">پوشه ها</string>
+    <string name="create">ایجاد کردن</string>
+    <string name="add">افزودن</string>
+    <string name="upload_to_dropbox">بارگذاری در Dropbox</string>
+    <string name="authenticate">تصدیق کردن</string>
+    <string name="back">برگشت</string>
+    <string name="account">حساب کاربری</string>
+    <string name="general">کلی</string>
+    <string name="only_upload_media_when_you_are_connected_to_wi_fi">فایل‌های رسانه‌ای را تنها زمانی که به Wi-Fi متصل هستید، بارگذاری کنید.</string>
+    <string name="security">امنیت</string>
+    <string name="next">بعدی</string>
+    <string name="done">انجام شد</string>
+    <string name="secure_mobile_media_preservation">حفظ ایمن رسانه‌های موبایل</string>
+    <string name="get_started">شروع کنید</string>
+    <string name="refresh">تازه‌سازی</string>
+    <string name="select_all">انتخاب همه</string>
+    <string name="got_it">متوجه شدم</string>
+    <string name="skip">از قلم بینداز</string>
+    <string name="retry">تلاش دوباره</string>
+
+    <string name="edit_media">تدوین رسانه</string>
+    <string name="files">فايل‌ها</string>
+    <string name="health_checks">بررسی‌های سلامت</string>
+    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">با انجام بررسی‌های سلامت در صورت عدم موفقیت در بارگذاری‌ها، به بهبود برنامه کمک کنید.</string>
+    <string name="health_checks_help_us_understand_why_uploads_fail">بررسی‌های سلامت به ما کمک می‌کند تا بفهمیم چرا بارگذاری‌ها ناموفق هستند.</string>
+    <string name="contribute_your_data_to_be_part_of_the_solution">کمک کنید مشارکت داده‌های شما بخشی از راه حل باشند.</string>
+    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">با اجازه شما، هر بار که هنگام بارگذاری با خطایی مواجه شدید، آن را بررسی خواهیم کرد.</string>
+    <string name="health_checks_capture">یافته‌های بررسی‌های سلامت</string>
+    <string name="allow_health_checks">بررسی سلامت مجاز است؟</string>
+    <string name="no_thanks">نه، ممنون</string>
+    <string name="undo">اصلاح</string>
+
+</resources>
