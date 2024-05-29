@@ -15,6 +15,7 @@ openarchive-release.keystore
 bin/
 gen/
 app/build/
+release/
 spoon-output/
 screenshots/
 

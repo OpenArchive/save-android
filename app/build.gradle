@@ -3,6 +3,36 @@ apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
+    def _versionCode=0
+    def _major=0
+    def _minor=0
+    def _patch=0
+
+    def versionPropsFile = file('version.properties')
+
+    if (versionPropsFile.canRead()) {
+        def Properties versionProps = new Properties()
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        _patch = versionProps['PATCH'].toInteger()
+        _major = versionProps['MAJOR'].toInteger()
+        _minor = versionProps['MINOR'].toInteger()
+        _versionCode= versionProps['VERSION_CODE'].toInteger() + 1
+
+        versionProps['MAJOR']=_major.toString()
+        versionProps['MINOR']=_minor.toString()
+        versionProps['PATCH']=_patch.toString()
+        versionProps['VERSION_CODE']=_versionCode.toString()
+
+        versionProps.store(versionPropsFile.newWriter(), null)
+    }
+    else {
+        throw new GradleException("Could not read version.properties!")
+    }
+
+    def _versionName = "${_major}.${_minor}.${_patch}.${_versionCode}"
+
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
@@ -12,14 +42,13 @@ android {
     }
 
     compileSdk 34
-//    buildToolsVersion '34.0.0'
     defaultConfig {
         applicationId "net.opendasharchive.openarchive"
         minSdkVersion 29
         targetSdkVersion 34
-        versionCode 20569
-        versionName '0.7.2'
-        archivesBaseName = "Save-$versionName"
+        versionCode _versionCode
+        versionName _versionName
+        archivesBaseName = "save-$versionName"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -29,6 +58,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            applicationIdSuffix ".release"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -37,12 +67,12 @@ android {
             excludes += ['META-INF/LICENSE.txt', 'META-INF/NOTICE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES', 'LICENSE.txt']
         }
     }
-    productFlavors {
-        releaseflavor {
-            dimension "free"
-            applicationId 'net.opendasharchive.openarchive.release'
-        }
-    }
+//    productFlavors {
+//        releaseflavor {
+//            dimension "free"
+//            applicationIdSuffix ".release"
+//        }
+//    }
 
     kotlinOptions {
         jvmTarget = '1.8'
