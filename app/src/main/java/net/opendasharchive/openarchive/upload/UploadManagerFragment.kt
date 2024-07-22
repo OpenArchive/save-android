@@ -38,7 +38,7 @@ open class UploadManagerFragment : Fragment() {
         mBinding.uploadList.layoutManager = LinearLayoutManager(activity)
 
         val decorator = DividerItemDecoration(mBinding.uploadList.context, DividerItemDecoration.VERTICAL)
-        val divider = ContextCompat.getDrawable(mBinding.uploadList.context, R.drawable.divider)
+        val divider = ContextCompat.getDrawable(mBinding.uploadList.context, R.drawable.oa_divider)
         if (divider != null) decorator.setDrawable(divider)
 
         mBinding.uploadList.addItemDecoration(decorator)

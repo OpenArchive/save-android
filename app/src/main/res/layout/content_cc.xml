@@ -118,12 +118,12 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         tools:text="https://creativecommons.org" />
 
-    <TextView
-        android:id="@+id/bt_learn_more"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/learn_more_about_creative_commons"
-        android:textColor="@color/c23_medium_grey" />
+<!--    <TextView-->
+<!--        android:id="@+id/bt_learn_more"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="32dp"-->
+<!--        android:text="@string/learn_more_about_creative_commons"-->
+<!--        android:textColor="@color/c23_medium_grey" />-->
 
 </LinearLayout>

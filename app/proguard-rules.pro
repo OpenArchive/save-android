@@ -32,6 +32,7 @@
 }
 
 -if class androidx.credentials.CredentialManager
--keep class androidx.credentials.playservices.** {
-  *;
-}
+-keep class androidx.credentials.playservices.** {*;}
+-keep class androidx.** {*;}
+-keep interface androidx.** { *; }
+-keep class androidx.core.app.CoreComponentFactory { *; }

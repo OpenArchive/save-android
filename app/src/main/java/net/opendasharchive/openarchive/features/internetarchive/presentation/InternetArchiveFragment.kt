@@ -6,16 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithNewSpace
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithSpaceId
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getSpace
+import net.opendasharchive.openarchive.services.CommonServiceFragment
 
-@Deprecated("only used for backward compatibility")
-class InternetArchiveFragment : Fragment() {
+class InternetArchiveFragment : CommonServiceFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,10 +35,6 @@ class InternetArchiveFragment : Fragment() {
 
     private fun finish(result: IAResult) {
         setFragmentResult(result.value, bundleOf())
-
-        if (result == IAResult.Saved) {
-            // activity?.measureNewBackend(Space.Type.INTERNET_ARCHIVE)
-        }
     }
 
     companion object {

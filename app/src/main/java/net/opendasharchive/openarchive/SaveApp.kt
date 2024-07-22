@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive
 
 import android.content.Context
+import androidx.multidex.MultiDex
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
@@ -14,11 +15,15 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
-
 class SaveApp : SugarApp() {
+
+    companion object {
+        var hasThemeChanged = false
+    }
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 
     override fun onCreate() {
@@ -42,13 +47,11 @@ class SaveApp : SugarApp() {
 
         Theme.set(Prefs.theme)
 
-        CleanInsightsManager.init(this)
-
-        // enable timber logging library for debug builds
         if (BuildConfig.DEBUG){
             Timber.plant(Timber.DebugTree())
-            Timber.tag("SAVE")
         }
+
+        Timber.d("Starting app")
     }
 
     private fun initNetCipher() {

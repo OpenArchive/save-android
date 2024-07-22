@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 import com.orm.SugarRecord
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 data class Media(
     var originalFilePath: String = "",
@@ -50,7 +50,7 @@ data class Media(
     @SerializedName(value = "hash")
     var mediaHashString: String = "",
 
-    var status: Int = 0,
+    var status: Status = Status.Unknown,
     var statusMessage: String = "",
     var projectId: Long = 0,
     var collectionId: Long = 0,
@@ -65,15 +65,12 @@ data class Media(
 ) : SugarRecord() {
 
     enum class Status(val id: Int) {
+        Unknown(-1),
         New(0),
         Local(1),
         Queued(2),
-        @Deprecated("Actually unused.", ReplaceWith("Uploaded"))
-        Published(3),
         Uploading(4),
         Uploaded(5),
-        @Deprecated("Save does not do deletion.")
-        DeleteRemote(7),
         Error(9),
     }
 
@@ -81,12 +78,16 @@ data class Media(
         const val ORDER_PRIORITY = "priority DESC"
         const val ORDER_CREATED = "create_date DESC"
 
+        fun getAll(order: String? = null): List<Media> {
+            return findAll(Media::class.java).asSequence().toList()
+        }
 
         fun getByStatus(statuses: List<Status>, order: String? = null): List<Media> {
+            val statusStatement = statuses.joinToString(" OR ") { "status = ?" }
+            val statusString = statuses.map { it.toString() }.toTypedArray()
+
             return find(Media::class.java,
-                statuses.joinToString(" OR ") { "status = ?" },
-                statuses.map { it.id.toString() }.toTypedArray(),
-                null, order, null)
+                statusStatement, statusString,null, order, null)
         }
 
         fun get(mediaId: Long?): Media? {
@@ -104,11 +105,11 @@ data class Media(
             } ?: ""
         }
 
-    var sStatus: Status
-        get() = Status.values().firstOrNull { it.id == status } ?: Status.New
-        set(value) {
-            status = value.id
-        }
+//    var sStatus: Status
+//        get() = status // Status.values().firstOrNull { it.id == status } ?: Status.New
+//        set(value) {
+//            status = value
+//        }
 
     val fileUri: Uri
         get() = Uri.parse(originalFilePath)
@@ -126,9 +127,9 @@ data class Media(
         get() = project?.space
 
     val isUploading
-        get() =  status == Status.Queued.id
-                || status == Status.Uploading.id
-                || status == Status.Error.id
+        get() =  status == Status.Queued
+                || status == Status.Uploading
+                || status == Status.Error
 
     var tagSet: MutableSet<String>
         get() = tags.split("\\p{Punct}|\\p{Blank}+".toRegex()).map { it.trim() }.toMutableSet()

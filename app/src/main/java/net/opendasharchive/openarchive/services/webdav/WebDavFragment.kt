@@ -9,16 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentWebDavBinding
 import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.services.CommonServiceFragment
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.services.internetarchive.Util
 import net.opendasharchive.openarchive.util.AlertHelper
@@ -30,7 +29,7 @@ import okhttp3.Response
 import java.io.IOException
 import kotlin.coroutines.suspendCoroutine
 
-class WebDavFragment : Fragment() {
+class WebDavFragment : CommonServiceFragment() {
     private var mSpaceId: Long? = null
     private lateinit var mSpace: Space
 
@@ -42,9 +41,7 @@ class WebDavFragment : Fragment() {
         mSpaceId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         mBinding = FragmentWebDavBinding.inflate(inflater)
 
@@ -56,7 +53,7 @@ class WebDavFragment : Fragment() {
             mSpace = Space.get(mSpaceId!!) ?: Space(Space.Type.WEBDAV)
 
             mBinding.header.visibility = View.GONE
-            mBinding.buttonBar.visibility = View.GONE
+//            mBinding.buttonBar.visibility = View.GONE
 
             mBinding.server.isEnabled = false
             mBinding.username.isEnabled = false
@@ -66,12 +63,6 @@ class WebDavFragment : Fragment() {
             mBinding.name.setText(mSpace.name)
             mBinding.username.setText(mSpace.username)
             mBinding.password.setText(mSpace.password)
-
-//            mBinding.swChunking.isChecked = mSpace.useChunking
-//            mBinding.swChunking.setOnCheckedChangeListener { _, useChunking ->
-//                mSpace.useChunking = useChunking
-//                mSpace.save()
-//            }
 
             mBinding.name.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -88,22 +79,22 @@ class WebDavFragment : Fragment() {
                 }
             })
 
-            mBinding.btRemove.setOnClickListener {
-                removeProject()
-            }
+//            mBinding.btRemove.setOnClickListener {
+//                removeProject()
+//            }
 
         } else {
             // setup views for creating a new space
 
             mSpace = Space(Space.Type.WEBDAV)
-            mBinding.btRemove.visibility = View.GONE
+//            mBinding.btRemove.visibility = View.GONE
         }
 
         mBinding.btAuthenticate.setOnClickListener { attemptLogin() }
 
-        mBinding.btCancel.setOnClickListener {
-            setFragmentResult(RESP_CANCEL, bundleOf())
-        }
+//        mBinding.btCancel.setOnClickListener {
+//            setFragmentResult(RESP_CANCEL, bundleOf())
+//        }
 
         mBinding.server.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
@@ -124,6 +115,7 @@ class WebDavFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         mSnackbar = mBinding.root.makeSnackBar(getString(R.string.login_activity_logging_message))
     }
 
@@ -205,10 +197,6 @@ class WebDavFragment : Fragment() {
                 mSpace.save()
                 Space.current = mSpace
 
-//                CleanInsightsManager.getConsent(requireActivity()) {
-//                    CleanInsightsManager.measureEvent("backend", "new", Space.Type.WEBDAV.friendlyName)
-//                }
-
                 setFragmentResult(RESP_SAVED, bundleOf())
             } catch (exception: IOException) {
                 if (exception.message?.startsWith("401") == true) {
@@ -276,19 +264,19 @@ class WebDavFragment : Fragment() {
         Util.hideSoftKeyboard(requireActivity())
     }
 
-    private fun removeProject() {
-        AlertHelper.show(
-            requireContext(),
-            R.string.are_you_sure_you_want_to_remove_this_server_from_the_app,
-            R.string.remove_from_app,
-            buttons = listOf(
-                AlertHelper.positiveButton(R.string.remove) { _, _ ->
-                    mSpace.delete()
-                    setFragmentResult(RESP_DELETED, bundleOf())
-                }, AlertHelper.negativeButton()
-            )
-        )
-    }
+//    private fun removeProject() {
+//        AlertHelper.show(
+//            requireContext(),
+//            R.string.are_you_sure_you_want_to_remove_this_server_from_the_app,
+//            R.string.remove_from_app,
+//            buttons = listOf(
+//                AlertHelper.positiveButton(R.string.remove) { _, _ ->
+//                    mSpace.delete()
+//                    setFragmentResult(RESP_DELETED, bundleOf())
+//                }, AlertHelper.negativeButton()
+//            )
+//        )
+//    }
 
     companion object {
         // events emitted by this fragment

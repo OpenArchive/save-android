@@ -138,7 +138,7 @@ private fun InternetArchiveDetailsContent(
 }
 
 @Composable
-private fun RemoveInternetArchiveDialog(onDismiss: () -> Unit, onRemove: () -> Unit) {
+public fun RemoveInternetArchiveDialog(onDismiss: () -> Unit, onRemove: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         containerColor = ThemeColors.material.surface,

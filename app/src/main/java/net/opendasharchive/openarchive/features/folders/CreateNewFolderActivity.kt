@@ -2,7 +2,6 @@ package net.opendasharchive.openarchive.features.folders
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -49,13 +48,17 @@ class CreateNewFolderActivity : BaseActivity() {
         else {
             CcSelector.init(mBinding.cc)
         }
+
+        mBinding.createFolderButton.setOnClickListener {
+            store()
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_new_folder, menu)
-
-        return super.onCreateOptionsMenu(menu)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        menuInflater.inflate(R.menu.menu_new_folder, menu)
+//
+//        return super.onCreateOptionsMenu(menu)
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -63,10 +66,10 @@ class CreateNewFolderActivity : BaseActivity() {
                 finish()
                 return true
             }
-            R.id.action_done -> {
-                store()
-                return true
-            }
+//            R.id.action_done -> {
+//                store()
+//                return true
+//            }
         }
         return super.onOptionsItemSelected(item)
     }

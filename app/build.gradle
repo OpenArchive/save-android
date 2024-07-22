@@ -3,15 +3,15 @@ apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    def _versionCode=0
-    def _major=0
-    def _minor=0
-    def _patch=0
+    var _patch
+    var _major
+    var _minor
+    var _versionCode
 
     def versionPropsFile = file('version.properties')
 
     if (versionPropsFile.canRead()) {
-        def Properties versionProps = new Properties()
+        Properties versionProps = new Properties()
 
         versionProps.load(new FileInputStream(versionPropsFile))
 
@@ -34,8 +34,8 @@ android {
     def _versionName = "${_major}.${_minor}.${_patch}.${_versionCode}"
 
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     signingConfigs {
@@ -44,21 +44,22 @@ android {
     compileSdk 34
     defaultConfig {
         applicationId "net.opendasharchive.openarchive"
-        minSdkVersion 29
+        minSdkVersion 28
         targetSdkVersion 34
         versionCode _versionCode
         versionName _versionName
         archivesBaseName = "save-$versionName"
-        multiDexEnabled true
+        multiDexEnabled false
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
-    flavorDimensions += "free"
     buildTypes {
+        debug {
+            minifyEnabled false
+        }
         release {
             minifyEnabled false
-            applicationIdSuffix ".release"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -67,6 +68,7 @@ android {
             excludes += ['META-INF/LICENSE.txt', 'META-INF/NOTICE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES', 'LICENSE.txt']
         }
     }
+
 //    productFlavors {
 //        releaseflavor {
 //            dimension "free"
@@ -97,29 +99,33 @@ android {
 
 dependencies {
 
+    // implementation "androidx.core:core-splashscreen:1.0.1"
+
+    implementation 'org.aviran.cookiebar2:cookiebar2:1.1.5'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.23"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0"
 
-//    implementation "androidx.core:core-ktx:1.13.1"
-    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.appcompat:appcompat:1.7.0"
     implementation 'androidx.biometric:biometric:1.1.0'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.7.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.8.3"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3"
     implementation 'androidx.preference:preference-ktx:1.2.1'
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation "androidx.work:work-runtime:2.9.0"
     implementation "androidx.work:work-runtime-ktx:2.9.0"
     implementation "androidx.work:work-testing:2.9.0"
 
-    implementation "androidx.compose.ui:ui:1.6.7"
+    implementation "androidx.compose.ui:ui:1.6.8"
     implementation "androidx.compose.material3:material3:1.2.1"
-    implementation 'androidx.compose.foundation:foundation:1.6.7'
-    implementation "androidx.compose.ui:ui-tooling-preview:1.6.7"
+    implementation 'androidx.compose.foundation:foundation:1.6.8'
+    implementation "androidx.compose.ui:ui-tooling-preview:1.6.8"
     implementation "androidx.activity:activity-compose:1.9.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3"
 
     implementation "io.insert-koin:koin-core:3.5.3"
     implementation "io.insert-koin:koin-android:3.5.3"
@@ -133,8 +139,8 @@ dependencies {
     // adding web dav support: https://github.com/thegrizzlylabs/sardine-android'
     implementation "com.github.guardianproject:sardine-android:89f7eae512"
     
-    implementation "com.google.android.material:material:1.11.0"
-    implementation "androidx.compose.material:material-icons-extended:1.6.7"
+    implementation "com.google.android.material:material:1.12.0"
+    implementation "androidx.compose.material:material-icons-extended:1.6.8"
 
     implementation "com.github.bumptech.glide:glide:4.16.0"
     annotationProcessor "com.github.bumptech.glide:compiler:4.16.0"
@@ -147,7 +153,6 @@ dependencies {
     implementation "com.amulyakhare:com.amulyakhare.textdrawable:1.0.1"
     implementation "com.github.abdularis:circularimageview:1.4"
 
-    implementation "org.cleaninsights.sdk:clean-insights-sdk:2.8.0"
     implementation "info.guardianproject.netcipher:netcipher:2.2.0-alpha"
 
     //from here: https://github.com/guardianproject/proofmode
@@ -167,7 +172,7 @@ dependencies {
         exclude group: "com.squareup.okio", module: "okio"
     }
 
-    implementation "com.google.guava:guava:31.0.1-jre"
+    implementation "com.google.guava:guava:32.0.1-jre"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     implementation 'org.bouncycastle:bcpkix-jdk15to18:1.72'
@@ -202,11 +207,15 @@ dependencies {
     implementation 'com.google.android.play:app-update:2.1.0'
     implementation 'com.google.android.play:app-update-ktx:2.1.0'
 
+//    implementation "androidx.credentials:credentials:1.2.2"
+//    implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
+//    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.1"
+
     // Tests
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.7.3'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test:runner:1.6.1'
 }
 
 configurations {

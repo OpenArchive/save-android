@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="array_prefs_media_compression_values">
+        <item>smaller_size</item>
+        <item>higher_quality</item>
+    </string-array>
+    <string-array name="array_prefs_media_compression_labels">
+        <item>Smaller size</item>
+        <item>Higher quality</item>
+    </string-array>
     <string-array name="ar_prefs_theme_val">
         <item>@string/prefs_theme_val_system</item>
         <item>@string/prefs_theme_val_light</item>

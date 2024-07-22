@@ -10,7 +10,6 @@ private const val ARG_VAL_NEW_SPACE = -1L
 @Deprecated("only for use with fragments and activities")
 private const val ARG_SPACE = "space"
 
-@Deprecated("only for use with fragments and activities")
 enum class IAResult(
     val value: String
 ) {

@@ -34,7 +34,6 @@ import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.makeSnackBar
 import org.witness.proofmode.crypto.HashUtils
-//import org.witness.proofmode.crypto.HashUtils
 import java.io.File
 import java.util.Date
 
@@ -181,7 +180,7 @@ object Picker {
         media.mimeType = Utility.getMimeType(context, uri) ?: ""
         media.createDate = createDate
         media.updateDate = media.createDate
-        media.sStatus = Media.Status.Local
+        media.status = Media.Status.Local
         media.mediaHashString =
             HashUtils.getSHA256FromFileContent(context.contentResolver.openInputStream(uri))
         media.projectId = project.id

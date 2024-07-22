@@ -119,6 +119,6 @@ class Onboarding23InstructionsActivity : BaseActivity() {
 
     private fun done() {
         Prefs.didCompleteOnboarding = true
-        startActivity(Intent(this, SpaceSetupActivity::class.java))
+        startActivity(Intent(this, ServerSetupActivity::class.java))
     }
 }

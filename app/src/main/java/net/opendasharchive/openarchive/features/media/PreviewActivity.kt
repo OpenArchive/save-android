@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
+import com.esafirm.imagepicker.view.GridSpacingItemDecoration
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewBinding
 import net.opendasharchive.openarchive.db.Media
@@ -24,6 +25,7 @@ import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
+
 
 class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Listener {
 
@@ -83,6 +85,7 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
         mBinding.mediaGrid.layoutManager = GridLayoutManager(this, 2)
         mBinding.mediaGrid.adapter = PreviewAdapter(this)
         mBinding.mediaGrid.setHasFixedSize(true)
+        mBinding.mediaGrid.addItemDecoration(GridSpacingItemDecoration(2, 20, false))
 
         mBinding.btAddMore.setOnClickListener(this)
         mBinding.btBatchEdit.setOnClickListener(this)
@@ -92,7 +95,6 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
         if (Picker.canPickFiles(this)) {
             mBinding.btAddMore.setOnLongClickListener {
                 mBinding.addMenu.container.show(animate = true)
-
                 true
             }
 
@@ -117,19 +119,16 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
             }
         }
 
-
         refresh()
     }
 
     override fun onResume() {
         super.onResume()
-
         showFirstTimeBatch()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
-
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -137,14 +136,13 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
-
                 return true
             }
 
             R.id.menu_upload -> {
                 val queue = {
                     mMedia.forEach {
-                        it.sStatus = Media.Status.Queued
+                        it.status = Media.Status.Queued
                         it.selected = false
                         it.save()
                     }
@@ -157,7 +155,7 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
                 } else {
                     var dontShowAgain = false
 
-                    val d = AlertDialog.Builder(ContextThemeWrapper(this, R.style.AlertDialogTheme))
+                    val d = AlertDialog.Builder(ContextThemeWrapper(this, R.style.MaterialAlertDialogTheme))
                         .setTitle(R.string.once_uploaded_you_will_not_be_able_to_edit_media)
                         .setIcon(R.drawable.baseline_cloud_upload_black_48)
                         .setPositiveButton(

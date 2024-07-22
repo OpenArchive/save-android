@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
-import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
@@ -30,7 +29,7 @@ class UploadManagerActivity : BaseActivity() {
             if (mediaId > -1) {
                 val media = Media.get(mediaId)
 
-                if (action == BroadcastManager.Action.Delete || media?.sStatus == Media.Status.Uploaded) {
+                if (action == BroadcastManager.Action.Delete || media?.status == Media.Status.Uploaded) {
                     handler.post { mFrag?.removeItem(mediaId) }
                 }
                 else {

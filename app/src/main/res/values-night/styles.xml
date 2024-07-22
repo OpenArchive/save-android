@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="OAPreferenceStyle" parent="PreferenceThemeOverlay">
+        <item name="android:listDivider">@drawable/oa_divider</item>
+        <item name="android:divider">@drawable/oa_divider</item>
+        <item name="android:dividerHeight">2dp</item>
+    </style>
+</resources>

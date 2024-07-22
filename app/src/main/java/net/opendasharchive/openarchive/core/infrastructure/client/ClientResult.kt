@@ -25,6 +25,6 @@ suspend fun <T> OkHttpClient.enqueueResult(
     })
 
     continuation.invokeOnCancellation {
-        dispatcher.cancelAll()
+         dispatcher.cancelAll()
     }
 }

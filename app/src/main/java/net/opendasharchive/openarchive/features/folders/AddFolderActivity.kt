@@ -10,7 +10,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityAddFolderBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
+import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.setDrawable
@@ -49,6 +49,10 @@ class AddFolderActivity : BaseActivity() {
         mBinding = ActivityAddFolderBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
+        setSupportActionBar(mBinding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Add Folder"
+
         mBinding.newFolder.setOnClickListener {
             setFolder(false)
         }
@@ -62,10 +66,6 @@ class AddFolderActivity : BaseActivity() {
 
         mBinding.newFolderText.setDrawable(arrow, Position.End, tint = false)
         mBinding.browseFoldersText.setDrawable(arrow, Position.End, tint = false)
-
-        setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.title = ""
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,
         // as it doesn't make sense to show a one-option menu.
@@ -92,7 +92,7 @@ class AddFolderActivity : BaseActivity() {
     private fun setFolder(browse: Boolean) {
         if (Space.current == null) {
             finish()
-            startActivity(Intent(this, SpaceSetupActivity::class.java))
+            startActivity(Intent(this, ServerSetupActivity::class.java))
 
             return
         }

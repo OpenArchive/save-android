@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto">
 
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
 <!--    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />-->
 <!--    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />-->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission
         android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
         tools:node="remove" />
@@ -22,7 +23,6 @@
 
     <queries>
         <package android:name="org.torproject.android" />
-        <package android:name="com.dropbox.android" />
         <intent>
             <action android:name="android.intent.action.OPEN_DOCUMENT" />
             <category android:name="android.intent.category.OPENABLE" />
@@ -77,16 +77,13 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <!-- filter for sending text or images; accepts SEND action and audio/photo/video data -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
@@ -107,7 +104,8 @@
             android:label="@string/title_activity_login"
             android:taskAffinity="" />
 
-        <activity android:name=".features.internetarchive.presentation.InternetArchiveActivity"
+        <activity
+            android:name=".features.internetarchive.presentation.InternetArchiveActivity"
             android:label="@string/title_activity_login"
             android:taskAffinity="" />
 
@@ -118,11 +116,6 @@
             android:name=".features.settings.FoldersActivity"
             android:label="@string/folders"
             android:exported="false" />
-
-        <activity android:name=".features.settings.GeneralSettingsActivity"
-            android:label="@string/general"
-            android:exported="false"
-            android:taskAffinity="" />
 
         <activity android:name=".features.settings.ProofModeSettingsActivity"
             android:label="@string/proofmode"
@@ -142,7 +135,7 @@
             android:taskAffinity="" />
 
         <activity
-            android:name=".features.onboarding.SpaceSetupActivity"
+            android:name=".features.onboarding.ServerSetupActivity"
             android:label="@string/title_activity_first_start"
             android:exported="false"
             android:taskAffinity="" />
@@ -175,11 +168,6 @@
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity
-            android:name=".features.settings.ConsentActivity"
-            android:label="@string/health_checks"
-            android:taskAffinity="" />
-
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="net.opendasharchive.openarchive.db" />
@@ -208,7 +196,7 @@
 
         <provider
             android:name=".provider.TorStatusContentProvider"
-            android:authorities="org.opendasharchive.safe.provider.tor"
+            android:authorities="${applicationId}.provider.tor"
             android:exported="false" />
 
         <service

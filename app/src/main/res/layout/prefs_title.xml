@@ -5,11 +5,13 @@
     android:padding="8dp"
     android:gravity="center"
     android:orientation="horizontal">
+
     <TextView
         android:id="@android:id/title"
-        android:layout_weight="1"
         android:layout_width="0dp"
-        android:textColor="#201f1f"
         android:layout_height="wrap_content"
-        android:textSize="18sp" />
+        android:layout_marginHorizontal="8dp"
+        android:layout_weight="1"
+        android:textColor="@color/colorPrimary"
+        android:textSize="22sp" />
 </LinearLayout>

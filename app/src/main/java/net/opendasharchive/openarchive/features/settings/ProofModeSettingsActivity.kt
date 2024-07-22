@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -119,11 +118,6 @@ class ProofModeSettingsActivity: BaseActivity() {
         }
 
         private fun enableProofModeKeyEncryption(pkePreference: SwitchPreferenceCompat) {
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                return
-            }
-
             val key = Hbks.loadKey() ?: Hbks.createKey()
 
             if (key != null && Prefs.proofModeEncryptedPassphrase == null) {

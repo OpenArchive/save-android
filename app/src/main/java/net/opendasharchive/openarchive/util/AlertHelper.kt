@@ -42,7 +42,7 @@ class AlertHelper {
         fun build(context: Context, message: String? = null, title: Int? = R.string.error,
                   icon: Int? = null, buttons: List<Button>? = listOf(Button())
         ) : AlertDialog.Builder {
-            val builder = AlertDialog.Builder(ContextThemeWrapper(context, R.style.AlertDialogTheme))
+            val builder = AlertDialog.Builder(ContextThemeWrapper(context, R.style.MaterialAlertDialogTheme))
 
             if (message != null) builder.setMessage(message)
             if (title != null) builder.setTitle(title)

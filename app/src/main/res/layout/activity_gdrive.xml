@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
-    tools:context=".features.onboarding.SpaceSetupActivity">
+    tools:context=".features.onboarding.ServerSetupActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

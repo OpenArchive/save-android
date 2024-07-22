@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
-import net.opendasharchive.openarchive.FolderAdapter
-import net.opendasharchive.openarchive.FolderAdapterListener
+import net.opendasharchive.openarchive.adapters.FolderAdapter
+import net.opendasharchive.openarchive.adapters.FolderAdapterListener
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityFoldersBinding
 import net.opendasharchive.openarchive.db.Project

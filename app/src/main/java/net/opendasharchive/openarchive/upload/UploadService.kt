@@ -20,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import net.opendasharchive.openarchive.CleanInsightsManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.main.MainActivity
@@ -175,17 +174,15 @@ class UploadService : JobService() {
             Media.ORDER_PRIORITY
         ).toMutableList()
 
-        while (mKeepUploading &&
-           results.isNotEmpty()
-        ) {
+        while (mKeepUploading && results.isNotEmpty()) {
             val datePublish = Date()
 
             val media = results.removeFirst()
 
-            if (media.sStatus != Media.Status.Uploading) {
+            if (media.status != Media.Status.Uploading) {
                 media.uploadDate = datePublish
                 media.progress = 0 // Should we reset this?
-                media.sStatus = Media.Status.Uploading
+                media.status = Media.Status.Uploading
                 media.statusMessage = ""
             }
 
@@ -203,8 +200,8 @@ class UploadService : JobService() {
             } catch (ioe: IOException) {
                 Timber.d(ioe)
 
-                media.statusMessage = "error in uploading media: " + ioe.message
-                media.sStatus = Media.Status.Error
+                media.statusMessage = "Error uploading media: " + ioe.message
+                media.status = Media.Status.Error
                 media.save()
 
                 BroadcastManager.postChange(applicationContext, media.collectionId, media.id)
@@ -222,11 +219,9 @@ class UploadService : JobService() {
 
         val conduit = Conduit.get(media, this) ?: return false
 
-        media.sStatus = Media.Status.Uploading
+        media.status = Media.Status.Uploading
         media.save()
         BroadcastManager.postChange(this, media.collectionId, media.id)
-
-        CleanInsightsManager.measureEvent("upload", "try_upload", media.space?.tType?.friendlyName)
 
         mConduits.add(conduit)
 

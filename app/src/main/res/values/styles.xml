@@ -2,109 +2,147 @@
 
     <!-- themes -->
 
-    <style name="AppTheme.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorOnPrimary">@color/colorOnPrimary</item>
-        <item name="android:colorBackground">@color/colorBackground</item>
-        <item name="android:textColor">@color/colorOnBackground</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/dayMode</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/dayMode</item>
-        <item name="navigationViewStyle">@style/NavigationViewStyle</item>
-        <item name="appBarLayoutStyle">@style/AppBarStyle</item>
-        <item name="android:textViewStyle">@style/OATextViewStyle</item>
-        <item name="buttonStyle">@style/OAButtonStyle</item>
-        <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
-        <item name="dialogTheme">@style/AppDialogTheme</item>
-        <item name="bottomSheetDialogTheme">@style/AppBottomSheetTheme</item>
-        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
-        <item name="materialAlertDialogTheme">@style/AlertMaterialDialogTheme</item>
-        <item name="switchPreferenceCompatStyle">@style/Foo</item>
-    </style>
-
-
-<!--    <style name="MainTheme.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">-->
-<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
-<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-<!--        <item name="colorOnPrimary">@color/colorOnPrimary</item>-->
-<!--        <item name="android:colorBackground">@color/colorBackground</item>-->
-<!--        <item name="android:textColor">@color/colorOnBackground</item>-->
-<!--        <item name="android:statusBarColor">@color/colorBackground</item>-->
-<!--        <item name="android:navigationBarColor">@color/colorBottomNavbar</item>-->
-<!--        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/dayMode</item>-->
-<!--        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/dayMode</item>-->
-<!--        <item name="navigationViewStyle">@style/NavigationViewStyle</item>-->
-<!--        <item name="appBarLayoutStyle">@style/AppBarStyle</item>-->
-<!--        <item name="android:textViewStyle">@style/OATextViewStyle</item>-->
+<!--    <style name="AppTheme.Splash" parent="Theme.SplashScreen">-->
+<!--        <item name="windowSplashScreenBackground">@color/splashBackground</item>-->
+<!--        <item name="windowSplashScreenAnimatedIcon">@drawable/savelogo</item>-->
+<!--        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>-->
 <!--    </style>-->
 
-    <style name="AppBottomSheetTheme" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
-        <item name="buttonStyle">@style/OAButtonStyle</item>
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:textColor">@color/colorOnBackground</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:textViewStyle">@style/OATextViewStyle</item>
+        <item name="android:toolbarStyle">@style/OAToolbar</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+<!--        <item name="dividerColor">@color/red</item>-->
+<!--        <item name="android:listDivider">@drawable/divider</item>-->
+        <item name="android:divider">@drawable/oa_divider</item>
+        <item name="android:listDivider">@drawable/oa_divider</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
+        <item name="actionOverflowMenuStyle">@style/OAOptionsMenu</item>
+        <item name="appBarLayoutStyle">@style/AppBarStyle</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetTheme</item>
+        <item name="dialogTheme">@style/AppDialogTheme</item>
+        <item name="materialAlertDialogTheme">@style/MaterialAlertDialogTheme</item>
+        <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
+        <item name="navigationViewStyle">@style/NavigationViewStyle</item>
+        <item name="switchPreferenceCompatStyle">@style/OASwitchPreferenceStyle</item>
+        <item name="preferenceTheme">@style/OAPreferenceStyle</item>
+
+        <item name="cookieTitleColor">@color/default_title_color</item>
+        <item name="cookieMessageColor">@color/default_message_color</item>
+        <item name="cookieActionColor">@color/default_action_color</item>
+        <item name="cookieBackgroundColor">@color/c23_dark_grey</item>
+        <item name="cookiePadding">24dp</item>
+        <item name="cookieTitleSize">24sp</item>
+        <item name="cookieMessageSize">16sp</item>
+        <item name="cookieActionSize">18sp</item>
+    </style>
+
+    <style name="OAPreferenceStyle" parent="PreferenceThemeOverlay">
+        <item name="android:listDivider">@drawable/oa_divider</item>
+        <item name="android:divider">@drawable/oa_divider</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+
+    <style name="AppBottomSheetTheme" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="buttonStyle">@style/OAMaterialButtonStyle</item>
         <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
     </style>
 
-    <style name="AppDialogTheme" parent="Theme.AppCompat.DayNight.Dialog">
-        <item name="buttonStyle">@style/OAButtonStyle</item>
-        <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
+    <style name="OAOptionsMenu" parent="Widget.MaterialComponents.PopupMenu.Overflow">
+        <item name="android:popupBackground">@color/blue</item>
     </style>
 
-    <style name="AppMaterialDialogTheme" parent="Theme.Material3.DayNight.Dialog">
-        <item name="buttonStyle">@style/OAButtonStyle</item>
+    <style name="OAToolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="titleTextColor">@color/white</item>
+        <item name="subtitleTextColor">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="background">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
     </style>
 
     <!-- widgets / dialogs / alerts -->
 
-    <style name="Foo" parent="Preference.SwitchPreferenceCompat">
-        <item name="android:textAppearance">@null</item>
-        <item name="android:textColor">@color/red</item>
-        <item name="android:textColorSecondary">@color/red</item>
-        <item name="android:textSize">12sp</item>
+    <style name="AppBarStyle" parent="Widget.MaterialComponents.AppBarLayout.Primary">
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
-    <style name="AppBarStyle" parent="Widget.Material3.AppBarLayout">
-        <item name="android:background">@color/colorBackground</item>
-    </style>
-
-    <style name="NavigationViewStyle" parent="Widget.Material3.NavigationView">
+    <style name="NavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="android:background">@color/colorNavigationDrawerBackground</item>
     </style>
 
-    <style name="AlertDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+<!--    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">-->
+<!--        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>-->
+<!--        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>-->
+<!--        <item name="android:textColor">@color/colorPrimary</item>-->
+<!--        <item name="android:textSize">14sp</item>-->
+<!--    </style>-->
+
+    <style name="MaterialAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">14sp</item>
     </style>
-    <style name="AlertMaterialDialogTheme" parent="ThemeOverlay.Material3.Dialog.Alert">
-        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">14sp</item>
-    </style>
 
-    <style name="NegativeButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+    <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
-    <style name="PositiveButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
-    <style name="OATextViewStyle">
+    <style name="OATextViewStyle" parent="Widget.MaterialComponents.TextView">
         <item name="fontFamily">@font/montserrat</item>
     </style>
 
-    <style name="OAMaterialButtonStyle" parent="Widget.Material3.Button">
+    <style name="OATextFieldStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+    </style>
+
+    <style name="OAMaterialButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/button</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="OAButtonStyle" parent="Widget.AppCompat.Button">
+    <style name="OAPillButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/button_pill</item>
+        <item name="android:gravity">center_horizontal|center_vertical</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="OAButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/button</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="OASwitchPreferenceStyle" parent="@style/Preference.SwitchPreferenceCompat.Material">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Widget.App.ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="materialThemeOverlay">@style/GreenButtonThemeOverlay</item>
+    </style>
+
+    <style name="GreenButtonThemeOverlay">
+        <item name="colorPrimary">@color/green</item>
     </style>
 </resources>

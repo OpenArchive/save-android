@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:showIn="@layout/fragment_main_media">
+
+    <ImageView
+        android:id="@+id/current_folder_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/current_folder_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/current_folder_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Folder Name" />
+
+    <TextView
+        android:id="@+id/current_folder_count"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/pill"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="99+" />
+
+    <!--                <com.google.android.material.button.MaterialButton-->
+    <!--                    android:id="@+id/upload_edit_button"-->
+    <!--                    style="@style/Widget.Material3.Button.TextButton"-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="40dp"-->
+    <!--                    android:paddingEnd="0dp"-->
+    <!--                    android:text="@string/edit"-->
+    <!--                    app:icon="@drawable/ic_low_priority"-->
+    <!--                    app:iconGravity="textStart"-->
+    <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                    app:layout_constraintTop_toTopOf="parent"-->
+    <!--                    tools:ignore="RtlSymmetry" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

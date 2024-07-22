@@ -185,12 +185,12 @@ class WebDavConduit(media: Media, context: Context) : Conduit(media, context) {
             "text/plain", null)
 
         /// Upload ProofMode metadata, if enabled and successfully created.
-//        for (file in getProof()) {
-//            if (mCancelled) throw Exception("Cancelled")
-//
-//            mClient.put(
-//                construct(base, path, file.name), file, "text/plain",
-//                false, null)
-//        }
+        for (file in getProof()) {
+            if (mCancelled) throw Exception("Cancelled")
+
+            mClient.put(
+                construct(base, path, file.name), file, "text/plain",
+                false, null)
+        }
     }
 }

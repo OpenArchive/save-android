@@ -9,24 +9,25 @@ import org.witness.proofmode.ProofMode
 import org.witness.proofmode.ProofModeConstants
 
 object Prefs {
-    private const val DID_COMPLETE_ONBOARDING = "did_complete_onboarding"
-    private const val UPLOAD_WIFI_ONLY = "upload_wifi_only"
-    private const val NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth"
-    private const val NEARBY_USE_WIFI = "nearby_use_wifi"
-    private const val USE_TOR = "use_tor"
+    const val LOCK_WITH_PASSCODE = "lock_with_passcode"
+    const val DID_COMPLETE_ONBOARDING = "did_complete_onboarding"
+    const val UPLOAD_WIFI_ONLY = "upload_wifi_only"
+    const val NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth"
+    const val NEARBY_USE_WIFI = "nearby_use_wifi"
+    const val USE_TOR = "use_tor"
     const val PROHIBIT_SCREENSHOTS = "prohibit_screenshots"
     const val USE_PROOFMODE = "use_proofmode"
     const val USE_PROOFMODE_KEY_ENCRYPTION = "proofmode_key_encryption"
     // private const val USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
     const val THEME = "theme"
-    private const val CURRENT_SPACE_ID = "current_space"
-    private const val FLAG_HINT_SHOWN = "ft.flag"
-    private const val BATCH_HINT_SHOWN = "ft.batch"
-    private const val DONT_SHOW_UPLOAD_HINT = "ft.upload"
-    private const val IA_HINT_SHOWN = "ft.ia"
-    private const val ADD_FOLDER_HINT_SHOWN = "ft.add_folder"
-    private const val LICENSE_URL = "archive_pref_share_license_url"
-    private const val PROOFMODE_ENCRYPTED_PASSPHRASE = "proof_mode_encrypted_passphrase"
+    const val CURRENT_SPACE_ID = "current_space"
+    const val FLAG_HINT_SHOWN = "ft.flag"
+    const val BATCH_HINT_SHOWN = "ft.batch"
+    const val DONT_SHOW_UPLOAD_HINT = "ft.upload"
+    const val IA_HINT_SHOWN = "ft.ia"
+    const val ADD_FOLDER_HINT_SHOWN = "ft.add_folder"
+    const val LICENSE_URL = "archive_pref_share_license_url"
+    const val PROOFMODE_ENCRYPTED_PASSPHRASE = "proof_mode_encrypted_passphrase"
 
     private var prefs: SharedPreferences? = null
 
@@ -115,6 +116,12 @@ object Prefs {
         get() = prefs?.getString(LICENSE_URL, null)
         set(value) {
             prefs?.edit()?.putString(LICENSE_URL, value)?.apply()
+        }
+
+    var lockWithPasscode: Boolean
+        get() = prefs?.getBoolean(LOCK_WITH_PASSCODE, false) ?: false
+        set(value) {
+            prefs?.edit()?.putBoolean(LOCK_WITH_PASSCODE, value)?.apply()
         }
 
     var proofModeLocation: Boolean

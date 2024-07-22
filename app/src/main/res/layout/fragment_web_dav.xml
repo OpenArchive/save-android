@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     tools:context=".services.webdav.WebDavFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +27,8 @@
             <LinearLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="48dp"
@@ -52,8 +52,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/private_server"
                         android:textFontWeight="700"
-                        android:textStyle="bold"
-                        tools:targetApi="p" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -64,15 +63,11 @@
 
             </LinearLayout>
 
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/OATextFieldStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/server_info" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginTop="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/server"
@@ -86,8 +81,10 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/OATextFieldStyle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
@@ -100,15 +97,11 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/OATextFieldStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="@string/account" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginTop="40dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/username"
@@ -122,8 +115,10 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/OATextFieldStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 app:passwordToggleDrawable="@drawable/show_password_selector"
                 app:passwordToggleEnabled="true">
 
@@ -141,49 +136,14 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/bt_remove"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginVertical="40dp"
-                android:gravity="center"
-                android:text="@string/remove_from_app"
-                android:textColor="@color/colorDanger"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:drawableStartCompat="@drawable/ic_delete_danger_24dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/button_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:weightSum="2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <Button
-                android:id="@+id/bt_cancel"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:layout_weight="1"
-                android:text="@string/back" />
-
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_authenticate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:layout_weight="1"
-                android:text="@string/action_next"
-                tools:ignore="ButtonStyle" />
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/colorPrimary"
+                android:text="@string/label_login"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

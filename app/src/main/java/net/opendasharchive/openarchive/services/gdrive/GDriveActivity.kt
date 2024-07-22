@@ -2,13 +2,10 @@ package net.opendasharchive.openarchive.services.gdrive
 
 import android.os.Bundle
 import android.view.MenuItem
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityGdriveBinding
 import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.util.AlertHelper
 
 class GDriveActivity : BaseActivity() {
 
@@ -38,22 +35,22 @@ class GDriveActivity : BaseActivity() {
     }
 
     private fun removeSpace(space: Space) {
-        AlertHelper.show(this, R.string.are_you_sure_you_want_to_remove_this_server_from_the_app, R.string.remove_from_app, buttons = listOf(
-            AlertHelper.positiveButton(R.string.remove) { _, _ ->
-                // delete sign-in from database
-                space.delete()
-
-                // google logout
-                val googleSignInClient =
-                    GoogleSignIn.getClient(applicationContext, GoogleSignInOptions.DEFAULT_SIGN_IN)
-                googleSignInClient.revokeAccess().addOnCompleteListener {
-                    googleSignInClient.signOut()
-                }
-
-                // leave activity
-                Space.navigate(this)
-            },
-            AlertHelper.negativeButton()))
+//        AlertHelper.show(this, R.string.are_you_sure_you_want_to_remove_this_server_from_the_app, R.string.remove_from_app, buttons = listOf(
+//            AlertHelper.positiveButton(R.string.remove) { _, _ ->
+//                // delete sign-in from database
+//                space.delete()
+//
+//                // google logout
+//                val googleSignInClient =
+//                    GoogleSignIn.getClient(applicationContext, GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                googleSignInClient.revokeAccess().addOnCompleteListener {
+//                    googleSignInClient.signOut()
+//                }
+//
+//                // leave activity
+//                Space.navigate(this)
+//            },
+//            AlertHelper.negativeButton()))
     }
 
     // boilerplate to make back button in app bar work

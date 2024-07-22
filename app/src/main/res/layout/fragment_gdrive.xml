@@ -19,6 +19,7 @@
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@id/button_bar"
             app:layout_constraintHorizontal_bias="0.0"
@@ -53,8 +54,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="10dp"
                 android:text="@string/sign_in_or_create_an_account_with_gdrive"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/error"
@@ -68,18 +71,14 @@
                 app:layout_constraintTop_toBottomOf="@id/subtitle"
                 tools:text="NullPointerException" />
 
-            <!-- some extra margin -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/activity_vertical_margin" />
-
             <TextView
                 android:id="@+id/disclaimer1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_marginTop="30dp"
                 android:text="@string/gdrive_disclaimer_1"
-                android:textColor="@color/colorOnBackgroundTonedDown" />
+                android:textColor="@color/colorOnBackgroundTonedDown"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/disclaimer2"
@@ -88,7 +87,8 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:text="@string/gdrive_disclaimer_1"
-                android:textColor="@color/colorOnBackgroundTonedDown" />
+                android:textColor="@color/colorOnBackgroundTonedDown"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -102,23 +102,32 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <Button
-                android:id="@+id/bt_back"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:layout_weight="1"
-                android:text="@string/back" />
+<!--            <Button-->
+<!--                android:id="@+id/bt_back"-->
+<!--                style="?android:attr/buttonBarButtonStyle"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/back" />-->
 
-            <Button
+<!--            <Button-->
+<!--                android:id="@+id/bt_authenticate"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/authenticate"-->
+<!--                tools:ignore="ButtonStyle" />-->
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_authenticate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/colorPrimary"
                 android:text="@string/authenticate"
-                tools:ignore="ButtonStyle" />
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

@@ -48,10 +48,10 @@ object CcSelector {
             it?.context?.openBrowser(cc.tvLicense.text.toString())
         }
 
-        cc.btLearnMore.styleAsLink()
-        cc.btLearnMore.setOnClickListener {
-            it?.context?.openBrowser("https://creativecommons.org/about/cclicenses/")
-        }
+//        cc.btLearnMore.styleAsLink()
+//        cc.btLearnMore.setOnClickListener {
+//            it?.context?.openBrowser("https://creativecommons.org/about/cclicenses/")
+//        }
     }
 
     fun set(cc: ContentCcBinding, license: String?, enabled: Boolean = true) {

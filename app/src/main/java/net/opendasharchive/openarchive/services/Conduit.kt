@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.net.Uri
-import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import com.google.gson.GsonBuilder
 import net.opendasharchive.openarchive.R
@@ -89,7 +88,7 @@ abstract class Conduit(
      */
     fun jobSucceeded() {
         mMedia.progress = mMedia.contentLength
-        mMedia.sStatus = Media.Status.Uploaded
+        mMedia.status = Media.Status.Uploaded
         mMedia.save()
 
         BroadcastManager.postChange(mContext, mMedia.collectionId, mMedia.id)
@@ -101,7 +100,7 @@ abstract class Conduit(
 
         mMedia.statusMessage =
             exception.localizedMessage ?: exception.message ?: exception.toString()
-        mMedia.sStatus = Media.Status.Error
+        mMedia.status = Media.Status.Error
         mMedia.save()
 
         Timber.d(exception)
@@ -169,7 +168,7 @@ abstract class Conduit(
      * Constructs, either a full URL or a path from the given arguments, depending if a `base` is given.
      *
      * If there's only a path to be constructed, then the path will have a leading slash and will
-     * not be escaped, as the Dropbox client likes it like that.
+     * not be escaped.
      *
      * If there's a full URL to be constructed, it *will* be escaped properly.
      */
@@ -240,30 +239,32 @@ abstract class Conduit(
         }
 
         fun getUploadFileName(media: Media, escapeTitle: Boolean = false): String {
-            var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(media.mimeType)
-            if (ext.isNullOrEmpty()) {
-                ext = when {
-                    media.mimeType.startsWith("image") -> "jpg"
-
-                    media.mimeType.startsWith("video") -> "mp4"
-
-                    media.mimeType.startsWith("audio") -> "m4a"
-
-                    else -> "txt"
-                }
-            }
+//            var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(media.mimeType)
+//            if (ext.isNullOrEmpty()) {
+//                ext = when {
+//                    media.mimeType.startsWith("image") -> "jpg"
+//
+//                    media.mimeType.startsWith("video") -> "mp4"
+//
+//                    media.mimeType.startsWith("audio") -> "m4a"
+//
+//                    else -> "txt"
+//                }
+//            }
 
             var title = media.title
 
-            if (title.isBlank()) title = media.mediaHashString
+            if (title.isBlank()) {
+                title = media.mediaHashString
+            }
 
             if (escapeTitle) {
                 title = UrlEscapers.urlPathSegmentEscaper().escape(title) ?: title
             }
 
-            if (!title.endsWith(".$ext")) {
-                return "$title.$ext"
-            }
+//            if (!title.endsWith(".$ext")) {
+//                return "$title.$ext"
+//            }
 
             return title
         }

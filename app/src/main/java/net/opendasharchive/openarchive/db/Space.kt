@@ -10,17 +10,18 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.github.abdularis.civ.AvatarImageView
 import com.orm.SugarRecord
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.features.onboarding.SpaceSetupActivity
+import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.extensions.tint
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
 
 
 data class Space(
-    var type: Int = 0,
+    var type: Long = 0,
     var name: String = "",
     var username: String = "",
     var displayname: String = "",
@@ -46,7 +47,7 @@ data class Space(
         }
     }
 
-    enum class Type(val id: Int, val friendlyName: String) {
+    enum class Type(val id: Long, val friendlyName: String) {
         WEBDAV(0, "WebDAV"),
         INTERNET_ARCHIVE(1, IaConduit.NAME),
         GDRIVE(4, GDriveConduit.NAME),
@@ -99,7 +100,7 @@ data class Space(
             }
             else {
                 activity.finishAffinity()
-                activity.startActivity(Intent(activity, SpaceSetupActivity::class.java))
+                activity.startActivity(Intent(activity, ServerSetupActivity::class.java))
             }
         }
     }
@@ -120,7 +121,7 @@ data class Space(
         get() = host.toHttpUrlOrNull()
 
     var tType: Type?
-        get() = Type.values().firstOrNull { it.id == type }
+        get() = Type.entries.firstOrNull { it.id == type }
         set(value) {
             type = (value ?: Type.WEBDAV).id
         }
@@ -158,11 +159,11 @@ data class Space(
         val color = ContextCompat.getColor(context, R.color.colorOnBackground)
 
         return when (tType) {
-            Type.WEBDAV -> ContextCompat.getDrawable(context, R.drawable.ic_private_server) // ?.tint(color)
+            Type.WEBDAV -> ContextCompat.getDrawable(context, R.drawable.ic_private_server)?.tint(color)
 
-            Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ic_internet_archive) // ?.tint(color)
+            Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ic_internet_archive)?.tint(color)
 
-            Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.logo_gdrive_outline) // ?.tint(color)
+            Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.logo_gdrive_outline)?.tint(color)
 
             else -> TextDrawable.builder().buildRound(initial, color)
         }

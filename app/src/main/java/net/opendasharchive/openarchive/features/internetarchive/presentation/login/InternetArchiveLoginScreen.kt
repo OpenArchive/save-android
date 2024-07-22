@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -29,7 +28,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,7 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -115,13 +112,14 @@ private fun InternetArchiveLoginContent(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(ThemeDimensions.spacing.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         InternetArchiveHeader(
-            modifier = Modifier.padding(bottom = ThemeDimensions.spacing.large)
+            modifier = Modifier
+                .padding(bottom = ThemeDimensions.spacing.large)
         )
 
         OutlinedTextField(
@@ -132,7 +130,7 @@ private fun InternetArchiveLoginContent(
                 Text(stringResource(R.string.label_username))
             },
             placeholder = {
-                Text(stringResource(R.string.placeholder_email_or_username))
+                Text(stringResource(R.string.label_username))
             },
             singleLine = true,
             shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
@@ -142,6 +140,7 @@ private fun InternetArchiveLoginContent(
                 keyboardType = KeyboardType.Email
             ),
             isError = state.isUsernameError,
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(ThemeDimensions.spacing.large))
@@ -154,7 +153,7 @@ private fun InternetArchiveLoginContent(
                 Text(stringResource(R.string.label_password))
             },
             placeholder = {
-                Text(stringResource(R.string.placeholder_password))
+                Text(stringResource(R.string.label_password))
             },
             singleLine = true,
             trailingIcon = {
@@ -173,6 +172,7 @@ private fun InternetArchiveLoginContent(
                 imeAction = ImeAction.Go
             ),
             isError = state.isPasswordError,
+            modifier = Modifier.fillMaxWidth()
         )
 
         AnimatedVisibility(
@@ -185,26 +185,28 @@ private fun InternetArchiveLoginContent(
                 color = MaterialTheme.colorScheme.error
             )
         }
-        Row(
-            modifier = Modifier
-                .padding(top = ThemeDimensions.spacing.small)
-                .weight(1f),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.prompt_no_account),
-                color = ThemeColors.material.onBackground
-            )
-            TextButton(
-                modifier = Modifier.heightIn(ThemeDimensions.touchable),
-                onClick = { dispatch(CreateLogin) }) {
-                Text(
-                    text = stringResource(R.string.label_create_login),
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        }
+//        Row(
+//            modifier = Modifier
+//                .padding(top = ThemeDimensions.spacing.small)
+//                .weight(1f),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = stringResource(R.string.prompt_no_account),
+//                color = ThemeColors.material.onBackground
+//            )
+//            TextButton(
+//                modifier = Modifier.heightIn(ThemeDimensions.touchable),
+//                onClick = { dispatch(CreateLogin) }) {
+//                Text(
+//                    text = stringResource(R.string.label_create_login),
+//                    fontWeight = FontWeight.Bold,
+//                    style = MaterialTheme.typography.bodyLarge
+//                )
+//            }
+//        }
+
+        Spacer(Modifier.height(ThemeDimensions.spacing.large))
 
         Row(
             modifier = Modifier
@@ -213,17 +215,18 @@ private fun InternetArchiveLoginContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            TextButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .heightIn(ThemeDimensions.touchable)
-                    .padding(ThemeDimensions.spacing.small),
-                shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
-                onClick = { dispatch(Action.Cancel) }) {
-                Text(stringResource(R.string.action_cancel))
-            }
+//            TextButton(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .heightIn(ThemeDimensions.touchable)
+//                    .padding(ThemeDimensions.spacing.small),
+//                shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
+//                onClick = { dispatch(Action.Cancel) }) {
+//                Text(stringResource(R.string.action_cancel))
+//            }
             Button(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .heightIn(ThemeDimensions.touchable)
                     .weight(1f),
                 enabled = !state.isBusy && state.isValid,

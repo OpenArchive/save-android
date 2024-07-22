@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.esafirm.imagepicker.view.GridSpacingItemDecoration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,9 +24,14 @@ import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
+import net.opendasharchive.openarchive.db.Project
+import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.util.AlertHelper
+import net.opendasharchive.openarchive.util.extensions.cloak
+import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
+import java.text.NumberFormat
 import kotlin.collections.set
 
 class MainMediaFragment : Fragment() {
@@ -116,6 +122,25 @@ class MainMediaFragment : Fragment() {
 
         mBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
 
+        val project = getSelectedProject()
+
+        if (project == null) {
+//            mBinding.currentFolder.currentFolderIcon.setImageResource(R.drawable.ic_home)
+//            mBinding.currentFolder.currentFolderIcon.show()
+//            mBinding.currentFolder.currentFolderName.text = "Noyhing"
+//            mBinding.currentFolder.currentFolderName.show()
+
+            mBinding.currentFolder.currentFolderIcon.cloak()
+            mBinding.currentFolder.currentFolderName.cloak()
+        } else {
+            mBinding.currentFolder.currentFolderIcon.setImageDrawable(project.space?.getAvatar(requireContext()))
+            mBinding.currentFolder.currentFolderIcon.show()
+            mBinding.currentFolder.currentFolderName.text = project.description
+            mBinding.currentFolder.currentFolderName.show()
+        }
+
+        refreshCurrentFolderCount()
+
         return mBinding.root
     }
 
@@ -123,6 +148,26 @@ class MainMediaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         refresh()
+    }
+
+    private fun getSelectedProject(): Project? {
+        return Space.current?.projects?.firstOrNull()
+    }
+
+    private fun refreshCurrentFolderCount() {
+        val project = getSelectedProject()
+
+        if (project != null) {
+            mBinding.currentFolder.currentFolderCount.text = NumberFormat.getInstance().format(
+                project.collections.map { it.size }
+                    .reduceOrNull { acc, count -> acc + count } ?: 0)
+            mBinding.currentFolder.currentFolderCount.show()
+
+//            mBinding.uploadEditButton.toggle(project.isUploading)
+        } else {
+            mBinding.currentFolder.currentFolderCount.cloak()
+//            mBinding.uploadEditButton.hide()
+        }
     }
 
     fun updateItem(collectionId: Long, mediaId: Long, progress: Long) {
@@ -182,7 +227,7 @@ class MainMediaFragment : Fragment() {
         mBinding.addMediaHint.toggle(mCollections.isEmpty())
     }
 
-    fun deleteSelected() {
+    private fun deleteSelected() {
         val toDelete = ArrayList<Long>()
 
         mCollections.forEach { (id, collection) ->
@@ -203,8 +248,11 @@ class MainMediaFragment : Fragment() {
     private fun createMediaList(collection: Collection, media: List<Media>): View {
         val holder = SectionViewHolder(ViewSectionBinding.inflate(layoutInflater))
 
+        val spacing = Math.round(15 * resources.displayMetrics.density)
+
         holder.recyclerView.setHasFixedSize(true)
         holder.recyclerView.layoutManager = GridLayoutManager(activity, COLUMN_COUNT)
+        holder.recyclerView.addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT, spacing, false))
 
         holder.setHeader(collection, media)
 

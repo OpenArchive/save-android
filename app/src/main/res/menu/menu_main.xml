@@ -6,18 +6,28 @@
 
     <item
         android:id="@+id/menu_delete"
-        android:icon="@drawable/ic_delete"
-        android:orderInCategory="200"
+        android:icon="@drawable/outline_delete_24"
+        android:iconTint="@color/colorOnBackground"
+        android:orderInCategory="100"
         android:title="@string/menu_delete"
         android:visible="false"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_folders"
-        android:icon="@drawable/ic_menu"
-        android:orderInCategory="300"
-        android:title="@string/folders"
-        app:showAsAction="always" />
+        android:id="@+id/menu_no_wifi"
+        android:icon="@drawable/outline_wifi_off_24"
+        android:iconTint="@color/colorOnBackground"
+        android:orderInCategory="200"
+        android:title="@string/no_wifi_indicator"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+<!--    <item-->
+<!--        android:id="@+id/menu_folders"-->
+<!--        android:icon="@drawable/baseline_menu_24"-->
+<!--        android:iconTint="@color/colorOnBackground"-->
+<!--        android:orderInCategory="300"-->
+<!--        android:title="@string/folders"-->
+<!--        app:showAsAction="always" />-->
 
 </menu>

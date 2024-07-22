@@ -101,5 +101,6 @@
     <color name="colorMediaTitleText">@color/light_grey</color>
     <color name="colorWaveformIndicator">#aa0000</color>
     <color name="colorWaveform">#999999</color>
+    <color name="splashBackground">#e5e5e5</color>
 
 </resources>

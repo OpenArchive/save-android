@@ -25,7 +25,7 @@
     <string name="gdrive" translatable="false">Google Drive</string>
     <string name="gdrive_tm" translatable="false">Google Drive™</string>
     <string name="upload_to_gdrive">Upload to Google Drive</string>
-    <string name="sign_in_or_create_an_account_with_gdrive">Sign in or create an account with Google Drive</string>
+    <string name="sign_in_or_create_an_account_with_gdrive">Sign in or create an account\nwith Google Drive</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
 
@@ -53,6 +53,7 @@
     <string name="info_license_comm">Allow commercial use?</string>
 
     <string name="menu_delete">Remove Media</string>
+    <string name="no_wifi_indicator">No Wifi</string>
 
     <string name="hint_flag">Tap to flag as significant content</string>
     <string name="answer_yes">Yes</string>
@@ -121,7 +122,7 @@
     <!-- Strings related to Settings -->
 
     <string name="tap_to_add">Tap the button below to add media.</string>
-    <string name="to_get_started_connect_to_a_server_to_store_your_media">To get started, connect to a server to store your media.</string>
+    <string name="to_get_started_connect_to_a_server_to_store_your_media">Connect to a server to store your media.</string>
     <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">In the side menu, you can add another server and connect to multiple servers</string>
     <string name="send_directly_to_a_private_server">Send to a webdav server</string>
     <string name="upload_to_the_internet_archive">Upload to the IA</string>
@@ -147,7 +148,7 @@
     <string name="secret_key">Secret Key</string>
     <string name="info_archiveorg_keys"><b><i>Save</i></b> needs your Internet Archive account\'s API keys to be able to upload media.</string>
     <string name="action_acquire_keys">Acquire Keys</string>
-    <string name="new_folder">ADD FOLDER</string>
+    <string name="new_folder">Add Folder</string>
     <string name="please_do_not_include_special_characters_in_the_name">Please do not include special characters in the name.</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Are you sure you want to remove this server from the app?</string>
     <string name="folder_name_already_exists">Folder name already exists.</string>
@@ -176,13 +177,13 @@
     <string name="server_name_optional">Server Name (Optional)</string>
     <string name="dropbox_id">Dropbox ID:</string>
     <string name="add_another_account">Add Server</string>
-    <string name="prefs_proofmode_key_encryption_title_all">Secure ProofMode Key with Biometrics or Device Passcode</string>
+    <string name="prefs_proofmode_key_encryption_title_all">Secure ProofMode Key Device Passcode</string>
     <string name="prefs_proofmode_key_encryption_title_biometrics">Secure ProofMode Key with Biometrics</string>
     <string name="prefs_proofmode_key_encryption_title_passcode">Secure ProofMode Key with Device Passcode</string>
     <string name="prefs_proofmode_key_encryption_summary">Changing this will create a new key! If you exported and signed that one before, you will need to do it again with the new one.</string>
     <string name="biometrics_title">Unlock ProofMode Key</string>
     <string name="folders">Folders</string>
-    <string name="create_folder_name">Create Folder Name</string>
+    <string name="create_folder_name">Folder name</string>
     <string name="folder_name">Folder Name</string>
     <string name="create">Create</string>
     <string name="add">Add</string>
@@ -246,7 +247,7 @@
     <string name="press_and_hold_to_select_and_edit_multiple_media">Press and hold to select and edit multiple media.</string>
     <string name="once_uploaded_you_will_not_be_able_to_edit_media">Once uploaded, you will not be able to edit media</string>
     <string name="edit_media_info">Edit Media Info</string>
-    <string name="counter">%1$d/%2$d</string>
+    <string name="counter">%1$d / %2$d</string>
     <string name="add_a_location_optional">Add a location (optional)</string>
     <string name="add_notes_optional">Add notes (optional)</string>
     <string name="skip">Skip</string>
@@ -293,7 +294,7 @@
     <!-- Internet Archive Settings -->
     <string name="label_email">Email</string>
     <string name="label_screen_name">Screen Name</string>
-    <string name="label_login">Login</string>
+    <string name="label_login">Sign in</string>
     <string name="label_create_login">Sign up</string>
     <string name="prompt_no_account">No account?</string>
     <string name="action_continue">Continue</string>

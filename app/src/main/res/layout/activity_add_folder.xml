@@ -9,11 +9,12 @@
     android:orientation="vertical"
     tools:context=".features.folders.AddFolderActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
+        android:theme="@style/OAToolbar"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" />
+        android:background="@color/colorPrimary" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -60,7 +61,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
                     android:text="@string/create_a_new_folder"
-                    android:textSize="24sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
             </androidx.cardview.widget.CardView>
@@ -80,7 +81,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
                     android:text="@string/browse_existing_folders"
-                    android:textSize="24sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
             </androidx.cardview.widget.CardView>

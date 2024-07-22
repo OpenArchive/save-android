@@ -295,7 +295,7 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
         for (media in mStore) {
             media.licenseUrl = media.project?.licenseUrl ?: media.space?.license
 
-            if (media.sStatus == Media.Status.New) media.sStatus = Media.Status.Local
+            if (media.status == Media.Status.New) media.status = Media.Status.Local
 
             media.save()
         }
