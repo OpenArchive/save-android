@@ -23,6 +23,8 @@
     <string name="internet_archive">Internet Archive</string>
     <string name="internet_archive_description">Upload your media to a public server.</string>
     <string name="gdrive" translatable="false">Google Drive</string>
+    <string name="veilid" translatable="false">Veilid</string>
+    <string name="filecoin" translatable="false">Filecoin</string>
     <string name="gdrive_tm" translatable="false">Google Drive™</string>
     <string name="upload_to_gdrive">Upload to Google Drive</string>
     <string name="sign_in_or_create_an_account_with_gdrive">Sign in or create an account\nwith Google Drive</string>
@@ -47,6 +49,9 @@
     <string name="info_license_sharealike">Require modified versions to also share?</string>
     <string name="info_license_comm">Allow commercial uses of your work?</string>
     -->
+
+    <!-- Accessibility (A11Y) Content Descriptions -->
+    <string name="a11y_media_storage">Media storage configuration screen</string>
 
     <string name="info_license_deriv">Allow anyone to remix and share?</string>
     <string name="info_license_sharealike">Require them to share like you have?</string>
@@ -109,7 +114,7 @@
     <string name="action_about">About %s</string>
     <string name="add_a_folder">Add a Folder</string>
     <string name="browse_existing_folders">Browse Existing Folders</string>
-    <string name="browse_existing">Browse Existing</string>
+    <string name="browse_existing">Browse Folders</string>
     <string name="title_activity_upload_manager">Upload Manager</string>
 
     <string name="uploads">Uploads</string>

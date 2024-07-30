@@ -7,8 +7,8 @@
     <solid android:color="@color/colorPill" />
 
     <padding
-        android:left="1dp"
-        android:right="1dp"
+        android:left="10dp"
+        android:right="10dp"
         android:bottom="1dp"
         android:top="1dp" />
 

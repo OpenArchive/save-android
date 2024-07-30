@@ -18,7 +18,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentGdriveBinding
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 
 class GDriveFragment : CommonServiceFragment() {
@@ -91,21 +91,21 @@ class GDriveFragment : CommonServiceFragment() {
             when (resultCode) {
                 RESULT_OK -> {
                     CoroutineScope(Dispatchers.IO).launch {
-                        val space = Space(Space.Type.GDRIVE)
+                        val backend = Backend(Backend.Type.GDRIVE)
                         // we don't really know the host here, that's hidden by Drive Api
-                        space.host = "what's the host of google drive? :shrug:"
+                        backend.host = "what's the host of google drive? :shrug:"
                         data?.let {
                             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(it)
                             if (result?.isSuccess == true) {
                                 result.signInAccount?.let { account ->
-                                    space.displayname = account.email ?: ""
+                                    backend.displayname = account.email ?: ""
                                 }
                             }
                         }
 
                         if (GDriveConduit.permissionsGranted(requireContext())) {
-                            space.save()
-                            Space.current = space
+                            backend.save()
+                            Backend.current = backend
 
 //                            CleanInsightsManager.getConsent(requireActivity()) {
 //                                CleanInsightsManager.measureEvent(

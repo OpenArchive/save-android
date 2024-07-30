@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithNewSpace
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithSpaceId
+import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithBackendId
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getSpace
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 
@@ -22,7 +22,7 @@ class InternetArchiveFragment : CommonServiceFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val (space, isNewSpace) = arguments.getSpace(Space.Type.INTERNET_ARCHIVE)
+        val (space, isNewSpace) = arguments.getSpace(Backend.Type.INTERNET_ARCHIVE)
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -48,7 +48,7 @@ class InternetArchiveFragment : CommonServiceFragment() {
         }
 
         @JvmStatic
-        fun newInstance(spaceId: Long) = newInstance(args = bundleWithSpaceId(spaceId))
+        fun newInstance(backendId: Long) = newInstance(args = bundleWithBackendId(backendId))
 
         @JvmStatic
         fun newInstance() = newInstance(args = bundleWithNewSpace())

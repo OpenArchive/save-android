@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import timber.log.Timber
@@ -26,22 +26,22 @@ class BrowseFoldersViewModel : ViewModel() {
 
     val progressBarFlag = MutableLiveData(false)
 
-    fun getFiles(context: Context, space: Space) {
+    fun getFiles(context: Context, backend: Backend) {
         viewModelScope.launch {
             progressBarFlag.value = true
 
             try {
                 val value = withContext(Dispatchers.IO) {
-                    when (space.tType) {
-                        Space.Type.WEBDAV -> getWebDavFolders(context, space)
+                    when (backend.tType) {
+                        Backend.Type.WEBDAV -> getWebDavFolders(context, backend)
 
-                        Space.Type.GDRIVE -> getGDriveFolders(context, space)
+                        Backend.Type.GDRIVE -> getGDriveFolders(context, backend)
 
                         else -> emptyList()
                     }
                 }
 
-                mFolders.value = value.filter { !space.hasProject(it.name) }
+                mFolders.value = value.filter { !backend.hasProject(it.name) }
                 progressBarFlag.value = false
             }
             catch (e: Throwable) {
@@ -54,10 +54,10 @@ class BrowseFoldersViewModel : ViewModel() {
     }
 
     @Throws(IOException::class)
-    private suspend fun getWebDavFolders(context: Context, space: Space): List<Folder> {
-        val root = space.hostUrl?.encodedPath
+    private suspend fun getWebDavFolders(context: Context, backend: Backend): List<Folder> {
+        val root = backend.hostUrl?.encodedPath
 
-        return SaveClient.getSardine(context, space).list(space.host)?.mapNotNull {
+        return SaveClient.getSardine(context, backend).list(backend.host)?.mapNotNull {
             if (it?.isDirectory == true && it.path != root) {
                 Folder(it.name, it.modified ?: Date())
             }
@@ -67,7 +67,7 @@ class BrowseFoldersViewModel : ViewModel() {
         } ?: emptyList()
     }
 
-    private fun getGDriveFolders(context: Context, space: Space): List<Folder> {
+    private fun getGDriveFolders(context: Context, backend: Backend): List<Folder> {
         return GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context))
     }
 }

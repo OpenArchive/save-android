@@ -17,8 +17,8 @@ import com.esafirm.imagepicker.features.ImagePickerLauncher
 import com.esafirm.imagepicker.view.GridSpacingItemDecoration
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewBinding
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Project
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
@@ -30,11 +30,11 @@ import net.opendasharchive.openarchive.util.extensions.toggle
 class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Listener {
 
     companion object {
-        private const val PROJECT_ID_EXTRA = "project_id"
+        private const val FOLDER_ID_EXTRA = "folder_id"
 
-        fun start(context: Context, projectId: Long) {
+        fun start(context: Context, folderId: Long) {
             val i = Intent(context, PreviewActivity::class.java)
-            i.putExtra(PROJECT_ID_EXTRA, projectId)
+            i.putExtra(FOLDER_ID_EXTRA, folderId)
 
             context.startActivity(i)
         }
@@ -49,7 +49,7 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
             refresh()
         }
 
-    private var mProject: Project? = null
+    private var mFolder: Folder? = null
 
     private val mAdapter: PreviewAdapter?
         get() = mBinding.mediaGrid.adapter as? PreviewAdapter
@@ -70,9 +70,9 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
         mBinding = ActivityPreviewBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mProject = Project.getById(intent.getLongExtra(PROJECT_ID_EXTRA, -1))
+        mFolder = Folder.getById(intent.getLongExtra(FOLDER_ID_EXTRA, -1))
 
-        val launchers = Picker.register(this, mBinding.root, { mProject }, {
+        val launchers = Picker.register(this, mBinding.root, { mFolder }, {
             refresh()
         })
         mMediaPickerLauncher = launchers.first
@@ -241,7 +241,7 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
             mBinding.btAddMore.hide()
             mBinding.bottomBar.show()
         } else {
-            mBinding.btAddMore.toggle(mProject != null)
+            mBinding.btAddMore.toggle(mFolder != null)
             mBinding.bottomBar.hide()
         }
     }

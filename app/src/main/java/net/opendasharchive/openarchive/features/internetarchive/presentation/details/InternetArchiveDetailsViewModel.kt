@@ -2,17 +2,17 @@ package net.opendasharchive.openarchive.features.internetarchive.presentation.de
 
 import com.google.gson.Gson
 import net.opendasharchive.openarchive.core.presentation.StatefulViewModel
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
 import net.opendasharchive.openarchive.features.internetarchive.presentation.details.InternetArchiveDetailsViewModel.Action
 
 class InternetArchiveDetailsViewModel(
     private val gson: Gson,
-    private val space: Space
+    private val backend: Backend
 ) : StatefulViewModel<InternetArchiveDetailsState, Action>(InternetArchiveDetailsState()) {
 
     init {
-       dispatch(Action.Load(space))
+       dispatch(Action.Load(backend))
     }
 
     override fun reduce(state: InternetArchiveDetailsState, action: Action) = when(action) {
@@ -27,12 +27,12 @@ class InternetArchiveDetailsViewModel(
     override suspend fun effects(state: InternetArchiveDetailsState, action: Action) {
         when (action) {
             is Action.Remove -> {
-                space.delete()
+                backend.delete()
                 notify(action)
             }
 
             is Action.Load -> {
-                val metaData = gson.fromJson(space.metaData, InternetArchive.MetaData::class.java)
+                val metaData = gson.fromJson(backend.metaData, InternetArchive.MetaData::class.java)
                 dispatch(Action.Loaded(metaData))
             }
 
@@ -43,7 +43,7 @@ class InternetArchiveDetailsViewModel(
 
     sealed interface Action {
 
-        data class Load(val value: Space) : Action
+        data class Load(val value: Backend) : Action
 
         data class Loaded(val value: InternetArchive.MetaData) : Action
 

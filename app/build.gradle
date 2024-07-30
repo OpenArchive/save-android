@@ -59,6 +59,7 @@ android {
             minifyEnabled false
         }
         release {
+            applicationIdSuffix ".release"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -70,7 +71,7 @@ android {
     }
 
 //    productFlavors {
-//        releaseflavor {
+//        freeflavor {
 //            dimension "free"
 //            applicationIdSuffix ".release"
 //        }
@@ -185,8 +186,8 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     // Google Drive API
-    implementation 'com.google.android.gms:play-services-auth:21.1.1'
-    implementation 'com.google.http-client:google-http-client-gson:1.42.1'
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+    implementation 'com.google.http-client:google-http-client-gson:1.42.3'
     implementation 'com.google.api-client:google-api-client-android:1.26.0'
     implementation 'com.google.apis:google-api-services-drive:v3-rev136-1.25.0'
 

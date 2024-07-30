@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:contentDescription="Server configuration screen"
+    android:contentDescription="@string/a11y_media_storage"
     tools:context="net.opendasharchive.openarchive.features.settings.SpaceSetupFragment">
 
     <LinearLayout
@@ -26,253 +26,424 @@
             android:text="@string/to_get_started_connect_to_a_server_to_store_your_media"
             android:textSize="20sp" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/webdav"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/icon_webdav"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:importantForAccessibility="no"
-                android:padding="2dp"
-                android:src="@drawable/ic_private_server"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/private_server_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:maxLines="1"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                android:text="@string/private_server"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@id/icon_next_private_server"
-                app:layout_constraintStart_toEndOf="@id/icon_webdav"
-                app:layout_constraintTop_toTopOf="@id/icon_webdav" />
-
-            <TextView
-                android:id="@+id/private_server_sublabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:maxLines="1"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                android:text="Not connected"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/icon_webdav"
-                app:layout_constraintEnd_toStartOf="@id/icon_next_private_server"
-                app:layout_constraintStart_toEndOf="@id/icon_webdav" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/icon_next_private_server"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:insetLeft="0dp"
-                android:insetTop="0dp"
-                android:insetRight="0dp"
-                android:insetBottom="0dp"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:padding="0dp"
-                android:paddingLeft="0dp"
-                android:paddingTop="0dp"
-                android:paddingRight="0dp"
-                android:paddingBottom="0dp"
-                app:icon="@drawable/outline_add_link_24"
-                app:iconPadding="0dp"
-                app:iconSize="40dp"
-                app:iconTint="@color/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="@id/icon_webdav"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icon_webdav" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="12dp"
-                android:background="@color/grey"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/private_server_label" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/internet_archive"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginHorizontal="10dp"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/icon_internet_archive"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:importantForAccessibility="no"
-                android:padding="2dp"
-                android:src="@drawable/ic_internet_archive"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/internet_archive_label"
-                android:gravity="start"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/internet_archive"
-                android:textSize="22sp"
-                android:maxLines="1"
-                android:textStyle="bold"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                app:layout_constraintEnd_toStartOf="@id/icon_next_internet_archive"
-                app:layout_constraintStart_toEndOf="@id/icon_internet_archive"
-                app:layout_constraintTop_toTopOf="@id/icon_internet_archive" />
-
-            <TextView
-                android:id="@+id/internet_archive_sublabel"
-                android:gravity="start"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Not connected"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                app:layout_constraintEnd_toStartOf="@id/icon_next_internet_archive"
-                app:layout_constraintStart_toEndOf="@id/icon_internet_archive"
-                app:layout_constraintBottom_toBottomOf="@id/icon_internet_archive" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/icon_next_internet_archive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:insetLeft="0dp"
-                android:insetTop="0dp"
-                android:insetRight="0dp"
-                android:insetBottom="0dp"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:padding="0dp"
-                android:paddingLeft="0dp"
-                android:paddingTop="0dp"
-                android:paddingRight="0dp"
-                android:paddingBottom="0dp"
-                app:icon="@drawable/outline_add_link_24"
-                app:iconPadding="0dp"
-                app:iconSize="40dp"
-                app:iconTint="@color/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="@id/icon_internet_archive"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icon_internet_archive" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="12dp"
-                android:background="@color/grey"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/internet_archive_label" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/gdrive"
-            android:layout_marginHorizontal="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/icon_gdrive"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:importantForAccessibility="no"
-                android:padding="2dp"
-                android:src="@drawable/logo_drive_2020q4_color_2x_web_64dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/gdrive_label"
-                android:gravity="start"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/gdrive_tm"
-                android:textSize="22sp"
-                android:maxLines="1"
-                android:textStyle="bold"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                app:layout_constraintEnd_toStartOf="@id/icon_next_gdrive"
-                app:layout_constraintStart_toEndOf="@id/icon_gdrive"
-                app:layout_constraintTop_toTopOf="@id/icon_gdrive"  />
-
-            <TextView
-                android:id="@+id/gdrive_sublabel"
-                android:gravity="start"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Connected"
-                android:textSize="16sp"
-                android:maxLines="1"
-                android:paddingStart="12dp"
-                android:paddingEnd="8dp"
-                app:layout_constraintEnd_toStartOf="@id/icon_next_gdrive"
-                app:layout_constraintStart_toEndOf="@id/icon_gdrive"
-                app:layout_constraintBottom_toBottomOf="@id/icon_gdrive" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/icon_next_gdrive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:insetLeft="0dp"
-                android:insetTop="0dp"
-                android:insetRight="0dp"
-                android:insetBottom="0dp"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:padding="0dp"
-                android:paddingLeft="0dp"
-                android:paddingTop="0dp"
-                android:paddingRight="0dp"
-                android:paddingBottom="0dp"
-                app:elevation="0dp"
-                app:icon="@drawable/outline_link_off_24"
-                app:iconPadding="0dp"
-                app:iconSize="40dp"
-                app:iconTint="@color/colorPrimary"
-                app:layout_constraintBottom_toBottomOf="@id/icon_gdrive"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icon_gdrive" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <Button
-            android:id="@+id/skip_for_now_button"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/backend_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="20dp"
-            android:background="@android:color/transparent"
-            android:text="Skip for now" />
+            android:background="#E90D0D" />
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/webdav"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_marginHorizontal="10dp"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/icon_webdav"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:importantForAccessibility="no"-->
+<!--                android:padding="2dp"-->
+<!--                android:src="@drawable/ic_private_server"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/private_server_label"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="start"-->
+<!--                android:maxLines="1"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                android:text="@string/private_server"-->
+<!--                android:textSize="22sp"-->
+<!--                android:textStyle="bold"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_private_server"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_webdav"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_webdav" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/private_server_sublabel"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="start"-->
+<!--                android:maxLines="1"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                android:text="Not connected"-->
+<!--                android:textSize="16sp"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_webdav"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_private_server"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_webdav" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/icon_next_private_server"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:insetLeft="0dp"-->
+<!--                android:insetTop="0dp"-->
+<!--                android:insetRight="0dp"-->
+<!--                android:insetBottom="0dp"-->
+<!--                android:minWidth="0dp"-->
+<!--                android:minHeight="0dp"-->
+<!--                android:padding="0dp"-->
+<!--                android:paddingLeft="0dp"-->
+<!--                android:paddingTop="0dp"-->
+<!--                android:paddingRight="0dp"-->
+<!--                android:paddingBottom="0dp"-->
+<!--                app:icon="@drawable/outline_add_link_24"-->
+<!--                app:iconPadding="0dp"-->
+<!--                app:iconSize="40dp"-->
+<!--                app:iconTint="@color/colorPrimary"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_webdav"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_webdav" />-->
+
+<!--            <View-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0.5dp"-->
+<!--                android:layout_marginStart="12dp"-->
+<!--                android:background="@color/grey"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="@id/private_server_label" />-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/internet_archive"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_marginHorizontal="10dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/icon_internet_archive"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:importantForAccessibility="no"-->
+<!--                android:padding="2dp"-->
+<!--                android:src="@drawable/ic_internet_archive"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/internet_archive_label"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/internet_archive"-->
+<!--                android:textSize="22sp"-->
+<!--                android:maxLines="1"-->
+<!--                android:textStyle="bold"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_internet_archive"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_internet_archive"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_internet_archive" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/internet_archive_sublabel"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Not connected"-->
+<!--                android:textSize="16sp"-->
+<!--                android:maxLines="1"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_internet_archive"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_internet_archive"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_internet_archive" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/icon_next_internet_archive"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:insetLeft="0dp"-->
+<!--                android:insetTop="0dp"-->
+<!--                android:insetRight="0dp"-->
+<!--                android:insetBottom="0dp"-->
+<!--                android:minWidth="0dp"-->
+<!--                android:minHeight="0dp"-->
+<!--                android:padding="0dp"-->
+<!--                android:paddingLeft="0dp"-->
+<!--                android:paddingTop="0dp"-->
+<!--                android:paddingRight="0dp"-->
+<!--                android:paddingBottom="0dp"-->
+<!--                app:icon="@drawable/outline_add_link_24"-->
+<!--                app:iconPadding="0dp"-->
+<!--                app:iconSize="40dp"-->
+<!--                app:iconTint="@color/colorPrimary"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_internet_archive"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_internet_archive" />-->
+
+<!--            <View-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0.5dp"-->
+<!--                android:layout_marginStart="12dp"-->
+<!--                android:background="@color/grey"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="@id/internet_archive_label" />-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/gdrive_row"-->
+<!--            android:layout_marginHorizontal="10dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/icon_gdrive"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:importantForAccessibility="no"-->
+<!--                android:padding="2dp"-->
+<!--                android:src="@drawable/logo_drive_2020q4_color_2x_web_64dp"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/gdrive_label"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/gdrive_tm"-->
+<!--                android:textSize="22sp"-->
+<!--                android:maxLines="1"-->
+<!--                android:textStyle="bold"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_gdrive"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_gdrive"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_gdrive"  />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/gdrive_sublabel"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Connected"-->
+<!--                android:textSize="16sp"-->
+<!--                android:maxLines="1"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_gdrive"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_gdrive"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_gdrive" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/icon_next_gdrive"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:insetLeft="0dp"-->
+<!--                android:insetTop="0dp"-->
+<!--                android:insetRight="0dp"-->
+<!--                android:insetBottom="0dp"-->
+<!--                android:minWidth="0dp"-->
+<!--                android:minHeight="0dp"-->
+<!--                android:padding="0dp"-->
+<!--                android:paddingLeft="0dp"-->
+<!--                android:paddingTop="0dp"-->
+<!--                android:paddingRight="0dp"-->
+<!--                android:paddingBottom="0dp"-->
+<!--                app:elevation="0dp"-->
+<!--                app:icon="@drawable/outline_link_off_24"-->
+<!--                app:iconPadding="0dp"-->
+<!--                app:iconSize="40dp"-->
+<!--                app:iconTint="@color/colorPrimary"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_gdrive"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_gdrive" />-->
+
+<!--            <View-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0.5dp"-->
+<!--                android:layout_marginStart="12dp"-->
+<!--                android:background="@color/grey"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="@id/gdrive_label" />-->
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/veilid_row"-->
+<!--            android:layout_marginHorizontal="10dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/icon_veilid"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:importantForAccessibility="no"-->
+<!--                android:padding="2dp"-->
+<!--                android:src="@drawable/ic_veilid"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/veilid_label"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/veilid"-->
+<!--                android:textSize="22sp"-->
+<!--                android:maxLines="1"-->
+<!--                android:textStyle="bold"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_veilid"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_veilid"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_veilid"  />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/veilid_sublabel"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Not connected"-->
+<!--                android:textSize="16sp"-->
+<!--                android:maxLines="1"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_veilid"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_veilid"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_veilid" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/icon_next_veilid"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:insetLeft="0dp"-->
+<!--                android:insetTop="0dp"-->
+<!--                android:insetRight="0dp"-->
+<!--                android:insetBottom="0dp"-->
+<!--                android:minWidth="0dp"-->
+<!--                android:minHeight="0dp"-->
+<!--                android:padding="0dp"-->
+<!--                android:paddingLeft="0dp"-->
+<!--                android:paddingTop="0dp"-->
+<!--                android:paddingRight="0dp"-->
+<!--                android:paddingBottom="0dp"-->
+<!--                app:elevation="0dp"-->
+<!--                app:icon="@drawable/outline_add_link_24"-->
+<!--                app:iconPadding="0dp"-->
+<!--                app:iconSize="40dp"-->
+<!--                app:iconTint="@color/colorPrimary"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_veilid"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_veilid" />-->
+
+<!--            <View-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0.5dp"-->
+<!--                android:layout_marginStart="12dp"-->
+<!--                android:background="@color/grey"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="@id/veilid_label" />-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/filecoin_row"-->
+<!--            android:layout_marginHorizontal="10dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/icon_filecoin"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:importantForAccessibility="no"-->
+<!--                android:padding="2dp"-->
+<!--                android:src="@drawable/ic_filecoin"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/filecoin_label"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@string/filecoin"-->
+<!--                android:textSize="22sp"-->
+<!--                android:maxLines="1"-->
+<!--                android:textStyle="bold"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_filecoin"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_filecoin"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_filecoin"  />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/filecoin_sublabel"-->
+<!--                android:gravity="start"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Not connected"-->
+<!--                android:textSize="16sp"-->
+<!--                android:maxLines="1"-->
+<!--                android:paddingStart="12dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/icon_next_filecoin"-->
+<!--                app:layout_constraintStart_toEndOf="@id/icon_filecoin"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_filecoin" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/icon_next_filecoin"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:insetLeft="0dp"-->
+<!--                android:insetTop="0dp"-->
+<!--                android:insetRight="0dp"-->
+<!--                android:insetBottom="0dp"-->
+<!--                android:minWidth="0dp"-->
+<!--                android:minHeight="0dp"-->
+<!--                android:padding="0dp"-->
+<!--                android:paddingLeft="0dp"-->
+<!--                android:paddingTop="0dp"-->
+<!--                android:paddingRight="0dp"-->
+<!--                android:paddingBottom="0dp"-->
+<!--                app:elevation="0dp"-->
+<!--                app:icon="@drawable/outline_add_link_24"-->
+<!--                app:iconPadding="0dp"-->
+<!--                app:iconSize="40dp"-->
+<!--                app:iconTint="@color/colorPrimary"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/icon_filecoin"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@id/icon_filecoin" />-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        <Button-->
+<!--            android:id="@+id/skip_for_now_button"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:text="Skip for now" />-->
 
 
     </LinearLayout>

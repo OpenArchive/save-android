@@ -5,7 +5,7 @@ import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEditFolderBinding
-import net.opendasharchive.openarchive.db.Project
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.Position
@@ -14,19 +14,19 @@ import net.opendasharchive.openarchive.util.extensions.setDrawable
 class EditFolderActivity : BaseActivity() {
 
     companion object {
-        const val EXTRA_CURRENT_PROJECT_ID = "archive_extra_current_project_id"
+        const val EXTRA_CURRENT_FOLDER_ID = "archive_extra_current_folder_id"
     }
 
-    private lateinit var mProject: Project
+    private lateinit var mFolder: Folder
     private lateinit var mBinding: ActivityEditFolderBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val project = Project.getById(intent.getLongExtra(EXTRA_CURRENT_PROJECT_ID, -1L))
+        val folder = Folder.getById(intent.getLongExtra(EXTRA_CURRENT_FOLDER_ID, -1L))
             ?: return finish()
 
-        mProject = project
+        mFolder = folder
 
         mBinding = ActivityEditFolderBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
@@ -39,8 +39,8 @@ class EditFolderActivity : BaseActivity() {
                 val newName = mBinding.folderName.text.toString()
 
                 if (newName.isNotBlank()) {
-                    mProject.description = newName
-                    mProject.save()
+                    mFolder.description = newName
+                    mFolder.save()
 
                     supportActionBar?.title = newName
                     mBinding.folderName.hint = newName
@@ -60,8 +60,8 @@ class EditFolderActivity : BaseActivity() {
         }
 
         CcSelector.init(mBinding.cc, null) {
-            mProject.licenseUrl = it
-            mProject.save()
+            mFolder.licenseUrl = it
+            mFolder.save()
         }
 
         updateUi()
@@ -70,7 +70,7 @@ class EditFolderActivity : BaseActivity() {
     private fun removeProject() {
         AlertHelper.show(this, R.string.action_remove_project, R.string.remove_from_app, buttons = listOf(
             AlertHelper.positiveButton(R.string.remove) { _, _ ->
-                mProject.delete()
+                mFolder.delete()
 
                 finish()
             },
@@ -78,30 +78,30 @@ class EditFolderActivity : BaseActivity() {
     }
 
     private fun archiveProject() {
-        mProject.isArchived = !mProject.isArchived
-        mProject.save()
+        mFolder.isArchived = !mFolder.isArchived
+        mFolder.save()
 
         updateUi()
     }
 
     private fun updateUi() {
-        supportActionBar?.title = mProject.description
+        supportActionBar?.title = mFolder.description
 
-        mBinding.folderName.isEnabled = !mProject.isArchived
-        mBinding.folderName.hint = mProject.description
-        mBinding.folderName.setText(mProject.description)
+        mBinding.folderName.isEnabled = !mFolder.isArchived
+        mBinding.folderName.hint = mFolder.description
+        mBinding.folderName.setText(mFolder.description)
 
-        mBinding.btArchive.setText(if (mProject.isArchived)
+        mBinding.btArchive.setText(if (mFolder.isArchived)
             R.string.action_unarchive_project else
             R.string.action_archive_project)
 
-        val global = mProject.space?.license != null
+        val global = mFolder.backend?.license != null
 
         if (global) {
             mBinding.cc.tvCc.setText(R.string.set_the_same_creative_commons_license_for_all_folders_on_this_server)
         }
 
-        CcSelector.set(mBinding.cc, mProject.licenseUrl, !mProject.isArchived && !global)
+        CcSelector.set(mBinding.cc, mFolder.licenseUrl, !mFolder.isArchived && !global)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

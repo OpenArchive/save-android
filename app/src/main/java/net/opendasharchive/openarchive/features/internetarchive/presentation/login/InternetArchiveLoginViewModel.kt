@@ -1,7 +1,7 @@
 package net.opendasharchive.openarchive.features.internetarchive.presentation.login
 
 import net.opendasharchive.openarchive.core.presentation.StatefulViewModel
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.internetarchive.domain.usecase.InternetArchiveLoginUseCase
 import net.opendasharchive.openarchive.features.internetarchive.domain.usecase.ValidateLoginCredentialsUseCase
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.Cancel
@@ -20,11 +20,11 @@ import net.opendasharchive.openarchive.features.internetarchive.presentation.log
 
 class InternetArchiveLoginViewModel(
     private val validateLoginCredentials: ValidateLoginCredentialsUseCase,
-    private val space: Space,
+    private val backend: Backend,
 ) : StatefulViewModel<State, Action>(State()), KoinComponent {
 
     private val loginUseCase: InternetArchiveLoginUseCase by inject {
-        parametersOf(space)
+        parametersOf(backend)
     }
 
     override fun reduce(

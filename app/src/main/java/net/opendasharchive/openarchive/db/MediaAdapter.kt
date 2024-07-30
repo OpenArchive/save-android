@@ -90,7 +90,7 @@ class MediaAdapter(
     private fun handleLocalItemAt(index: Int) {
         if (supportedStatuses.contains(Media.Status.Local)) {
             mActivity.get()?.let {
-                PreviewActivity.start(it, media[index].projectId)
+                PreviewActivity.start(it, media[index].folderId)
             }
         }
     }

@@ -48,15 +48,17 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_authenticate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/activity_row_padding"
             android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:background="@color/colorPrimary"
+            android:padding="@dimen/activity_row_padding"
             android:text="@string/action_continue"
+            android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:ignore="ButtonStyle" />
+            tools:layout_editor_absoluteX="32dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

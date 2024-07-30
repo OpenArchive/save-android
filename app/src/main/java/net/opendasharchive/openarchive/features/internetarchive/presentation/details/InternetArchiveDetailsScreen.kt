@@ -29,7 +29,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeColors
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeDimensions
 import net.opendasharchive.openarchive.core.state.Dispatch
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.InternetArchiveHeader
 import net.opendasharchive.openarchive.features.internetarchive.presentation.details.InternetArchiveDetailsViewModel.Action
@@ -37,9 +37,9 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun InternetArchiveDetailsScreen(space: Space, onResult: (IAResult) -> Unit) {
+fun InternetArchiveDetailsScreen(backend: Backend, onResult: (IAResult) -> Unit) {
     val viewModel: InternetArchiveDetailsViewModel = koinViewModel {
-        parametersOf(space)
+        parametersOf(backend)
     }
 
     val state by viewModel.state.collectAsState()

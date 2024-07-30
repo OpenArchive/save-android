@@ -7,10 +7,11 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBrowseFoldersBinding
-import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.extensions.toggle
+import timber.log.Timber
 import java.util.Date
 
 
@@ -36,11 +37,15 @@ class BrowseFoldersActivity : BaseActivity() {
 
         mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
 
-        val space = Space.current
-        if (space != null) mViewModel.getFiles(this, space)
+        val backend = Backend.current
+        if (backend != null) mViewModel.getFiles(this, backend)
+
+        mViewModel.folders.value?.forEach { it ->
+            Timber.d("Folder: $it.name")
+        }
 
         mViewModel.folders.observe(this) {
-            mBinding.projectsEmpty.toggle(it.isEmpty())
+            mBinding.foldersEmpty.toggle(it.isEmpty())
 
             mBinding.rvFolderList.adapter = BrowseFoldersAdapter(it) { name ->
                 mSelected = name
@@ -62,12 +67,10 @@ class BrowseFoldersActivity : BaseActivity() {
         when (item.itemId) {
             android.R.id.home -> {
                 finish()
-
                 return true
             }
             R.id.action_add -> {
                 addFolder(mSelected)
-
                 return true
             }
         }
@@ -77,12 +80,12 @@ class BrowseFoldersActivity : BaseActivity() {
 
     private fun addFolder(folder: BrowseFoldersViewModel.Folder?) {
         if (folder == null) return
-        val space = Space.current ?: return
+        val backend = Backend.current ?: return
 
         // This should not happen. These should have been filtered on display.
-        if (space.hasProject(folder.name)) return
+        if (backend.hasProject(folder.name)) return
 
-        val license = space.license
+        val license = backend.license
 
 //        if (license.isNullOrBlank()) {
 //            val i = Intent()
@@ -91,11 +94,11 @@ class BrowseFoldersActivity : BaseActivity() {
 //            setResult(RESULT_CANCELED, i)
 //        }
 //        else {
-            val project = Project(folder.name, Date(), space.id, licenseUrl = license)
-            project.save()
+            val folder = Folder(folder.name, Date(), backend.id, licenseUrl = license)
+        folder.save()
 
             val i = Intent()
-            i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, project.id)
+            i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, folder.id)
 
             setResult(RESULT_OK, i)
 //        }

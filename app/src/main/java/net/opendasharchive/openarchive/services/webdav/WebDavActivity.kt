@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.commit
 import net.opendasharchive.openarchive.databinding.ActivityWebdavBinding
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.main.MainActivity
 import kotlin.properties.Delegates
@@ -13,7 +13,7 @@ import kotlin.properties.Delegates
 class WebDavActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivityWebdavBinding
-    private var mSpaceId by Delegates.notNull<Long>()
+    private var mBackendId by Delegates.notNull<Long>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,11 +24,11 @@ class WebDavActivity : BaseActivity() {
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        mSpaceId = intent.getLongExtra(EXTRA_DATA_SPACE, WebDavFragment.ARG_VAL_NEW_SPACE)
+        mBackendId = intent.getLongExtra(EXTRA_DATA_SPACE, WebDavFragment.ARG_VAL_NEW_SPACE)
 
-        if (mSpaceId != WebDavFragment.ARG_VAL_NEW_SPACE) {
+        if (mBackendId != WebDavFragment.ARG_VAL_NEW_SPACE) {
             supportFragmentManager.commit {
-                replace(mBinding.webDavFragment.id, WebDavFragment.newInstance(mSpaceId))
+                replace(mBinding.webDavFragment.id, WebDavFragment.newInstance(mBackendId))
             }
         }
 
@@ -37,7 +37,7 @@ class WebDavActivity : BaseActivity() {
             startActivity(Intent(this, MainActivity::class.java))
         }
         supportFragmentManager.setFragmentResultListener(WebDavFragment.RESP_DELETED, this) { _, _ ->
-            Space.navigate(this)
+            Backend.navigate(this)
         }
     }
 

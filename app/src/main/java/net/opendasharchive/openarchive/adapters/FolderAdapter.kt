@@ -10,26 +10,24 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.RvSimpleRowBinding
-import net.opendasharchive.openarchive.db.Project
+import net.opendasharchive.openarchive.db.Folder
 import java.lang.ref.WeakReference
 
 interface FolderAdapterListener {
 
-    fun projectClicked(project: Project)
+    fun folderClicked(folder: Folder)
 
-    fun getSelectedProject(): Project?
+    fun getSelectedProject(): Folder?
 }
 
-class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, FolderAdapter.ViewHolder>(
-    DIFF_CALLBACK
-), FolderAdapterListener {
+class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, FolderAdapter.ViewHolder>(DIFF_CALLBACK), FolderAdapterListener {
 
     class ViewHolder(private val binding: RvSimpleRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(listener: WeakReference<FolderAdapterListener>?, project: Project?) {
-            binding.rvTitle.text = project?.description
+        fun bind(listener: WeakReference<FolderAdapterListener>?, folder: Folder?) {
+            binding.rvTitle.text = folder?.description
 
-            if (listener?.get()?.getSelectedProject()?.id == project?.id) {
+            if (listener?.get()?.getSelectedProject()?.id == folder?.id) {
                 val icon = ContextCompat.getDrawable(binding.rvIcon.context,
                     R.drawable.outline_folder_24
                 )
@@ -49,12 +47,12 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
 
             binding.rvTitle.setTextColor(
                 getColor(binding.rvTitle.context,
-                listener?.get()?.getSelectedProject()?.id == project?.id)
+                listener?.get()?.getSelectedProject()?.id == folder?.id)
             )
 
-            if (project != null) {
+            if (folder != null) {
                 binding.root.setOnClickListener {
-                    listener?.get()?.projectClicked(project)
+                    listener?.get()?.folderClicked(folder)
                 }
             }
             else {
@@ -64,12 +62,12 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Project>() {
-            override fun areItemsTheSame(oldItem: Project, newItem: Project): Boolean {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Folder>() {
+            override fun areItemsTheSame(oldItem: Folder, newItem: Folder): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: Project, newItem: Project): Boolean {
+            override fun areContentsTheSame(oldItem: Folder, newItem: Folder): Boolean {
                 return oldItem.description == newItem.description
             }
         }
@@ -103,7 +101,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
 
     private val mListener: WeakReference<FolderAdapterListener> = WeakReference(listener)
 
-    private var mLastSelected: Project? = null
+    private var mLastSelected: Folder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(RvSimpleRowBinding.inflate(LayoutInflater.from(parent.context),
@@ -111,36 +109,36 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Project, Fol
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val project = getItem(position)
+        val folder = getItem(position)
 
-        holder.bind(WeakReference(this), project)
+        holder.bind(WeakReference(this), folder)
     }
 
-    fun update(projects: List<Project>) {
+    fun update(folders: List<Folder>) {
         notifyItemChanged(getIndex(mLastSelected))
 
-        submitList(projects)
+        submitList(folders)
     }
 
-    override fun projectClicked(project: Project) {
+    override fun folderClicked(folder: Folder) {
         notifyItemChanged(getIndex(getSelectedProject()))
-        notifyItemChanged(getIndex(project))
+        notifyItemChanged(getIndex(folder))
 
-        mListener?.get()?.projectClicked(project)
+        mListener.get()?.folderClicked(folder)
     }
 
-    override fun getSelectedProject(): Project? {
-        mLastSelected = mListener?.get()?.getSelectedProject()
+    override fun getSelectedProject(): Folder? {
+        mLastSelected = mListener.get()?.getSelectedProject()
 
         return mLastSelected
     }
 
-    private fun getIndex(project: Project?): Int {
-        return if (project == null) {
+    private fun getIndex(folder: Folder?): Int {
+        return if (folder == null) {
             -1
         }
         else {
-            currentList.indexOf(project)
+            currentList.indexOf(folder)
         }
     }
 }

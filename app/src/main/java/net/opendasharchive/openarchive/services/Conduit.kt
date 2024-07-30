@@ -8,7 +8,7 @@ import com.google.common.net.UrlEscapers
 import com.google.gson.GsonBuilder
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
@@ -133,11 +133,11 @@ abstract class Conduit(
         mMedia.tagSet = tags
 
         // Update to the latest project license.
-        mMedia.licenseUrl = mMedia.project?.licenseUrl
+        mMedia.licenseUrl = mMedia.folder?.licenseUrl
     }
 
     protected fun getPath(): List<String>? {
-        val projectName = mMedia.project?.description ?: return null
+        val projectName = mMedia.folder?.description ?: return null
         val collectionName =
             mDateFormat.format(mMedia.collection?.uploadDate ?: mMedia.createDate ?: Date())
 
@@ -227,12 +227,12 @@ abstract class Conduit(
         const val CHUNK_FILESIZE_THRESHOLD = 10 * 1024 * 1024
 
         fun get(media: Media, context: Context): Conduit? {
-            return when (media.project?.space?.tType) {
-                Space.Type.INTERNET_ARCHIVE -> IaConduit(media, context)
+            return when (media.folder?.backend?.tType) {
+                Backend.Type.INTERNET_ARCHIVE -> IaConduit(media, context)
 
-                Space.Type.WEBDAV -> WebDavConduit(media, context)
+                Backend.Type.WEBDAV -> WebDavConduit(media, context)
 
-                Space.Type.GDRIVE -> GDriveConduit(media, context)
+                Backend.Type.GDRIVE -> GDriveConduit(media, context)
 
                 else -> null
             }

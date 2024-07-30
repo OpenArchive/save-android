@@ -186,7 +186,7 @@ class UploadService : JobService() {
                 media.statusMessage = ""
             }
 
-            media.licenseUrl = media.project?.licenseUrl
+            media.licenseUrl = media.folder?.licenseUrl
 
             val collection = media.collection
 

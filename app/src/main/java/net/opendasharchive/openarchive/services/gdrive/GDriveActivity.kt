@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityGdriveBinding
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 
 class GDriveActivity : BaseActivity() {
@@ -14,27 +14,27 @@ class GDriveActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var space: Space? = null
+        var backend: Backend? = null
 
         if (intent.hasExtra(EXTRA_DATA_SPACE)) {
-            space = Space.get(intent.getLongExtra(EXTRA_DATA_SPACE, -1L))
+            backend = Backend.get(intent.getLongExtra(EXTRA_DATA_SPACE, -1L))
         }
 
         mBinding = ActivityGdriveBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
         mBinding.btRemove.setOnClickListener {
-            if (space != null) removeSpace(space)
+            if (backend != null) removeSpace(backend)
         }
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.title = getString(R.string.gdrive)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        mBinding.gdriveId.setText(space?.displayname ?: "")
+        mBinding.gdriveId.setText(backend?.displayname ?: "")
     }
 
-    private fun removeSpace(space: Space) {
+    private fun removeSpace(backend: Backend) {
 //        AlertHelper.show(this, R.string.are_you_sure_you_want_to_remove_this_server_from_the_app, R.string.remove_from_app, buttons = listOf(
 //            AlertHelper.positiveButton(R.string.remove) { _, _ ->
 //                // delete sign-in from database

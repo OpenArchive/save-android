@@ -48,7 +48,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeColors
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeDimensions
 import net.opendasharchive.openarchive.core.state.Dispatch
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.InternetArchiveHeader
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.CreateLogin
@@ -60,9 +60,9 @@ import org.koin.core.parameter.parametersOf
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction as Action
 
 @Composable
-fun InternetArchiveLoginScreen(space: Space, onResult: (IAResult) -> Unit) {
+fun InternetArchiveLoginScreen(backend: Backend, onResult: (IAResult) -> Unit) {
     val viewModel: InternetArchiveLoginViewModel = koinViewModel {
-        parametersOf(space)
+        parametersOf(backend)
     }
 
     val state by viewModel.state.collectAsState()

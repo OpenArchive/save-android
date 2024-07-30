@@ -13,6 +13,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
+import net.opendasharchive.openarchive.services.webdav.WebDavConduit
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.tint
 import okhttp3.HttpUrl
@@ -20,7 +21,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
 
 
-data class Space(
+data class Backend(
     var type: Long = 0,
     var name: String = "",
     var username: String = "",
@@ -28,15 +29,16 @@ data class Space(
     var password: String = "",
     var host: String = "",
     var metaData: String = "",
-    private var licenseUrl: String? = null,
-    // private var chunking: Boolean? = null
+    private var licenseUrl: String? = null
 ) : SugarRecord() {
 
     constructor(type: Type) : this() {
         tType = type
 
         when (type) {
-            Type.WEBDAV -> {}
+            Type.WEBDAV -> {
+                name = WebDavConduit.NAME
+            }
             Type.INTERNET_ARCHIVE -> {
                 name = IaConduit.NAME
                 host = IaConduit.ARCHIVE_API_ENDPOINT
@@ -44,13 +46,21 @@ data class Space(
             Type.GDRIVE -> {
                 name = GDriveConduit.NAME
             }
+            Type.VEILID -> {
+                name = "Veilid"
+            }
+            Type.FILECOIN -> {
+                name = "Filecoin"
+            }
         }
     }
 
     enum class Type(val id: Long, val friendlyName: String) {
-        WEBDAV(0, "WebDAV"),
+        WEBDAV(0, WebDavConduit.NAME),
         INTERNET_ARCHIVE(1, IaConduit.NAME),
         GDRIVE(4, GDriveConduit.NAME),
+        VEILID(5, "Veilid"),
+        FILECOIN(6, "Filecoin")
     }
 
     enum class IconStyle {
@@ -58,11 +68,11 @@ data class Space(
     }
 
     companion object {
-        fun getAll(): Iterator<Space> {
-            return findAll(Space::class.java)
+        fun getAll(): Iterator<Backend> {
+            return findAll(Backend::class.java)
         }
 
-        fun get(type: Type, host: String? = null, username: String? = null): List<Space> {
+        fun get(type: Type, host: String? = null, username: String? = null): List<Backend> {
             var whereClause = "type = ?"
             val whereArgs = mutableListOf(type.id.toString())
 
@@ -76,22 +86,23 @@ data class Space(
                 whereArgs.add(username)
             }
 
-            return find(Space::class.java, whereClause, whereArgs.toTypedArray(),
-                null, null, null)
+            val spaces = find(Backend::class.java, whereClause, whereArgs.toTypedArray(), null, null, null)
+
+            return spaces
         }
 
         fun has(type: Type, host: String? = null, username: String? = null): Boolean {
             return get(type, host, username).isNotEmpty()
         }
 
-        var current: Space?
-            get() = get(Prefs.currentSpaceId) ?: first(Space::class.java)
+        var current: Backend?
+            get() = get(Prefs.currentBackendId) ?: first(Backend::class.java)
             set(value) {
-                Prefs.currentSpaceId = value?.id ?: -1
+                Prefs.currentBackendId = value?.id ?: -1
             }
 
-        fun get(id: Long): Space? {
-            return findById(Space::class.java, id)
+        fun get(id: Long): Backend? {
+            return findById(Backend::class.java, id)
         }
 
         fun navigate(activity: AppCompatActivity) {
@@ -131,28 +142,21 @@ data class Space(
         set(value) {
             licenseUrl = value
 
-            for (project in projects) {
-                project.licenseUrl = licenseUrl
-                project.save()
+            for (folder in folders) {
+                folder.licenseUrl = licenseUrl
+                folder.save()
             }
         }
 
-//    var useChunking: Boolean
-//        // Fallback to old preferences setting.
-//        get() = chunking ?: Prefs.useNextcloudChunking
-//        set(value) {
-//            chunking = value
-//        }
+    val folders: List<Folder>
+        get() = find(Folder::class.java, "space_id = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
 
-    val projects: List<Project>
-        get() = find(Project::class.java, "space_id = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
-
-    val archivedProjects: List<Project>
-        get() = find(Project::class.java, "space_id = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
+    val archivedFolders: List<Folder>
+        get() = find(Folder::class.java, "space_id = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
 
     fun hasProject(description: String): Boolean {
         // Cannot use `count` from Kotlin due to strange <T> in method signature.
-        return find(Project::class.java, "space_id = ? AND description = ?", id.toString(), description).size > 0
+        return find(Folder::class.java, "space_id = ? AND description = ?", id.toString(), description).size > 0
     }
 
     fun getAvatar(context: Context, style: IconStyle = IconStyle.SOLID): Drawable? {
@@ -164,6 +168,10 @@ data class Space(
             Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ic_internet_archive)?.tint(color)
 
             Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.logo_gdrive_outline)?.tint(color)
+
+            Type.VEILID -> ContextCompat.getDrawable(context, R.drawable.ic_veilid)
+
+            Type.FILECOIN -> ContextCompat.getDrawable(context, R.drawable.ic_filecoin)
 
             else -> TextDrawable.builder().buildRound(initial, color)
         }
@@ -193,7 +201,7 @@ data class Space(
     }
 
     override fun delete(): Boolean {
-        projects.forEach {
+        folders.forEach {
             it.delete()
         }
 

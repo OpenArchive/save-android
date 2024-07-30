@@ -3,10 +3,10 @@ package net.opendasharchive.openarchive.db
 import com.orm.SugarRecord
 import java.util.Date
 
-data class Project(
+data class Folder(
     var description: String? = null,
     var created: Date? = null,
-    var spaceId: Long? = null,
+    var backendId: Long? = null,
     private var archived: Boolean = false,
     private var openCollectionId: Long = -1,
     var licenseUrl: String? = null
@@ -14,11 +14,11 @@ data class Project(
 
     companion object {
 
-        fun getById(projectId: Long?): Project? {
+        fun getById(folderId: Long?): Folder? {
             @Suppress("NAME_SHADOWING")
-            val projectId = projectId ?: return null
+            val folderId = folderId ?: return null
 
-            return findById(Project::class.java, projectId)
+            return findById(Folder::class.java, folderId)
         }
     }
 
@@ -30,7 +30,7 @@ data class Project(
             // When the space has a license, that needs to be applied when de-archived.
             // Otherwise the wrong license setting might get transmitted to the server.
             if (!archived) {
-                val sl = space?.license
+                val sl = backend?.license
 
                 if (!sl.isNullOrBlank()) licenseUrl = sl
             }
@@ -40,14 +40,14 @@ data class Project(
         get() = collections.any { it.isUploading }
 
     val collections: List<Collection>
-        get() = find(Collection::class.java, "project_id = ?", id.toString())
+        get() = find(Collection::class.java, "folder_id = ?", id.toString())
 
     val openCollection: Collection
         get() {
             var collection = findById(Collection::class.java, openCollectionId)
 
             if (collection == null || collection.uploadDate != null) {
-                collection = Collection(projectId = id)
+                collection = Collection(folderId = id)
                 collection.save()
 
                 openCollectionId = collection.id
@@ -65,7 +65,7 @@ data class Project(
         return super.delete()
     }
 
-    val space: Space?
-        get() = findById(Space::class.java, spaceId)
+    val backend: Backend?
+        get() = findById(Backend::class.java, backendId)
 
 }

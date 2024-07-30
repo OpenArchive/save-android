@@ -30,7 +30,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Project
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.makeSnackBar
 import org.witness.proofmode.crypto.HashUtils
@@ -39,14 +39,14 @@ import java.util.Date
 
 object Picker {
 
-    fun register(activity: ComponentActivity, root: View, project: () -> Project?, completed: (List<Media>) -> Unit): Pair<ImagePickerLauncher, ActivityResultLauncher<Intent>> {
+    fun register(activity: ComponentActivity, root: View, folder: () -> Folder?, completed: (List<Media>) -> Unit): Pair<ImagePickerLauncher, ActivityResultLauncher<Intent>> {
         val mpl = activity.registerImagePicker { result ->
             val bar = root.makeSnackBar(activity.getString(R.string.importing_media))
             (bar.view as? Snackbar.SnackbarLayout)?.addView(ProgressBar(activity))
             bar.show()
 
             CoroutineScope(Dispatchers.IO).launch {
-                val media = import(activity, project(), result.map { it.uri })
+                val media = import(activity, folder(), result.map { it.uri })
 
                 MainScope().launch {
                     bar.dismiss()
@@ -66,7 +66,7 @@ object Picker {
             bar.show()
 
             CoroutineScope(Dispatchers.IO).launch {
-                val files = import(activity, project(), listOf(uri))
+                val files = import(activity, folder(), listOf(uri))
 
                 MainScope().launch {
                     bar.dismiss()
@@ -136,20 +136,20 @@ object Picker {
         return true
     }
 
-    private fun import(context: Context, project: Project?, uris: List<Uri>): ArrayList<Media> {
+    private fun import(context: Context, folder: Folder?, uris: List<Uri>): ArrayList<Media> {
         val result = ArrayList<Media>()
 
         for (uri in uris) {
-            val media = import(context, project, uri)
+            val media = import(context, folder, uri)
             if (media != null) result.add(media)
         }
 
         return result
     }
 
-    fun import(context: Context, project: Project?, uri: Uri): Media? {
+    fun import(context: Context, folder: Folder?, uri: Uri): Media? {
         @Suppress("NAME_SHADOWING")
-        val project = project ?: return null
+        val folder = folder ?: return null
 
         val title = Utility.getUriDisplayName(context, uri) ?: ""
         val file = Utility.getOutputMediaFileByCache(context, title)
@@ -161,7 +161,7 @@ object Picker {
         // create media
         val media = Media()
 
-        val coll = project.openCollection
+        val coll = folder.openCollection
 
         media.collectionId = coll.id
 
@@ -183,7 +183,7 @@ object Picker {
         media.status = Media.Status.Local
         media.mediaHashString =
             HashUtils.getSHA256FromFileContent(context.contentResolver.openInputStream(uri))
-        media.projectId = project.id
+        media.folderId = folder.id
         media.title = title
         media.save()
 

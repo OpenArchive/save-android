@@ -1,40 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:showIn="@layout/fragment_main_media">
 
-    <ImageView
-        android:id="@+id/current_folder_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/current_backend_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_internet_archive"
+        android:text="Internet Archive"
+        android:textColor="@color/background"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/path_separator"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--    <ImageView-->
+    <!--        android:id="@+id/current_backend_icon"-->
+    <!--        android:layout_width="30dp"-->
+    <!--        android:layout_height="30dp"-->
+    <!--        android:adjustViewBounds="true"-->
+    <!--        android:scaleType="fitCenter"-->
+    <!--        android:background="@drawable/logo_gdrive_outline"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toStartOf="@id/current_backend_nickname"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        tools:ignore="ContentDescription" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/current_backend_nickname"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="10dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintStart_toEndOf="@id/current_backend_icon"-->
+    <!--        app:layout_constraintEnd_toStartOf="@id/path_separator"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        tools:text="Googs" />-->
+
+    <ImageView
+        android:id="@+id/path_separator"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:background="@drawable/outline_chevron_right_24"
+        android:backgroundTint="@color/c23_grey"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/current_folder_name"
+        app:layout_constraintStart_toEndOf="@id/current_backend_button"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/current_folder_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:textSize="20sp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="10dp"
+        android:padding="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:text="Folder FPO"
+        android:textAlignment="viewStart"
+        android:textColor="@color/background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/current_folder_icon"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Folder Name" />
+        app:layout_constraintEnd_toStartOf="@id/current_folder_count"
+        app:layout_constraintStart_toEndOf="@id/path_separator"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/current_folder_name"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="10dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toStartOf="@id/current_folder_count"-->
+    <!--        app:layout_constraintStart_toEndOf="@id/path_separator"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        tools:text="Folder Name FPO" />-->
 
     <TextView
         android:id="@+id/current_folder_count"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:background="@drawable/pill"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintBaseline_toBaselineOf="@id/current_folder_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_min="24dp"
         tools:text="99+" />
 
     <!--                <com.google.android.material.button.MaterialButton-->

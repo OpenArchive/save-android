@@ -303,19 +303,19 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         }
 
         locationIndicator?.setImageResource(
-            if (media?.location.isNullOrBlank()) R.drawable.ic_location_unselected
+            if (media.location.isBlank()) R.drawable.ic_location_unselected
             else R.drawable.ic_location_selected)
 
         tagsIndicator?.setImageResource(
-            if (media?.tags.isNullOrBlank()) R.drawable.ic_tag_unselected
+            if (media.tags.isBlank()) R.drawable.ic_tag_unselected
             else R.drawable.ic_tag_selected)
 
         descIndicator?.setImageResource(
-            if (media?.description.isNullOrBlank()) R.drawable.ic_edit_unselected
+            if (media.description.isBlank()) R.drawable.ic_edit_unselected
             else R.drawable.ic_edit_selected)
 
         flagIndicator?.setImageResource(
-            if (media?.flag == true) R.drawable.ic_flag_selected
+            if (media.flag) R.drawable.ic_flag_selected
             else R.drawable.ic_flag_unselected)
     }
 
@@ -381,6 +381,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         error?.hide()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun handleUnknown(media: Media) {
         Timber.d("Media status is unknown")
         overlayContainer?.hide()

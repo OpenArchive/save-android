@@ -20,17 +20,20 @@ import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
 import net.opendasharchive.openarchive.databinding.ViewSectionBinding
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Collection
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
-import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.features.folders.BrowseFoldersActivity
+import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
+import timber.log.Timber
 import java.text.NumberFormat
 import kotlin.collections.set
 
@@ -38,11 +41,11 @@ class MainMediaFragment : Fragment() {
 
     companion object {
         private const val COLUMN_COUNT = 4
-        private const val ARG_PROJECT_ID = "project_id"
+        private const val ARG_PROJECT_ID = "folder_id"
 
-        fun newInstance(projectId: Long): MainMediaFragment {
+        fun newInstance(folderId: Long): MainMediaFragment {
             val args = Bundle()
-            args.putLong(ARG_PROJECT_ID, projectId)
+            args.putLong(ARG_PROJECT_ID, folderId)
 
             val fragment = MainMediaFragment()
             fragment.arguments = args
@@ -53,7 +56,7 @@ class MainMediaFragment : Fragment() {
 
     private var mAdapters = HashMap<Long, MediaAdapter>()
     private var mSection = HashMap<Long, SectionViewHolder>()
-    private var mProjectId = -1L
+    private var mFolderId = -1L
     private var mCollections = mutableMapOf<Long, Collection>()
 
     private lateinit var mBinding: FragmentMainMediaBinding
@@ -118,25 +121,31 @@ class MainMediaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mProjectId = arguments?.getLong(ARG_PROJECT_ID, -1) ?: -1
+        mFolderId = arguments?.getLong(ARG_PROJECT_ID, -1) ?: -1
 
         mBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
 
-        val project = getSelectedProject()
+        val folder = getSelectedFolder()
 
-        if (project == null) {
-//            mBinding.currentFolder.currentFolderIcon.setImageResource(R.drawable.ic_home)
-//            mBinding.currentFolder.currentFolderIcon.show()
-//            mBinding.currentFolder.currentFolderName.text = "Noyhing"
-//            mBinding.currentFolder.currentFolderName.show()
-
-            mBinding.currentFolder.currentFolderIcon.cloak()
-            mBinding.currentFolder.currentFolderName.cloak()
+        if (folder == null) {
+            mBinding.currentFolder.root.visibility = View.GONE
         } else {
-            mBinding.currentFolder.currentFolderIcon.setImageDrawable(project.space?.getAvatar(requireContext()))
-            mBinding.currentFolder.currentFolderIcon.show()
-            mBinding.currentFolder.currentFolderName.text = project.description
+            val backendIcon = folder.backend?.getAvatar(requireContext())
+            mBinding.currentFolder.currentBackendButton.setCompoundDrawablesWithIntrinsicBounds(backendIcon, null, null, null)
+            mBinding.currentFolder.currentBackendButton.show()
+            mBinding.currentFolder.currentBackendButton.text = folder.backend?.name ?: "Unknown storage"
+            mBinding.currentFolder.currentFolderName.text = folder.description
             mBinding.currentFolder.currentFolderName.show()
+
+            mBinding.currentFolder.currentBackendButton.setOnClickListener {
+                Timber.d("CLICK BACKEND!")
+                startActivity(Intent(context, ServerSetupActivity::class.java))
+            }
+
+            mBinding.currentFolder.currentFolderName.setOnClickListener {
+                Timber.d("CLICK FOLDER!")
+                startActivity(Intent(context, BrowseFoldersActivity::class.java))
+            }
         }
 
         refreshCurrentFolderCount()
@@ -146,20 +155,19 @@ class MainMediaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         refresh()
     }
 
-    private fun getSelectedProject(): Project? {
-        return Space.current?.projects?.firstOrNull()
+    private fun getSelectedFolder(): Folder? {
+        return Backend.current?.folders?.firstOrNull()
     }
 
     private fun refreshCurrentFolderCount() {
-        val project = getSelectedProject()
+        val folder = getSelectedFolder()
 
-        if (project != null) {
+        if (folder != null) {
             mBinding.currentFolder.currentFolderCount.text = NumberFormat.getInstance().format(
-                project.collections.map { it.size }
+                folder.collections.map { it.size }
                     .reduceOrNull { acc, count -> acc + count } ?: 0)
             mBinding.currentFolder.currentFolderCount.show()
 
@@ -191,7 +199,7 @@ class MainMediaFragment : Fragment() {
     }
 
     fun refresh() {
-        mCollections = Collection.getByProject(mProjectId).associateBy { it.id }.toMutableMap()
+        mCollections = Collection.getByFolder(mFolderId).associateBy { it.id }.toMutableMap()
 
         // Remove all sections, which' collections don't exist anymore.
         val toDelete = mAdapters.keys.filter { id ->
@@ -215,7 +223,6 @@ class MainMediaFragment : Fragment() {
                 holder?.setHeader(collection, media)
             } else if (media.isNotEmpty()) {
                 val view = createMediaList(collection, media)
-
                 mBinding.mediaContainer.addView(view, 0)
             }
         }

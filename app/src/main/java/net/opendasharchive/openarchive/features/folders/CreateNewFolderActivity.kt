@@ -7,8 +7,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityCreateNewFolderBinding
-import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.util.extensions.hide
@@ -42,7 +42,7 @@ class CreateNewFolderActivity : BaseActivity() {
             false
         }
 
-        if (Space.current?.license != null) {
+        if (Backend.current?.license != null) {
             mBinding.cc.root.hide()
         }
         else {
@@ -87,22 +87,22 @@ class CreateNewFolderActivity : BaseActivity() {
             return
         }
 
-        val space = Space.current ?: return
+        val backend = Backend.current ?: return
 
-        if (space.hasProject(name)) {
+        if (backend.hasProject(name)) {
             Toast.makeText(this, getString(R.string.folder_name_already_exists),
                 Toast.LENGTH_LONG).show()
 
             return
         }
 
-        val license = space.license ?: CcSelector.get(mBinding.cc)
+        val license = backend.license ?: CcSelector.get(mBinding.cc)
 
-        val project = Project(name, Date(), space.id, licenseUrl = license)
-        project.save()
+        val folder = Folder(name, Date(), backend.id, licenseUrl = license)
+        folder.save()
 
         val i = Intent()
-        i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, project.id)
+        i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, folder.id)
 
         setResult(RESULT_OK, i)
         finish()

@@ -40,7 +40,7 @@ class PreviewAdapter(listener: Listener? = null): ListAdapter<Media, MediaViewHo
                         && oldItem.mediaHashString == newItem.mediaHashString
                         && oldItem.status == newItem.status
                         && oldItem.statusMessage == newItem.statusMessage
-                        && oldItem.projectId == newItem.projectId
+                        && oldItem.folderId == newItem.folderId
                         && oldItem.collectionId == newItem.collectionId
                         && oldItem.contentLength == newItem.contentLength
                         && oldItem.progress == newItem.progress

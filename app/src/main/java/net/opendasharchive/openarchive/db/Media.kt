@@ -52,7 +52,7 @@ data class Media(
 
     var status: Status = Status.Unknown,
     var statusMessage: String = "",
-    var projectId: Long = 0,
+    var folderId: Long = 0,
     var collectionId: Long = 0,
 
     @Expose
@@ -120,11 +120,11 @@ data class Media(
     val collection: Collection?
         get() = findById(Collection::class.java, collectionId)
 
-    val project: Project?
-        get() = findById(Project::class.java, projectId)
+    val folder: Folder?
+        get() = findById(Folder::class.java, folderId)
 
-    val space: Space?
-        get() = project?.space
+    val backend: Backend?
+        get() = folder?.backend
 
     val isUploading
         get() =  status == Status.Queued

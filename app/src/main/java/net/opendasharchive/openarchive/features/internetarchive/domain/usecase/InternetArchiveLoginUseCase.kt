@@ -1,14 +1,14 @@
 package net.opendasharchive.openarchive.features.internetarchive.domain.usecase
 
 import com.google.gson.Gson
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
 import net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository.InternetArchiveRepository
 
 class InternetArchiveLoginUseCase(
     private val repository: InternetArchiveRepository,
     private val gson: Gson,
-    private val space: Space,
+    private val backend: Backend,
 ) {
 
     suspend operator fun invoke(email: String, password: String): Result<InternetArchive> =
@@ -16,15 +16,15 @@ class InternetArchiveLoginUseCase(
 
             response.auth.let { auth ->
                 repository.testConnection(auth).getOrThrow()
-                space.username = auth.access
-                space.password = auth.secret
+                backend.username = auth.access
+                backend.password = auth.secret
             }
 
             // TODO: use local data source for database
-            space.metaData = gson.toJson(response.meta)
-            space.save()
+            backend.metaData = gson.toJson(response.meta)
+            backend.save()
 
-            Space.current = space
+            Backend.current = backend
 
             response
         }

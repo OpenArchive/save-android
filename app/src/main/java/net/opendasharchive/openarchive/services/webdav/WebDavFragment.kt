@@ -16,11 +16,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentWebDavBinding
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.services.internetarchive.Util
-import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.makeSnackBar
 import okhttp3.Call
 import okhttp3.Callback
@@ -30,27 +29,27 @@ import java.io.IOException
 import kotlin.coroutines.suspendCoroutine
 
 class WebDavFragment : CommonServiceFragment() {
-    private var mSpaceId: Long? = null
-    private lateinit var mSpace: Space
+    private var mBackendId: Long? = null
+    private lateinit var mBackend: Backend
 
     private lateinit var mSnackbar: Snackbar
     private lateinit var mBinding: FragmentWebDavBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mSpaceId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
+        mBackendId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         mBinding = FragmentWebDavBinding.inflate(inflater)
 
-        mSpaceId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
+        mBackendId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
 
-        if (ARG_VAL_NEW_SPACE != mSpaceId) {
+        if (ARG_VAL_NEW_SPACE != mBackendId) {
             // setup views for editing and existing space
 
-            mSpace = Space.get(mSpaceId!!) ?: Space(Space.Type.WEBDAV)
+            mBackend = Backend.get(mBackendId!!) ?: Backend(Backend.Type.WEBDAV)
 
             mBinding.header.visibility = View.GONE
 //            mBinding.buttonBar.visibility = View.GONE
@@ -59,10 +58,10 @@ class WebDavFragment : CommonServiceFragment() {
             mBinding.username.isEnabled = false
             mBinding.password.isEnabled = false
 
-            mBinding.server.setText(mSpace.host)
-            mBinding.name.setText(mSpace.name)
-            mBinding.username.setText(mSpace.username)
-            mBinding.password.setText(mSpace.password)
+            mBinding.server.setText(mBackend.host)
+            mBinding.name.setText(mBackend.name)
+            mBinding.username.setText(mBackend.username)
+            mBinding.password.setText(mBackend.password)
 
             mBinding.name.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -74,8 +73,8 @@ class WebDavFragment : CommonServiceFragment() {
                 override fun afterTextChanged(name: Editable?) {
                     if (name == null) return
 
-                    mSpace.name = name.toString()
-                    mSpace.save()
+                    mBackend.name = name.toString()
+                    mBackend.save()
                 }
             })
 
@@ -86,7 +85,7 @@ class WebDavFragment : CommonServiceFragment() {
         } else {
             // setup views for creating a new space
 
-            mSpace = Space(Space.Type.WEBDAV)
+            mBackend = Backend(Backend.Type.WEBDAV)
 //            mBinding.btRemove.visibility = View.GONE
         }
 
@@ -152,23 +151,23 @@ class WebDavFragment : CommonServiceFragment() {
         // Store values at the time of the login attempt.
         var errorView: View? = null
 
-        mSpace.name = mBinding.name.text?.toString() ?: ""
+        mBackend.name = mBinding.name.text?.toString() ?: ""
 
-        mSpace.host = fixSpaceUrl(mBinding.server.text)?.toString() ?: ""
-        mBinding.server.setText(mSpace.host)
+        mBackend.host = fixSpaceUrl(mBinding.server.text)?.toString() ?: ""
+        mBinding.server.setText(mBackend.host)
 
-        mSpace.username = mBinding.username.text?.toString() ?: ""
-        mSpace.password = mBinding.password.text?.toString() ?: ""
+        mBackend.username = mBinding.username.text?.toString() ?: ""
+        mBackend.password = mBinding.password.text?.toString() ?: ""
 
 //        mSpace.useChunking = mBinding.swChunking.isChecked
 
-        if (mSpace.host.isEmpty()) {
+        if (mBackend.host.isEmpty()) {
             mBinding.server.error = getString(R.string.error_field_required)
             errorView = mBinding.server
-        } else if (mSpace.username.isEmpty()) {
+        } else if (mBackend.username.isEmpty()) {
             mBinding.username.error = getString(R.string.error_field_required)
             errorView = mBinding.username
-        } else if (mSpace.password.isEmpty()) {
+        } else if (mBackend.password.isEmpty()) {
             mBinding.password.error = getString(R.string.error_field_required)
             errorView = mBinding.password
         }
@@ -181,9 +180,9 @@ class WebDavFragment : CommonServiceFragment() {
             return
         }
 
-        val other = Space.get(Space.Type.WEBDAV, mSpace.host, mSpace.username)
+        val other = Backend.get(Backend.Type.WEBDAV, mBackend.host, mBackend.username)
 
-        if (other.isNotEmpty() && other[0].id != mSpace.id) {
+        if (other.isNotEmpty() && other[0].id != mBackend.id) {
             return showError(getString(R.string.you_already_have_a_server_with_these_credentials))
         }
 
@@ -194,8 +193,8 @@ class WebDavFragment : CommonServiceFragment() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 testConnection()
-                mSpace.save()
-                Space.current = mSpace
+                mBackend.save()
+                Backend.current = mBackend
 
                 setFragmentResult(RESP_SAVED, bundleOf())
             } catch (exception: IOException) {
@@ -209,9 +208,9 @@ class WebDavFragment : CommonServiceFragment() {
     }
 
     private suspend fun testConnection() {
-        val url = mSpace.hostUrl ?: throw IOException("400 Bad Request")
+        val url = mBackend.hostUrl ?: throw IOException("400 Bad Request")
 
-        val client = SaveClient.get(requireContext(), mSpace.username, mSpace.password)
+        val client = SaveClient.get(requireContext(), mBackend.username, mBackend.password)
 
         val request =
             Request.Builder().url(url).method("GET", null).addHeader("OCS-APIRequest", "true")
@@ -292,9 +291,9 @@ class WebDavFragment : CommonServiceFragment() {
         const val REMOTE_PHP_ADDRESS = "/remote.php/webdav/"
 
         @JvmStatic
-        fun newInstance(spaceId: Long) = WebDavFragment().apply {
+        fun newInstance(backendId: Long) = WebDavFragment().apply {
             arguments = Bundle().apply {
-                putLong(ARG_SPACE, spaceId)
+                putLong(ARG_SPACE, backendId)
             }
         }
 

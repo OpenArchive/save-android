@@ -8,7 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityAddFolderBinding
-import net.opendasharchive.openarchive.db.Space
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
 import net.opendasharchive.openarchive.util.extensions.Position
@@ -69,7 +69,7 @@ class AddFolderActivity : BaseActivity() {
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,
         // as it doesn't make sense to show a one-option menu.
-        if (Space.current?.tType == Space.Type.INTERNET_ARCHIVE) {
+        if (Backend.current?.tType == Backend.Type.INTERNET_ARCHIVE) {
             mBinding.browseFolders.hide()
 
             finish()
@@ -90,7 +90,7 @@ class AddFolderActivity : BaseActivity() {
     }
 
     private fun setFolder(browse: Boolean) {
-        if (Space.current == null) {
+        if (Backend.current == null) {
             finish()
             startActivity(Intent(this, ServerSetupActivity::class.java))
 

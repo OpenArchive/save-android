@@ -76,7 +76,7 @@ object Prefs {
             prefs?.edit()?.putBoolean(USE_TOR, value)?.apply()
         }
 
-    var currentSpaceId: Long
+    var currentBackendId: Long
         get() = prefs?.getLong(CURRENT_SPACE_ID, -1) ?: -1
         set(value) {
             prefs?.edit()?.putLong(CURRENT_SPACE_ID, value)?.apply()

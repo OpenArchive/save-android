@@ -42,9 +42,9 @@ import net.opendasharchive.openarchive.adapters.FolderAdapterListener
 import net.opendasharchive.openarchive.adapters.SpaceAdapter
 import net.opendasharchive.openarchive.adapters.SpaceAdapterListener
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
+import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.Project
-import net.opendasharchive.openarchive.db.Space
 import net.opendasharchive.openarchive.extensions.getMeasurments
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.folders.AddFolderActivity
@@ -160,9 +160,9 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     }
 
     private fun preview() {
-         val projectId = getSelectedProject()?.id ?: return
+         val folderId = getSelectedProject()?.id ?: return
 
-        PreviewActivity.start(this, projectId)
+        PreviewActivity.start(this, folderId)
     }
 
 //    private fun showFileSourceActionSheet() {
@@ -382,8 +382,8 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
             mBinding.folders.animate().alpha(1 - newAlpha)
         }
 
-        mBinding.currentSpaceName.text = Space.current?.friendlyName
-        mBinding.currentSpaceName.setDrawable(Space.current?.getAvatar(applicationContext)?.scaled(32, applicationContext),
+        mBinding.currentSpaceName.text = Backend.current?.friendlyName
+        mBinding.currentSpaceName.setDrawable(Backend.current?.getAvatar(applicationContext)?.scaled(32, applicationContext),
             Position.Start, tint = true)
         mBinding.currentSpaceName.compoundDrawablePadding =
             applicationContext.resources.getDimension(R.dimen.padding_small).roundToInt()
@@ -440,11 +440,11 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     }
 
     private fun showCurrentPage() {
-        val project = getSelectedProject()
+        val folder = getSelectedProject()
 
-        if (project != null) {
+        if (folder != null) {
             Handler(Looper.getMainLooper()).postDelayed({
-                mPagerAdapter.notifyProjectChanged(project)
+                mPagerAdapter.notifyFolderChanged(folder)
             }, 100)
         }
     }
@@ -794,8 +794,8 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
         }
     }
 
-    override fun spaceClicked(space: Space) {
-        Space.current = space
+    override fun spaceClicked(backend: Backend) {
+        Backend.current = backend
 
         refreshSpace()
 
@@ -807,8 +807,8 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun projectClicked(project: Project) {
-        mCurrentItem = mPagerAdapter.projects.indexOf(project)
+    override fun folderClicked(folder: Folder) {
+        mCurrentItem = mPagerAdapter.folders.indexOf(folder)
 
         mBinding.root.closeDrawer(mBinding.folderBar)
 
@@ -821,8 +821,8 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
         mFolderAdapter.notifyDataSetChanged()
     }
 
-    override fun getSelectedProject(): Project? {
-        return mPagerAdapter.getProject(mCurrentItem)
+    override fun getSelectedProject(): Folder? {
+        return mPagerAdapter.getFolder(mCurrentItem)
     }
 
     override fun addSpaceClicked() {
@@ -831,23 +831,23 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
         startActivity(Intent(this, ServerSetupActivity::class.java))
     }
 
-    override fun getSelectedSpace(): Space? {
-        return Space.current
+    override fun getSelectedSpace(): Backend? {
+        return Backend.current
     }
 
-    private fun refreshPages(setProjectId: Long? = null) {
-        val projects = Space.current?.projects ?: emptyList()
+    private fun refreshPages(setFolderId: Long? = null) {
+        val folders = Backend.current?.folders ?: emptyList()
 
-        mPagerAdapter.updateData(projects)
+        mPagerAdapter.updateData(folders)
 
         mBinding.pager.isSaveFromParentEnabled = false
         mBinding.pager.adapter = mPagerAdapter
 
-        setProjectId?.let {
+        setFolderId?.let {
             mCurrentItem = mPagerAdapter.getProjectIndexById(it, default = 0)
         }
 
-        mFolderAdapter.update(projects)
+        mFolderAdapter.update(folders)
 
         showCurrentPage()
     }
@@ -855,7 +855,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     private fun refreshSpace() {
         mBinding.spaceName.text = "Servers" // currentSpace.friendlyName
 
-        mSpaceAdapter.update(Space.getAll().asSequence().toList())
+        mSpaceAdapter.update(Backend.getAll().asSequence().toList())
 
         refreshPages()
     }

@@ -13,10 +13,14 @@ import java.util.*
 
 class WebDavConduit(media: Media, context: Context) : Conduit(media, context) {
 
+    companion object {
+        const val NAME = "Private Server"
+    }
+
     private lateinit var mClient: OkHttpSardine
 
     override suspend fun upload(): Boolean {
-        val space = mMedia.space ?: return false
+        val space = mMedia.backend ?: return false
         val base = space.hostUrl ?: return false
         val path = getPath() ?: return false
 
@@ -87,7 +91,7 @@ class WebDavConduit(media: Media, context: Context) : Conduit(media, context) {
 
     @Throws(IOException::class)
     private suspend fun uploadChunked(base: HttpUrl, path: List<String>, fileName: String): Boolean {
-        val space = mMedia.space ?: return false
+        val space = mMedia.backend ?: return false
         val url = space.hostUrl ?: return false
 
         val tmpBase = HttpUrl.Builder()

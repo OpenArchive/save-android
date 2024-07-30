@@ -182,7 +182,7 @@
 
         <meta-data
             android:name="VERSION"
-            android:value="36" />
+            android:value="37" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

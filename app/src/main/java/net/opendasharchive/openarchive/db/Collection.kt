@@ -4,15 +4,15 @@ import com.orm.SugarRecord
 import java.util.*
 
 data class Collection(
-    var projectId: Long? = null,
+    var folderId: Long? = null,
     var uploadDate: Date? = null,
     var serverUrl: String? = null
 ) : SugarRecord() {
 
     companion object {
 
-        fun getByProject(projectId: Long): List<Collection> {
-            return find(Collection::class.java, "project_id = ?", arrayOf(projectId.toString()),
+        fun getByFolder(folderId: Long): List<Collection> {
+            return find(Collection::class.java, "folder_id = ?", arrayOf(folderId.toString()),
                 null, "id ASC", null)
         }
 

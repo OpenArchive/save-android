@@ -16,7 +16,6 @@ import java.io.IOException
 
 class IaConduit(media: Media, context: Context) : Conduit(media, context) {
 
-
     companion object {
         const val ARCHIVE_BASE_URL = "https://archive.org/"
         const val NAME = "Internet Archive"
@@ -150,7 +149,7 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
             .add("x-amz-auto-make-bucket", "1")
             .add("x-archive-interactive-priority", "1")
             .add("x-archive-meta-language", "eng") // FIXME set based on locale or selected.
-            .add("Authorization", "LOW " + mMedia.space?.username + ":" + mMedia.space?.password)
+            .add("Authorization", "LOW " + mMedia.backend?.username + ":" + mMedia.backend?.password)
 
         val author = mMedia.author
         if (author.isNotEmpty()) {
@@ -214,7 +213,7 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
         return Headers.Builder()
             .add("x-amz-auto-make-bucket", "1")
             .add("x-archive-meta-language", "eng") // FIXME set based on locale or selected
-            .add("Authorization", "LOW " + mMedia.space?.username + ":" + mMedia.space?.password)
+            .add("Authorization", "LOW " + mMedia.backend?.username + ":" + mMedia.backend?.password)
             .add("x-archive-meta-mediatype", "texts")
             .add("x-archive-meta-collection", "opensource")
             .build()
