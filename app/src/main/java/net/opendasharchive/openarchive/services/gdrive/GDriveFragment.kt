@@ -26,16 +26,10 @@ class GDriveFragment : CommonServiceFragment() {
     private lateinit var mBinding: FragmentGdriveBinding
 
     companion object {
-        const val RESP_CANCEL = "gdrive_fragment_resp_cancel"
-        const val RESP_AUTHENTICATED = "gdrive_fragment_resp_authenticated"
-
         const val REQUEST_CODE_GOOGLE_AUTH = 21701
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mBinding = FragmentGdriveBinding.inflate(inflater)
 
         mBinding.disclaimer1.text = HtmlCompat.fromHtml(
@@ -55,14 +49,9 @@ class GDriveFragment : CommonServiceFragment() {
         )
         mBinding.error.visibility = View.GONE
 
-//        mBinding.btBack.setOnClickListener {
-//            setFragmentResult(RESP_CANCEL, bundleOf())
-//        }
-
         mBinding.btAuthenticate.setOnClickListener {
             mBinding.error.visibility = View.GONE
             authenticate()
-//            mBinding.btBack.isEnabled = false
             mBinding.btAuthenticate.isEnabled = false
         }
 
@@ -79,7 +68,7 @@ class GDriveFragment : CommonServiceFragment() {
             )
         } else {
             // permission was already granted, we're already signed in, continue.
-            setFragmentResult(RESP_AUTHENTICATED, bundleOf())
+            setFragmentResult(RESP_CREATED, bundleOf())
         }
     }
 
@@ -107,16 +96,8 @@ class GDriveFragment : CommonServiceFragment() {
                             backend.save()
                             Backend.current = backend
 
-//                            CleanInsightsManager.getConsent(requireActivity()) {
-//                                CleanInsightsManager.measureEvent(
-//                                    "backend",
-//                                    "new",
-//                                    Space.Type.GDRIVE.friendlyName
-//                                )
-//                            }
-
                             MainScope().launch {
-                                setFragmentResult(RESP_AUTHENTICATED, bundleOf())
+                                setFragmentResult(RESP_CREATED, bundleOf())
                             }
                         } else {
                             authFailed(
@@ -145,7 +126,6 @@ class GDriveFragment : CommonServiceFragment() {
                 mBinding.error.text = errorMessage
                 mBinding.error.visibility = View.VISIBLE
             }
-//            mBinding.btBack.isEnabled = true
             mBinding.btAuthenticate.isEnabled = true
         }
     }

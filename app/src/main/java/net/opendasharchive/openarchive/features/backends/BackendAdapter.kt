@@ -1,0 +1,103 @@
+package net.opendasharchive.openarchive.features.backends
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import net.opendasharchive.openarchive.databinding.OneLineBackendRowBinding
+import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.features.folders.FolderAdapter
+import net.opendasharchive.openarchive.util.extensions.scaled
+import java.lang.ref.WeakReference
+
+interface BackendAdapterListener {
+    fun backendClicked(backend: Backend)
+    fun addBackendClicked()
+    fun getSelectedBackend(): Backend?
+}
+
+class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, BackendAdapter.ViewHolder>(DIFF_CALLBACK), BackendAdapterListener {
+
+    class ViewHolder(private val binding: OneLineBackendRowBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(listener: WeakReference<BackendAdapterListener>?, backend: Backend?) {
+            if (backend == null) { return }
+
+            val context = binding.rvTitle.context
+
+            val icon = backend.getAvatar(context)?.scaled(32, context)
+            binding.rvIcon.setImageDrawable(icon)
+
+            binding.rvTitle.text = backend.friendlyName
+
+            binding.rvTitle.setTextColor(
+                FolderAdapter.getColor(
+                    binding.rvTitle.context,
+                    false
+                    // listener?.get()?.getSelectedBackend()?.id == backend?.id
+                )
+            )
+
+            binding.root.setOnClickListener {
+                listener?.get()?.backendClicked(backend)
+            }
+        }
+    }
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Backend>() {
+            override fun areItemsTheSame(oldItem: Backend, newItem: Backend): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Backend, newItem: Backend): Boolean {
+                return oldItem.friendlyName == newItem.friendlyName
+            }
+        }
+    }
+
+    private val mListener = WeakReference(listener)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(OneLineBackendRowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val backend = getItem(position)
+        holder.bind(WeakReference(this), backend)
+    }
+
+    fun update(backends: List<Backend>) {
+//        notifyItemChanged(getIndex(mLastSelected))
+//
+//        @Suppress("NAME_SHADOWING")
+//        val backends = backends.toMutableList()
+//        backends.add(Backend(ADD_BACKEND_ID))
+        submitList(backends)
+    }
+
+    override fun backendClicked(backend: Backend) {
+        notifyItemChanged(getIndex(getSelectedBackend()))
+        notifyItemChanged(getIndex(backend))
+
+        mListener.get()?.backendClicked(backend)
+    }
+
+    override fun addBackendClicked() {
+        mListener.get()?.addBackendClicked()
+    }
+
+    override fun getSelectedBackend(): Backend? {
+        return mListener.get()?.getSelectedBackend()
+    }
+
+    private fun getIndex(backend: Backend?): Int {
+        return if (backend == null) {
+            -1
+        }
+        else {
+            currentList.indexOf(backend)
+        }
+    }
+}

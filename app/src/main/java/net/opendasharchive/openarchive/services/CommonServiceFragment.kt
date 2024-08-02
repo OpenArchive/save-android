@@ -11,9 +11,14 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Lifecycle
-import net.opendasharchive.openarchive.services.webdav.WebDavFragment.Companion.RESP_CANCEL
 
 open class CommonServiceFragment : Fragment()  {
+    companion object {
+        const val RESP_CREATED = "created"
+        const val RESP_CANCEL = "cancel"
+        const val RESP_DELETED = "deleted"
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.settings
+package net.opendasharchive.openarchive.features.backends
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,59 +6,47 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.FragmentSpaceSetupBinding
+import net.opendasharchive.openarchive.databinding.FragmentBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import timber.log.Timber
 
-class SpaceSetupFragment : Fragment() {
+class BackendSetupFragment : Fragment(), BackendAdapterListener {
 
-    private lateinit var mBinding: FragmentSpaceSetupBinding
+    private lateinit var viewBinding: FragmentBackendSetupBinding
+    private val viewModel: BackendViewModel by viewModels()
+    private lateinit var adapter: BackendAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        mBinding = FragmentSpaceSetupBinding.inflate(inflater)
+        viewBinding = FragmentBackendSetupBinding.inflate(inflater)
 
+        createBackendList()
 
-        refreshUI()
-
-        return mBinding.root
+        return viewBinding.root
     }
 
-//    private fun createBackendList(collection: Collection, media: List<Backend>): View {
-//        val holder = SectionViewHolder(ViewSectionBinding.inflate(layoutInflater))
-//
-//        val spacing = Math.round(15 * resources.displayMetrics.density)
-//
-//        holder.recyclerView.setHasFixedSize(true)
-//        holder.recyclerView.layoutManager = GridLayoutManager(activity, COLUMN_COUNT)
-//        holder.recyclerView.addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT, spacing, false))
-//
-//        holder.setHeader(collection, media)
-//
-//        val mediaAdapter = MediaAdapter(
-//            requireActivity(),
-//            { MediaViewHolder.Box(it) },
-//            media,
-//            holder.recyclerView
-//        ) {
-//            (activity as? MainActivity)?.updateAfterDelete(mAdapters.values.firstOrNull { it.selecting } == null)
-//        }
-//
-//        holder.recyclerView.adapter = mediaAdapter
-//        mAdapters[collection.id] = mediaAdapter
-//        mSection[collection.id] = holder
-//
-//        return holder.root
-//    }
+    private fun createBackendList() {
+        adapter = BackendAdapter(this)
 
-    private fun refreshUI() {
+        viewBinding.backendList.layoutManager = LinearLayoutManager(requireContext())
+        viewBinding.backendList.adapter = adapter
+
+        viewModel.backends.observe(viewLifecycleOwner) { backends ->
+            adapter.submitList(backends)
+        }
+    }
+
+//    private fun refreshUI() {
 //        if (Space.has(Space.Type.WEBDAV)) {
 //            mBinding.privateServerSublabel.text = "Connected"
 //            mBinding.iconNextPrivateServer.setIconResource(R.drawable.outline_link_off_24)
@@ -101,7 +89,7 @@ class SpaceSetupFragment : Fragment() {
 //                }
 //            }
 //        }
-    }
+//    }
 
     private fun removeInternetArchive() {
         val backend = Backend.get(type = Backend.Type.INTERNET_ARCHIVE).firstOrNull()
@@ -114,15 +102,8 @@ class SpaceSetupFragment : Fragment() {
                 buttons = listOf(
                     AlertHelper.positiveButton(R.string.remove) { _, _ ->
                         backend.delete()
-                        refreshUI()
+                        // refreshUI()
                         Toast.makeText(requireContext(), "Successfully removed media storage!", Toast.LENGTH_SHORT).show()
-//                        CookieBar.build(requireActivity())
-//                            .setTitle("Hi, there!")
-//                            .setMessage("Successfully removed media storage!")
-//                            .setCookiePosition(CookieBar.BOTTOM)
-//                            .setIcon(R.mipmap.ic_launcher_round)
-//                            .setDuration(3000)
-//                            .show()
                     },
                     AlertHelper.negativeButton()
                 )
@@ -150,15 +131,8 @@ class SpaceSetupFragment : Fragment() {
                         googleSignInClient.revokeAccess().addOnCompleteListener {
                             googleSignInClient.signOut()
                             backend.delete()
-                            refreshUI()
+                            // refreshUI()
                             Toast.makeText(requireContext(), "Successfully removed media storage!", Toast.LENGTH_SHORT).show()
-//                            CookieBar.build(requireActivity())
-//                                .setTitle("Hi, there!")
-//                                .setMessage("Successfully removed media storage!")
-//                                .setCookiePosition(CookieBar.BOTTOM)
-//                                .setIcon(R.mipmap.ic_launcher_round)
-//                                .setDuration(3000)
-//                                .show()
                         }
                     },
                     AlertHelper.negativeButton()
@@ -169,13 +143,8 @@ class SpaceSetupFragment : Fragment() {
         }
     }
 
-    private fun skipSpaceConfig() {
-        startActivity(Intent(context, MainActivity::class.java))
-    }
-
     private fun playServicesAvailable(): Boolean {
-        return ConnectionResult.SUCCESS == GoogleApiAvailability.getInstance()
-            .isGooglePlayServicesAvailable(requireContext())
+        return ConnectionResult.SUCCESS == GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(requireContext())
     }
 
     companion object {
@@ -184,5 +153,21 @@ class SpaceSetupFragment : Fragment() {
         const val RESULT_VAL_WEBDAV = "webdav"
         const val RESULT_VAL_INTERNET_ARCHIVE = "internet_archive"
         const val RESULT_VAL_GDRIVE = "gdrive"
+    }
+
+    override fun backendClicked(backend: Backend) {
+        Timber.d("backendClicked")
+        Backend.current = backend
+        setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to backend.friendlyName))
+    }
+
+    override fun addBackendClicked() {
+        Timber.d("addBackendClicked")
+        startActivity(Intent(requireContext(), BackendSetupActivity::class.java))
+    }
+
+    override fun getSelectedBackend(): Backend? {
+        Timber.d("getSelectedBackend")
+        return Backend.current
     }
 }

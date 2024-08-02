@@ -10,7 +10,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityAddFolderBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
+import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.setDrawable
@@ -92,7 +92,7 @@ class AddFolderActivity : BaseActivity() {
     private fun setFolder(browse: Boolean) {
         if (Backend.current == null) {
             finish()
-            startActivity(Intent(this, ServerSetupActivity::class.java))
+            startActivity(Intent(this, BackendSetupActivity::class.java))
 
             return
         }

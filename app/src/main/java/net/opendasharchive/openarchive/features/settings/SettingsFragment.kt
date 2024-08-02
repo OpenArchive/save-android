@@ -9,7 +9,7 @@ import androidx.preference.PreferenceFragmentCompat
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.features.folders.CreateNewFolderActivity
-import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
+import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 
@@ -26,7 +26,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>("servers")?.setOnPreferenceClickListener {
-            startActivity(Intent(context, ServerSetupActivity::class.java))
+            startActivity(Intent(context, BackendSetupActivity::class.java))
             true
         }
 

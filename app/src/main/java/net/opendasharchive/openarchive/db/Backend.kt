@@ -10,12 +10,11 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.github.abdularis.civ.AvatarImageView
 import com.orm.SugarRecord
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
+import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
 import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.extensions.tint
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
@@ -96,7 +95,7 @@ data class Backend(
         }
 
         var current: Backend?
-            get() = get(Prefs.currentBackendId) ?: first(Backend::class.java)
+            get() = get(Prefs.currentBackendId) // ?: first(Backend::class.java)
             set(value) {
                 Prefs.currentBackendId = value?.id ?: -1
             }
@@ -111,7 +110,7 @@ data class Backend(
             }
             else {
                 activity.finishAffinity()
-                activity.startActivity(Intent(activity, ServerSetupActivity::class.java))
+                activity.startActivity(Intent(activity, BackendSetupActivity::class.java))
             }
         }
     }
@@ -159,15 +158,15 @@ data class Backend(
         return find(Folder::class.java, "space_id = ? AND description = ?", id.toString(), description).size > 0
     }
 
-    fun getAvatar(context: Context, style: IconStyle = IconStyle.SOLID): Drawable? {
+    fun getAvatar(context: Context): Drawable? {
         val color = ContextCompat.getColor(context, R.color.colorOnBackground)
 
         return when (tType) {
-            Type.WEBDAV -> ContextCompat.getDrawable(context, R.drawable.ic_private_server)?.tint(color)
+            Type.WEBDAV -> ContextCompat.getDrawable(context, R.drawable.ic_private_server)
 
-            Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ic_internet_archive)?.tint(color)
+            Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ic_internet_archive)
 
-            Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.logo_gdrive_outline)?.tint(color)
+            Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.logo_drive_2020q4_color_2x_web_64dp)
 
             Type.VEILID -> ContextCompat.getDrawable(context, R.drawable.ic_veilid)
 

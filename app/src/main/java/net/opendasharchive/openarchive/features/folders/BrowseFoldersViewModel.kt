@@ -26,7 +26,7 @@ class BrowseFoldersViewModel : ViewModel() {
 
     val progressBarFlag = MutableLiveData(false)
 
-    fun getFiles(context: Context, backend: Backend) {
+    fun getFolders(context: Context, backend: Backend) {
         viewModelScope.launch {
             progressBarFlag.value = true
 
@@ -42,12 +42,12 @@ class BrowseFoldersViewModel : ViewModel() {
                 }
 
                 mFolders.value = value.filter { !backend.hasProject(it.name) }
+
                 progressBarFlag.value = false
             }
             catch (e: Throwable) {
                 progressBarFlag.value = false
                 mFolders.value = arrayListOf()
-
                 Timber.e(e)
             }
         }

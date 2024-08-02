@@ -9,8 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithNewSpace
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithBackendId
+import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithNewSpace
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getSpace
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 
@@ -38,10 +38,6 @@ class InternetArchiveFragment : CommonServiceFragment() {
     }
 
     companion object {
-
-        val RESP_SAVED = IAResult.Saved.value
-        val RESP_CANCEL = IAResult.Cancelled.value
-
         @JvmStatic
         fun newInstance(args: Bundle) = InternetArchiveFragment().apply {
             arguments = args

@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.settings
+package net.opendasharchive.openarchive.features.folders
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,12 +6,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.adapters.FolderAdapter
-import net.opendasharchive.openarchive.adapters.FolderAdapterListener
 import net.opendasharchive.openarchive.databinding.ActivityFoldersBinding
-import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.toggle
 

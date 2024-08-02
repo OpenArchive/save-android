@@ -196,7 +196,7 @@ class WebDavFragment : CommonServiceFragment() {
                 mBackend.save()
                 Backend.current = mBackend
 
-                setFragmentResult(RESP_SAVED, bundleOf())
+                setFragmentResult(RESP_CREATED, bundleOf())
             } catch (exception: IOException) {
                 if (exception.message?.startsWith("401") == true) {
                     showError(getString(R.string.error_incorrect_username_or_password), true)
@@ -278,11 +278,6 @@ class WebDavFragment : CommonServiceFragment() {
 //    }
 
     companion object {
-        // events emitted by this fragment
-        const val RESP_SAVED = "web_dav_fragment_resp_saved"
-        const val RESP_DELETED = "web_dav_fragment_resp_deleted"
-        const val RESP_CANCEL = "web_dav_fragment_resp_cancel"
-
         // factory method parameters (bundle args)
         const val ARG_SPACE = "space"
         const val ARG_VAL_NEW_SPACE = -1L

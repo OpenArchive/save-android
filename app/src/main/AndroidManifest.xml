@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
@@ -113,7 +118,7 @@
             android:name=".services.gdrive.GDriveActivity" />
 
         <activity
-            android:name=".features.settings.FoldersActivity"
+            android:name=".features.folders.FoldersActivity"
             android:label="@string/folders"
             android:exported="false" />
 
@@ -128,6 +133,12 @@
             android:taskAffinity="" />
 
         <activity
+            android:name=".features.main.QRScannerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
             android:name=".features.media.ReviewActivity"
             android:label="@string/edit_media_info"
             android:windowSoftInputMode="stateHidden"
@@ -135,7 +146,7 @@
             android:taskAffinity="" />
 
         <activity
-            android:name=".features.onboarding.ServerSetupActivity"
+            android:name=".features.backends.BackendSetupActivity"
             android:label="@string/title_activity_first_start"
             android:exported="false"
             android:taskAffinity="" />
@@ -164,7 +175,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".features.settings.EditFolderActivity"
+            android:name=".features.folders.EditFolderActivity"
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
 

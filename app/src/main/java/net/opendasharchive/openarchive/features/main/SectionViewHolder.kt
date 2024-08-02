@@ -1,13 +1,13 @@
 package net.opendasharchive.openarchive.features.main
 
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.ViewSectionBinding
+import net.opendasharchive.openarchive.databinding.MediaGroupBinding
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Media
 import java.text.DateFormat
 import java.text.NumberFormat
 
-data class SectionViewHolder(private val binding: ViewSectionBinding) {
+data class SectionViewHolder(private val binding: MediaGroupBinding) {
 
     companion object {
         private val numberFormatter

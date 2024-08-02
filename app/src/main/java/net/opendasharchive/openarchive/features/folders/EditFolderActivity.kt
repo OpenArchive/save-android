@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.settings
+package net.opendasharchive.openarchive.features.folders
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -7,6 +7,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityEditFolderBinding
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.setDrawable

@@ -19,15 +19,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
-import net.opendasharchive.openarchive.databinding.ViewSectionBinding
+import net.opendasharchive.openarchive.databinding.MediaGroupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
+import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.folders.BrowseFoldersActivity
-import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.cloak
@@ -139,7 +139,7 @@ class MainMediaFragment : Fragment() {
 
             mBinding.currentFolder.currentBackendButton.setOnClickListener {
                 Timber.d("CLICK BACKEND!")
-                startActivity(Intent(context, ServerSetupActivity::class.java))
+                startActivity(Intent(context, BackendSetupActivity::class.java))
             }
 
             mBinding.currentFolder.currentFolderName.setOnClickListener {
@@ -253,7 +253,7 @@ class MainMediaFragment : Fragment() {
     }
 
     private fun createMediaList(collection: Collection, media: List<Media>): View {
-        val holder = SectionViewHolder(ViewSectionBinding.inflate(layoutInflater))
+        val holder = SectionViewHolder(MediaGroupBinding.inflate(layoutInflater))
 
         val spacing = Math.round(15 * resources.displayMetrics.density)
 

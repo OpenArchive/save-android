@@ -27,17 +27,17 @@
             app:iconSpaceReserved="false"
             app:key="servers"
             app:singleLineTitle="true"
-            app:title="Servers"
-            app:summary="Connect to cloud storage services" />
+            app:title="Media Storage"
+            app:summary="Connect to media storage services" />
 
-        <Preference
-            app:allowDividerAbove="true"
-            app:allowDividerBelow="false"
-            app:iconSpaceReserved="false"
-            app:key="folders"
-            app:singleLineTitle="true"
-            app:title="Folders"
-            app:summary="Manage the folders on your servers" />
+<!--        <Preference-->
+<!--            app:allowDividerAbove="true"-->
+<!--            app:allowDividerBelow="false"-->
+<!--            app:iconSpaceReserved="false"-->
+<!--            app:key="folders"-->
+<!--            app:singleLineTitle="true"-->
+<!--            app:title="Folders"-->
+<!--            app:summary="Manage the folders on your servers" />-->
 
         <ListPreference
             app:allowDividerAbove="true"

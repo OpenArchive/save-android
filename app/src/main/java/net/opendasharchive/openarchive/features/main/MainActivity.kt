@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.features.main
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -28,7 +27,6 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.esafirm.imagepicker.features.ImagePickerLauncher
@@ -37,22 +35,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.adapters.FolderAdapter
-import net.opendasharchive.openarchive.adapters.FolderAdapterListener
-import net.opendasharchive.openarchive.adapters.SpaceAdapter
-import net.opendasharchive.openarchive.adapters.SpaceAdapterListener
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.extensions.getMeasurments
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.folders.AddFolderActivity
 import net.opendasharchive.openarchive.features.media.AddMediaDialogFragment
 import net.opendasharchive.openarchive.features.media.Picker
-import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity
-import net.opendasharchive.openarchive.features.onboarding.ServerSetupActivity
 import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
@@ -72,7 +63,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 
-class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener {
+class MainActivity : BaseActivity() {
 
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
@@ -86,11 +77,6 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var networkRequest: NetworkRequest
     private lateinit var connectivityManager: ConnectivityManager
-
-    // These are for the side panel. Refactor all this.
-    //
-    private lateinit var mSpaceAdapter: SpaceAdapter
-    private lateinit var mFolderAdapter: FolderAdapter
 
     // And this is for the pager.
     //
@@ -160,9 +146,9 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     }
 
     private fun preview() {
-         val folderId = getSelectedProject()?.id ?: return
-
-        PreviewActivity.start(this, folderId)
+//         val folderId = getSelectedFolder()?.id ?: return
+//
+//        PreviewActivity.start(this, folderId)
     }
 
 //    private fun showFileSourceActionSheet() {
@@ -310,7 +296,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
             .getInstance(this)
             .registerReceiver(onWifiStatusChanged, IntentFilter(Prefs.UPLOAD_WIFI_ONLY))
 
-        val launchers = Picker.register(this, mBinding.root, { getSelectedProject() }, { media ->
+        val launchers = Picker.register(this, mBinding.root, { mPagerAdapter.getFolder(mCurrentItem) }, { media ->
             showCurrentPage()
 
             if (media.isNotEmpty()) {
@@ -440,7 +426,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     }
 
     private fun showCurrentPage() {
-        val folder = getSelectedProject()
+        val folder = mPagerAdapter.getFolder(mCurrentItem)
 
         if (folder != null) {
             Handler(Looper.getMainLooper()).postDelayed({
@@ -450,7 +436,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     }
 
     private fun addClicked(typeFiles: Boolean = false) {
-        if (getSelectedProject() != null) {
+        if (mPagerAdapter.getFolder(mCurrentItem) != null) {
             if (typeFiles && Picker.canPickFiles(this)) {
                 Picker.pickFiles(mFilePickerLauncher)
             } else {
@@ -481,14 +467,6 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onStart() {
         super.onStart()
-
-        mSpaceAdapter = SpaceAdapter(this)
-        mBinding.spaces.layoutManager = LinearLayoutManager(this)
-        mBinding.spaces.adapter = mSpaceAdapter
-
-        mFolderAdapter = FolderAdapter(this)
-        mBinding.folders.layoutManager = LinearLayoutManager(this)
-        mBinding.folders.adapter = mFolderAdapter
 
         networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
@@ -651,7 +629,7 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
             Timber.d("Media = $media")
         }
 
-        refreshSpace()
+//        refreshSpace()
 
         mCurrentItem = mLastItem
 
@@ -794,69 +772,61 @@ class MainActivity : BaseActivity(), FolderAdapterListener, SpaceAdapterListener
         }
     }
 
-    override fun spaceClicked(backend: Backend) {
-        Backend.current = backend
+//    override fun spaceClicked(backend: Backend) {
+//        Backend.current = backend
+//
+//        refreshSpace()
+//
+//        mBinding.root.closeDrawer(mBinding.folderBar)
+//    }
 
-        refreshSpace()
+//    @SuppressLint("NotifyDataSetChanged")
+//    override fun folderClicked(folder: Folder) {
+//        mCurrentItem = mPagerAdapter.folders.indexOf(folder)
+//
+//        mBinding.root.closeDrawer(mBinding.folderBar)
+//
+//        // make sure that even when navigating to settings and picking a folder there
+//        // the dataset will get update correctly
+//        mFolderAdapter.notifyDataSetChanged()
+//    }
 
-        mBinding.root.closeDrawer(mBinding.folderBar)
+//    override fun getSelectedFolder(): Folder? {
+//        return mPagerAdapter.getFolder(mCurrentItem)
+//    }
+//
+//    override fun addSpaceClicked() {
+//        // mBinding.root.closeDrawer(mBinding.folderBar)
+//
+//        startActivity(Intent(this, BackendSetupActivity::class.java))
+//    }
+//
+//    override fun getSelectedSpace(): Backend? {
+//        return Backend.current
+//    }
 
-//        mBinding.spacesCard.disableAnimation {
-//            mBinding.spacesCard.hide()
+//    private fun refreshPages(setFolderId: Long? = null) {
+//        val folders = Backend.current?.folders ?: emptyList()
+//
+//        mPagerAdapter.updateData(folders)
+//
+//        mBinding.pager.isSaveFromParentEnabled = false
+//        mBinding.pager.adapter = mPagerAdapter
+//
+//        setFolderId?.let {
+//            mCurrentItem = mPagerAdapter.getProjectIndexById(it, default = 0)
 //        }
-    }
+//
+//        mFolderAdapter.update(folders)
+//
+//        showCurrentPage()
+//    }
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun folderClicked(folder: Folder) {
-        mCurrentItem = mPagerAdapter.folders.indexOf(folder)
-
-        mBinding.root.closeDrawer(mBinding.folderBar)
-
-//        mBinding.folderBar.disableAnimation {
-//            mBinding.folderBar.hide()
-//        }
-
-        // make sure that even when navigating to settings and picking a folder there
-        // the dataset will get update correctly
-        mFolderAdapter.notifyDataSetChanged()
-    }
-
-    override fun getSelectedProject(): Folder? {
-        return mPagerAdapter.getFolder(mCurrentItem)
-    }
-
-    override fun addSpaceClicked() {
-        // mBinding.root.closeDrawer(mBinding.folderBar)
-
-        startActivity(Intent(this, ServerSetupActivity::class.java))
-    }
-
-    override fun getSelectedSpace(): Backend? {
-        return Backend.current
-    }
-
-    private fun refreshPages(setFolderId: Long? = null) {
-        val folders = Backend.current?.folders ?: emptyList()
-
-        mPagerAdapter.updateData(folders)
-
-        mBinding.pager.isSaveFromParentEnabled = false
-        mBinding.pager.adapter = mPagerAdapter
-
-        setFolderId?.let {
-            mCurrentItem = mPagerAdapter.getProjectIndexById(it, default = 0)
-        }
-
-        mFolderAdapter.update(folders)
-
-        showCurrentPage()
-    }
-
-    private fun refreshSpace() {
-        mBinding.spaceName.text = "Servers" // currentSpace.friendlyName
-
-        mSpaceAdapter.update(Backend.getAll().asSequence().toList())
-
-        refreshPages()
-    }
+//    private fun refreshSpace() {
+//        mBinding.spaceName.text = "Servers" // currentSpace.friendlyName
+//
+//        mSpaceAdapter.update(Backend.getAll().asSequence().toList())
+//
+//        refreshPages()
+//    }
 }

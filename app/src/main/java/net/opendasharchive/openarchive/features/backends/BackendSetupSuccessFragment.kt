@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.settings
+package net.opendasharchive.openarchive.features.backends
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
-import net.opendasharchive.openarchive.databinding.FragmentSpaceSetupSuccessBinding
+import net.opendasharchive.openarchive.databinding.FragmentBackendSetupSuccessBinding
 
-class SpaceSetupSuccessFragment : Fragment() {
-    private lateinit var mBinding: FragmentSpaceSetupSuccessBinding
+class BackendSetupSuccessFragment : Fragment() {
+    private lateinit var mBinding: FragmentBackendSetupSuccessBinding
     private var message = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +24,7 @@ class SpaceSetupSuccessFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = FragmentSpaceSetupSuccessBinding.inflate(inflater)
+        mBinding = FragmentBackendSetupSuccessBinding.inflate(inflater)
 
         if (message.isNotEmpty()) {
             mBinding.successMessage.text = message
@@ -44,7 +44,7 @@ class SpaceSetupSuccessFragment : Fragment() {
 
         @JvmStatic
         fun newInstance(message: String) =
-            SpaceSetupSuccessFragment().apply {
+            BackendSetupSuccessFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_MESSAGE, message)
                 }

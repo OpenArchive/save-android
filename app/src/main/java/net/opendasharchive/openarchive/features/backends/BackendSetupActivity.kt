@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.onboarding
+package net.opendasharchive.openarchive.features.backends
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,21 +11,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivitySpaceSetupBinding
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveFragment
 import net.opendasharchive.openarchive.features.main.MainActivity
-import net.opendasharchive.openarchive.features.settings.SpaceSetupFragment
-import net.opendasharchive.openarchive.features.settings.SpaceSetupSuccessFragment
 import net.opendasharchive.openarchive.services.gdrive.GDriveFragment
 import net.opendasharchive.openarchive.services.internetarchive.Util
+import net.opendasharchive.openarchive.services.veilid.VeilidFragment
 import net.opendasharchive.openarchive.services.webdav.WebDavFragment
 import timber.log.Timber
 
-class ServerSetupActivity : BaseActivity() {
-
-    companion object {
-        const val FRAGMENT_TAG = "ssa_fragment"
-    }
+class BackendSetupActivity : BaseActivity() {
 
     private lateinit var mBinding: ActivitySpaceSetupBinding
 
@@ -54,11 +50,8 @@ class ServerSetupActivity : BaseActivity() {
             }
         })
 
-        initSpaceSetupFragmentBindings()
-        initWebDavFragmentBindings()
-        initSpaceSetupSuccessFragmentBindings()
-        initInternetArchiveFragmentBindings()
-        initGDriveFragmentBindings()
+        initBackendSetupFragmentBindings()
+        initBackendSetupSuccessFragmentBindings()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -67,31 +60,10 @@ class ServerSetupActivity : BaseActivity() {
         return true
     }
 
-    private fun initSpaceSetupSuccessFragmentBindings() {
-        supportFragmentManager.setFragmentResultListener(SpaceSetupSuccessFragment.RESP_DONE, this) { _, _ ->
+    private fun initBackendSetupSuccessFragmentBindings() {
+        supportFragmentManager.setFragmentResultListener(BackendSetupSuccessFragment.RESP_DONE, this) { _, _ ->
             finishAffinity()
             startActivity(Intent(this, MainActivity::class.java))
-        }
-    }
-
-    private fun initWebDavFragmentBindings() {
-        supportFragmentManager.setFragmentResultListener(WebDavFragment.RESP_SAVED, this) { _, _ ->
-            progress3()
-            supportFragmentManager.commit {
-                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                replace(
-                    mBinding.spaceSetupFragment.id,
-                    SpaceSetupSuccessFragment.newInstance(getString(R.string.you_have_successfully_connected_to_a_private_server))
-                )
-            }
-        }
-
-        supportFragmentManager.setFragmentResultListener(WebDavFragment.RESP_CANCEL, this) { _, _ ->
-            progress1()
-            supportFragmentManager.commit {
-                setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-                replace(mBinding.spaceSetupFragment.id, SpaceSetupFragment())
-            }
         }
     }
 
@@ -103,60 +75,47 @@ class ServerSetupActivity : BaseActivity() {
         }
     }
 
-    private fun initSpaceSetupFragmentBindings() {
-        supportFragmentManager.setFragmentResultListener(SpaceSetupFragment.RESULT_REQUEST_KEY, this) { _, bundle ->
-            when (bundle.getString(SpaceSetupFragment.RESULT_BUNDLE_KEY)) {
-                SpaceSetupFragment.RESULT_VAL_INTERNET_ARCHIVE -> {
+    private fun initBackendSetupFragmentBindings() {
+        supportFragmentManager.setFragmentResultListener(BackendSetupFragment.RESULT_REQUEST_KEY, this) { _, bundle ->
+            when (bundle.getString(BackendSetupFragment.RESULT_BUNDLE_KEY)) {
+                BackendSetupFragment.RESULT_VAL_INTERNET_ARCHIVE -> {
                     showSpaceFragment(InternetArchiveFragment.newInstance())
                 }
 
-                SpaceSetupFragment.RESULT_VAL_WEBDAV -> {
+                BackendSetupFragment.RESULT_VAL_WEBDAV -> {
                     showSpaceFragment(WebDavFragment.newInstance())
                 }
 
-                SpaceSetupFragment.RESULT_VAL_GDRIVE -> {
+                BackendSetupFragment.RESULT_VAL_GDRIVE -> {
                     showSpaceFragment(GDriveFragment())
+                }
+
+                Backend.Type.GDRIVE.friendlyName -> {
+                    showSpaceFragment(GDriveFragment())
+                }
+
+                Backend.Type.VEILID.friendlyName -> {
+                    showSpaceFragment(VeilidFragment())
                 }
             }
         }
-    }
 
-    private fun initInternetArchiveFragmentBindings() {
-        supportFragmentManager.setFragmentResultListener(InternetArchiveFragment.RESP_SAVED, this) { _, _ ->
+        supportFragmentManager.setFragmentResultListener("created", this) { _, _ ->
             progress3()
             supportFragmentManager.commit {
                 setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 replace(
                     mBinding.spaceSetupFragment.id,
-                    SpaceSetupSuccessFragment.newInstance(getString(R.string.you_have_successfully_connected_to_the_internet_archive)))
+                    BackendSetupSuccessFragment.newInstance("Created!")
+                )
             }
         }
 
-        supportFragmentManager.setFragmentResultListener(InternetArchiveFragment.RESP_CANCEL,this) { _, _ ->
+        supportFragmentManager.setFragmentResultListener("cancel", this) { _, _ ->
             progress1()
             supportFragmentManager.commit {
                 setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-                replace(mBinding.spaceSetupFragment.id, SpaceSetupFragment())
-            }
-        }
-    }
-
-    private fun initGDriveFragmentBindings() {
-        supportFragmentManager.setFragmentResultListener(GDriveFragment.RESP_CANCEL, this) { _, _ ->
-            progress1()
-            supportFragmentManager.commit {
-                setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-                replace(mBinding.spaceSetupFragment.id, SpaceSetupFragment())
-            }
-        }
-
-        supportFragmentManager.setFragmentResultListener(GDriveFragment.RESP_AUTHENTICATED, this) { _, _ ->
-            progress3()
-            supportFragmentManager.commit {
-                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                replace(
-                    mBinding.spaceSetupFragment.id,
-                    SpaceSetupSuccessFragment.newInstance(getString(R.string.you_have_successfully_connected_to_gdrive)))
+                replace(mBinding.spaceSetupFragment.id, BackendSetupFragment())
             }
         }
     }
@@ -165,7 +124,6 @@ class ServerSetupActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         supportFragmentManager.fragments.firstOrNull()?.onActivityResult(requestCode, resultCode, data)
-//        supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)?.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun progress1() {

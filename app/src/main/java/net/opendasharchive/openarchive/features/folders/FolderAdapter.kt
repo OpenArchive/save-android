@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.adapters
+package net.opendasharchive.openarchive.features.folders
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.RvSimpleRowBinding
+import net.opendasharchive.openarchive.databinding.OneLineBackendRowBinding
 import net.opendasharchive.openarchive.db.Folder
 import java.lang.ref.WeakReference
 
@@ -20,9 +20,11 @@ interface FolderAdapterListener {
     fun getSelectedProject(): Folder?
 }
 
-class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, FolderAdapter.ViewHolder>(DIFF_CALLBACK), FolderAdapterListener {
+class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, FolderAdapter.ViewHolder>(
+    DIFF_CALLBACK
+), FolderAdapterListener {
 
-    class ViewHolder(private val binding: RvSimpleRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private val binding: OneLineBackendRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(listener: WeakReference<FolderAdapterListener>?, folder: Folder?) {
             binding.rvTitle.text = folder?.description
@@ -104,7 +106,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, Fold
     private var mLastSelected: Folder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(RvSimpleRowBinding.inflate(LayoutInflater.from(parent.context),
+        return ViewHolder(OneLineBackendRowBinding.inflate(LayoutInflater.from(parent.context),
             parent, false))
     }
 

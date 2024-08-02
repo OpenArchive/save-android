@@ -8,6 +8,8 @@ import net.opendasharchive.openarchive.databinding.ActivityWebdavBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.main.MainActivity
+import net.opendasharchive.openarchive.services.CommonServiceFragment.Companion.RESP_CREATED
+import net.opendasharchive.openarchive.services.CommonServiceFragment.Companion.RESP_DELETED
 import kotlin.properties.Delegates
 
 class WebDavActivity : BaseActivity() {
@@ -32,11 +34,11 @@ class WebDavActivity : BaseActivity() {
             }
         }
 
-        supportFragmentManager.setFragmentResultListener(WebDavFragment.RESP_SAVED, this) { _, _ ->
+        supportFragmentManager.setFragmentResultListener(RESP_CREATED, this) { _, _ ->
             finishAffinity()
             startActivity(Intent(this, MainActivity::class.java))
         }
-        supportFragmentManager.setFragmentResultListener(WebDavFragment.RESP_DELETED, this) { _, _ ->
+        supportFragmentManager.setFragmentResultListener(RESP_DELETED, this) { _, _ ->
             Backend.navigate(this)
         }
     }

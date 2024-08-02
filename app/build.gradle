@@ -112,8 +112,8 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.8.3"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.8.4"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4"
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation "androidx.work:work-runtime:2.9.0"
@@ -124,9 +124,9 @@ dependencies {
     implementation "androidx.compose.material3:material3:1.2.1"
     implementation 'androidx.compose.foundation:foundation:1.6.8'
     implementation "androidx.compose.ui:ui-tooling-preview:1.6.8"
-    implementation "androidx.activity:activity-compose:1.9.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3"
+    implementation "androidx.activity:activity-compose:1.9.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4"
 
     implementation "io.insert-koin:koin-core:3.5.3"
     implementation "io.insert-koin:koin-android:3.5.3"
@@ -188,7 +188,7 @@ dependencies {
     // Google Drive API
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
     implementation 'com.google.http-client:google-http-client-gson:1.42.3'
-    implementation 'com.google.api-client:google-api-client-android:1.26.0'
+    implementation 'com.google.api-client:google-api-client-android:1.26.0' // Don't upgrade this yet. Will break code.
     implementation 'com.google.apis:google-api-services-drive:v3-rev136-1.25.0'
 
     // Tor
@@ -211,6 +211,9 @@ dependencies {
 //    implementation "androidx.credentials:credentials:1.2.2"
 //    implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
 //    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.1"
+
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
 
     // Tests
     testImplementation 'junit:junit:4.13.2'

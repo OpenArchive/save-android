@@ -11,7 +11,9 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityOnboarding23InstructionsBinding
+import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.util.Prefs
 
 class Onboarding23InstructionsActivity : BaseActivity() {
@@ -119,6 +121,7 @@ class Onboarding23InstructionsActivity : BaseActivity() {
 
     private fun done() {
         Prefs.didCompleteOnboarding = true
-        startActivity(Intent(this, ServerSetupActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
+        // startActivity(Intent(this, BackendSetupActivity::class.java))
     }
 }

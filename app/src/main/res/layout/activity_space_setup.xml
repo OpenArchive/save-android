@@ -40,7 +40,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/space_setup_fragment"
-                android:name="net.opendasharchive.openarchive.features.settings.SpaceSetupFragment"
+                android:name="net.opendasharchive.openarchive.features.backends.BackendSetupFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp" />
