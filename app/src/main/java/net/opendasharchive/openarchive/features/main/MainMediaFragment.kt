@@ -41,11 +41,11 @@ class MainMediaFragment : Fragment() {
 
     companion object {
         private const val COLUMN_COUNT = 4
-        private const val ARG_PROJECT_ID = "folder_id"
+        private const val ARG_FOLDER_ID = "folder_id"
 
         fun newInstance(folderId: Long): MainMediaFragment {
             val args = Bundle()
-            args.putLong(ARG_PROJECT_ID, folderId)
+            args.putLong(ARG_FOLDER_ID, folderId)
 
             val fragment = MainMediaFragment()
             fragment.arguments = args
@@ -121,7 +121,7 @@ class MainMediaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mFolderId = arguments?.getLong(ARG_PROJECT_ID, -1) ?: -1
+        mFolderId = arguments?.getLong(ARG_FOLDER_ID, -1) ?: -1
 
         mBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
 
@@ -131,7 +131,7 @@ class MainMediaFragment : Fragment() {
             mBinding.currentFolder.root.visibility = View.GONE
         } else {
             val backendIcon = folder.backend?.getAvatar(requireContext())
-            mBinding.currentFolder.currentBackendButton.setCompoundDrawablesWithIntrinsicBounds(backendIcon, null, null, null)
+            mBinding.currentFolder.currentBackendButton.icon = backendIcon
             mBinding.currentFolder.currentBackendButton.show()
             mBinding.currentFolder.currentBackendButton.text = folder.backend?.name ?: "Unknown storage"
             mBinding.currentFolder.currentFolderName.text = folder.description
@@ -223,7 +223,7 @@ class MainMediaFragment : Fragment() {
                 holder?.setHeader(collection, media)
             } else if (media.isNotEmpty()) {
                 val view = createMediaList(collection, media)
-                mBinding.mediaContainer.addView(view, 0)
+                mBinding.mediaContainer.mediaContainer.addView(view, 0)
             }
         }
 
@@ -231,7 +231,7 @@ class MainMediaFragment : Fragment() {
         // while adding images.
         deleteCollections(toDelete, false)
 
-        mBinding.addMediaHint.toggle(mCollections.isEmpty())
+        mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())
     }
 
     private fun deleteSelected() {

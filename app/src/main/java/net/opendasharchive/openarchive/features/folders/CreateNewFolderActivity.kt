@@ -7,8 +7,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityCreateNewFolderBinding
-import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.util.extensions.hide
@@ -89,7 +89,7 @@ class CreateNewFolderActivity : BaseActivity() {
 
         val backend = Backend.current ?: return
 
-        if (backend.hasProject(name)) {
+        if (backend.hasFolder(name)) {
             Toast.makeText(this, getString(R.string.folder_name_already_exists),
                 Toast.LENGTH_LONG).show()
 

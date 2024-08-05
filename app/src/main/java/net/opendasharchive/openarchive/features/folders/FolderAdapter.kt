@@ -27,30 +27,30 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, Fold
     class ViewHolder(private val binding: OneLineBackendRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(listener: WeakReference<FolderAdapterListener>?, folder: Folder?) {
-            binding.rvTitle.text = folder?.description
+            binding.button.text = folder?.description
 
             if (listener?.get()?.getSelectedProject()?.id == folder?.id) {
-                val icon = ContextCompat.getDrawable(binding.rvIcon.context,
+                val icon = ContextCompat.getDrawable(binding.button.context,
                     R.drawable.outline_folder_24
                 )
-                val color = ContextCompat.getColor(binding.rvIcon.context, R.color.colorPrimary)
-                icon?.setTint(color)
-                binding.rvIcon.setImageDrawable(icon)
+//                val color = ContextCompat.getColor(binding.button.context, R.color.colorPrimary)
+//                icon?.setTint(color)
+                binding.button.icon = icon
             } else {
-                val icon = ContextCompat.getDrawable(binding.rvIcon.context,
+                val icon = ContextCompat.getDrawable(binding.button.context,
                     R.drawable.outline_folder_24
                 )
-                val color = ContextCompat.getColor(binding.rvIcon.context,
-                    R.color.colorOnBackground
-                )
-                icon?.setTint(color)
-                binding.rvIcon.setImageDrawable(icon)
+//                val color = ContextCompat.getColor(binding.button.context,
+//                    R.color.colorOnBackground
+//                )
+//                icon?.setTint(color)
+                binding.button.icon = icon
             }
 
-            binding.rvTitle.setTextColor(
-                getColor(binding.rvTitle.context,
-                listener?.get()?.getSelectedProject()?.id == folder?.id)
-            )
+//            binding.button.setTextColor(
+//                getColor(binding.rvTitle.context,
+//                listener?.get()?.getSelectedProject()?.id == folder?.id)
+//            )
 
             if (folder != null) {
                 binding.root.setOnClickListener {

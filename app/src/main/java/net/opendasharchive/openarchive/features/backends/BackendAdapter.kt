@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.databinding.OneLineBackendRowBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.folders.FolderAdapter
-import net.opendasharchive.openarchive.util.extensions.scaled
 import java.lang.ref.WeakReference
 
 interface BackendAdapterListener {
@@ -24,22 +22,22 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
         fun bind(listener: WeakReference<BackendAdapterListener>?, backend: Backend?) {
             if (backend == null) { return }
 
-            val context = binding.rvTitle.context
+            val context = binding.button.context
 
-            val icon = backend.getAvatar(context)?.scaled(32, context)
-            binding.rvIcon.setImageDrawable(icon)
+            val icon = backend.getAvatar(context) // ?.scaled(32, context)
+            binding.button.icon = icon
 
-            binding.rvTitle.text = backend.friendlyName
+            binding.button.text = backend.friendlyName
 
-            binding.rvTitle.setTextColor(
-                FolderAdapter.getColor(
-                    binding.rvTitle.context,
-                    false
-                    // listener?.get()?.getSelectedBackend()?.id == backend?.id
-                )
-            )
+//            binding.backendButton.setTextColor(
+//                FolderAdapter.getColor(
+//                    binding.backendButton.context,
+//                    false
+//                    // listener?.get()?.getSelectedBackend()?.id == backend?.id
+//                )
+//            )
 
-            binding.root.setOnClickListener {
+            binding.button.setOnClickListener {
                 listener?.get()?.backendClicked(backend)
             }
         }

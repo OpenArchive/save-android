@@ -10,25 +10,24 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.ActivitySpaceSetupBinding
+import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveFragment
 import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveFragment
-import net.opendasharchive.openarchive.services.internetarchive.Util
 import net.opendasharchive.openarchive.services.veilid.VeilidFragment
 import net.opendasharchive.openarchive.services.webdav.WebDavFragment
 import timber.log.Timber
 
 class BackendSetupActivity : BaseActivity() {
 
-    private lateinit var mBinding: ActivitySpaceSetupBinding
+    private lateinit var mBinding: ActivityBackendSetupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = ActivitySpaceSetupBinding.inflate(layoutInflater)
+        mBinding = ActivityBackendSetupBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
         setSupportActionBar(mBinding.toolbar)
@@ -68,7 +67,7 @@ class BackendSetupActivity : BaseActivity() {
     }
 
     private fun showSpaceFragment(fragment: Fragment) {
-        progress2()
+//        progress2()
         supportFragmentManager.commit {
             setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
             replace(mBinding.spaceSetupFragment.id, fragment)
@@ -78,16 +77,8 @@ class BackendSetupActivity : BaseActivity() {
     private fun initBackendSetupFragmentBindings() {
         supportFragmentManager.setFragmentResultListener(BackendSetupFragment.RESULT_REQUEST_KEY, this) { _, bundle ->
             when (bundle.getString(BackendSetupFragment.RESULT_BUNDLE_KEY)) {
-                BackendSetupFragment.RESULT_VAL_INTERNET_ARCHIVE -> {
+                Backend.Type.INTERNET_ARCHIVE.friendlyName -> {
                     showSpaceFragment(InternetArchiveFragment.newInstance())
-                }
-
-                BackendSetupFragment.RESULT_VAL_WEBDAV -> {
-                    showSpaceFragment(WebDavFragment.newInstance())
-                }
-
-                BackendSetupFragment.RESULT_VAL_GDRIVE -> {
-                    showSpaceFragment(GDriveFragment())
                 }
 
                 Backend.Type.GDRIVE.friendlyName -> {
@@ -97,11 +88,15 @@ class BackendSetupActivity : BaseActivity() {
                 Backend.Type.VEILID.friendlyName -> {
                     showSpaceFragment(VeilidFragment())
                 }
+
+                Backend.Type.WEBDAV.friendlyName -> {
+                    showSpaceFragment(WebDavFragment.newInstance())
+                }
             }
         }
 
         supportFragmentManager.setFragmentResultListener("created", this) { _, _ ->
-            progress3()
+//            progress3()
             supportFragmentManager.commit {
                 setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 replace(
@@ -112,7 +107,7 @@ class BackendSetupActivity : BaseActivity() {
         }
 
         supportFragmentManager.setFragmentResultListener("cancel", this) { _, _ ->
-            progress1()
+//            progress1()
             supportFragmentManager.commit {
                 setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 replace(mBinding.spaceSetupFragment.id, BackendSetupFragment())
@@ -126,27 +121,27 @@ class BackendSetupActivity : BaseActivity() {
         supportFragmentManager.fragments.firstOrNull()?.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun progress1() {
-        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
-        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOff)
-        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOff)
-        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOff)
-        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOff)
-    }
-
-    private fun progress2() {
-        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
-        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOn)
-        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOn)
-        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOff)
-        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOff)
-    }
-
-    private fun progress3() {
-        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
-        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOn)
-        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOn)
-        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOn)
-        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOn)
-    }
+//    private fun progress1() {
+//        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
+//        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOff)
+//        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOff)
+//        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOff)
+//        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOff)
+//    }
+//
+//    private fun progress2() {
+//        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
+//        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOn)
+//        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOn)
+//        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOff)
+//        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOff)
+//    }
+//
+//    private fun progress3() {
+//        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
+//        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOn)
+//        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOn)
+//        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOn)
+//        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOn)
+//    }
 }

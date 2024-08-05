@@ -41,7 +41,7 @@ class BrowseFoldersViewModel : ViewModel() {
                     }
                 }
 
-                mFolders.value = value.filter { !backend.hasProject(it.name) }
+                mFolders.value = value.filter { !backend.hasFolder(it.name) }
 
                 progressBarFlag.value = false
             }

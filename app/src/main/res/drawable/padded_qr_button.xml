@@ -1,0 +1,8 @@
+<!-- res/drawable/padded_icon.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/outline_qr_code_2_24"
+        android:left="0dp"
+        android:top="0dp"
+        android:right="8dp"
+        android:bottom="0dp" />
+</layer-list>

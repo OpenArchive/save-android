@@ -115,7 +115,7 @@
 
     <style name="OAMaterialButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:background">@drawable/button</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:paddingBottom">0dp</item>
         <item name="android:paddingEnd">0dp</item>
@@ -142,6 +142,21 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/button</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="OABottomBarButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="OAOutlinedButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="cornerRadius">10dp</item>
+        <item name="strokeColor">@color/colorOnBackgroundTonedDown</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
     </style>
 
     <style name="OASwitchPreferenceStyle" parent="@style/Preference.SwitchPreferenceCompat.Material">

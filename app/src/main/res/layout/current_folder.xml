@@ -9,56 +9,42 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/current_backend_button"
+        style="@style/OAButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_internet_archive"
-        android:text="Internet Archive"
-        android:textColor="@color/background"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:text="Veilid"
+        android:textColor="@color/colorOnBackground"
+        android:textSize="18sp"
+        app:backgroundTint="@android:color/transparent"
+        app:icon="@drawable/ic_veilid"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="50dp"
+        app:iconTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/path_separator"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/current_backend_icon"-->
-    <!--        android:layout_width="30dp"-->
-    <!--        android:layout_height="30dp"-->
-    <!--        android:adjustViewBounds="true"-->
-    <!--        android:scaleType="fitCenter"-->
-    <!--        android:background="@drawable/logo_gdrive_outline"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toStartOf="@id/current_backend_nickname"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        tools:ignore="ContentDescription" />-->
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/current_backend_nickname"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="10dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintStart_toEndOf="@id/current_backend_icon"-->
-    <!--        app:layout_constraintEnd_toStartOf="@id/path_separator"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        tools:text="Googs" />-->
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/path_separator"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:background="@drawable/outline_chevron_right_24"
-        android:backgroundTint="@color/c23_grey"
+        android:backgroundTint="@color/colorOnBackground"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/current_folder_name"
         app:layout_constraintStart_toEndOf="@id/current_backend_button"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/current_folder_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="10dp"
         android:padding="0dp"
@@ -66,47 +52,25 @@
         android:paddingRight="0dp"
         android:text="Folder FPO"
         android:textAlignment="viewStart"
-        android:textColor="@color/background"
+        android:textColor="@color/colorOnBackground"
+        android:textSize="18sp"
+        app:backgroundTint="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/current_folder_count"
         app:layout_constraintStart_toEndOf="@id/path_separator"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/current_folder_name"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="10dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toStartOf="@id/current_folder_count"-->
-    <!--        app:layout_constraintStart_toEndOf="@id/path_separator"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        tools:text="Folder Name FPO" />-->
-
     <TextView
         android:id="@+id/current_folder_count"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@drawable/pill"
         android:textSize="16sp"
+        android:textColor="@color/white"
         app:layout_constraintBaseline_toBaselineOf="@id/current_folder_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_min="24dp"
         tools:text="99+" />
-
-    <!--                <com.google.android.material.button.MaterialButton-->
-    <!--                    android:id="@+id/upload_edit_button"-->
-    <!--                    style="@style/Widget.Material3.Button.TextButton"-->
-    <!--                    android:layout_width="wrap_content"-->
-    <!--                    android:layout_height="40dp"-->
-    <!--                    android:paddingEnd="0dp"-->
-    <!--                    android:text="@string/edit"-->
-    <!--                    app:icon="@drawable/ic_low_priority"-->
-    <!--                    app:iconGravity="textStart"-->
-    <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                    app:layout_constraintTop_toTopOf="parent"-->
-    <!--                    tools:ignore="RtlSymmetry" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

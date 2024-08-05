@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import net.opendasharchive.openarchive.db.Backend
 
-class BackendViewModel : ViewModel() {
+class BackendViewModel(private val filter: Filter = Filter.ALL) : ViewModel() {
     companion object {
         private val ALL_BACKENDS = listOf(
             Backend(Backend.Type.GDRIVE),
@@ -14,12 +14,20 @@ class BackendViewModel : ViewModel() {
             Backend(Backend.Type.VEILID),
             Backend(Backend.Type.WEBDAV)
         )
+
+        enum class Filter() {
+            ALL, CONNECTED
+        }
     }
 
     private val _backends = MutableLiveData<List<Backend>>()
     val backends: LiveData<List<Backend>> = _backends
 
     init {
-        _backends.value = ALL_BACKENDS // Backend.getAll().asSequence().toList()
+        _backends.value = if (filter == Filter.ALL) {
+            ALL_BACKENDS
+        } else {
+            Backend.getAll().asSequence().toList()
+        }
     }
 }

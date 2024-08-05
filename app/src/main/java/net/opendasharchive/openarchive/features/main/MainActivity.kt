@@ -36,9 +36,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.extensions.getMeasurments
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.folders.AddFolderActivity
 import net.opendasharchive.openarchive.features.media.AddMediaDialogFragment
@@ -48,11 +46,6 @@ import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
-import net.opendasharchive.openarchive.util.extensions.Position
-import net.opendasharchive.openarchive.util.extensions.hide
-import net.opendasharchive.openarchive.util.extensions.scaleAndTintDrawable
-import net.opendasharchive.openarchive.util.extensions.scaled
-import net.opendasharchive.openarchive.util.extensions.setDrawable
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.aviran.cookiebar2.CookieBar
@@ -60,7 +53,6 @@ import timber.log.Timber
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 
 class MainActivity : BaseActivity() {
@@ -339,74 +331,34 @@ class MainActivity : BaseActivity() {
             }
         })
 
-        mBinding.spaceName.setOnClickListener {
-            var newAlpha = 0F
-
-            if (serverListCurOffset != serverListOffset) {
-                serverListCurOffset = serverListOffset
-                mBinding.spaceName.setDrawable(R.drawable.ic_expand_more, Position.End, 0.75)
-            } else {
-                newAlpha = 1F
-                serverListCurOffset = 0F
-                mBinding.spaceName.setDrawable(R.drawable.ic_expand_less, Position.End, 0.75)
-            }
-
-            mBinding.spaces.visibility = View.VISIBLE
-            mBinding.currentSpaceName.visibility = View.VISIBLE
-            mBinding.newFolder.visibility = View.VISIBLE
-            mBinding.folders.visibility = View.VISIBLE
-
-            mBinding.spaces.animate().translationY(serverListCurOffset).alpha(newAlpha).withEndAction {
-                run {
-                    if (newAlpha == 0F) {
-                        mBinding.spaces.hide(false)
-                    }
-                }
-            }
-            mBinding.currentSpaceName.animate().alpha(1 - newAlpha)
-            mBinding.newFolder.animate().alpha(1 - newAlpha)
-            mBinding.folders.animate().alpha(1 - newAlpha)
-        }
-
-        mBinding.currentSpaceName.text = Backend.current?.friendlyName
-        mBinding.currentSpaceName.setDrawable(Backend.current?.getAvatar(applicationContext)?.scaled(32, applicationContext),
-            Position.Start, tint = true)
-        mBinding.currentSpaceName.compoundDrawablePadding =
-            applicationContext.resources.getDimension(R.dimen.padding_small).roundToInt()
-
-        mBinding.newFolder.scaleAndTintDrawable(Position.Start, 0.75)
-        mBinding.newFolder.setOnClickListener {
-            addFolder()
-        }
-
-        mBinding.myMediaButton.setOnClickListener {
+        mBinding.bottomBar.myMediaButton.setOnClickListener {
             mCurrentItem = mLastMediaItem
         }
-        mBinding.myMediaLabel.setOnClickListener {
+        mBinding.bottomBar.myMediaLabel.setOnClickListener {
             // perform click + play ripple animation
-            mBinding.myMediaButton.isPressed = true
-            mBinding.myMediaButton.isPressed = false
-            mBinding.myMediaButton.performClick()
+            mBinding.bottomBar.myMediaButton.isPressed = true
+            mBinding.bottomBar.myMediaButton.isPressed = false
+            mBinding.bottomBar.myMediaButton.performClick()
         }
 
         // add_button on the bottom bar
         //
-        mBinding.addButton.setOnClickListener { addClicked() }
+        mBinding.bottomBar.addButton.setOnClickListener { addClicked() }
 
         // settings_button on bottom bar
         //
-        mBinding.settingsButton.setOnClickListener {
+        mBinding.bottomBar.settingsButton.setOnClickListener {
             mCurrentItem = mPagerAdapter.settingsIndex
         }
-        mBinding.settingsLabel.setOnClickListener {
+        mBinding.bottomBar.settingsLabel.setOnClickListener {
             // perform click + play ripple animation
-            mBinding.settingsButton.isPressed = true
-            mBinding.settingsButton.isPressed = false
-            mBinding.settingsButton.performClick()
+            mBinding.bottomBar.settingsButton.isPressed = true
+            mBinding.bottomBar.settingsButton.isPressed = false
+            mBinding.bottomBar.settingsButton.performClick()
         }
 
         if (Picker.canPickFiles(this)) {
-            mBinding.addButton.setOnLongClickListener {
+            mBinding.bottomBar.addButton.setOnLongClickListener {
                 val addMediaDialogFragment = AddMediaDialogFragment()
                 addMediaDialogFragment.show(supportFragmentManager, addMediaDialogFragment.tag)
 
@@ -638,15 +590,6 @@ class MainActivity : BaseActivity() {
         }
 
         importSharedMedia(intent)
-
-        if (serverListOffset == 0F) {
-            val dims = mBinding.spaces.getMeasurments()
-            serverListOffset = -dims.second.toFloat()
-            serverListCurOffset = serverListOffset
-            mBinding.spaces.visibility = View.GONE
-            mBinding.spaces.animate().translationY(serverListOffset)
-            mBinding.spaceName.setDrawable(R.drawable.ic_expand_more, Position.End, 0.75)
-        }
     }
 
 //    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -708,8 +651,6 @@ class MainActivity : BaseActivity() {
 
     private fun addFolder() {
         mNewFolderResultLauncher.launch(Intent(this, AddFolderActivity::class.java))
-
-        mBinding.root.closeDrawer(mBinding.folderBar)
     }
 
     private fun importSharedMedia(data: Intent?) {
@@ -764,21 +705,13 @@ class MainActivity : BaseActivity() {
 
     private fun updateBottomNavbar(position: Int) {
         if (position == mPagerAdapter.settingsIndex) {
-            mBinding.myMediaButton.setIconResource(R.drawable.outline_perm_media_24)
-            mBinding.settingsButton.setIconResource(R.drawable.ic_settings_filled)
+            mBinding.bottomBar.myMediaButton.setIconResource(R.drawable.outline_perm_media_24)
+            mBinding.bottomBar.settingsButton.setIconResource(R.drawable.ic_settings_filled)
         } else {
-            mBinding.myMediaButton.setIconResource(R.drawable.perm_media_24px)
-            mBinding.settingsButton.setIconResource(R.drawable.ic_settings)
+            mBinding.bottomBar.myMediaButton.setIconResource(R.drawable.perm_media_24px)
+            mBinding.bottomBar.settingsButton.setIconResource(R.drawable.ic_settings)
         }
     }
-
-//    override fun spaceClicked(backend: Backend) {
-//        Backend.current = backend
-//
-//        refreshSpace()
-//
-//        mBinding.root.closeDrawer(mBinding.folderBar)
-//    }
 
 //    @SuppressLint("NotifyDataSetChanged")
 //    override fun folderClicked(folder: Folder) {

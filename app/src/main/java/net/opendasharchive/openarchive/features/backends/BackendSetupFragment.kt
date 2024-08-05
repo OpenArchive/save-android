@@ -157,7 +157,7 @@ class BackendSetupFragment : Fragment(), BackendAdapterListener {
 
     override fun backendClicked(backend: Backend) {
         Timber.d("backendClicked")
-        Backend.current = backend
+        // Backend.current = backend
         setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to backend.friendlyName))
     }
 

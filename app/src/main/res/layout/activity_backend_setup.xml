@@ -30,20 +30,19 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include
-                android:id="@+id/progress_block"
-                layout="@layout/block_space_setup_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="40dp" />
+<!--            <include-->
+<!--                android:id="@+id/progress_block"-->
+<!--                layout="@layout/block_space_setup_progress"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                android:layout_marginTop="40dp" />-->
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/space_setup_fragment"
                 android:name="net.opendasharchive.openarchive.features.backends.BackendSetupFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dp" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
     </ScrollView>

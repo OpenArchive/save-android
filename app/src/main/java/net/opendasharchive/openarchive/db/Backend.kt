@@ -95,7 +95,7 @@ data class Backend(
         }
 
         var current: Backend?
-            get() = get(Prefs.currentBackendId) // ?: first(Backend::class.java)
+            get() = get(Prefs.currentBackendId)
             set(value) {
                 Prefs.currentBackendId = value?.id ?: -1
             }
@@ -148,14 +148,14 @@ data class Backend(
         }
 
     val folders: List<Folder>
-        get() = find(Folder::class.java, "space_id = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
+        get() = find(Folder::class.java, "backend_id = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
 
     val archivedFolders: List<Folder>
-        get() = find(Folder::class.java, "space_id = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
+        get() = find(Folder::class.java, "backend_id = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
 
-    fun hasProject(description: String): Boolean {
+    fun hasFolder(description: String): Boolean {
         // Cannot use `count` from Kotlin due to strange <T> in method signature.
-        return find(Folder::class.java, "space_id = ? AND description = ?", id.toString(), description).size > 0
+        return find(Folder::class.java, "backend_id = ? AND description = ?", id.toString(), description).size > 0
     }
 
     fun getAvatar(context: Context): Drawable? {

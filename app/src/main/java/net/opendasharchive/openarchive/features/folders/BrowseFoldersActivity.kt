@@ -86,7 +86,7 @@ class BrowseFoldersActivity : BaseActivity() {
         val backend = Backend.current ?: return
 
         // This should not happen. These should have been filtered on display.
-        if (backend.hasProject(folder.name)) return
+        if (backend.hasFolder(folder.name)) return
 
         val license = backend.license
 

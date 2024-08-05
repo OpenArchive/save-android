@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="15dp"
             android:alpha="0.75"
             android:gravity="center"
             android:text="@string/to_get_started_connect_to_a_server_to_store_your_media"
