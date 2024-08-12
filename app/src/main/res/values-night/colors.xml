@@ -3,11 +3,12 @@
 
     <!-- night theme colors -->
 
-    <color name="colorBackground">@color/black</color>
+    <color name="colorBackground">#16161D</color>
     <color name="colorOnBackground">@color/white</color>
     <color name="colorOnPrimary">@color/white</color>
     <color name="colorPrimary">@color/c23_teal</color>
     <color name="colorPrimaryDark">@color/c23_teal_40</color>
+    <color name="colorText">@color/c23_light_grey</color>
 
     <color name="colorBottomNavbar">@color/c23_darker_grey</color>
     <color name="colorOnBottomNavbar">@color/white</color>
@@ -18,6 +19,7 @@
     <color name="colorSpaceSetupProgressOn">@color/c23_teal</color>
     <color name="colorSpaceSetupProgressOff">@color/c23_medium_grey</color>
     <color name="colorBackgroundSpaceIcon">@color/c23_darker_grey</color>
+    <color name="colorButtonOnBackground">@color/black</color>
 
     <color name="colorPill">#434343</color>
     <color name="splashBackground">#151515</color>

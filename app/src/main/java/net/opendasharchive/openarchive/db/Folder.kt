@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.db
 
 import com.orm.SugarRecord
+import net.opendasharchive.openarchive.util.Prefs
 import java.util.Date
 
 data class Folder(
@@ -12,7 +13,20 @@ data class Folder(
     var licenseUrl: String? = null
 ) : SugarRecord() {
 
+    fun exists(): Boolean {
+        return findWithQuery(
+            Folder::class.java,
+            "backendId = ? and description = ?",
+            backendId.toString(), description).isNotEmpty()
+    }
+
     companion object {
+
+        var current: Folder?
+            get() = getById(Prefs.currentFolderId)
+            set(value) {
+                Prefs.currentFolderId = value?.id ?: -1
+            }
 
         fun getById(folderId: Long?): Folder? {
             @Suppress("NAME_SHADOWING")

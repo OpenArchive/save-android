@@ -116,9 +116,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4"
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation "androidx.work:work-runtime:2.9.0"
-    implementation "androidx.work:work-runtime-ktx:2.9.0"
-    implementation "androidx.work:work-testing:2.9.0"
+    implementation "androidx.work:work-runtime:2.9.1"
+    implementation "androidx.work:work-runtime-ktx:2.9.1"
+    implementation "androidx.work:work-testing:2.9.1"
 
     implementation "androidx.compose.ui:ui:1.6.8"
     implementation "androidx.compose.material3:material3:1.2.1"
@@ -214,6 +214,8 @@ dependencies {
 
     implementation 'com.google.zxing:core:3.4.1'
     implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
+
+    implementation 'com.eclipsesource.j2v8:j2v8:6.2.1@aar'
 
     // Tests
     testImplementation 'junit:junit:4.13.2'

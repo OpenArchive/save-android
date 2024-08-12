@@ -61,13 +61,14 @@
 
     <!-- theme day colors -->
 
-    <color name="colorBackground">@color/white</color>
+    <color name="colorBackground">#F5F1E7</color>
     <color name="colorOnBackground">@color/black</color>
     <color name="colorOnBackgroundTonedDown">@color/c23_grey</color>
     <color name="colorOnPrimary">@color/white</color>
     <color name="colorPrimary">@color/c23_teal</color>
     <color name="colorPrimaryDark">@color/c23_teal_40</color>
     <color name="colorPrimaryBright">@color/c23_powder_blue</color>
+    <color name="colorText">@color/c23_dark_grey</color>
 
     <!-- custom day colors -->
 
@@ -80,6 +81,7 @@
     <color name="colorSpaceSetupProgressOn">@color/black</color>
     <color name="colorSpaceSetupProgressOff">@color/c23_grey</color>
     <color name="colorBackgroundSpaceIcon">@color/c23_light_grey</color>
+    <color name="colorButtonOnBackground">@color/white</color>
 
     <!--
 
@@ -91,6 +93,7 @@
 
      -->
 
+    <color name="colorIcon">@color/c23_medium_grey</color>
     <color name="colorPill">@color/colorOnBackground</color>
     <color name="colorMediaOverlayIcon">@color/white</color>
     <color name="colorDanger">@color/red</color>

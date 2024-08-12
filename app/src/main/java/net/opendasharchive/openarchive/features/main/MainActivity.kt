@@ -15,9 +15,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.folders.AddFolderActivity
@@ -114,23 +112,6 @@ class MainActivity : BaseActivity() {
         }, 3000)
     }
 
-    @Suppress("DEPRECATION")
-    private fun hideSystemUI() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.let { controller ->
-                // Hide the navigation bar
-                controller.hide(WindowInsets.Type.navigationBars())
-                // Ensure the status bar stays visible
-                controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
-        } else {
-            // For API level < 30
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
-        }
-    }
-
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             Timber.d("Selected file URI: $it")
@@ -198,12 +179,12 @@ class MainActivity : BaseActivity() {
                     finish()
                 }
 
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
+//                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+//                    super.onAuthenticationSucceeded(result)
 //                    showMessage("Authentication succeeded!")
 //                    splashScreen = installSplashScreen()
 //                    dismissSplashScreen()
-                }
+//                }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
@@ -253,35 +234,32 @@ class MainActivity : BaseActivity() {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-//        super.onRestoreInstanceState(savedInstanceState)
-//        Timber.d("onRestoreInstanceState")
-//    }
-//
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        Timber.d("onSaveInstanceState")
-//
-//        if (SaveApp.hasThemeChanged) {
-//            SaveApp.hasThemeChanged = false
-//            outState.putBoolean(AppSettings.HAS_USER_AUTHENTICATED, true)
-//        }
-//    }
-
-//    lateinit var splashScreen: androidx.core.splashscreen.SplashScreen
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
+//        val filecoinManager = FilecoinJ2V8Manager(this)
+//        filecoinManager.initialize()
+//
+//        try {
+//            val walletAddress = filecoinManager.createWallet()
+//            Log.d("Filecoin", "Created wallet: $walletAddress")
+//
+//            val balance = filecoinManager.getBalance(walletAddress)
+//            Log.d("Filecoin", "Wallet balance: $balance")
+//
+////            val dealCid = filecoinManager.createDeal("t01234", "QmExampleCID...", 1.0, 2880)
+////            Timber.d("Filecoin", "Created deal: $dealCid")
+//        } catch (e: Exception) {
+//            Log.e("Filecoin", "Error: ${e.localizedMessage}")
+//        }
+
         if (Prefs.lockWithPasscode && didSetupBiometricAuthentication()) {
             Timber.d("Doing biometrics")
         } else {
             Timber.d("Not doing biometrics")
-//            splashScreen = installSplashScreen()
-//            dismissSplashScreen(after = 3000)
         }
 
         LocalBroadcastManager
@@ -314,6 +292,9 @@ class MainActivity : BaseActivity() {
         mPagerAdapter.registerAdapterDataObserver(observer)
         mBinding.pager.adapter = mPagerAdapter
 
+        val folders = Backend.current?.folders ?: emptyList()
+        mPagerAdapter.updateData(folders)
+
         mBinding.pager.isUserInputEnabled = false
         mBinding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -334,28 +315,28 @@ class MainActivity : BaseActivity() {
         mBinding.bottomBar.myMediaButton.setOnClickListener {
             mCurrentItem = mLastMediaItem
         }
-        mBinding.bottomBar.myMediaLabel.setOnClickListener {
-            // perform click + play ripple animation
-            mBinding.bottomBar.myMediaButton.isPressed = true
-            mBinding.bottomBar.myMediaButton.isPressed = false
-            mBinding.bottomBar.myMediaButton.performClick()
-        }
+//        mBinding.bottomBar.myMediaLabel.setOnClickListener {
+//            // perform click + play ripple animation
+//            mBinding.bottomBar.myMediaButton.isPressed = true
+//            mBinding.bottomBar.myMediaButton.isPressed = false
+//            mBinding.bottomBar.myMediaButton.performClick()
+//        }
 
         // add_button on the bottom bar
         //
-        mBinding.bottomBar.addButton.setOnClickListener { addClicked() }
+        mBinding.bottomBar.addButton.setOnClickListener { addMedia() }
 
         // settings_button on bottom bar
         //
         mBinding.bottomBar.settingsButton.setOnClickListener {
             mCurrentItem = mPagerAdapter.settingsIndex
         }
-        mBinding.bottomBar.settingsLabel.setOnClickListener {
-            // perform click + play ripple animation
-            mBinding.bottomBar.settingsButton.isPressed = true
-            mBinding.bottomBar.settingsButton.isPressed = false
-            mBinding.bottomBar.settingsButton.performClick()
-        }
+//        mBinding.bottomBar.settingsLabel.setOnClickListener {
+//            // perform click + play ripple animation
+//            mBinding.bottomBar.settingsButton.isPressed = true
+//            mBinding.bottomBar.settingsButton.isPressed = false
+//            mBinding.bottomBar.settingsButton.performClick()
+//        }
 
         if (Picker.canPickFiles(this)) {
             mBinding.bottomBar.addButton.setOnLongClickListener {
@@ -366,11 +347,11 @@ class MainActivity : BaseActivity() {
             }
 
             supportFragmentManager.setFragmentResultListener(AddMediaDialogFragment.RESP_PHOTO_GALLERY, this) { _, _ ->
-                addClicked()
+                addMedia()
             }
 
             supportFragmentManager.setFragmentResultListener(AddMediaDialogFragment.RESP_FILES, this) { _, _ ->
-                addClicked(typeFiles = true)
+                addMedia(typeFiles = true)
             }
         }
 
@@ -387,7 +368,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun addClicked(typeFiles: Boolean = false) {
+    private fun addMedia(typeFiles: Boolean = false) {
         if (mPagerAdapter.getFolder(mCurrentItem) != null) {
             if (typeFiles && Picker.canPickFiles(this)) {
                 Picker.pickFiles(mFilePickerLauncher)
@@ -530,7 +511,7 @@ class MainActivity : BaseActivity() {
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
-            Timber.d("networkCallback: wifi changed")
+            Timber.d("networkCallback: wifi changed $networkCapabilities")
             super.onCapabilitiesChanged(network, networkCapabilities)
             setWifiIndicator(Prefs.uploadWifiOnly)
         }
@@ -568,20 +549,12 @@ class MainActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-//        window.navigationBarColor = getColor(R.color.colorPrimary)
-//
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
-//        WindowInsetsControllerCompat(window, findViewById(android.R.id.content)).let { controller ->
-//            controller.hide(WindowInsetsCompat.Type.systemBars())
-//            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-//        }
-
         val results = Media.getAll()
         results.forEach { media ->
             Timber.d("Media = $media")
         }
 
-//        refreshSpace()
+        // showCurrentPage()
 
         mCurrentItem = mLastItem
 

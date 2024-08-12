@@ -35,7 +35,6 @@ class PagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle): Frag
 
     override fun getItemCount(): Int {
         return 2
-        // return max(1, projects.size) + 1
     }
 
     fun getProjectIndexById(id: Long, default: Int = 0): Int {

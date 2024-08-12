@@ -5,7 +5,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.util.Prefs
 
-abstract class BaseActivity: AppCompatActivity() {
+abstract class BaseActivity(): AppCompatActivity() {
 
     companion object {
         const val EXTRA_DATA_SPACE = "space"

@@ -7,14 +7,15 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FolderRowBinding
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.util.extensions.clone
 import net.opendasharchive.openarchive.util.extensions.scaled
 import net.opendasharchive.openarchive.util.extensions.tint
 import java.text.SimpleDateFormat
 
 class BrowseFoldersAdapter(
-    private val folders: List<BrowseFoldersViewModel.Folder> = emptyList(),
-    private val onClick: (folder: BrowseFoldersViewModel.Folder) -> Unit
+    private val folders: List<Folder> = emptyList(),
+    private val onClick: (folder: Folder) -> Unit
 ) : RecyclerView.Adapter<BrowseFoldersAdapter.FolderViewHolder>() {
 
     companion object {
@@ -47,7 +48,7 @@ class BrowseFoldersAdapter(
 
     inner class FolderViewHolder(
         private val binding: FolderRowBinding,
-        private val onClick: (folder: BrowseFoldersViewModel.Folder) -> Unit
+        private val onClick: (folder: Folder) -> Unit
     ) : RecyclerView.ViewHolder(binding.root)
     {
         fun onBindView(position: Int, selected: Boolean) {
@@ -56,13 +57,14 @@ class BrowseFoldersAdapter(
             binding.icon.setImageDrawable(sIcon?.clone()?.tint(color))
             binding.name.setTextColor(color)
 
-            binding.name.text = folders[position].name
-            binding.timestamp.text = formatter.format(folders[position].modified)
+            val folder = folders[position]
+
+            binding.name.text = "${folder.backend!!.friendlyName} > ${folder.description}"
+            binding.timestamp.text = formatter.format(folders[position].created!!)
 
             binding.root.setOnClickListener {
                 mSelected = position
                 this@BrowseFoldersAdapter.notifyDataSetChanged()
-
                 onClick.invoke(folders[position])
             }
         }

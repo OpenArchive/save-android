@@ -20,7 +20,8 @@ class BrowseFoldersActivity : BaseActivity() {
     private lateinit var mBinding: ActivityBrowseFoldersBinding
     private lateinit var mViewModel: BrowseFoldersViewModel
 
-    private var mSelected: BrowseFoldersViewModel.Folder? = null
+    private var mSelected: Folder? = null
+    private var hasFolders = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +38,12 @@ class BrowseFoldersActivity : BaseActivity() {
 
         mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
 
-        val backend = Backend.current
+        // val backend = Backend.current
 
-        if (backend != null) {
-            mViewModel.getFolders(this, backend)
+        try {
+            mViewModel.getAllFolders(this)
+        } catch (e: Error) {
+            Timber.e(e)
         }
 
         mViewModel.folders.value?.forEach { it ->
@@ -48,11 +51,19 @@ class BrowseFoldersActivity : BaseActivity() {
         }
 
         mViewModel.folders.observe(this) {
+//            hasFolders = it.isNotEmpty()
+
             mBinding.foldersEmpty.toggle(it.isEmpty())
 
-            mBinding.rvFolderList.adapter = BrowseFoldersAdapter(it) { name ->
-                mSelected = name
+            mBinding.rvFolderList.adapter = BrowseFoldersAdapter(it) { folder ->
+                // if (!folder.exists()) {
+                    folder.save()
+                // }
+                Folder.current = folder
+                finish()
             }
+
+            invalidateOptionsMenu()
         }
 
         mViewModel.progressBarFlag.observe(this) {
@@ -61,7 +72,9 @@ class BrowseFoldersActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_browse_folder, menu)
+        if (hasFolders) {
+            menuInflater.inflate(R.menu.menu_browse_folder, menu)
+        }
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -81,12 +94,12 @@ class BrowseFoldersActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun addFolder(folder: BrowseFoldersViewModel.Folder?) {
+    private fun addFolder(folder: Folder?) {
         if (folder == null) return
         val backend = Backend.current ?: return
 
         // This should not happen. These should have been filtered on display.
-        if (backend.hasFolder(folder.name)) return
+        if (backend.hasFolder(folder.description)) return
 
         val license = backend.license
 
@@ -97,7 +110,11 @@ class BrowseFoldersActivity : BaseActivity() {
 //            setResult(RESULT_CANCELED, i)
 //        }
 //        else {
-            val folder = Folder(folder.name, Date(), backend.id, licenseUrl = license)
+            val folder = Folder(
+                description = folder.description,
+                created = Date(),
+                backendId = backend.id,
+                licenseUrl = license)
         folder.save()
 
             val i = Intent()

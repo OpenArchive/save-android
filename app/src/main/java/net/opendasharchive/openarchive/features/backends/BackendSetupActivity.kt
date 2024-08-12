@@ -32,7 +32,7 @@ class BackendSetupActivity : BaseActivity() {
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Servers"
+        supportActionBar?.title = "All Servers"
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -95,13 +95,37 @@ class BackendSetupActivity : BaseActivity() {
             }
         }
 
-        supportFragmentManager.setFragmentResultListener("created", this) { _, _ ->
+        supportFragmentManager.setFragmentResultListener("created", this) { _, bundle ->
 //            progress3()
+            val f = bundle.getString(BackendSetupFragment.RESULT_BUNDLE_KEY)
+            Timber.d("RESULT_BUNDLE_KEY = $f")
+
             supportFragmentManager.commit {
+                val message = when (bundle.getString(BackendSetupFragment.RESULT_BUNDLE_KEY)) {
+                    Backend.Type.INTERNET_ARCHIVE.friendlyName -> {
+                        getString(R.string.you_have_successfully_connected_to_the_internet_archive)
+                    }
+
+                    Backend.Type.GDRIVE.friendlyName -> {
+                        getString(R.string.you_have_successfully_connected_to_a_veilid_group)
+                    }
+
+                    Backend.Type.VEILID.friendlyName -> {
+                        getString(R.string.you_have_successfully_connected_to_a_private_server)
+                    }
+
+                    Backend.Type.WEBDAV.friendlyName -> {
+                        getString(R.string.you_have_successfully_connected_to_a_private_server)
+                    }
+
+                    else -> {
+                        getString(R.string.you_have_successfully_connected_to_a_private_server)
+                    }
+                }
                 setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 replace(
                     mBinding.spaceSetupFragment.id,
-                    BackendSetupSuccessFragment.newInstance("Created!")
+                    BackendSetupSuccessFragment.newInstance(message)
                 )
             }
         }

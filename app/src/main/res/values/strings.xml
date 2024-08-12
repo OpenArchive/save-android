@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
+    <string name="fpo_short">Lorem ipsum</string>
+    <string name="fpo_long">Lorem ipsum dolor sit amet</string>
+
     <!-- Activities -->
     <string name="app_name" translatable="false">Save</string>
     <string name="app_subtext">Archive Your Media\n<a href="#">learn more</a></string>
@@ -131,13 +134,13 @@
     <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">In the side menu, you can add another server and connect to multiple servers</string>
     <string name="send_directly_to_a_private_server">Send to a webdav server</string>
     <string name="upload_to_the_internet_archive">Upload to the IA</string>
-    <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> only connects to WebDAV-compatible servers, e.g Nextcloud and ownCloud.</string>
+    <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> only connects to WebDAV-compatible servers, such as Nextcloud and ownCloud.</string>
     <string name="action_next">Next</string>
     <string name="action_done">Done</string>
     <string name="status_flagged">Significant Content</string>
     <string name="select_where_to_store_your_media">Select where to store your media.</string>
+    <string name="you_have_successfully_connected_to_a_veilid_group">You have successfully connected to a Veilid group!</string>
     <string name="you_have_successfully_connected_to_a_private_server">You have successfully connected to a private server!</string>
-    <string name="you_have_successfully_connected_to_dropbox">You have successfully connected to Dropbox!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">You have successfully connected to the Internet Archive!</string>
     <string name="you_have_successfully_connected_to_gdrive">You have successfully connected to Google Drive!</string>
     <string name="create_a_new_folder">Create a New Folder</string>
@@ -191,7 +194,7 @@
     <string name="create_folder_name">Folder name</string>
     <string name="folder_name">Folder Name</string>
     <string name="create">Create</string>
-    <string name="add">Add</string>
+    <string name="add">USE</string>
     <string name="no_more_folders">No (more) folders</string>
     <string name="private_server">Private Server</string>
     <string name="upload_to_dropbox">Upload to Dropbox</string>

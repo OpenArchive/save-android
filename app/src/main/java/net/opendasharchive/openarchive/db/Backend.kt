@@ -62,10 +62,6 @@ data class Backend(
         FILECOIN(6, "Filecoin")
     }
 
-    enum class IconStyle {
-        SOLID, OUTLINE
-    }
-
     companion object {
         fun getAll(): Iterator<Backend> {
             return findAll(Backend::class.java)
@@ -94,6 +90,12 @@ data class Backend(
             return get(type, host, username).isNotEmpty()
         }
 
+//        var current: Backend?
+//            get() = get(Prefs.currentBackendId)
+//            set(value) {
+//                Prefs.currentBackendId = value?.id ?: -1
+//            }
+
         var current: Backend?
             get() = get(Prefs.currentBackendId)
             set(value) {
@@ -102,6 +104,10 @@ data class Backend(
 
         fun get(id: Long): Backend? {
             return findById(Backend::class.java, id)
+        }
+
+        private fun getFolder(id: Long): Folder? {
+            return findById(Folder::class.java, id)
         }
 
         fun navigate(activity: AppCompatActivity) {
@@ -153,7 +159,8 @@ data class Backend(
     val archivedFolders: List<Folder>
         get() = find(Folder::class.java, "backend_id = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
 
-    fun hasFolder(description: String): Boolean {
+    fun hasFolder(description: String?): Boolean {
+        if (description == null) { return false }
         // Cannot use `count` from Kotlin due to strange <T> in method signature.
         return find(Folder::class.java, "backend_id = ? AND description = ?", id.toString(), description).size > 0
     }

@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.features.backends
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,51 +44,6 @@ class BackendSetupFragment : Fragment(), BackendAdapterListener {
             adapter.submitList(backends)
         }
     }
-
-//    private fun refreshUI() {
-//        if (Space.has(Space.Type.WEBDAV)) {
-//            mBinding.privateServerSublabel.text = "Connected"
-//            mBinding.iconNextPrivateServer.setIconResource(R.drawable.outline_link_off_24)
-//        } else {
-//            mBinding.privateServerSublabel.text = "Not connected"
-//            mBinding.iconNextPrivateServer.setIconResource(R.drawable.outline_add_link_24)
-//            mBinding.iconNextPrivateServer.setOnClickListener {
-//                setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to RESULT_VAL_WEBDAV))
-//            }
-//        }
-//
-//        if (Space.has(Space.Type.INTERNET_ARCHIVE)) {
-//            mBinding.internetArchiveSublabel.text = "Connected"
-//            mBinding.iconNextInternetArchive.setIconResource(R.drawable.outline_link_off_24)
-//            mBinding.iconNextInternetArchive.setOnClickListener {
-//                removeInternetArchive()
-//            }
-//        } else {
-//            mBinding.internetArchiveSublabel.text = "Not connected"
-//            mBinding.iconNextInternetArchive.setIconResource(R.drawable.outline_add_link_24)
-//            mBinding.iconNextInternetArchive.setOnClickListener {
-//                setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to RESULT_VAL_INTERNET_ARCHIVE))
-//            }
-//        }
-//
-//        if (!playServicesAvailable()) {
-//            mBinding.gdriveRow.hide()
-//        } else {
-//            if (Space.has(Space.Type.GDRIVE)) {
-//                mBinding.gdriveSublabel.text = "Connected"
-//                mBinding.iconNextGdrive.setIconResource(R.drawable.outline_link_off_24)
-//                mBinding.iconNextGdrive.setOnClickListener {
-//                    removeGoogleSpace()
-//                }
-//            } else {
-//                mBinding.gdriveSublabel.text = "Not connected"
-//                mBinding.iconNextGdrive.setIconResource(R.drawable.outline_add_link_24)
-//                mBinding.iconNextGdrive.setOnClickListener {
-//                    setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to RESULT_VAL_GDRIVE))
-//                }
-//            }
-//        }
-//    }
 
     private fun removeInternetArchive() {
         val backend = Backend.get(type = Backend.Type.INTERNET_ARCHIVE).firstOrNull()
@@ -150,24 +104,11 @@ class BackendSetupFragment : Fragment(), BackendAdapterListener {
     companion object {
         const val RESULT_REQUEST_KEY = "space_setup_fragment_result"
         const val RESULT_BUNDLE_KEY = "space_setup_result_key"
-        const val RESULT_VAL_WEBDAV = "webdav"
-        const val RESULT_VAL_INTERNET_ARCHIVE = "internet_archive"
-        const val RESULT_VAL_GDRIVE = "gdrive"
     }
 
     override fun backendClicked(backend: Backend) {
         Timber.d("backendClicked")
         // Backend.current = backend
         setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to backend.friendlyName))
-    }
-
-    override fun addBackendClicked() {
-        Timber.d("addBackendClicked")
-        startActivity(Intent(requireContext(), BackendSetupActivity::class.java))
-    }
-
-    override fun getSelectedBackend(): Backend? {
-        Timber.d("getSelectedBackend")
-        return Backend.current
     }
 }

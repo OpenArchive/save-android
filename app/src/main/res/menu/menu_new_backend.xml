@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:filterTouchesWhenObscured="true"
+    tools:context=".features.main.MainActivity">
+
+    <item
+        android:id="@+id/new_backend_action"
+        android:orderInCategory="100"
+        android:title="new"
+        android:visible="true"
+        app:showAsAction="ifRoom|collapseActionView|withText" />
+</menu>

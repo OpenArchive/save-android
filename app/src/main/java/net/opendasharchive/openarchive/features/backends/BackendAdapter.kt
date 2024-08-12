@@ -11,8 +11,6 @@ import java.lang.ref.WeakReference
 
 interface BackendAdapterListener {
     fun backendClicked(backend: Backend)
-    fun addBackendClicked()
-    fun getSelectedBackend(): Backend?
 }
 
 class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, BackendAdapter.ViewHolder>(DIFF_CALLBACK), BackendAdapterListener {
@@ -76,18 +74,10 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
     }
 
     override fun backendClicked(backend: Backend) {
-        notifyItemChanged(getIndex(getSelectedBackend()))
+//        notifyItemChanged(getIndex(getSelectedBackend()))
         notifyItemChanged(getIndex(backend))
 
         mListener.get()?.backendClicked(backend)
-    }
-
-    override fun addBackendClicked() {
-        mListener.get()?.addBackendClicked()
-    }
-
-    override fun getSelectedBackend(): Backend? {
-        return mListener.get()?.getSelectedBackend()
     }
 
     private fun getIndex(backend: Backend?): Int {

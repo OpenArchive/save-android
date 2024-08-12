@@ -10,17 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentVeilidBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
 import net.opendasharchive.openarchive.services.CommonServiceFragment
-import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -53,12 +51,6 @@ class VeilidFragment : CommonServiceFragment() {
     private lateinit var viewBinding: FragmentVeilidBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val ddd = Backend.current?.id
-        Timber.d("Current backend ddd = $ddd")
-
-        val eee = Prefs.currentBackendId
-        Timber.d("Current backend eee = $eee")
-
         viewBinding = FragmentVeilidBinding.inflate(inflater)
 
         lifecycle.addObserver(EditTextKeyboardLifecycleObserver(WeakReference(viewBinding.serverUri)))
@@ -83,15 +75,27 @@ class VeilidFragment : CommonServiceFragment() {
         })
 
         viewBinding.okButton.setOnClickListener {
-            val backend = Backend(type = Backend.Type.VEILID)
-            backend.host = viewBinding.serverUri.text.toString()
-            backend.save()
-            Timber.d("New backend ID = ${backend.id}")
-            Backend.current = backend
-            Toast.makeText(requireContext(), "Vailid backend created", Toast.LENGTH_SHORT).show()
+            val uri = viewBinding.serverUri.text.toString()
+
+            pushVeilidGroupSelectionFragment(uri)
         }
 
         return viewBinding.root
+    }
+
+    private fun pushVeilidGroupSelectionFragment(uri: String) {
+        val frag = VeilidFoldersFragment()
+
+        val args = Bundle()
+        args.putString("uri", uri)
+        frag.arguments = args
+
+        val fragmentManager = requireActivity().supportFragmentManager
+
+        val transaction = fragmentManager.beginTransaction()
+
+        transaction.replace(R.id.space_setup_fragment, frag)
+        transaction.commit()
     }
 
     private fun startQRScanner() {

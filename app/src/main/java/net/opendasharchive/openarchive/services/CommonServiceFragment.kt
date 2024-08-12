@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -40,8 +41,16 @@ open class CommonServiceFragment : Fragment()  {
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                setFragmentResult(RESP_CANCEL, bundleOf())
+                onBackPressed()
             }
         })
+    }
+
+    open fun onBackPressed() {
+        setFragmentResult(RESP_CANCEL, bundleOf())
+    }
+
+    fun setActionBarTitle(title: String) {
+        (requireActivity() as? AppCompatActivity)?.supportActionBar?.title = title
     }
 }

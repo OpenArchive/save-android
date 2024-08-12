@@ -3,19 +3,34 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:filterTouchesWhenObscured="true">
+    android:filterTouchesWhenObscured="true"
+    android:clipChildren="false">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:theme="@style/OAToolbar"
+        style="@style/OAToolbar"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        app:titleCentered="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+<!--        <TextView-->
+<!--            android:id="@+id/page_title"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="@string/fpo_short"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textColor="@color/colorOnPrimary"-->
+<!--            android:textSize="20sp"-->
+<!--            tools:layout_editor_absoluteX="16dp" />-->
+
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <ScrollView
         android:layout_height="0dp"

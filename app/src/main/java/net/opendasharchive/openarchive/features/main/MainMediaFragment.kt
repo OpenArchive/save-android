@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,20 +21,18 @@ import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
 import net.opendasharchive.openarchive.databinding.MediaGroupBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
-import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.folders.BrowseFoldersActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.show
+import net.opendasharchive.openarchive.util.extensions.tint
 import net.opendasharchive.openarchive.util.extensions.toggle
-import timber.log.Timber
 import java.text.NumberFormat
 import kotlin.collections.set
 
@@ -116,6 +115,13 @@ class MainMediaFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        updateCurrentFolder()
+        refreshCurrentFolderCount()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -124,31 +130,6 @@ class MainMediaFragment : Fragment() {
         mFolderId = arguments?.getLong(ARG_FOLDER_ID, -1) ?: -1
 
         mBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
-
-        val folder = getSelectedFolder()
-
-        if (folder == null) {
-            mBinding.currentFolder.root.visibility = View.GONE
-        } else {
-            val backendIcon = folder.backend?.getAvatar(requireContext())
-            mBinding.currentFolder.currentBackendButton.icon = backendIcon
-            mBinding.currentFolder.currentBackendButton.show()
-            mBinding.currentFolder.currentBackendButton.text = folder.backend?.name ?: "Unknown storage"
-            mBinding.currentFolder.currentFolderName.text = folder.description
-            mBinding.currentFolder.currentFolderName.show()
-
-            mBinding.currentFolder.currentBackendButton.setOnClickListener {
-                Timber.d("CLICK BACKEND!")
-                startActivity(Intent(context, BackendSetupActivity::class.java))
-            }
-
-            mBinding.currentFolder.currentFolderName.setOnClickListener {
-                Timber.d("CLICK FOLDER!")
-                startActivity(Intent(context, BrowseFoldersActivity::class.java))
-            }
-        }
-
-        refreshCurrentFolderCount()
 
         return mBinding.root
     }
@@ -159,7 +140,35 @@ class MainMediaFragment : Fragment() {
     }
 
     private fun getSelectedFolder(): Folder? {
-        return Backend.current?.folders?.firstOrNull()
+        return Folder.current
+    }
+
+    private fun updateCurrentFolder() {
+        val folder = getSelectedFolder()
+
+        if (folder == null) {
+            val color = ContextCompat.getColor(requireContext(), R.color.colorIcon)
+
+            val backendIcon = ContextCompat.getDrawable(requireContext(),
+                R.drawable.outline_create_new_folder_24
+            )?.tint(color)
+            mBinding.currentFolder.currentBackendButton.icon = backendIcon
+            mBinding.currentFolder.currentBackendButton.show()
+            mBinding.currentFolder.currentBackendButton.text = "Add a folder"
+
+            mBinding.currentFolder.currentBackendButton.setOnClickListener {
+                startActivity(Intent(context, BrowseFoldersActivity::class.java))
+            }
+        } else {
+            val backendIcon = folder.backend?.getAvatar(requireContext())
+            mBinding.currentFolder.currentBackendButton.icon = backendIcon
+            mBinding.currentFolder.currentBackendButton.show()
+            mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown storage") + " > " + folder.description
+
+            mBinding.currentFolder.currentBackendButton.setOnClickListener {
+                startActivity(Intent(context, BrowseFoldersActivity::class.java))
+            }
+        }
     }
 
     private fun refreshCurrentFolderCount() {

@@ -146,6 +146,12 @@
             android:taskAffinity="" />
 
         <activity
+            android:name=".features.backends.BackendSelectionActivity"
+            android:label="@string/title_activity_first_start"
+            android:exported="false"
+            android:taskAffinity="" />
+
+        <activity
             android:name=".features.backends.BackendSetupActivity"
             android:label="@string/title_activity_first_start"
             android:exported="false"

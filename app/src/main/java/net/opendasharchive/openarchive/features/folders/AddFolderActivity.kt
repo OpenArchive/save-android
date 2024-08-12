@@ -71,9 +71,8 @@ class AddFolderActivity : BaseActivity() {
         // as it doesn't make sense to show a one-option menu.
         if (Backend.current?.tType == Backend.Type.INTERNET_ARCHIVE) {
             mBinding.browseFolders.hide()
-
-            finish()
             setFolder(false)
+            finish()
         }
     }
 

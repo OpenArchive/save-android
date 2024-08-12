@@ -2,16 +2,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipChildren="false">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
+            android:theme="@style/OAToolbar"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -19,7 +20,7 @@
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="?android:attr/actionBarSize"
-                android:layout_gravity="left"
+                android:layout_gravity="center"
                 android:importantForAccessibility="no"
                 android:src="@drawable/savelogo"
                 app:tint="#FFFFFF"
