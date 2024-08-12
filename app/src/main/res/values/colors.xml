@@ -93,7 +93,7 @@
 
      -->
 
-    <color name="colorIcon">@color/c23_medium_grey</color>
+    <color name="colorIcon">@color/white</color>
     <color name="colorPill">@color/colorOnBackground</color>
     <color name="colorMediaOverlayIcon">@color/white</color>
     <color name="colorDanger">@color/red</color>

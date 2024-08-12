@@ -35,13 +35,13 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.folders.AddFolderActivity
 import net.opendasharchive.openarchive.features.media.AddMediaDialogFragment
 import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity
 import net.opendasharchive.openarchive.upload.UploadService
-import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
 import okhttp3.OkHttpClient
@@ -315,12 +315,6 @@ class MainActivity : BaseActivity() {
         mBinding.bottomBar.myMediaButton.setOnClickListener {
             mCurrentItem = mLastMediaItem
         }
-//        mBinding.bottomBar.myMediaLabel.setOnClickListener {
-//            // perform click + play ripple animation
-//            mBinding.bottomBar.myMediaButton.isPressed = true
-//            mBinding.bottomBar.myMediaButton.isPressed = false
-//            mBinding.bottomBar.myMediaButton.performClick()
-//        }
 
         // add_button on the bottom bar
         //
@@ -331,12 +325,6 @@ class MainActivity : BaseActivity() {
         mBinding.bottomBar.settingsButton.setOnClickListener {
             mCurrentItem = mPagerAdapter.settingsIndex
         }
-//        mBinding.bottomBar.settingsLabel.setOnClickListener {
-//            // perform click + play ripple animation
-//            mBinding.bottomBar.settingsButton.isPressed = true
-//            mBinding.bottomBar.settingsButton.isPressed = false
-//            mBinding.bottomBar.settingsButton.performClick()
-//        }
 
         if (Picker.canPickFiles(this)) {
             mBinding.bottomBar.addButton.setOnLongClickListener {
@@ -369,31 +357,29 @@ class MainActivity : BaseActivity() {
     }
 
     private fun addMedia(typeFiles: Boolean = false) {
-        if (mPagerAdapter.getFolder(mCurrentItem) != null) {
+        if (Backend.current != null) {
             if (typeFiles && Picker.canPickFiles(this)) {
                 Picker.pickFiles(mFilePickerLauncher)
             } else {
                 pickMedia()
             }
         } else {
-            if (!Prefs.addFolderHintShown) {
-                AlertHelper.show(
-                    this,
-                    R.string.before_adding_media_create_a_new_folder_first,
-                    R.string.to_get_started_please_create_a_folder,
-                    R.drawable.ic_folder,
-                    buttons = listOf(
-                        AlertHelper.positiveButton(R.string.add_a_folder) { _, _ ->
-                            Prefs.addFolderHintShown = true
-
-                            addFolder()
-                        },
-                        AlertHelper.negativeButton(R.string.lbl_Cancel)
-                    )
-                )
-            } else {
-                addFolder()
-            }
+//            if (!Prefs.addFolderHintShown) {
+//                AlertHelper.show(
+//                    this,
+//                    R.string.before_adding_media_create_a_new_folder_first,
+//                    R.string.to_get_started_please_create_a_folder,
+//                    R.drawable.ic_folder,
+//                    buttons = listOf(
+//                        AlertHelper.positiveButton(R.string.add_a_folder) { _, _ ->
+//                            Prefs.addFolderHintShown = true
+//
+//                            addFolder()
+//                        },
+//                        AlertHelper.negativeButton(R.string.lbl_Cancel)
+//                    )
+//                )
+            addBackend()
         }
     }
 
@@ -603,17 +589,6 @@ class MainActivity : BaseActivity() {
                 true
             }
 
-//            R.id.menu_folders -> {
-//                // https://stackoverflow.com/questions/21796209/how-to-create-a-custom-navigation-drawer-in-android
-//
-//                if (mBinding.root.isDrawerOpen(mBinding.folderBar)) {
-//                    mBinding.root.closeDrawer(mBinding.folderBar)
-//                } else {
-//                    mBinding.root.openDrawer(mBinding.folderBar)
-//                }
-//                true
-//            }
-
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -624,6 +599,10 @@ class MainActivity : BaseActivity() {
 
     private fun addFolder() {
         mNewFolderResultLauncher.launch(Intent(this, AddFolderActivity::class.java))
+    }
+
+    private fun addBackend() {
+        mNewFolderResultLauncher.launch(Intent(this, BackendSetupActivity::class.java))
     }
 
     private fun importSharedMedia(data: Intent?) {

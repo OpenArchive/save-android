@@ -56,7 +56,9 @@ class VeilidFoldersFragment : CommonServiceFragment(), VeilidFolderAdapterListen
 
             Backend.current = backend
 
-            showSuccess()
+            setFragmentResult(RESP_CREATED, bundleOf())
+
+            // showSuccess()
         } ?: {
             showError()
         }

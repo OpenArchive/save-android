@@ -129,9 +129,6 @@ private fun InternetArchiveLoginContent(
             label = {
                 Text(stringResource(R.string.label_username))
             },
-            placeholder = {
-                Text(stringResource(R.string.label_username))
-            },
             singleLine = true,
             shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
             keyboardOptions = KeyboardOptions(
@@ -150,9 +147,6 @@ private fun InternetArchiveLoginContent(
             enabled = !state.isBusy,
             onValueChange = { dispatch(UpdatePassword(it)) },
             label = {
-                Text(stringResource(R.string.label_password))
-            },
-            placeholder = {
                 Text(stringResource(R.string.label_password))
             },
             singleLine = true,

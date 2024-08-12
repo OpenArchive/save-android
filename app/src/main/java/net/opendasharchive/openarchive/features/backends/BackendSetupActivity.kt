@@ -66,8 +66,8 @@ class BackendSetupActivity : BaseActivity() {
         }
     }
 
-    private fun showSpaceFragment(fragment: Fragment) {
-//        progress2()
+    private fun showSpaceFragment(fragment: Fragment, title: String) {
+        supportActionBar?.title = title
         supportFragmentManager.commit {
             setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
             replace(mBinding.spaceSetupFragment.id, fragment)
@@ -78,49 +78,47 @@ class BackendSetupActivity : BaseActivity() {
         supportFragmentManager.setFragmentResultListener(BackendSetupFragment.RESULT_REQUEST_KEY, this) { _, bundle ->
             when (bundle.getString(BackendSetupFragment.RESULT_BUNDLE_KEY)) {
                 Backend.Type.INTERNET_ARCHIVE.friendlyName -> {
-                    showSpaceFragment(InternetArchiveFragment.newInstance())
+                    showSpaceFragment(InternetArchiveFragment.newInstance(), getString(R.string.internet_archive))
                 }
 
                 Backend.Type.GDRIVE.friendlyName -> {
-                    showSpaceFragment(GDriveFragment())
+                    showSpaceFragment(GDriveFragment(), getString(R.string.gdrive))
                 }
 
                 Backend.Type.VEILID.friendlyName -> {
-                    showSpaceFragment(VeilidFragment())
+                    showSpaceFragment(VeilidFragment(), getString(R.string.veilid))
                 }
 
                 Backend.Type.WEBDAV.friendlyName -> {
-                    showSpaceFragment(WebDavFragment.newInstance())
+                    showSpaceFragment(WebDavFragment.newInstance(), getString(R.string.private_server))
                 }
             }
         }
 
         supportFragmentManager.setFragmentResultListener("created", this) { _, bundle ->
-//            progress3()
-            val f = bundle.getString(BackendSetupFragment.RESULT_BUNDLE_KEY)
-            Timber.d("RESULT_BUNDLE_KEY = $f")
-
             supportFragmentManager.commit {
-                val message = when (bundle.getString(BackendSetupFragment.RESULT_BUNDLE_KEY)) {
+                val message = when (Backend.current?.friendlyName) {
                     Backend.Type.INTERNET_ARCHIVE.friendlyName -> {
                         getString(R.string.you_have_successfully_connected_to_the_internet_archive)
                     }
 
                     Backend.Type.GDRIVE.friendlyName -> {
-                        getString(R.string.you_have_successfully_connected_to_a_veilid_group)
+                        getString(R.string.you_have_successfully_connected_to_gdrive)
                     }
 
                     Backend.Type.VEILID.friendlyName -> {
-                        getString(R.string.you_have_successfully_connected_to_a_private_server)
+                        getString(R.string.you_have_successfully_connected_to_veilid)
                     }
 
                     Backend.Type.WEBDAV.friendlyName -> {
                         getString(R.string.you_have_successfully_connected_to_a_private_server)
                     }
 
-                    else -> {
-                        getString(R.string.you_have_successfully_connected_to_a_private_server)
+                    Backend.Type.FILECOIN.friendlyName -> {
+                        getString(R.string.you_have_successfully_connected_to_filecoin)
                     }
+
+                    else -> { "Unknown Backend" }
                 }
                 setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 replace(
@@ -131,7 +129,7 @@ class BackendSetupActivity : BaseActivity() {
         }
 
         supportFragmentManager.setFragmentResultListener("cancel", this) { _, _ ->
-//            progress1()
+            supportActionBar?.title = "All servers"
             supportFragmentManager.commit {
                 setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 replace(mBinding.spaceSetupFragment.id, BackendSetupFragment())
@@ -144,28 +142,4 @@ class BackendSetupActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         supportFragmentManager.fragments.firstOrNull()?.onActivityResult(requestCode, resultCode, data)
     }
-
-//    private fun progress1() {
-//        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
-//        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOff)
-//        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOff)
-//        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOff)
-//        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOff)
-//    }
-//
-//    private fun progress2() {
-//        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
-//        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOn)
-//        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOn)
-//        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOff)
-//        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOff)
-//    }
-//
-//    private fun progress3() {
-//        Util.setBackgroundTint(mBinding.progressBlock.dot1, R.color.colorSpaceSetupProgressOn)
-//        Util.setBackgroundTint(mBinding.progressBlock.bar1, R.color.colorSpaceSetupProgressOn)
-//        Util.setBackgroundTint(mBinding.progressBlock.dot2, R.color.colorSpaceSetupProgressOn)
-//        Util.setBackgroundTint(mBinding.progressBlock.bar2, R.color.colorSpaceSetupProgressOn)
-//        Util.setBackgroundTint(mBinding.progressBlock.dot3, R.color.colorSpaceSetupProgressOn)
-//    }
 }

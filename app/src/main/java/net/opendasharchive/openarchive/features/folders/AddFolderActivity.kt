@@ -64,8 +64,8 @@ class AddFolderActivity : BaseActivity() {
         val arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
         arrow?.tint(ContextCompat.getColor(this, R.color.colorPrimary))
 
-        mBinding.newFolderText.setDrawable(arrow, Position.End, tint = false)
-        mBinding.browseFoldersText.setDrawable(arrow, Position.End, tint = false)
+        mBinding.newFolder.setDrawable(arrow, Position.End, tint = false)
+        mBinding.browseFolders.setDrawable(arrow, Position.End, tint = false)
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,
         // as it doesn't make sense to show a one-option menu.

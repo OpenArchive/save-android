@@ -2,13 +2,12 @@ package net.opendasharchive.openarchive.services.veilid
 
 import android.os.Bundle
 import android.view.MenuItem
-import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.ActivityGdriveBinding
+import net.opendasharchive.openarchive.databinding.ActivityVeilidBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 
 class VeilidActivity : BaseActivity() {
-    private lateinit var viewBinding: ActivityGdriveBinding
+    private lateinit var viewBinding: ActivityVeilidBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +18,7 @@ class VeilidActivity : BaseActivity() {
             backend = Backend.get(intent.getLongExtra(EXTRA_DATA_SPACE, -1L))
         }
 
-        viewBinding = ActivityGdriveBinding.inflate(layoutInflater)
+        viewBinding = ActivityVeilidBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
         viewBinding.btRemove.setOnClickListener {
@@ -27,7 +26,7 @@ class VeilidActivity : BaseActivity() {
         }
 
         setSupportActionBar(viewBinding.toolbar)
-        supportActionBar?.title = getString(R.string.gdrive)
+        supportActionBar?.title = "FOO" // getString(R.string.veilid)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewBinding.gdriveId.setText(backend?.displayname ?: "")

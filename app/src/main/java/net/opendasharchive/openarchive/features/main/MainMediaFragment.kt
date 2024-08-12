@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,6 +20,7 @@ import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
 import net.opendasharchive.openarchive.databinding.MediaGroupBinding
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
@@ -31,7 +31,6 @@ import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.show
-import net.opendasharchive.openarchive.util.extensions.tint
 import net.opendasharchive.openarchive.util.extensions.toggle
 import java.text.NumberFormat
 import kotlin.collections.set
@@ -146,20 +145,20 @@ class MainMediaFragment : Fragment() {
     private fun updateCurrentFolder() {
         val folder = getSelectedFolder()
 
-        if (folder == null) {
-            val color = ContextCompat.getColor(requireContext(), R.color.colorIcon)
-
-            val backendIcon = ContextCompat.getDrawable(requireContext(),
-                R.drawable.outline_create_new_folder_24
-            )?.tint(color)
-            mBinding.currentFolder.currentBackendButton.icon = backendIcon
-            mBinding.currentFolder.currentBackendButton.show()
-            mBinding.currentFolder.currentBackendButton.text = "Add a folder"
-
-            mBinding.currentFolder.currentBackendButton.setOnClickListener {
-                startActivity(Intent(context, BrowseFoldersActivity::class.java))
-            }
-        } else {
+        if (folder != null) {
+//            val color = ContextCompat.getColor(requireContext(), R.color.colorIcon)
+//
+//            val backendIcon = ContextCompat.getDrawable(requireContext(),
+//                R.drawable.outline_create_new_folder_24
+//            )?.tint(color)
+//            mBinding.currentFolder.currentBackendButton.icon = backendIcon
+//            mBinding.currentFolder.currentBackendButton.show()
+//            mBinding.currentFolder.currentBackendButton.text = "Add a media server"
+//
+//            mBinding.currentFolder.currentBackendButton.setOnClickListener {
+//                startActivity(Intent(context, BackendSetupActivity::class.java))
+//            }
+//        } else {
             val backendIcon = folder.backend?.getAvatar(requireContext())
             mBinding.currentFolder.currentBackendButton.icon = backendIcon
             mBinding.currentFolder.currentBackendButton.show()
@@ -240,7 +239,15 @@ class MainMediaFragment : Fragment() {
         // while adding images.
         deleteCollections(toDelete, false)
 
-        mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())
+        if (Backend.current == null) {
+            mBinding.currentFolder.currentBackendButton.visibility = View.GONE
+            mBinding.currentFolder.currentFolderCount.visibility = View.GONE
+            mBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
+        } else {
+            mBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
+            mBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
+            mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())
+        }
     }
 
     private fun deleteSelected() {

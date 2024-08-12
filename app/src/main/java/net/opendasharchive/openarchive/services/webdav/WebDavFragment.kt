@@ -46,6 +46,8 @@ class WebDavFragment : CommonServiceFragment() {
 
         mBackendId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
 
+        // lifecycle.addObserver(EditTextKeyboardLifecycleObserver(WeakReference(mBinding.server)))
+
         if (ARG_VAL_NEW_SPACE != mBackendId) {
             // setup views for editing and existing space
 

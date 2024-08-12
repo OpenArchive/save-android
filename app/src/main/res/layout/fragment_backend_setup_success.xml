@@ -5,26 +5,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:context=".features.backends.BackendSetupSuccessFragment"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin">
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    tools:context=".features.backends.BackendSetupSuccessFragment">
 
     <TextView
         android:id="@+id/success_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:text="@string/you_have_successfully_connected_to_a_private_server"
         android:textAlignment="center"
         android:textSize="22sp"
-        app:layout_constraintBottom_toTopOf="@id/success_illustration"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/success_illustration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:src="@drawable/hands_mobile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -37,8 +35,8 @@
         android:id="@+id/bt_authenticate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
         android:text="@string/action_continue"
-        app:layout_constraintTop_toBottomOf="@id/success_illustration"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

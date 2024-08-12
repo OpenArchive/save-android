@@ -53,7 +53,7 @@ class VeilidFragment : CommonServiceFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentVeilidBinding.inflate(inflater)
 
-        lifecycle.addObserver(EditTextKeyboardLifecycleObserver(WeakReference(viewBinding.serverUri)))
+        // lifecycle.addObserver(EditTextKeyboardLifecycleObserver(WeakReference(viewBinding.serverUri)))
 
         viewBinding.serverTextInput.setEndIconOnClickListener {
             startQRScanner()
