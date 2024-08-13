@@ -108,8 +108,12 @@
         <item name="fontFamily">@font/montserrat</item>
     </style>
 
-    <style name="OATextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">@color/red</item>
+    <style name="OATextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/cornerRadius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/cornerRadius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/cornerRadius</item>
+        <item name="boxCornerRadiusTopStart">@dimen/cornerRadius</item>
     </style>
 
     <style name="OAMaterialButtonStyle" parent="Widget.MaterialComponents.Button">
@@ -122,6 +126,7 @@
         <item name="android:paddingTop">0dp</item>
         <item name="android:textSize">16sp</item>
         <item name="android:minWidth">24dp</item>
+        <item name="cornerRadius">@dimen/cornerRadius</item>
     </style>
 
     <style name="OAMaterialActionButtonStyle" parent="OAMaterialButtonStyle">

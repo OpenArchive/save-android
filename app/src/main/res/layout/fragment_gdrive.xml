@@ -103,32 +103,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-<!--            <Button-->
-<!--                android:id="@+id/bt_back"-->
-<!--                style="?android:attr/buttonBarButtonStyle"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"-->
-<!--                android:layout_weight="1"-->
-<!--                android:text="@string/back" />-->
-
-<!--            <Button-->
-<!--                android:id="@+id/bt_authenticate"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"-->
-<!--                android:layout_weight="1"-->
-<!--                android:text="@string/authenticate"-->
-<!--                tools:ignore="ButtonStyle" />-->
-
             <com.google.android.material.button.MaterialButton
+                style="@style/OAMaterialButtonStyle"
                 android:id="@+id/bt_authenticate"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="40dp"
-                android:background="@color/colorPrimary"
-                android:text="@string/authenticate"
-                android:textColor="@color/white" />
+                android:text="@string/authenticate" />
 
         </LinearLayout>
 

@@ -216,7 +216,7 @@ private fun InternetArchiveLoginContent(
                 if (state.isBusy) {
                     CircularProgressIndicator(color = ThemeColors.material.primary)
                 } else {
-                    Text(color = ThemeColors.material.onPrimary,
+                    Text(color = Color.White,
                          text = stringResource(R.string.label_login))
                 }
             }
