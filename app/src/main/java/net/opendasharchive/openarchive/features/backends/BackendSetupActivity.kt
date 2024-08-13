@@ -13,6 +13,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.folders.AddFolderActivity
 import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveFragment
 import net.opendasharchive.openarchive.features.main.MainActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveFragment
@@ -122,10 +123,11 @@ class BackendSetupActivity : BaseActivity() {
                     else -> { "Unknown Backend" }
                 }
                 setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                replace(
-                    mBinding.spaceSetupFragment.id,
-                    BackendSetupSuccessFragment.newInstance(message)
-                )
+//                replace(
+//                    mBinding.spaceSetupFragment.id,
+//                    BackendSetupSuccessFragment.newInstance(message)
+//                )
+                startActivity(Intent(baseContext, AddFolderActivity::class.java))
             }
         }
 

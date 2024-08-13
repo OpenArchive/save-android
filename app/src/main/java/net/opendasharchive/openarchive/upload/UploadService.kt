@@ -29,8 +29,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 
-//class StartTor(val appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
-//
+//class StartTor(private val appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
 //    override fun doWork(): Result {
 //        Timber.d("StartTor")
 //        bindService(Intent(appContext, TorService::class.java), object : ServiceConnection {
@@ -45,13 +44,7 @@ import java.util.*
 //                        e.printStackTrace()
 //                    }
 //                }
-//
-////                Toast.makeText(
-////                    this@MainActivity,
-////                    "Got Tor control connection",
-////                    Toast.LENGTH_LONG
 //            }
-////                ).show()
 //
 //            override fun onServiceDisconnected(name: ComponentName) {
 //                // Things...

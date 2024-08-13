@@ -13,7 +13,7 @@
             app:iconSpaceReserved="false"
             app:key="lock_with_passcode"
             app:singleLineTitle="false"
-            app:title="Lock app with device passcode" />
+            app:title="Lock app with passcode" />
 
     </PreferenceCategory>
 
@@ -84,7 +84,7 @@
             app:allowDividerAbove="true"
             app:allowDividerBelow="false"
             app:defaultValue="false"
-            app:enabled="false"
+            app:enabled="true"
             app:iconSpaceReserved="false"
             app:key="use_tor"
             app:singleLineTitle="false"

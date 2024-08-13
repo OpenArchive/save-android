@@ -99,7 +99,6 @@
 
     <string name="tap_to_add">Ortam eklemek için aşağıdaki düğmeye dokunun</string>
     <string name="to_get_started_connect_to_a_server_to_store_your_media">Başlamak için, ortamınızı saklayacağınız bir sunucuya bağlanın.</string>
-    <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">Yan menüden başka bir sunucu ekleyebilir ve birkaç sunucuya bağlanabilirsiniz</string>
     <string name="send_directly_to_a_private_server">Bir WebDAV sunucusuna gönder</string>
     <string name="upload_to_the_internet_archive">Internet Archive üzerine yükle</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> yalnızca Nextcloud ve ownCloud gibi WebDAV uyumlu sunucularla bağlantı kurabilir.</string>
@@ -108,7 +107,6 @@
     <string name="status_flagged">Önemli içerik</string>
     <string name="select_where_to_store_your_media">Ortamınızı saklamak istediğiniz yeri seçin.</string>
     <string name="you_have_successfully_connected_to_a_private_server">Özel bir sunucu ile bağlantı kurdunuz!</string>
-    <string name="you_have_successfully_connected_to_dropbox">Dropbox ile bağlantı kurdunuz!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">İnternet Archive ile bağlantı kurdunuz!</string>
     <string name="create_a_new_folder">Yeni klasör oluştur</string>
     <string name="edit">Düzenle</string>
@@ -127,7 +125,6 @@
     <string name="please_do_not_include_special_characters_in_the_name">Lütfen ad içinde özel karakterler kullanmayın.</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Bu sunucuyu uygulamadan kaldırmak istediğinize emin misiniz?</string>
     <string name="folder_name_already_exists">Klasör adı zaten var.</string>
-    <string name="dropbox">Dropbox</string>
     <string name="metadata">Üst veriler</string>
 
     <string name="confirm_remove_media">Bu ortamı silmek istediğinize emin misiniz?</string>
@@ -150,7 +147,6 @@
 
     <!-- Clean Insights measurement -->
     <string name="server_name_optional">Sunucu adı (isteğe bağlı)</string>
-    <string name="dropbox_id">Dropbox kimliği:</string>
     <string name="add_another_account">Başka bir hesap ekle</string>
     <string name="prefs_proofmode_key_encryption_title_all">ProofMode anahtarını biyometri veya aygıt parolası ile koruyun</string>
     <string name="prefs_proofmode_key_encryption_title_biometrics">ProofMode anahtarını biyometri ile koruyun</string>
@@ -164,8 +160,6 @@
     <string name="add">Ekle</string>
     <string name="no_more_folders">(Başka) klasör yok</string>
     <string name="private_server">Özel sunucu</string>
-    <string name="upload_to_dropbox">Dropbox üzerine yükle</string>
-    <string name="sign_in_or_create_an_account_with_dropbox">Dropbox oturumu ya da hesabı aç</string>
     <string name="authenticate">Doğrula</string>
     <string name="back">Geri</string>
     <string name="my_media">Ortamlarım</string>

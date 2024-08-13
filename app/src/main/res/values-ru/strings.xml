@@ -58,7 +58,6 @@
     <string name="secret_key">Секретный ключ</string>
     <string name="action_acquire_keys">Получить ключи</string>
     <string name="new_folder">Новый каталог</string>
-    <string name="dropbox">Внесите свои данные, чтобы стать частью решения.</string>
     <string name="metadata">Метаданные</string>
 
     <string name="popup_flag_title">Отметить важное содержание</string>
@@ -68,7 +67,6 @@
     <string name="folders">Папки</string>
     <string name="create">Создать</string>
     <string name="add">Добавить</string>
-    <string name="upload_to_dropbox">Загрузить в Dropbox</string>
     <string name="authenticate">Аутентифицировать</string>
     <string name="back">вернуться и отредактировать</string>
     <string name="account">Учетная запись</string>

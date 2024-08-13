@@ -5,16 +5,11 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityAddFolderBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.util.extensions.Position
 import net.opendasharchive.openarchive.util.extensions.hide
-import net.opendasharchive.openarchive.util.extensions.setDrawable
-import net.opendasharchive.openarchive.util.extensions.tint
 
 class AddFolderActivity : BaseActivity() {
 
@@ -61,11 +56,11 @@ class AddFolderActivity : BaseActivity() {
             setFolder(true)
         }
 
-        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
-        arrow?.tint(ContextCompat.getColor(this, R.color.colorPrimary))
+//        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
+//        arrow?.tint(ContextCompat.getColor(this, R.color.colorPrimary))
 
-        mBinding.newFolder.setDrawable(arrow, Position.End, tint = false)
-        mBinding.browseFolders.setDrawable(arrow, Position.End, tint = false)
+//        mBinding.newFolder.setDrawable(arrow, Position.End, tint = false)
+//        mBinding.browseFolders.setDrawable(arrow, Position.End, tint = false)
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,
         // as it doesn't make sense to show a one-option menu.

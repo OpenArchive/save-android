@@ -129,8 +129,9 @@
         <item name="cornerRadius">@dimen/cornerRadius</item>
     </style>
 
-    <style name="OAMaterialActionButtonStyle" parent="OAMaterialButtonStyle">
-        <item name="android:background">@drawable/button</item>
+    <style name="OAPrimaryButtonStyle" parent="OAMaterialButtonStyle">
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">match_parent</item>
     </style>
 
     <style name="OAMediaButtonStyle" parent="Widget.MaterialComponents.Button">
@@ -179,6 +180,16 @@
         <item name="android:paddingTop">20dp</item>
         <item name="android:paddingBottom">20dp</item>
         <item name="android:backgroundTint">@color/colorButtonOnBackground</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textSize">18sp</item>
+        <item name="drawableStartCompat">@drawable/ic_veilid</item>
+        <item name="iconGravity">start</item>
+        <item name="iconPadding">10dp</item>
+        <item name="iconSize">32dp</item>
+        <item name="iconTint">@null</item>
     </style>
 
     <style name="OASwitchPreferenceStyle" parent="@style/Preference.SwitchPreferenceCompat.Material">

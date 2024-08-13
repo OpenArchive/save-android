@@ -115,8 +115,8 @@
 
     <string name="action_privacy">Privacy Policy</string>
     <string name="action_about">About %s</string>
-    <string name="add_a_folder">Add a Folder</string>
-    <string name="browse_existing_folders">Browse Existing Folders</string>
+    <string name="add_a_folder">Add a folder</string>
+    <string name="browse_existing_folders">Browse existing folders</string>
     <string name="browse_existing">Browse Folders</string>
     <string name="title_activity_upload_manager">Upload Manager</string>
 
@@ -162,7 +162,6 @@
     <string name="please_do_not_include_special_characters_in_the_name">Please do not include special characters in the name.</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Are you sure you want to remove this server from the app?</string>
     <string name="folder_name_already_exists">Folder name already exists.</string>
-    <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadata</string>
 
     <string name="confirm_remove_media">Are you sure you want to remove this Media?</string>
@@ -185,7 +184,6 @@
 
     <!-- Clean Insights measurement -->
     <string name="server_name_optional">Server Nickname (Optional)</string>
-    <string name="dropbox_id">Dropbox ID:</string>
     <string name="add_another_account">Add Server</string>
     <string name="prefs_proofmode_key_encryption_title_all">Secure ProofMode Key Device Passcode</string>
     <string name="prefs_proofmode_key_encryption_title_biometrics">Secure ProofMode Key with Biometrics</string>
@@ -199,8 +197,6 @@
     <string name="add">USE</string>
     <string name="no_more_folders">No (more) folders</string>
     <string name="private_server">Private Server</string>
-    <string name="upload_to_dropbox">Upload to Dropbox</string>
-    <string name="sign_in_or_create_an_account_with_dropbox">Sign in or create an account with Dropbox</string>
     <string name="authenticate">Authenticate</string>
     <string name="back">Back</string>
     <string name="my_media">My Media</string>

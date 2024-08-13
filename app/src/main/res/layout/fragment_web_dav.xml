@@ -139,7 +139,8 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/OAMaterialButtonStyle"
-                android:id="@+id/bt_authenticate"
+                android:id="@+id/authentication_button"
+                android:enabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="40dp"

@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.features.core
 
+import android.app.AlertDialog
 import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -37,5 +38,19 @@ abstract class BaseActivity(): AppCompatActivity() {
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
+    }
+
+    fun alertUserOfError(e: Error) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(baseContext)
+
+        builder
+            .setTitle("Oops")
+            .setMessage(e.localizedMessage)
+            .setPositiveButton("OK") { dialog, which ->
+            }
+
+        val dialog: AlertDialog = builder.create()
+
+        dialog.show()
     }
 }

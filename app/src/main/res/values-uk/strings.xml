@@ -99,7 +99,6 @@
 
     <string name="tap_to_add">Натисніть на кнопку нижче для додавання медіа.</string>
     <string name="to_get_started_connect_to_a_server_to_store_your_media">Щоб розпочати, під’єднайтесь до сервера для збереження медіа.</string>
-    <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">У бічному меню ви можете додати інший сервер та під\'єднатися до кількох серверів</string>
     <string name="send_directly_to_a_private_server">Відправити на сервер WebDAV</string>
     <string name="upload_to_the_internet_archive">Вивантаження до IA</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> може під’єднуватися лише до WebDAV-підтримуваних серверів, як-от Nextcloud і Owncloud.</string>
@@ -108,7 +107,6 @@
     <string name="status_flagged">Важливий вміст</string>
     <string name="select_where_to_store_your_media">Обрати, де зберігати медіа.</string>
     <string name="you_have_successfully_connected_to_a_private_server">Ви успішно під’єднались до приватного сервера!</string>
-    <string name="you_have_successfully_connected_to_dropbox">Ви успішно під’єднались до Dropbox!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">Ви успішно під’єднались до Internet Archive!</string>
     <string name="create_a_new_folder">Створити нову папку</string>
     <string name="edit">Змінити</string>
@@ -127,7 +125,6 @@
     <string name="please_do_not_include_special_characters_in_the_name">Будь ласка, не використовуйте спеціальні символи в назві.</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Ви впевнені, що хочете видалити цей сервер із застосунку?</string>
     <string name="folder_name_already_exists">Така папка вже існує.</string>
-    <string name="dropbox">Dropbox</string>
     <string name="metadata">Метадані</string>
 
     <string name="confirm_remove_media">Ви впевнені, що хочете видалити цей медіафайл?</string>
@@ -150,7 +147,6 @@
 
     <!-- Clean Insights measurement -->
     <string name="server_name_optional">Ім\'я сервера (необов\'язково)</string>
-    <string name="dropbox_id">Dropbox ID:</string>
     <string name="add_another_account">Додати інший обліковий запис</string>
     <string name="prefs_proofmode_key_encryption_title_all">Захистіть ключ ProofMode біометрикою або паролем пристрою</string>
     <string name="prefs_proofmode_key_encryption_title_biometrics">Захистіть ключ ProofMode біометрикою</string>
@@ -164,8 +160,6 @@
     <string name="add">Додати</string>
     <string name="no_more_folders">Немає (більше) папок</string>
     <string name="private_server">Приватний сервер</string>
-    <string name="upload_to_dropbox">Вивантажити до Dropbox</string>
-    <string name="sign_in_or_create_an_account_with_dropbox">Увійдіть або створіть обліковий запис у Dropbox</string>
     <string name="authenticate">Автентифікація</string>
     <string name="back">Назад</string>
     <string name="my_media">Мої медіафайли</string>

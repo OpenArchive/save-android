@@ -18,8 +18,6 @@ import java.util.Date
 
 class BrowseFoldersViewModel : ViewModel() {
 
-    // data class Folder(var name: String, var backend: Backend, val modified: Date)
-
     private val mFolders = MutableLiveData<List<Folder>>()
 
     val folders: LiveData<List<Folder>>
@@ -31,35 +29,34 @@ class BrowseFoldersViewModel : ViewModel() {
         viewModelScope.launch {
             progressBarFlag.value = true
 
-//            try {
-            val value = withContext(Dispatchers.IO) {
-                var allFolders = mutableListOf<Folder>()
+            try {
+                val value = withContext(Dispatchers.IO) {
+                    var allFolders = mutableListOf<Folder>()
 
-                for (backend in Backend.getAll()) {
-                    Timber.d("Getting folders for ${backend.friendlyName}")
+                    for (backend in Backend.getAll()) {
+                        Timber.d("Getting folders for ${backend.friendlyName}")
 
-                    val someFolders = when (backend.tType) {
-                        Backend.Type.WEBDAV -> getWebDavFolders(context, backend)
-                        Backend.Type.GDRIVE -> getGDriveFolders(context, backend)
-                        else -> emptyList()
+                        val someFolders = when (backend.tType) {
+                            Backend.Type.WEBDAV -> getWebDavFolders(context, backend)
+                            Backend.Type.GDRIVE -> getGDriveFolders(context, backend)
+                            else -> emptyList()
+                        }
+
+                        allFolders.addAll(someFolders)
                     }
 
-                    allFolders.addAll(someFolders)
+                    allFolders
                 }
 
-                allFolders
+                mFolders.value = value
             }
-
-            progressBarFlag.value = false
-            mFolders.value = value
-
-//            }
-//            catch (e: Error) {
-//                mFolders.value = arrayListOf()
-//                Timber.e(e)
-//            } finally {
-//                progressBarFlag.value = false
-//            }
+            catch (e: Error) {
+                mFolders.value = arrayListOf()
+                Timber.e(e)
+                throw(e)
+            } finally {
+                progressBarFlag.value = false
+            }
         }
     }
 
@@ -84,6 +81,7 @@ class BrowseFoldersViewModel : ViewModel() {
                 progressBarFlag.value = false
                 mFolders.value = arrayListOf()
                 Timber.e(e)
+                throw(e)
             }
         }
     }

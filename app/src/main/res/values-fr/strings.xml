@@ -59,7 +59,6 @@
     <string name="secret_key">Clé secrète</string>
     <string name="action_acquire_keys">Obtenir les clés</string>
     <string name="new_folder">Nouveau dossier</string>
-    <string name="dropbox">Dropbox</string>
     <string name="metadata">Métadonnées</string>
 
     <string name="popup_flag_desc">Quand vous marquez un élément, il est acheminé vers un sous-dossier dans le dossier désigné du projet sur le serveur privé.</string>
@@ -69,7 +68,6 @@
     <string name="folders">Dossiers</string>
     <string name="create">Créer</string>
     <string name="add">Ajouter</string>
-    <string name="upload_to_dropbox">Téléverser vers Dropbox</string>
     <string name="authenticate">S’authentifier</string>
     <string name="back">Retour</string>
     <string name="account">Compte</string>

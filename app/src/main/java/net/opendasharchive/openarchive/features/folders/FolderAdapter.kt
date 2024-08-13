@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.OneLineBackendRowBinding
+import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.Folder
 import java.lang.ref.WeakReference
 
@@ -24,7 +24,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, Fold
     DIFF_CALLBACK
 ), FolderAdapterListener {
 
-    class ViewHolder(private val binding: OneLineBackendRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private val binding: OneLineRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(listener: WeakReference<FolderAdapterListener>?, folder: Folder?) {
             binding.button.text = folder?.description
@@ -106,7 +106,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, Fold
     private var mLastSelected: Folder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(OneLineBackendRowBinding.inflate(LayoutInflater.from(parent.context),
+        return ViewHolder(OneLineRowBinding.inflate(LayoutInflater.from(parent.context),
             parent, false))
     }
 

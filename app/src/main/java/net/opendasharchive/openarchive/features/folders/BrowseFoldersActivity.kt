@@ -38,13 +38,12 @@ class BrowseFoldersActivity : BaseActivity() {
 
         mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
 
-        // val backend = Backend.current
-
-        try {
-            mViewModel.getAllFolders(this)
-        } catch (e: Error) {
-            Timber.e(e)
-        }
+//        try {
+//            mViewModel.getAllFolders(this)
+//        } catch (e: Error) {
+//            Timber.e(e)
+//            alertUserOfError(e)
+//        }
 
         mViewModel.folders.value?.forEach { it ->
             Timber.d("Folder: $it.name")

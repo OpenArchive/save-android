@@ -8,8 +8,8 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.SaveApp
-import net.opendasharchive.openarchive.features.folders.CreateNewFolderActivity
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
+import net.opendasharchive.openarchive.features.folders.CreateNewFolderActivity
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 
@@ -32,6 +32,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>("folders")?.setOnPreferenceClickListener {
             startActivity(Intent(context, CreateNewFolderActivity::class.java))
+            true
+        }
+
+        findPreference<Preference>(Prefs.USE_TOR)?.setOnPreferenceChangeListener { _, newValue ->
+            val activity = activity ?: return@setOnPreferenceChangeListener true
+
+            if (newValue as Boolean) {
+            }
+
             true
         }
 

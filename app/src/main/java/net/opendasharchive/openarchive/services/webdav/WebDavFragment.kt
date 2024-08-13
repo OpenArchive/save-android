@@ -28,6 +28,14 @@ import okhttp3.Response
 import java.io.IOException
 import kotlin.coroutines.suspendCoroutine
 
+// Default implementation
+//
+open class ReadyToAuthTextWatcher : TextWatcher {
+    override fun afterTextChanged(s: Editable?) {}
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+}
+
 class WebDavFragment : CommonServiceFragment() {
     private var mBackendId: Long? = null
     private lateinit var mBackend: Backend
@@ -46,7 +54,23 @@ class WebDavFragment : CommonServiceFragment() {
 
         mBackendId = arguments?.getLong(ARG_SPACE) ?: ARG_VAL_NEW_SPACE
 
-        // lifecycle.addObserver(EditTextKeyboardLifecycleObserver(WeakReference(mBinding.server)))
+        mBinding.server.addTextChangedListener(object : ReadyToAuthTextWatcher() {
+            override fun afterTextChanged(s: Editable?) {
+                enableIfReady()
+            }
+        })
+
+        mBinding.username.addTextChangedListener(object : ReadyToAuthTextWatcher() {
+            override fun afterTextChanged(s: Editable?) {
+                enableIfReady()
+            }
+        })
+
+        mBinding.password.addTextChangedListener(object : ReadyToAuthTextWatcher() {
+            override fun afterTextChanged(s: Editable?) {
+                enableIfReady()
+            }
+        })
 
         if (ARG_VAL_NEW_SPACE != mBackendId) {
             // setup views for editing and existing space
@@ -65,17 +89,11 @@ class WebDavFragment : CommonServiceFragment() {
             mBinding.username.setText(mBackend.username)
             mBinding.password.setText(mBackend.password)
 
-            mBinding.name.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                }
+            mBinding.name.addTextChangedListener(object : ReadyToAuthTextWatcher() {
+                override fun afterTextChanged(s: Editable?) {
+                    if (s == null) return
 
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                }
-
-                override fun afterTextChanged(name: Editable?) {
-                    if (name == null) return
-
-                    mBackend.name = name.toString()
+                    mBackend.name = s.toString()
                     mBackend.save()
                 }
             })
@@ -91,7 +109,7 @@ class WebDavFragment : CommonServiceFragment() {
 //            mBinding.btRemove.visibility = View.GONE
         }
 
-        mBinding.btAuthenticate.setOnClickListener { attemptLogin() }
+        mBinding.authenticationButton.setOnClickListener { attemptLogin() }
 
 //        mBinding.btCancel.setOnClickListener {
 //            setFragmentResult(RESP_CANCEL, bundleOf())
@@ -99,7 +117,7 @@ class WebDavFragment : CommonServiceFragment() {
 
         mBinding.server.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-                mBinding.server.setText(fixSpaceUrl(mBinding.server.text)?.toString())
+                mBinding.server.setText(fixUrl(mBinding.server.text)?.toString())
             }
         }
 
@@ -120,7 +138,15 @@ class WebDavFragment : CommonServiceFragment() {
         mSnackbar = mBinding.root.makeSnackBar(getString(R.string.login_activity_logging_message))
     }
 
-    private fun fixSpaceUrl(url: CharSequence?): Uri? {
+    private fun enableIfReady() {
+        val isIncomplete = mBinding.server.text.isNullOrEmpty()
+                || mBinding.username.text.isNullOrEmpty()
+                || mBinding.password.text.isNullOrEmpty()
+
+        mBinding.authenticationButton.isEnabled = !isIncomplete
+    }
+
+    private fun fixUrl(url: CharSequence?): Uri? {
         if (url.isNullOrBlank()) return null
 
         val uri = Uri.parse(url.toString())
@@ -155,7 +181,7 @@ class WebDavFragment : CommonServiceFragment() {
 
         mBackend.name = mBinding.name.text?.toString() ?: ""
 
-        mBackend.host = fixSpaceUrl(mBinding.server.text)?.toString() ?: ""
+        mBackend.host = fixUrl(mBinding.server.text)?.toString() ?: ""
         mBinding.server.setText(mBackend.host)
 
         mBackend.username = mBinding.username.text?.toString() ?: ""

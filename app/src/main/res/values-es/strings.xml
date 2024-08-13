@@ -99,7 +99,6 @@
 
     <string name="tap_to_add">Presiona el botón de abajo para agregar medios.</string>
     <string name="to_get_started_connect_to_a_server_to_store_your_media">Para comenzar, conéctate a un servidor para almacenar tus medios.</string>
-    <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">En el menú del costado, puedes agregar otro espacio de almacenamiento y conectar a múltiples servidores</string>
     <string name="send_directly_to_a_private_server">Envía a un servidor WebDAV</string>
     <string name="upload_to_the_internet_archive">Cargar a la IA</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Guardar </i></b>solo se conecta con servidores compatibles con WebDAV, por ejemplo, Nextcloud y ownCloud.</string>
@@ -108,7 +107,6 @@
     <string name="status_flagged">Contenido Significativo</string>
     <string name="select_where_to_store_your_media">Selecciona dónde almacenar tus medios.</string>
     <string name="you_have_successfully_connected_to_a_private_server">¡Te has conectado exitosamente a un servidor privado!</string>
-    <string name="you_have_successfully_connected_to_dropbox">¡Te has conectado exitosamente a Dropbox!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">¡Te has conectado exitosamente a Internet Archive!</string>
     <string name="create_a_new_folder">Crear una Nueva Carpeta</string>
     <string name="edit">Editar</string>
@@ -127,7 +125,6 @@
     <string name="please_do_not_include_special_characters_in_the_name">Por favor no incluya caracteres especiales en este nombre</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">¿Estás segura(o) de querer eliminar este servidor de la app?</string>
     <string name="folder_name_already_exists">El nombre de la carpeta ya existe.</string>
-    <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadatos</string>
 
     <string name="confirm_remove_media">¿Estás segura(o) de que deseas eliminar este Medio?</string>
@@ -150,7 +147,6 @@
 
     <!-- Clean Insights measurement -->
     <string name="server_name_optional">Nombre del Servidor (Opcional)</string>
-    <string name="dropbox_id">ID de Dropbox:</string>
     <string name="add_another_account">Agregar Otra Cuenta</string>
     <string name="prefs_proofmode_key_encryption_title_all">Clave de ProofMode segura con datos Biométricos o Código de Acceso del dispositivo</string>
     <string name="prefs_proofmode_key_encryption_title_biometrics">Clave de ProofMode segura con datos Biométricos</string>
@@ -164,8 +160,6 @@
     <string name="add">Añadir</string>
     <string name="no_more_folders">No (más) carpetas</string>
     <string name="private_server">Servidor Privado</string>
-    <string name="upload_to_dropbox">Subir a Dropbox</string>
-    <string name="sign_in_or_create_an_account_with_dropbox">Inicia sesión o crear una cuenta con Dropbox</string>
     <string name="authenticate">Autenticar</string>
     <string name="back">Volver</string>
     <string name="my_media">Mis Medios</string>

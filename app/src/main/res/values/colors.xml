@@ -63,7 +63,8 @@
 
     <color name="colorBackground">#F5F1E7</color>
     <color name="colorOnBackground">@color/black</color>
-    <color name="colorOnBackgroundTonedDown">@color/c23_grey</color>
+    <color name="colorOnBackgroundTonedDown">@color/c23_medium_grey</color>
+    <color name="colorOnBackgroundLowContrast">@color/c23_grey</color>
     <color name="colorOnPrimary">@color/white</color>
     <color name="colorPrimary">@color/c23_teal</color>
     <color name="colorPrimaryDark">@color/c23_teal_40</color>

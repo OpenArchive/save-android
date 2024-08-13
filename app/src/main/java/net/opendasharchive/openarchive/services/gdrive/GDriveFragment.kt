@@ -68,6 +68,9 @@ class GDriveFragment : CommonServiceFragment() {
             )
         } else {
             // permission was already granted, we're already signed in, continue.
+            Backend.get(Backend.Type.GDRIVE).firstOrNull().let { backend ->
+                Backend.current = backend
+            }
             setFragmentResult(RESP_CREATED, bundleOf())
         }
     }
@@ -82,7 +85,7 @@ class GDriveFragment : CommonServiceFragment() {
                     CoroutineScope(Dispatchers.IO).launch {
                         val backend = Backend(Backend.Type.GDRIVE)
                         // we don't really know the host here, that's hidden by Drive Api
-                        backend.host = "what's the host of google drive? :shrug:"
+                        backend.host = ""
                         data?.let {
                             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(it)
                             if (result?.isSuccess == true) {

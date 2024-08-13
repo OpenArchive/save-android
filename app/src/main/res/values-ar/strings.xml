@@ -99,7 +99,6 @@
 
     <string name="tap_to_add">المس الزر أدناه لإضافة الوسائط.</string>
     <string name="to_get_started_connect_to_a_server_to_store_your_media">لبدء الاستخدام، اتصل بخادم لتخزين وسائطك.</string>
-    <string name="in_the_side_menu_you_can_add_another_server_and_connect_to_multiple_servers">في القائمة الجانبية، يمكنك إضافة خادم آخر والاتصال بخوادم متعددة</string>
     <string name="send_directly_to_a_private_server">إرسال إلى خادم webdav</string>
     <string name="upload_to_the_internet_archive">تحميل إلى IA</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud">يتصل <b><i>Save </i></b> فقط بالخوادم المتوافقة مع WebDAV، مثل Nextcloud و ownCloud.</string>
@@ -108,7 +107,6 @@
     <string name="status_flagged">محتوى مميز</string>
     <string name="select_where_to_store_your_media">حدِّد مكان تخزين وسائطك.</string>
     <string name="you_have_successfully_connected_to_a_private_server">لقد اتصلت بخادم خاص بنجاح !</string>
-    <string name="you_have_successfully_connected_to_dropbox">لقد اتصلت بـ Dropbox بنجاح !</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">لقد اتصلت بـ Internet Archive بنجاح !</string>
     <string name="create_a_new_folder">إنشاء مجلد جديد</string>
     <string name="edit">تحرير</string>
@@ -127,7 +125,6 @@
     <string name="please_do_not_include_special_characters_in_the_name">يرجى عدم كتابة أحرف خاصة في الاسم.</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">هل أنت متأكد من أنك تريد إزالة هذا الخادم من التطبيق ؟</string>
     <string name="folder_name_already_exists">اسم المجلد موجود بالفعل.</string>
-    <string name="dropbox">Dropbox</string>
     <string name="metadata">البيانات الوصفية</string>
 
     <string name="confirm_remove_media">هل أنت متأكد من أنك تريد إزالة هذه الوسائط ؟</string>
@@ -150,7 +147,6 @@
 
     <!-- Clean Insights measurement -->
     <string name="server_name_optional">اسم الخادم (اختياري)</string>
-    <string name="dropbox_id">‫مُعرِّف Dropbox :</string>
     <string name="add_another_account">إضافة حساب آخر</string>
     <string name="prefs_proofmode_key_encryption_title_all">أَمِّن مفتاح ProofMode بالمقاييس الحيوية أو رمز مرور الجهاز</string>
     <string name="prefs_proofmode_key_encryption_title_biometrics">أَمِّن مفتاح ProofMode بالمقاييس الحيوية</string>
@@ -164,8 +160,6 @@
     <string name="add">إضافة</string>
     <string name="no_more_folders">لا (مزيد من) المجلدات</string>
     <string name="private_server">الخادم الخاص</string>
-    <string name="upload_to_dropbox">تحميل إلى Dropbox</string>
-    <string name="sign_in_or_create_an_account_with_dropbox">قم بتسجيل الدخول أو إنشاء حساب مع Dropbox</string>
     <string name="authenticate">استوثِق</string>
     <string name="back">الرجوع</string>
     <string name="my_media">وسائطي</string>

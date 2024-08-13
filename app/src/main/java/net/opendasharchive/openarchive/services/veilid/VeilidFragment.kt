@@ -10,9 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import net.opendasharchive.openarchive.R
@@ -20,31 +17,6 @@ import net.opendasharchive.openarchive.databinding.FragmentVeilidBinding
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import timber.log.Timber
-import java.lang.ref.WeakReference
-
-fun EditText.showKeyboard() {
-    this.requestFocus()
-    val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-}
-
-fun EditText.hideKeyboard() {
-    val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
-}
-
-class EditTextKeyboardLifecycleObserver(private val editText: WeakReference<EditText>) : LifecycleObserver {
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun openKeyboard() {
-        editText.get()?.postDelayed({ editText.get()?.showKeyboard() }, 100)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun closeKeyboard() {
-        editText.get()?.hideKeyboard()
-    }
-}
 
 class VeilidFragment : CommonServiceFragment() {
 
@@ -52,8 +24,6 @@ class VeilidFragment : CommonServiceFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentVeilidBinding.inflate(inflater)
-
-        // lifecycle.addObserver(EditTextKeyboardLifecycleObserver(WeakReference(viewBinding.serverUri)))
 
         viewBinding.serverTextInput.setEndIconOnClickListener {
             startQRScanner()

@@ -30,84 +30,26 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <TextView
-                android:layout_width="300dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="6dp"
+                android:layout_marginVertical="20dp"
                 android:gravity="center_horizontal"
                 android:text="@string/select_where_to_store_your_media"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/OAOutlinedButtonStyle"
                 android:id="@+id/new_folder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/veilid"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorText"
-                android:textSize="18sp"
-                app:icon="@drawable/ic_veilid"
-                app:iconGravity="start"
-                app:iconPadding="10dp"
-                app:iconSize="32dp"
-                app:iconTint="@null" />
+                android:text="@string/add_a_folder"
+                app:icon="@drawable/ic_veilid" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/OAOutlinedButtonStyle"
                 android:id="@+id/browse_folders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/veilid"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorText"
-                android:textSize="18sp"
-                app:icon="@drawable/ic_veilid"
-                app:iconGravity="start"
-                app:iconPadding="10dp"
-                app:iconSize="32dp"
-                app:iconTint="@null" />
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/new_folder"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"-->
-<!--                android:layout_marginVertical="@dimen/activity_vertical_margin"-->
-<!--                app:cardCornerRadius="@dimen/activity_horizontal_margin">-->
-
-<!--                <TextView-->
-<!--                    android:id="@+id/new_folder_text"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center_vertical"-->
-<!--                    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"-->
-<!--                    android:text="@string/create_a_new_folder"-->
-<!--                    android:textSize="22sp"-->
-<!--                    android:textStyle="bold" />-->
-
-<!--            </androidx.cardview.widget.CardView>-->
-
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/browse_folders"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"-->
-<!--                android:layout_marginVertical="@dimen/activity_vertical_margin"-->
-<!--                app:cardCornerRadius="@dimen/activity_horizontal_margin">-->
-
-<!--                <TextView-->
-<!--                    android:id="@+id/browse_folders_text"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="center_vertical"-->
-<!--                    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"-->
-<!--                    android:text="@string/browse_existing_folders"-->
-<!--                    android:textSize="22sp"-->
-<!--                    android:textStyle="bold" />-->
-
-<!--            </androidx.cardview.widget.CardView>-->
-
+                android:layout_marginTop="6dp"
+                android:text="@string/browse_existing_folders"
+                app:icon="@drawable/ic_veilid" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

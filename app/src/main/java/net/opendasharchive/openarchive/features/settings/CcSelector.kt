@@ -47,15 +47,10 @@ object CcSelector {
         cc.tvLicense.setOnClickListener {
             it?.context?.openBrowser(cc.tvLicense.text.toString())
         }
-
-//        cc.btLearnMore.styleAsLink()
-//        cc.btLearnMore.setOnClickListener {
-//            it?.context?.openBrowser("https://creativecommons.org/about/cclicenses/")
-//        }
     }
 
     fun set(cc: ContentCcBinding, license: String?, enabled: Boolean = true) {
-        val isCc = license?.contains(CC_DOMAIN, true) ?: false
+        val isCc = true // license?.contains(CC_DOMAIN, true) ?: false
 
         cc.swCc.isChecked = isCc
         toggle(cc, isCc)

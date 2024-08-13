@@ -60,7 +60,6 @@
     <string name="secret_key">Chiave Segreta</string>
     <string name="action_acquire_keys">Acquisisci Chiavi</string>
     <string name="new_folder">Nuova cartella</string>
-    <string name="dropbox">Dropbox</string>
     <string name="metadata">Metadati</string>
 
     <string name="popup_flag_title">Segnala Contenuto Significativo</string>
@@ -70,7 +69,6 @@
     <string name="folders">cartelle</string>
     <string name="create">Crea</string>
     <string name="add">Aggiungi</string>
-    <string name="upload_to_dropbox">Carica su Dropbox</string>
     <string name="authenticate">Autenticato</string>
     <string name="back">Indietro</string>
     <string name="account">Account</string>

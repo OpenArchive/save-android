@@ -1,9 +1,11 @@
 package net.opendasharchive.openarchive.features.main
 
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -12,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
@@ -19,21 +22,26 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.esafirm.imagepicker.features.ImagePickerLauncher
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
@@ -47,6 +55,7 @@ import net.opendasharchive.openarchive.util.ProofModeHelper
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.aviran.cookiebar2.CookieBar
+import org.torproject.jni.TorService
 import timber.log.Timber
 import java.net.InetSocketAddress
 import java.net.Proxy
@@ -168,66 +177,66 @@ class MainActivity : BaseActivity() {
             .unregisterReceiver(onWifiStatusChanged)
     }
 
-    private fun initBiometricPrompt() {
-        val executor = ContextCompat.getMainExecutor(this)
-
-        biometricPrompt = BiometricPrompt(this, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    showMessage("Authentication error: $errString")
-                    finish()
-                }
-
+//    private fun initBiometricPrompt() {
+//        val executor = ContextCompat.getMainExecutor(this)
+//
+//        biometricPrompt = BiometricPrompt(this, executor,
+//            object : BiometricPrompt.AuthenticationCallback() {
+//                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+//                    super.onAuthenticationError(errorCode, errString)
+//                    showMessage("Authentication error: $errString")
+//                    finish()
+//                }
+//
 //                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
 //                    super.onAuthenticationSucceeded(result)
 //                    showMessage("Authentication succeeded!")
 //                    splashScreen = installSplashScreen()
 //                    dismissSplashScreen()
 //                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    showMessage("Authentication failed")
-                    finish()
-                }
-            })
-
-        promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Authentication")
-            .setSubtitle("Sign in using your biometric credential")
-            .setAllowedAuthenticators(BiometricManager.Authenticators.DEVICE_CREDENTIAL or BiometricManager.Authenticators.BIOMETRIC_STRONG)
-            .build()
-
-        biometricPrompt.authenticate(promptInfo)
-    }
-
-    private fun didSetupBiometricAuthentication(): Boolean {
-        val biometricManager = BiometricManager.from(this)
-
-        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL or BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
-            BiometricManager.BIOMETRIC_SUCCESS -> {
-                initBiometricPrompt()
-                return true
-            }
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                showMessage("No biometric features available on this device.")
-                return false
-            }
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
-                showMessage("Biometric features are currently unavailable.")
-                return false
-            }
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                showMessage("No biometric credentials are enrolled.")
-                return false
-            }
-            else -> {
-                showMessage("Error setting up biometric authentication.")
-                return false
-            }
-        }
-    }
+//
+//                override fun onAuthenticationFailed() {
+//                    super.onAuthenticationFailed()
+//                    showMessage("Authentication failed")
+//                    finish()
+//                }
+//            })
+//
+//        promptInfo = BiometricPrompt.PromptInfo.Builder()
+//            .setTitle("Authentication")
+//            .setSubtitle("Sign in using your biometric credential")
+//            .setAllowedAuthenticators(BiometricManager.Authenticators.DEVICE_CREDENTIAL or BiometricManager.Authenticators.BIOMETRIC_STRONG)
+//            .build()
+//
+//        biometricPrompt.authenticate(promptInfo)
+//    }
+//
+//    private fun didSetupBiometricAuthentication(): Boolean {
+//        val biometricManager = BiometricManager.from(this)
+//
+//        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.DEVICE_CREDENTIAL or BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
+//            BiometricManager.BIOMETRIC_SUCCESS -> {
+//                initBiometricPrompt()
+//                return true
+//            }
+//            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+//                showMessage("No biometric features available on this device.")
+//                return false
+//            }
+//            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+//                showMessage("Biometric features are currently unavailable.")
+//                return false
+//            }
+//            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+//                showMessage("No biometric credentials are enrolled.")
+//                return false
+//            }
+//            else -> {
+//                showMessage("Error setting up biometric authentication.")
+//                return false
+//            }
+//        }
+//    }
 
     private fun showMessage(message: String) {
         Timber.d(message)
@@ -256,11 +265,11 @@ class MainActivity : BaseActivity() {
 //            Log.e("Filecoin", "Error: ${e.localizedMessage}")
 //        }
 
-        if (Prefs.lockWithPasscode && didSetupBiometricAuthentication()) {
-            Timber.d("Doing biometrics")
-        } else {
-            Timber.d("Not doing biometrics")
-        }
+//        if (Prefs.lockWithPasscode && didSetupBiometricAuthentication()) {
+//            Timber.d("Doing biometrics")
+//        } else {
+//            Timber.d("Not doing biometrics")
+//        }
 
         LocalBroadcastManager
             .getInstance(this)
@@ -387,6 +396,11 @@ class MainActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
 
+        // Folder.current = Folder.getById(1)
+
+        Timber.d("Current backend = ${Backend.current?.friendlyName}")
+        Timber.d("Current folder = ${Folder.current?.description}")
+
         networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
@@ -403,76 +417,75 @@ class MainActivity : BaseActivity() {
 
         // requestNotificationPermission()
 
-//        registerReceiver(object : BroadcastReceiver() {
-//            override fun onReceive(context: Context, intent: Intent) {
-//                val status = intent.getStringExtra(TorService.EXTRA_STATUS)
-//
-//                Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-//
-////                if (status == TorService.STATUS_ON) {
-////                    CoroutineScope(Dispatchers.IO).launch {
-////                        connectToRestEndpoint()
-////                    }
-////                }
-//            }
-//        }, IntentFilter(TorService.ACTION_STATUS), RECEIVER_NOT_EXPORTED)
+        registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val status = intent.getStringExtra(TorService.EXTRA_STATUS)
 
-//        class StartTor(val appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
-//
-//            override fun doWork(): Result {
-//                Timber.d("StartTor")
-//                bindService(Intent(appContext, TorService::class.java), object : ServiceConnection {
-//                    override fun onServiceConnected(name: ComponentName, service: IBinder) {
-//                        val torService: TorService = (service as TorService.LocalBinder).service
-//
-//                        while (torService.torControlConnection == null) {
-//                            try {
-//                                Timber.d("Sleeping")
-//                                Thread.sleep(500)
-//                            } catch (e: InterruptedException) {
-//                                e.printStackTrace()
-//                            }
-//                        }
-//
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            "Got Tor control connection",
-//                            Toast.LENGTH_LONG
-//                        )
-//                            .show()
-//                    }
-//
-//                    override fun onServiceDisconnected(name: ComponentName) {
-//                        // Things...
-//                    }
-//                }, BIND_AUTO_CREATE)
-//
-//                return Result.success()
-//            }
-//        }
+                Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
 
-//        class UploadMedia(appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
-//            override fun doWork(): Result {
-//                Timber.d("UploadMedia")
-//                val imageUriInput =
-//                    inputData.getString("IMAGE_URI") ?: return Result.failure()
-//
-//                return Result.success()
-//            }
-//        }
-//
-//        val startTorRequest = OneTimeWorkRequestBuilder<StartTor>()
-//            .build()
-//
-//        val uploadMediaRequest = OneTimeWorkRequestBuilder<UploadMedia>()
-//            .addTag("media_upload")
-//            .setInputData(workDataOf(
-//                "IMAGE_URI" to "http://..."
-//            ))
-//            .build()
-//
-//        WorkManager.getInstance(this)
-//            .enqueue(uploadMediaRequest)
+                if (status == TorService.STATUS_ON) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        connectToRestEndpoint()
+                    }
+                }
+            }
+        }, IntentFilter(TorService.ACTION_STATUS), RECEIVER_NOT_EXPORTED)
+
+        class StartTor(val appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
+            override fun doWork(): Result {
+                Timber.d("StartTor")
+                bindService(Intent(appContext, TorService::class.java), object : ServiceConnection {
+                    override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                        val torService: TorService = (service as TorService.LocalBinder).service
+
+                        while (torService.torControlConnection == null) {
+                            try {
+                                Timber.d("Sleeping")
+                                Thread.sleep(500)
+                            } catch (e: InterruptedException) {
+                                e.printStackTrace()
+                            }
+                        }
+
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Got Tor control connection",
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    }
+
+                    override fun onServiceDisconnected(name: ComponentName) {
+                        // Things...
+                    }
+                }, BIND_AUTO_CREATE)
+
+                return Result.success()
+            }
+        }
+
+        class UploadMedia(appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
+            override fun doWork(): Result {
+                Timber.d("UploadMedia")
+                val imageUriInput =
+                    inputData.getString("IMAGE_URI") ?: return Result.failure()
+
+                return Result.success()
+            }
+        }
+
+        val startTorRequest = OneTimeWorkRequestBuilder<StartTor>()
+            .build()
+
+        val uploadMediaRequest = OneTimeWorkRequestBuilder<UploadMedia>()
+            .addTag("media_upload")
+            .setInputData(workDataOf(
+                "IMAGE_URI" to "http://..."
+            ))
+            .build()
+
+        WorkManager.getInstance(this)
+            .enqueue(uploadMediaRequest)
     }
 
     private fun setWifiIndicator(uploadOnWifiOnly: Boolean) {

@@ -8,11 +8,11 @@
     tools:context="net.opendasharchive.openarchive.features.folders.CreateNewFolderActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
+        style="@style/OAToolbar"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        android:theme="@style/OAToolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -56,14 +56,11 @@
     </RelativeLayout>
 
     <com.google.android.material.button.MaterialButton
+        style="@style/OAPrimaryButtonStyle"
         android:id="@+id/create_folder_button"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
         android:layout_marginTop="10dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/create"
-        android:textColor="@color/white"
         android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:text="@string/create"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cc_container" />

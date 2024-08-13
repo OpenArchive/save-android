@@ -78,7 +78,6 @@
     <string name="secret_key">کلید خصوصی</string>
     <string name="action_acquire_keys">به دست آوردن کلیدها</string>
     <string name="new_folder">New Folder</string>
-    <string name="dropbox">Dropbox</string>
     <string name="metadata">فرا داده</string>
 
     <string name="popup_flag_title">نشانه‌گذاری محتوای مهم</string>
@@ -89,7 +88,6 @@
     <string name="folders">پوشه ها</string>
     <string name="create">ایجاد کردن</string>
     <string name="add">افزودن</string>
-    <string name="upload_to_dropbox">بارگذاری در Dropbox</string>
     <string name="authenticate">تصدیق کردن</string>
     <string name="back">برگشت</string>
     <string name="account">حساب کاربری</string>

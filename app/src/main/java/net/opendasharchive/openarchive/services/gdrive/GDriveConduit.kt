@@ -177,22 +177,21 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
 
         fun listFoldersInRoot(gdrive: Drive, backend: Backend): List<Folder> {
             val result = ArrayList<Folder>()
-            try {
-                var pageToken: String? = null
-                do {
-                    val folders =
-                        gdrive.files().list().setPageSize(1000).setPageToken(pageToken)
-                            .setQ("mimeType='application/vnd.google-apps.folder' and 'root' in parents and trashed = false")
-                            .setFields("nextPageToken, files(id, name, createdTime)").execute()
-                    for (f in folders.files) {
-                        val date = Date(f.createdTime.value)
-                        result.add(Folder(f.name, backendId = backend.id, created = date))
-                    }
-                    pageToken = folders.nextPageToken
-                } while (pageToken != null)
-            } catch (e: java.lang.IllegalArgumentException) {
-                Timber.e(e)
-            }
+
+            var pageToken: String? = null
+
+            do {
+                val folders =
+                    gdrive.files().list().setPageSize(1000).setPageToken(pageToken)
+                        .setQ("mimeType='application/vnd.google-apps.folder' and 'root' in parents and trashed = false")
+                        .setFields("nextPageToken, files(id, name, createdTime)").execute()
+                for (f in folders.files) {
+                    val date = Date(f.createdTime.value)
+                    result.add(Folder(f.name, backendId = backend.id, created = date))
+                }
+                pageToken = folders.nextPageToken
+            } while (pageToken != null)
+
             return result
         }
     }
