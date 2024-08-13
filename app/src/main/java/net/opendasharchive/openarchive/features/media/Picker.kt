@@ -98,6 +98,7 @@ object Picker {
             isIncludeVideo = true
             arrowColor = Color.WHITE
             limit = 99
+            theme = R.style.ImagePickerTheme
             savePath = ImagePickerSavePath(Environment.getExternalStorageDirectory().path, false)
         }
 

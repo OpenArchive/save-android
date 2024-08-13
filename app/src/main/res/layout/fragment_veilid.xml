@@ -55,13 +55,15 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/server_text_input"
-            style="@style/OATextFieldStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             app:endIconDrawable="@drawable/padded_qr_button"
             app:endIconMode="custom"
             app:endIconTint="@color/colorPrimary"
+            app:boxBackgroundMode="outline"
+            app:boxBackgroundColor="@android:color/transparent"
+            style="@style/OATextInputLayoutStyle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header_container">

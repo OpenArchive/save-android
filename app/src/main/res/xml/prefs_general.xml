@@ -28,7 +28,7 @@
             app:key="servers"
             app:singleLineTitle="true"
             app:title="Media Storage"
-            app:summary="Connect to media storage services" />
+            app:summary="Manage your media storage services" />
 
 <!--        <Preference-->
 <!--            app:allowDividerAbove="true"-->

@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +38,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -119,7 +121,10 @@ private fun InternetArchiveLoginContent(
 
         InternetArchiveHeader(
             modifier = Modifier
-                .padding(bottom = ThemeDimensions.spacing.large)
+                .padding(
+                    bottom = ThemeDimensions.spacing.large,
+                    top = ThemeDimensions.spacing.medium),
+
         )
 
         OutlinedTextField(
@@ -135,6 +140,11 @@ private fun InternetArchiveLoginContent(
                 imeAction = ImeAction.Next,
                 autoCorrect = false,
                 keyboardType = KeyboardType.Email
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White
             ),
             isError = state.isUsernameError,
             modifier = Modifier.fillMaxWidth()
@@ -158,6 +168,11 @@ private fun InternetArchiveLoginContent(
                     )
                 }
             },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White
+            ),
             shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
             visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
@@ -179,26 +194,6 @@ private fun InternetArchiveLoginContent(
                 color = MaterialTheme.colorScheme.error
             )
         }
-//        Row(
-//            modifier = Modifier
-//                .padding(top = ThemeDimensions.spacing.small)
-//                .weight(1f),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Text(
-//                text = stringResource(R.string.prompt_no_account),
-//                color = ThemeColors.material.onBackground
-//            )
-//            TextButton(
-//                modifier = Modifier.heightIn(ThemeDimensions.touchable),
-//                onClick = { dispatch(CreateLogin) }) {
-//                Text(
-//                    text = stringResource(R.string.label_create_login),
-//                    fontWeight = FontWeight.Bold,
-//                    style = MaterialTheme.typography.bodyLarge
-//                )
-//            }
-//        }
 
         Spacer(Modifier.height(ThemeDimensions.spacing.large))
 
@@ -209,15 +204,6 @@ private fun InternetArchiveLoginContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-//            TextButton(
-//                modifier = Modifier
-//                    .weight(1f)
-//                    .heightIn(ThemeDimensions.touchable)
-//                    .padding(ThemeDimensions.spacing.small),
-//                shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
-//                onClick = { dispatch(Action.Cancel) }) {
-//                Text(stringResource(R.string.action_cancel))
-//            }
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -230,7 +216,8 @@ private fun InternetArchiveLoginContent(
                 if (state.isBusy) {
                     CircularProgressIndicator(color = ThemeColors.material.primary)
                 } else {
-                    Text(stringResource(R.string.label_login))
+                    Text(color = ThemeColors.material.onPrimary,
+                         text = stringResource(R.string.label_login))
                 }
             }
         }

@@ -26,7 +26,7 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
-import net.opendasharchive.openarchive.features.folders.BrowseFoldersActivity
+import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.cloak
@@ -146,26 +146,14 @@ class MainMediaFragment : Fragment() {
         val folder = getSelectedFolder()
 
         if (folder != null) {
-//            val color = ContextCompat.getColor(requireContext(), R.color.colorIcon)
-//
-//            val backendIcon = ContextCompat.getDrawable(requireContext(),
-//                R.drawable.outline_create_new_folder_24
-//            )?.tint(color)
-//            mBinding.currentFolder.currentBackendButton.icon = backendIcon
-//            mBinding.currentFolder.currentBackendButton.show()
-//            mBinding.currentFolder.currentBackendButton.text = "Add a media server"
-//
-//            mBinding.currentFolder.currentBackendButton.setOnClickListener {
-//                startActivity(Intent(context, BackendSetupActivity::class.java))
-//            }
-//        } else {
             val backendIcon = folder.backend?.getAvatar(requireContext())
             mBinding.currentFolder.currentBackendButton.icon = backendIcon
             mBinding.currentFolder.currentBackendButton.show()
+            mBinding.currentFolder.currentFolderCount.show()
             mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown storage") + " > " + folder.description
 
             mBinding.currentFolder.currentBackendButton.setOnClickListener {
-                startActivity(Intent(context, BrowseFoldersActivity::class.java))
+                startActivity(Intent(context, BackendSetupActivity::class.java))
             }
         }
     }

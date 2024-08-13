@@ -14,10 +14,11 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:textViewStyle">@style/OATextViewStyle</item>
         <item name="android:toolbarStyle">@style/OAToolbar</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:divider">@drawable/oa_divider</item>
         <item name="android:listDivider">@drawable/oa_divider</item>
+        <item name="android:colorControlNormal">@color/white</item>
 
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
@@ -59,12 +60,12 @@
     </style>
 
     <style name="OAToolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/colorPrimary</item>
         <item name="titleTextColor">@color/white</item>
         <item name="subtitleTextColor">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorControlNormal">@color/white</item>
-        <item name="android:background">@color/colorPrimary</item>
+        <item name="titleCentered">true</item>
     </style>
 
     <style name="AppDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
@@ -107,8 +108,8 @@
         <item name="fontFamily">@font/montserrat</item>
     </style>
 
-    <style name="OATextFieldStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxBackgroundColor">@android:color/transparent</item>
+    <style name="OATextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/red</item>
     </style>
 
     <style name="OAMaterialButtonStyle" parent="Widget.MaterialComponents.Button">
@@ -127,13 +128,18 @@
         <item name="android:background">@drawable/button</item>
     </style>
 
-    <style name="OAPillButtonStyle" parent="Widget.MaterialComponents.Button">
+    <style name="OAMediaButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:background">@drawable/button_pill</item>
         <item name="android:gravity">center_horizontal|center_vertical</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
+        <item name="backgroundTint">@color/colorAddButton</item>
+        <item name="iconSize">38dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconTint">@color/colorOnBottomNavbar</item>
     </style>
 
     <style name="OAButtonStyle" parent="Widget.MaterialComponents.Button">
@@ -180,5 +186,13 @@
 
     <style name="GreenButtonThemeOverlay">
         <item name="colorPrimary">@color/green</item>
+    </style>
+
+    <style name="ImagePickerTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
     </style>
 </resources>

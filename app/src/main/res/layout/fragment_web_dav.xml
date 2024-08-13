@@ -65,7 +65,7 @@
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/OATextFieldStyle"
+                style="@style/OATextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp">
@@ -74,6 +74,7 @@
                     android:id="@+id/server"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorButtonOnBackground"
                     android:hint="@string/enter_url"
                     android:inputType="textUri"
                     android:maxLines="1"
@@ -82,7 +83,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/OATextFieldStyle"
+                style="@style/OATextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
@@ -91,6 +92,7 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorButtonOnBackground"
                     android:hint="@string/server_name_optional"
                     android:inputType="textNoSuggestions"
                     android:maxLines="1"
@@ -99,7 +101,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/OATextFieldStyle"
+                style="@style/OATextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp">
@@ -108,6 +110,7 @@
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorButtonOnBackground"
                     android:hint="@string/prompt_email"
                     android:inputType="textNoSuggestions"
                     android:maxLines="1"
@@ -116,7 +119,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/OATextFieldStyle"
+                style="@style/OATextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -129,6 +132,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
                     android:imeActionId="6"
+                    android:background="@color/colorButtonOnBackground"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"

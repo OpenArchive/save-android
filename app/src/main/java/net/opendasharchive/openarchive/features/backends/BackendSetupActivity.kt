@@ -67,7 +67,8 @@ class BackendSetupActivity : BaseActivity() {
     }
 
     private fun showSpaceFragment(fragment: Fragment, title: String) {
-        supportActionBar?.title = title
+        // Lemme think if I want this.
+        // supportActionBar?.title = title
         supportFragmentManager.commit {
             setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
             replace(mBinding.spaceSetupFragment.id, fragment)
@@ -129,7 +130,7 @@ class BackendSetupActivity : BaseActivity() {
         }
 
         supportFragmentManager.setFragmentResultListener("cancel", this) { _, _ ->
-            supportActionBar?.title = "All servers"
+            supportActionBar?.title = "All Servers"
             supportFragmentManager.commit {
                 setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 replace(mBinding.spaceSetupFragment.id, BackendSetupFragment())

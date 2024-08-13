@@ -28,19 +28,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/OAPillButtonStyle"
+            style="@style/OAMediaButtonStyle"
             android:id="@+id/add_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="2"
             android:layout_marginVertical="10dp"
-            app:backgroundTint="@color/colorAddButton"
-            app:icon="@drawable/baseline_add_white_24"
-            app:iconSize="38dp"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconTint="@color/colorOnBottomNavbar"/>
+            app:icon="@drawable/baseline_add_white_24"/>
 
     <com.google.android.material.button.MaterialButton
         style="@style/OABottomBarButtonStyle"
