@@ -12,6 +12,7 @@ import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.folders.CreateNewFolderActivity
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
+import net.opendasharchive.openarchive.util.extensions.getVersionName
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -61,6 +62,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Theme.set(Theme.get(newValue as? String))
             SaveApp.hasThemeChanged = true
             true
+        }
+
+        activity?.let { activity ->
+            findPreference<Preference>("app_version")?.setSummary(
+                activity.packageManager.getVersionName(
+                    activity.packageName
+                )
+            )
         }
     }
 }

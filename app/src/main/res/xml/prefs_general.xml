@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<PreferenceScreen
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         app:layout="@layout/prefs_title"
@@ -27,17 +26,8 @@
             app:iconSpaceReserved="false"
             app:key="servers"
             app:singleLineTitle="true"
-            app:title="Media Storage"
-            app:summary="Manage your media storage services" />
-
-<!--        <Preference-->
-<!--            app:allowDividerAbove="true"-->
-<!--            app:allowDividerBelow="false"-->
-<!--            app:iconSpaceReserved="false"-->
-<!--            app:key="folders"-->
-<!--            app:singleLineTitle="true"-->
-<!--            app:title="Folders"-->
-<!--            app:summary="Manage the folders on your servers" />-->
+            app:summary="Manage your media storage services"
+            app:title="Media Storage" />
 
         <ListPreference
             app:allowDividerAbove="true"
@@ -116,5 +106,15 @@
             app:singleLineTitle="false"
             app:summary="%s"
             app:title="@string/prefs_theme_title" />
+
+        <Preference
+            app:allowDividerAbove="true"
+            app:allowDividerBelow="false"
+            app:enabled="false"
+            app:iconSpaceReserved="false"
+            app:key="app_version"
+            app:singleLineTitle="false"
+            app:summary="0.7.2.4783"
+            app:title="Version" />
     </PreferenceCategory>
 </PreferenceScreen>
