@@ -22,7 +22,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +36,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityMainBinding
 import net.opendasharchive.openarchive.db.Backend
@@ -52,20 +50,15 @@ import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity
 import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.aviran.cookiebar2.CookieBar
 import org.torproject.jni.TorService
 import timber.log.Timber
-import java.net.InetSocketAddress
-import java.net.Proxy
-import java.util.concurrent.TimeUnit
 
 
 class MainActivity : BaseActivity() {
 
-    private lateinit var biometricPrompt: BiometricPrompt
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
+//    private lateinit var biometricPrompt: BiometricPrompt
+//    private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
     private var mMenuDelete: MenuItem? = null
     private var mMenuNoWifiIndicator: MenuItem? = null
@@ -425,7 +418,7 @@ class MainActivity : BaseActivity() {
 
                 if (status == TorService.STATUS_ON) {
                     CoroutineScope(Dispatchers.IO).launch {
-                        connectToRestEndpoint()
+                        // connectToRestEndpoint()
                     }
                 }
             }
@@ -490,18 +483,23 @@ class MainActivity : BaseActivity() {
 
     private fun setWifiIndicator(uploadOnWifiOnly: Boolean) {
         if (uploadOnWifiOnly) {
-            val network = connectivityManager.activeNetwork ?: return
-            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return
-            val hasWifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+            val network = connectivityManager.activeNetwork
 
-            Timber.d("Is Wifi available? $hasWifi")
+            if (network != null) {
+                val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return
+                val hasWifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
 
-            lifecycleScope.launch(Dispatchers.Main) {
-                if (hasWifi) {
-                    mMenuNoWifiIndicator?.setVisible(false)
-                } else if (Prefs.uploadWifiOnly) {
-                    mMenuNoWifiIndicator?.setVisible(true)
+                Timber.d("Is Wifi available? $hasWifi")
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    if (hasWifi) {
+                        mMenuNoWifiIndicator?.setVisible(false)
+                    } else if (Prefs.uploadWifiOnly) {
+                        mMenuNoWifiIndicator?.setVisible(true)
+                    }
                 }
+            } else {
+                mMenuNoWifiIndicator?.setVisible(true)
             }
         } else {
             mMenuNoWifiIndicator?.setVisible(false)
@@ -516,34 +514,34 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    suspend fun connectToRestEndpoint() {
-        val proxy = Proxy(Proxy.Type.SOCKS, InetSocketAddress("localhost", 9050))
-
-        val client = OkHttpClient.Builder()
-            .connectTimeout(3000L, TimeUnit.MILLISECONDS)
-            .proxy(proxy)
-            .build()
-
-        val request = Request.Builder()
-            .url("https://jsonplaceholder.typicode.com/todos/1")
-            .build()
-
-        try {
-            val response = withContext(Dispatchers.IO) {
-                client.newCall(request).execute()
-            }
-
-            val result = if (response.isSuccessful) {
-                response.body?.string()
-            } else {
-                null
-            }
-
-            Timber.d("result: $result")
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-    }
+//    suspend fun connectToRestEndpoint() {
+//        val proxy = Proxy(Proxy.Type.SOCKS, InetSocketAddress("localhost", 9050))
+//
+//        val client = OkHttpClient.Builder()
+//            .connectTimeout(3000L, TimeUnit.MILLISECONDS)
+//            .proxy(proxy)
+//            .build()
+//
+//        val request = Request.Builder()
+//            .url("https://jsonplaceholder.typicode.com/todos/1")
+//            .build()
+//
+//        try {
+//            val response = withContext(Dispatchers.IO) {
+//                client.newCall(request).execute()
+//            }
+//
+//            val result = if (response.isSuccessful) {
+//                response.body?.string()
+//            } else {
+//                null
+//            }
+//
+//            Timber.d("result: $result")
+//        } catch (e: Exception) {
+//            Timber.e(e)
+//        }
+//    }
 
     override fun onResume() {
         super.onResume()
@@ -596,6 +594,8 @@ class MainActivity : BaseActivity() {
                     .setMessage("You have chosen to only upload media over wifi and there is currently no connection.\n\nIf you'd like to disable this, please go to the Settings screen. If not, your uploads will resume once you are connected to wifi again.")     // i.e. R.string.message
                     .setCookiePosition(CookieBar.BOTTOM)
                     .setIcon(R.mipmap.ic_launcher_round)
+                    .setAnimationIn(R.anim.slide_down, R.anim.slide_up)
+                    .setAnimationOut(R.anim.slide_up, R.anim.slide_down)
                     .setDuration(5000)
                     .show()
 
