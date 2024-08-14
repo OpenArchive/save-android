@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottom_bar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/bottom_nav_height"
     android:background="@drawable/bottom_nav_background"

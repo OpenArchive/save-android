@@ -219,7 +219,7 @@ class MainMediaFragment : Fragment() {
                 holder?.setHeader(collection, media)
             } else if (media.isNotEmpty()) {
                 val view = createMediaList(collection, media)
-                mBinding.mediaContainer.mediaContainer.addView(view, 0)
+                mBinding.mediaContainer.mediaContainerLayout.addView(view, 0)
             }
         }
 
