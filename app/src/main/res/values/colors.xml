@@ -7,6 +7,7 @@
     <color name="green">#00ff00</color>
     <color name="blue">#0000ff</color>
     <color name="black">#000000</color>
+    <color name="eigengrau">#F5F1E7</color>
     <color name="transparent_black">#33333333</color>
     <color name="transparent_white">#CCFFFFFF</color>
     <color name="storymaker_blue">#27aae1</color>
@@ -61,7 +62,7 @@
 
     <!-- theme day colors -->
 
-    <color name="colorBackground">#F5F1E7</color>
+    <color name="colorBackground">@color/eigengrau</color>
     <color name="colorOnBackground">@color/black</color>
     <color name="colorOnBackgroundTonedDown">@color/c23_medium_grey</color>
     <color name="colorOnBackgroundLowContrast">@color/c23_grey</color>
@@ -83,6 +84,7 @@
     <color name="colorSpaceSetupProgressOff">@color/c23_grey</color>
     <color name="colorBackgroundSpaceIcon">@color/c23_light_grey</color>
     <color name="colorButtonOnBackground">@color/white</color>
+    <color name="colorTextViewHint">@color/colorPrimary</color>
 
     <!--
 

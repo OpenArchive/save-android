@@ -61,14 +61,13 @@
                         android:text="@string/save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud" />
 
                 </LinearLayout>
-
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/OATextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp">
+                android:layout_marginTop="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/server"

@@ -13,7 +13,6 @@
         android:filterTouchesWhenObscured="true"
         android:gravity="top"
         android:orientation="vertical"
-        android:padding="10dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
@@ -31,7 +30,7 @@
             android:id="@+id/backend_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginTop="20dp" />
 
     </LinearLayout>

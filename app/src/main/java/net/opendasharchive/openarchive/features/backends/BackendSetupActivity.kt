@@ -33,7 +33,7 @@ class BackendSetupActivity : BaseActivity() {
 
         setSupportActionBar(mBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "All Servers"
+        supportActionBar?.title = "Manage Media Storage"
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -132,7 +132,7 @@ class BackendSetupActivity : BaseActivity() {
         }
 
         supportFragmentManager.setFragmentResultListener("cancel", this) { _, _ ->
-            supportActionBar?.title = "All Servers"
+            supportActionBar?.title = "Manage Media Storage"
             supportFragmentManager.commit {
                 setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 replace(mBinding.spaceSetupFragment.id, BackendSetupFragment())

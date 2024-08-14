@@ -84,7 +84,7 @@
 
     <PreferenceCategory
         app:layout="@layout/prefs_title"
-        app:title="Device Settings">
+        app:title="General">
 
         <SwitchPreferenceCompat
             app:allowDividerAbove="true"

@@ -109,11 +109,13 @@
     </style>
 
     <style name="OATextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxBackgroundColor">@color/colorButtonOnBackground</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/cornerRadius</item>
         <item name="boxCornerRadiusTopEnd">@dimen/cornerRadius</item>
         <item name="boxCornerRadiusBottomStart">@dimen/cornerRadius</item>
         <item name="boxCornerRadiusTopStart">@dimen/cornerRadius</item>
+        <item name="hintTextColor">@color/colorPrimary</item>
+
     </style>
 
     <style name="OAMaterialButtonStyle" parent="Widget.MaterialComponents.Button">

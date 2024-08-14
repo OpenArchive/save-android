@@ -46,7 +46,7 @@ data class Backend(
                 name = GDriveConduit.NAME
             }
             Type.VEILID -> {
-                name = "Veilid"
+                name = "Decentralized Web"
             }
             Type.FILECOIN -> {
                 name = "Filecoin"
@@ -58,7 +58,7 @@ data class Backend(
         WEBDAV(0, WebDavConduit.NAME),
         INTERNET_ARCHIVE(1, IaConduit.NAME),
         GDRIVE(4, GDriveConduit.NAME),
-        VEILID(5, "Veilid"),
+        VEILID(5, "DWeb"),
         FILECOIN(6, "Filecoin")
     }
 

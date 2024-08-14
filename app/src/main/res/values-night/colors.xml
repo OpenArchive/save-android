@@ -22,6 +22,7 @@
     <color name="colorButtonOnBackground">@color/black</color>
     <color name="colorOnBackgroundTonedDown">@color/c23_medium_grey</color>
     <color name="colorOnBackgroundLowContrast">@color/c23_medium_grey</color>
+    <color name="colorTextViewHint">@color/white</color>
 
     <color name="colorPill">#434343</color>
     <color name="splashBackground">#151515</color>
