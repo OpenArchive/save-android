@@ -22,7 +22,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.features.main.MainActivity
+import net.opendasharchive.openarchive.features.main.TabBarActivity
 import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
@@ -303,7 +303,7 @@ class UploadService : JobService() {
     private fun prepNotification(): Notification {
         val pendingIntent = PendingIntent.getActivity(
             this, 0,
-            Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE
+            Intent(this, TabBarActivity::class.java), PendingIntent.FLAG_IMMUTABLE
         )
 
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)

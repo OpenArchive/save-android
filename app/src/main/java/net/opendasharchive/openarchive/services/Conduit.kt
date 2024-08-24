@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.net.Uri
+import android.webkit.MimeTypeMap
 import com.google.common.net.UrlEscapers
 import com.google.gson.GsonBuilder
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
@@ -70,7 +71,8 @@ abstract class Conduit(
                 hash = ProofMode.generateProof(mContext, mMedia.fileUri, proofHash)
             }
 
-            return ProofMode.getProofDir(mContext, hash).listFiles() ?: emptyArray()
+            return ProofMode.getProofFileSystem().listFiles() ?: emptyArray()
+            // return ProofMode.getProofDir(mContext, hash).listFiles() ?: emptyArray()
         } catch (exception: FileNotFoundException) {
             Timber.e(exception)
 
@@ -239,18 +241,18 @@ abstract class Conduit(
         }
 
         fun getUploadFileName(media: Media, escapeTitle: Boolean = false): String {
-//            var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(media.mimeType)
-//            if (ext.isNullOrEmpty()) {
-//                ext = when {
-//                    media.mimeType.startsWith("image") -> "jpg"
-//
-//                    media.mimeType.startsWith("video") -> "mp4"
-//
-//                    media.mimeType.startsWith("audio") -> "m4a"
-//
-//                    else -> "txt"
-//                }
-//            }
+            var ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(media.mimeType)
+            if (ext.isNullOrEmpty()) {
+                ext = when {
+                    media.mimeType.startsWith("image") -> "jpg"
+
+                    media.mimeType.startsWith("video") -> "mp4"
+
+                    media.mimeType.startsWith("audio") -> "m4a"
+
+                    else -> "txt"
+                }
+            }
 
             var title = media.title
 
@@ -262,9 +264,9 @@ abstract class Conduit(
                 title = UrlEscapers.urlPathSegmentEscaper().escape(title) ?: title
             }
 
-//            if (!title.endsWith(".$ext")) {
-//                return "$title.$ext"
-//            }
+            if (!title.endsWith(".$ext")) {
+                return "$title.$ext"
+            }
 
             return title
         }

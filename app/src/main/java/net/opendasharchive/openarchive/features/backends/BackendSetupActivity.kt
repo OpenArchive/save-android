@@ -6,32 +6,31 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import net.opendasharchive.openarchive.R
+import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.folders.AddFolderActivity
-import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveFragment
-import net.opendasharchive.openarchive.features.main.MainActivity
-import net.opendasharchive.openarchive.services.gdrive.GDriveFragment
-import net.opendasharchive.openarchive.services.veilid.VeilidFragment
-import net.opendasharchive.openarchive.services.webdav.WebDavFragment
+import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveActivity
+import net.opendasharchive.openarchive.services.gdrive.GDriveActivity
+import net.opendasharchive.openarchive.services.veilid.VeilidActivity
+import net.opendasharchive.openarchive.services.webdav.WebDavActivity
 import timber.log.Timber
 
-class BackendSetupActivity : BaseActivity() {
+class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
 
-    private lateinit var mBinding: ActivityBackendSetupBinding
+    private lateinit var binding: ActivityBackendSetupBinding
+    private val viewModel: BackendViewModel by viewModels()
+    private lateinit var adapter: BackendAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = ActivityBackendSetupBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        binding = ActivityBackendSetupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setSupportActionBar(mBinding.toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Manage Media Storage"
 
@@ -50,99 +49,36 @@ class BackendSetupActivity : BaseActivity() {
             }
         })
 
-        initBackendSetupFragmentBindings()
-        initBackendSetupSuccessFragmentBindings()
+        createBackendList()
+
+//        initBackendSetupFragmentBindings()
+//        initBackendSetupSuccessFragmentBindings()
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        Timber.d("onSupportNavigateUp")
-        onBackPressedDispatcher.onBackPressed()
-        return true
-    }
+    private fun createBackendList() {
+        adapter = BackendAdapter(this)
 
-    private fun initBackendSetupSuccessFragmentBindings() {
-        supportFragmentManager.setFragmentResultListener(BackendSetupSuccessFragment.RESP_DONE, this) { _, _ ->
-            finishAffinity()
-            startActivity(Intent(this, MainActivity::class.java))
+        binding.backendList.layoutManager = LinearLayoutManager(this)
+        binding.backendList.adapter = adapter
+
+        viewModel.backends.observe(this) { backends ->
+            adapter.submitList(backends)
         }
     }
 
-    private fun showSpaceFragment(fragment: Fragment, title: String) {
-        // Lemme think if I want this.
-        // supportActionBar?.title = title
-        supportFragmentManager.commit {
-            setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            replace(mBinding.spaceSetupFragment.id, fragment)
+    private fun showConfigScreenFor(backend: Backend) {
+        when (backend.type) {
+            Backend.Type.GDRIVE.id -> startActivity(Intent(this, GDriveActivity::class.java))
+            Backend.Type.INTERNET_ARCHIVE.id -> startActivity(Intent(this, InternetArchiveActivity::class.java))
+            Backend.Type.VEILID.id -> startActivity(Intent(this, VeilidActivity::class.java))
+            Backend.Type.WEBDAV.id -> startActivity(Intent(this, WebDavActivity::class.java))
         }
+
     }
 
-    private fun initBackendSetupFragmentBindings() {
-        supportFragmentManager.setFragmentResultListener(BackendSetupFragment.RESULT_REQUEST_KEY, this) { _, bundle ->
-            when (bundle.getString(BackendSetupFragment.RESULT_BUNDLE_KEY)) {
-                Backend.Type.INTERNET_ARCHIVE.friendlyName -> {
-                    showSpaceFragment(InternetArchiveFragment.newInstance(), getString(R.string.internet_archive))
-                }
+    override fun backendClicked(backend: Backend) {
+        Timber.d("backendClicked")
 
-                Backend.Type.GDRIVE.friendlyName -> {
-                    showSpaceFragment(GDriveFragment(), getString(R.string.gdrive))
-                }
-
-                Backend.Type.VEILID.friendlyName -> {
-                    showSpaceFragment(VeilidFragment(), getString(R.string.veilid))
-                }
-
-                Backend.Type.WEBDAV.friendlyName -> {
-                    showSpaceFragment(WebDavFragment.newInstance(), getString(R.string.private_server))
-                }
-            }
-        }
-
-        supportFragmentManager.setFragmentResultListener("created", this) { _, bundle ->
-            supportFragmentManager.commit {
-                val message = when (Backend.current?.friendlyName) {
-                    Backend.Type.INTERNET_ARCHIVE.friendlyName -> {
-                        getString(R.string.you_have_successfully_connected_to_the_internet_archive)
-                    }
-
-                    Backend.Type.GDRIVE.friendlyName -> {
-                        getString(R.string.you_have_successfully_connected_to_gdrive)
-                    }
-
-                    Backend.Type.VEILID.friendlyName -> {
-                        getString(R.string.you_have_successfully_connected_to_veilid)
-                    }
-
-                    Backend.Type.WEBDAV.friendlyName -> {
-                        getString(R.string.you_have_successfully_connected_to_a_private_server)
-                    }
-
-                    Backend.Type.FILECOIN.friendlyName -> {
-                        getString(R.string.you_have_successfully_connected_to_filecoin)
-                    }
-
-                    else -> { "Unknown Backend" }
-                }
-                setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-//                replace(
-//                    mBinding.spaceSetupFragment.id,
-//                    BackendSetupSuccessFragment.newInstance(message)
-//                )
-                startActivity(Intent(baseContext, AddFolderActivity::class.java))
-            }
-        }
-
-        supportFragmentManager.setFragmentResultListener("cancel", this) { _, _ ->
-            supportActionBar?.title = "Manage Media Storage"
-            supportFragmentManager.commit {
-                setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-                replace(mBinding.spaceSetupFragment.id, BackendSetupFragment())
-            }
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        supportFragmentManager.fragments.firstOrNull()?.onActivityResult(requestCode, resultCode, data)
+        showConfigScreenFor(backend)
     }
 }

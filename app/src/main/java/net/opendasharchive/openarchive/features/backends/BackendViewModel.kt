@@ -11,8 +11,6 @@ class BackendViewModel(private val filter: Filter = Filter.ALL) : ViewModel() {
             Backend(Backend.Type.INTERNET_ARCHIVE),
             Backend(Backend.Type.WEBDAV),
             Backend(Backend.Type.GDRIVE),
-            Backend(Backend.Type.VEILID),
-//            Backend(Backend.Type.FILECOIN)
         )
 
         enum class Filter() {

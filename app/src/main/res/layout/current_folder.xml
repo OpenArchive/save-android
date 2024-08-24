@@ -5,19 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_rowWeight="12"
     tools:showIn="@layout/fragment_main_media">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/current_backend_button"
         style="@style/OAButtonStyle"
+        android:id="@+id/current_backend_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:inset="0dp"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
-        android:text="Veilid > Folder One"
+        android:text="FPO > Folder FPO"
         android:textColor="@color/colorOnBackgroundTonedDown"
         android:textSize="18sp"
         android:gravity="start|center_vertical"
@@ -30,8 +29,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/current_folder_count"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/current_folder_count"

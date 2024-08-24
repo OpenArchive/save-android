@@ -1,35 +1,32 @@
 package net.opendasharchive.openarchive.features.internetarchive.presentation
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getSpace
-import net.opendasharchive.openarchive.features.main.MainActivity
+import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getBackend
 
 class InternetArchiveActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val (space, isNewSpace) = intent.extras.getSpace(Backend.Type.INTERNET_ARCHIVE)
+        val (space, isNewSpace) = intent.extras.getBackend(Backend.Type.INTERNET_ARCHIVE)
 
         setContent {
             InternetArchiveScreen(space, isNewSpace) {
-                finish(it)
+                finish()
             }
         }
     }
 
-    private fun finish(result: IAResult) {
-        when (result) {
-            IAResult.Saved -> {
-                startActivity(Intent(this, MainActivity::class.java))
-            }
-
-            IAResult.Deleted -> Backend.navigate(this)
-            else -> Unit
-        }
-    }
+//    private fun finish(result: IAResult) {
+//        when (result) {
+//            IAResult.Saved -> {
+//                startActivity(Intent(this, MainActivity::class.java))
+//            }
+//
+//            IAResult.Deleted -> Backend.navigate(this)
+//            else -> Unit
+//        }
+//    }
 }

@@ -183,6 +183,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/OATextInputLayoutStyle"
             android:id="@+id/location_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -206,6 +207,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/OATextInputLayoutStyle"
             android:id="@+id/description_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

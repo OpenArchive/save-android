@@ -119,7 +119,7 @@ private val DarkColorScheme = ColorTheme(
         scrim = c23_light_grey,
         surfaceBright = c23_grey,
         surfaceContainer = c23_medium_grey,
-        surfaceDim = c23_dark_grey
+        surfaceDim = c23_dark_grey,
     ),
 )
 

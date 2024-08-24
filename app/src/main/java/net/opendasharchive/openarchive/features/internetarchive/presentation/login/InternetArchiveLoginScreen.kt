@@ -51,7 +51,7 @@ import net.opendasharchive.openarchive.core.presentation.theme.ThemeColors
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeDimensions
 import net.opendasharchive.openarchive.core.state.Dispatch
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
+import net.opendasharchive.openarchive.db.BackendResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.InternetArchiveHeader
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.CreateLogin
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.Login
@@ -62,7 +62,7 @@ import org.koin.core.parameter.parametersOf
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction as Action
 
 @Composable
-fun InternetArchiveLoginScreen(backend: Backend, onResult: (IAResult) -> Unit) {
+fun InternetArchiveLoginScreen(backend: Backend, onResult: (BackendResult) -> Unit) {
     val viewModel: InternetArchiveLoginViewModel = koinViewModel {
         parametersOf(backend)
     }
@@ -82,9 +82,9 @@ fun InternetArchiveLoginScreen(backend: Backend, onResult: (IAResult) -> Unit) {
                     )
                 )
 
-                is Action.Cancel -> onResult(IAResult.Cancelled)
+                is Action.Cancel -> onResult(BackendResult.Cancelled)
 
-                is Action.LoginSuccess -> onResult(IAResult.Saved)
+                is Action.LoginSuccess -> onResult(BackendResult.Created)
 
                 else -> Unit
             }
@@ -142,9 +142,10 @@ private fun InternetArchiveLoginContent(
                 keyboardType = KeyboardType.Email
             ),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                disabledContainerColor = Color.White
+                focusedContainerColor = ThemeColors.material.inverseOnSurface,
+                unfocusedContainerColor = ThemeColors.material.inverseOnSurface,
+                disabledContainerColor = Color.White,
+                unfocusedBorderColor = Color.Gray,
             ),
             isError = state.isUsernameError,
             modifier = Modifier.fillMaxWidth()
@@ -169,9 +170,10 @@ private fun InternetArchiveLoginContent(
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                disabledContainerColor = Color.White
+                focusedContainerColor = ThemeColors.material.inverseOnSurface,
+                unfocusedContainerColor = ThemeColors.material.inverseOnSurface,
+                disabledContainerColor = Color.White,
+                unfocusedBorderColor = Color.Gray
             ),
             shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
             visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),

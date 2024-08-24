@@ -10,11 +10,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.view.View
-import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -24,16 +22,14 @@ import com.esafirm.imagepicker.features.ImagePickerMode
 import com.esafirm.imagepicker.features.ImagePickerSavePath
 import com.esafirm.imagepicker.features.ReturnMode
 import com.esafirm.imagepicker.features.registerImagePicker
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.util.Utility
-import net.opendasharchive.openarchive.util.extensions.makeSnackBar
 import org.witness.proofmode.crypto.HashUtils
 import java.io.File
 import java.util.Date
@@ -42,16 +38,10 @@ object Picker {
 
     fun register(activity: ComponentActivity, root: View, folder: () -> Folder?, completed: (List<Media>) -> Unit): Pair<ImagePickerLauncher, ActivityResultLauncher<Intent>> {
         val mpl = activity.registerImagePicker { result ->
-            val bar = root.makeSnackBar(activity.getString(R.string.importing_media))
-            (bar.view as? Snackbar.SnackbarLayout)?.addView(ProgressBar(activity))
-            bar.show()
-
             CoroutineScope(Dispatchers.IO).launch {
                 val media = import(activity, folder(), result.map { it.uri })
 
                 MainScope().launch {
-                    bar.dismiss()
-
                     completed(media)
                 }
             }
@@ -62,16 +52,10 @@ object Picker {
 
             val uri = result.data?.data ?: return@registerForActivityResult
 
-            val bar = root.makeSnackBar(activity.getString(R.string.importing_media))
-            (bar.view as? Snackbar.SnackbarLayout)?.addView(ProgressBar(activity))
-            bar.show()
-
             CoroutineScope(Dispatchers.IO).launch {
                 val files = import(activity, folder(), listOf(uri))
 
                 MainScope().launch {
-                    bar.dismiss()
-
                     completed(files)
                 }
             }
@@ -138,7 +122,7 @@ object Picker {
         return true
     }
 
-    private fun import(context: Context, folder: Folder?, uris: List<Uri>): ArrayList<Media> {
+    fun import(context: Context, folder: Folder?, uris: List<Uri>): ArrayList<Media> {
         val result = ArrayList<Media>()
 
         for (uri in uris) {

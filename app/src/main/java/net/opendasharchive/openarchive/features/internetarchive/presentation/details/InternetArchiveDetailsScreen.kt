@@ -30,14 +30,14 @@ import net.opendasharchive.openarchive.core.presentation.theme.ThemeColors
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeDimensions
 import net.opendasharchive.openarchive.core.state.Dispatch
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
+import net.opendasharchive.openarchive.db.BackendResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.InternetArchiveHeader
 import net.opendasharchive.openarchive.features.internetarchive.presentation.details.InternetArchiveDetailsViewModel.Action
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun InternetArchiveDetailsScreen(backend: Backend, onResult: (IAResult) -> Unit) {
+fun InternetArchiveDetailsScreen(backend: Backend, onResult: (BackendResult) -> Unit) {
     val viewModel: InternetArchiveDetailsViewModel = koinViewModel {
         parametersOf(backend)
     }
@@ -47,8 +47,8 @@ fun InternetArchiveDetailsScreen(backend: Backend, onResult: (IAResult) -> Unit)
     LaunchedEffect(Unit) {
         viewModel.actions.collect { action ->
             when (action) {
-                is Action.Remove -> onResult(IAResult.Deleted)
-                is Action.Cancel -> onResult(IAResult.Cancelled)
+                is Action.Remove -> onResult(BackendResult.Deleted)
+                is Action.Cancel -> onResult(BackendResult.Cancelled)
                 else -> Unit
             }
         }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_media"
+        android:icon="@drawable/outline_perm_media_24"
+        android:title="@string/my_media" />
+    <item
+        android:id="@+id/navigation_action"
+        android:icon="@drawable/baseline_add_white_24"
+        android:title="@null"/>
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/action_settings"/>
+</menu>

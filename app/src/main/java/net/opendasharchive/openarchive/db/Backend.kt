@@ -19,6 +19,9 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
 
+enum class BackendResult() {
+    Cancelled, Created, Deleted, Modified
+}
 
 data class Backend(
     var type: Long = 0,
@@ -46,10 +49,7 @@ data class Backend(
                 name = GDriveConduit.NAME
             }
             Type.VEILID -> {
-                name = "Decentralized Web"
-            }
-            Type.FILECOIN -> {
-                name = "Filecoin"
+                name = "Veilid"
             }
         }
     }
@@ -58,8 +58,11 @@ data class Backend(
         WEBDAV(0, WebDavConduit.NAME),
         INTERNET_ARCHIVE(1, IaConduit.NAME),
         GDRIVE(4, GDriveConduit.NAME),
-        VEILID(5, "DWeb"),
-        FILECOIN(6, "Filecoin")
+        VEILID(5, "Veilid");
+
+        companion object {
+            operator fun invoke(raw: Long): Type? = entries.firstOrNull { it.id == raw }
+        }
     }
 
     companion object {
@@ -174,10 +177,6 @@ data class Backend(
             Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ic_internet_archive)
 
             Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.logo_drive_2020q4_color_2x_web_64dp)
-
-            Type.VEILID -> ContextCompat.getDrawable(context, R.drawable.ic_veilid)
-
-            Type.FILECOIN -> ContextCompat.getDrawable(context, R.drawable.ic_filecoin)
 
             else -> TextDrawable.builder().buildRound(initial, color)
         }

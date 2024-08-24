@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.services.internetarchive
 import android.content.Context
 import android.net.Uri
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
@@ -30,6 +31,10 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
         val textMediaType = "texts".toMediaTypeOrNull()
 
         private val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+    }
+
+    private val coroutineExceptionHandler = CoroutineExceptionHandler{ _, throwable ->
+        throwable.printStackTrace()
     }
 
     override suspend fun upload(): Boolean {
@@ -220,7 +225,7 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
     }
 
     @Throws(Exception::class)
-    private suspend fun OkHttpClient.execute(request: Request) = withContext(Dispatchers.IO) {
+    private suspend fun OkHttpClient.execute(request: Request) = withContext(Dispatchers.IO + coroutineExceptionHandler) {
         val result = newCall(request)
             .execute()
 

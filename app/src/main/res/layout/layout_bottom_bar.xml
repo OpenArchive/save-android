@@ -6,10 +6,7 @@
     android:layout_height="@dimen/bottom_nav_height"
     android:background="@drawable/bottom_nav_background"
     android:orientation="horizontal"
-    android:weightSum="8"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent">
+    android:weightSum="8">
 
     <com.google.android.material.button.MaterialButton
         style="@style/OABottomBarButtonStyle"

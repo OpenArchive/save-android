@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.esafirm.imagepicker.view.GridSpacingItemDecoration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,18 +22,19 @@ import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
 import net.opendasharchive.openarchive.databinding.MediaGroupBinding
-import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.db.AppDatabase
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
-import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
+import net.opendasharchive.openarchive.features.folders.BrowseFoldersActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
+import timber.log.Timber
 import java.text.NumberFormat
 import kotlin.collections.set
 
@@ -49,6 +52,18 @@ class MainMediaFragment : Fragment() {
             fragment.arguments = args
 
             return fragment
+        }
+    }
+
+    private val observer = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            Timber.d("onItemRangeInserted")
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+            super.onItemRangeChanged(positionStart, itemCount)
+            Timber.d("onItemRangeChanged")
         }
     }
 
@@ -88,6 +103,12 @@ class MainMediaFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         BroadcastManager.register(requireContext(), mMessageReceiver)
+
+        val db = Room.databaseBuilder(
+            requireContext(),
+            AppDatabase::class.java, "database-name"
+        ).build()
+
     }
 
     override fun onStop() {
@@ -117,7 +138,7 @@ class MainMediaFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        updateCurrentFolder()
+        setCurrentFolderState()
         refreshCurrentFolderCount()
     }
 
@@ -140,22 +161,6 @@ class MainMediaFragment : Fragment() {
 
     private fun getSelectedFolder(): Folder? {
         return Folder.current
-    }
-
-    private fun updateCurrentFolder() {
-        val folder = getSelectedFolder()
-
-        if (folder != null) {
-            val backendIcon = folder.backend?.getAvatar(requireContext())
-            mBinding.currentFolder.currentBackendButton.icon = backendIcon
-            mBinding.currentFolder.currentBackendButton.show()
-            mBinding.currentFolder.currentFolderCount.show()
-            mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown storage") + " > " + folder.description
-
-            mBinding.currentFolder.currentBackendButton.setOnClickListener {
-                startActivity(Intent(context, BackendSetupActivity::class.java))
-            }
-        }
     }
 
     private fun refreshCurrentFolderCount() {
@@ -227,7 +232,13 @@ class MainMediaFragment : Fragment() {
         // while adding images.
         deleteCollections(toDelete, false)
 
-        if (Backend.current == null) {
+        setCurrentFolderState()
+    }
+
+    private fun setCurrentFolderState() {
+        val folder = getSelectedFolder()
+
+        if (folder == null) {
             mBinding.currentFolder.currentBackendButton.visibility = View.GONE
             mBinding.currentFolder.currentFolderCount.visibility = View.GONE
             mBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
@@ -235,6 +246,11 @@ class MainMediaFragment : Fragment() {
             mBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
             mBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
             mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())
+            mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown storage") + " > " + folder.description
+
+            mBinding.currentFolder.currentBackendButton.setOnClickListener {
+                startActivity(Intent(context, BrowseFoldersActivity::class.java))
+            }
         }
     }
 
@@ -273,7 +289,7 @@ class MainMediaFragment : Fragment() {
             media,
             holder.recyclerView
         ) {
-            (activity as? MainActivity)?.updateAfterDelete(mAdapters.values.firstOrNull { it.selecting } == null)
+            // (activity as? MainActivity)?.updateAfterDelete(mAdapters.values.firstOrNull { it.selecting } == null)
         }
 
         holder.recyclerView.adapter = mediaAdapter

@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.features.internetarchive.infrastructure.repository
 
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.features.internetarchive.domain.model.InternetArchive
@@ -14,8 +15,12 @@ class InternetArchiveRepository(
     private val localSource: InternetArchiveLocalSource,
     private val mapper: InternetArchiveMapper
 ) {
+    private val coroutineExceptionHandler = CoroutineExceptionHandler{ _, throwable ->
+        throwable.printStackTrace()
+    }
+
     suspend fun login(email: String, password: String): Result<InternetArchive> =
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO + coroutineExceptionHandler) {
             remoteSource.login(
                 InternetArchiveLoginRequest(email, password)
             ).mapCatching { response ->
@@ -29,7 +34,7 @@ class InternetArchiveRepository(
         }
 
     suspend fun testConnection(auth: InternetArchive.Auth): Result<Unit> =
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO + coroutineExceptionHandler) {
             remoteSource.testConnection(auth)
                 .mapCatching { if (!it) throw UnauthenticatedException() }
         }

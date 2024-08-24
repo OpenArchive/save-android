@@ -111,7 +111,7 @@
 
     <string name="importing_media">Importing media…</string>
 
-    <string name="title_welcome">Welcome</string>
+    <string name="title_welcome">Welcome!</string>
 
     <string name="action_privacy">Privacy Policy</string>
     <string name="action_about">About %s</string>
@@ -304,5 +304,9 @@
     <string name="label_create_login">Sign up</string>
     <string name="prompt_no_account">No account?</string>
     <string name="action_continue">Continue</string>
+    <string name="title_activity_tab_bar">TabBarActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 </resources>

@@ -11,7 +11,7 @@
         android:id="@+id/tv_welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="200dp"
         android:gravity="center"
         android:text="@string/title_welcome"
         android:textColor="@color/c23_medium_grey"

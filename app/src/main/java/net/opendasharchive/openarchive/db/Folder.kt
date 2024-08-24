@@ -1,8 +1,18 @@
 package net.opendasharchive.openarchive.db
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.orm.SugarRecord
 import net.opendasharchive.openarchive.util.Prefs
 import java.util.Date
+
+@Entity
+data class User(
+    @PrimaryKey val uid: Int,
+    @ColumnInfo(name = "first_name") val firstName: String?,
+    @ColumnInfo(name = "last_name") val lastName: String?
+)
 
 data class Folder(
     var description: String? = null,

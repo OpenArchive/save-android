@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import net.opendasharchive.openarchive.util.Prefs
+import timber.log.Timber
 
 abstract class BaseActivity(): AppCompatActivity() {
 
@@ -27,6 +28,12 @@ abstract class BaseActivity(): AppCompatActivity() {
         // updating this in onResume (previously was in onCreate) to make sure setting changes get
         // applied instantly instead after the next app restart
         updateScreenshotPrevention()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        Timber.d("onSupportNavigateUp")
+        onBackPressedDispatcher.onBackPressed()
+        return true
     }
 
     fun updateScreenshotPrevention() {

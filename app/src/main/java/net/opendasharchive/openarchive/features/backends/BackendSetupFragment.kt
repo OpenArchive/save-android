@@ -102,13 +102,14 @@ class BackendSetupFragment : Fragment(), BackendAdapterListener {
     }
 
     companion object {
-        const val RESULT_REQUEST_KEY = "space_setup_fragment_result"
-        const val RESULT_BUNDLE_KEY = "space_setup_result_key"
+        const val BACKEND_RESULT_REQUEST_KEY = "backend_setup_fragment_result"
+        const val BACKEND_RESULT_BUNDLE_TYPE_KEY = "backend_setup_result_type_key"
+        const val BACKEND_RESULT_BUNDLE_ACTION_KEY = "backend_setup_result_action_key"
     }
 
     override fun backendClicked(backend: Backend) {
         Timber.d("backendClicked")
         // Backend.current = backend
-        setFragmentResult(RESULT_REQUEST_KEY, bundleOf(RESULT_BUNDLE_KEY to backend.friendlyName))
+        setFragmentResult(BACKEND_RESULT_REQUEST_KEY, bundleOf(BACKEND_RESULT_BUNDLE_TYPE_KEY to backend.type))
     }
 }

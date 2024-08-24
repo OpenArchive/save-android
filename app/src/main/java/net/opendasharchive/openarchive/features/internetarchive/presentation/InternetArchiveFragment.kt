@@ -8,11 +8,13 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.IAResult
+import net.opendasharchive.openarchive.db.BackendResult
+import net.opendasharchive.openarchive.features.backends.BackendSetupFragment
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithBackendId
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithNewSpace
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getSpace
+import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getBackend
 import net.opendasharchive.openarchive.services.CommonServiceFragment
+import timber.log.Timber
 
 class InternetArchiveFragment : CommonServiceFragment() {
 
@@ -22,19 +24,22 @@ class InternetArchiveFragment : CommonServiceFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val (space, isNewSpace) = arguments.getSpace(Backend.Type.INTERNET_ARCHIVE)
+        val (backend, isNewBackend) = arguments.getBackend(Backend.Type.INTERNET_ARCHIVE)
 
         return ComposeView(requireContext()).apply {
             setContent {
-                InternetArchiveScreen(space, isNewSpace) { result ->
+                InternetArchiveScreen(backend, isNewBackend) { result ->
                     finish(result)
                 }
             }
         }
     }
 
-    private fun finish(result: IAResult) {
-        setFragmentResult(result.value, bundleOf())
+    private fun finish(result: BackendResult) {
+        Timber.d("IA result vbalue = $result")
+        setFragmentResult(
+            BackendSetupFragment.BACKEND_RESULT_REQUEST_KEY,
+            bundleOf(BackendSetupFragment.BACKEND_RESULT_BUNDLE_TYPE_KEY to Backend.Type.INTERNET_ARCHIVE))
     }
 
     companion object {

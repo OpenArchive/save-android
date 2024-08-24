@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navigation_media">
+
+    <fragment
+        android:id="@+id/navigation_media"
+        android:name="net.opendasharchive.openarchive.features.main.MainMediaFragment"
+        tools:layout="@layout/fragment_main_media"/>
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="net.opendasharchive.openarchive.features.settings.SettingsFragment"
+        tools:layout="@layout/activity_settings_container"/>
+
+</navigation>

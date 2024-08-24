@@ -3,34 +3,30 @@ package net.opendasharchive.openarchive.features.internetarchive.presentation.co
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.features.backends.BackendSetupFragment
 
-@Deprecated("only for use with fragments and activities")
-private const val ARG_VAL_NEW_SPACE = -1L
+private const val ARG_VAL_NEW_BACKEND = -1L
 
-@Deprecated("only for use with fragments and activities")
-private const val ARG_SPACE = "space"
+private const val ARG_BACKEND = "backend"
 
-enum class IAResult(
-    val value: String
-) {
-    Saved("ia_fragment_resp_saved"), Deleted("ia_fragment_resp_deleted"), Cancelled("ia_fragment_resp_cancel"),
-}
+fun bundleWithBackendId(backendId: Long) = bundleOf(ARG_BACKEND to backendId)
 
-@Deprecated("only for use with fragments and activities")
-fun bundleWithBackendId(backendId: Long) = bundleOf(ARG_SPACE to backendId)
+fun bundleWithNewSpace() = bundleOf(ARG_BACKEND to ARG_VAL_NEW_BACKEND)
 
-@Deprecated("only for use with fragments and activities")
-fun bundleWithNewSpace() = bundleOf(ARG_SPACE to ARG_VAL_NEW_SPACE)
+fun Bundle?.getBackend(type: Backend.Type): Pair<Backend, Boolean> {
+    val mBackendId = this?.getLong(ARG_BACKEND, ARG_VAL_NEW_BACKEND) ?: ARG_VAL_NEW_BACKEND
 
-@Deprecated("only for use with fragments and activities")
-fun Bundle?.getSpace(type: Backend.Type): Pair<Backend, Boolean> {
-    val mBackendId = this?.getLong(ARG_SPACE, ARG_VAL_NEW_SPACE) ?: ARG_VAL_NEW_SPACE
+    val isNewBackend = ARG_VAL_NEW_BACKEND == mBackendId
 
-    val isNewSpace = ARG_VAL_NEW_SPACE == mBackendId
-
-    return if (isNewSpace) {
+    return if (isNewBackend) {
         Pair(Backend(type), true)
     } else {
         Backend.get(mBackendId)?.let { Pair(it, false) } ?: Pair(Backend(type), true)
+    }
+}
+
+fun Bundle.getBackendType(): Backend.Type? {
+    return this.getLong(BackendSetupFragment.BACKEND_RESULT_BUNDLE_TYPE_KEY).let { rawType ->
+        Backend.Type(raw = rawType)
     }
 }

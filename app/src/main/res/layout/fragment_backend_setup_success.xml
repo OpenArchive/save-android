@@ -31,12 +31,12 @@
         android:importantForAccessibility="no" />
 
     <com.google.android.material.button.MaterialButton
-        style="@style/OAMaterialButtonStyle"
+        style="@style/OAPrimaryButtonStyle"
         android:id="@+id/bt_authenticate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
-        android:text="@string/action_continue"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:text="@string/action_done"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

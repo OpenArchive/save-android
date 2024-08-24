@@ -50,14 +50,14 @@ object CcSelector {
     }
 
     fun set(cc: ContentCcBinding, license: String?, enabled: Boolean = true) {
-        val isCc = true // license?.contains(CC_DOMAIN, true) ?: false
+        val isCc = license?.contains(CC_DOMAIN, true) ?: false
 
         cc.swCc.isChecked = isCc
         toggle(cc, isCc)
 
         cc.swNd.isChecked = isCc && !(license?.contains("-nd", true) ?: false)
         cc.swSa.isEnabled = cc.swNd.isChecked
-        cc.swSa.isChecked = isCc && cc.swNd.isChecked && license?.contains("-sa", true) ?: false
+        cc.swSa.isChecked = true // isCc && cc.swNd.isChecked && license?.contains("-sa", true) ?: false
         cc.swNc.isChecked = isCc && !(license?.contains("-nc", true) ?: false)
 
         cc.tvLicense.text = license

@@ -31,15 +31,16 @@ class BackendSetupSuccessFragment : Fragment() {
         }
 
         mBinding.btAuthenticate.setOnClickListener { _ ->
-            setFragmentResult(RESP_DONE, bundleOf())
+            setFragmentResult(RESP_BACKEND_LINKED, bundleOf())
         }
 
         return mBinding.root
     }
 
     companion object {
-        const val RESP_DONE = "space_setup_success_fragment_resp_done"
-        const val ARG_MESSAGE = "space_setup_success_fragment_arg_message"
+        const val RESP_DONE = "backend_setup_success_fragment_resp_done"
+        const val RESP_BACKEND_LINKED = "backend_setup_success_fragment_resp_linked"
+        const val ARG_MESSAGE = "backend_setup_success_fragment_arg_message"
 
         @JvmStatic
         fun newInstance(message: String) =

@@ -42,14 +42,14 @@
                 style="@style/OAOutlinedButtonStyle"
                 android:id="@+id/new_folder"
                 android:text="@string/add_a_folder"
-                app:icon="@drawable/ic_veilid" />
+                app:icon="@drawable/outline_create_new_folder_24" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/OAOutlinedButtonStyle"
                 android:id="@+id/browse_folders"
                 android:layout_marginTop="6dp"
                 android:text="@string/browse_existing_folders"
-                app:icon="@drawable/ic_veilid" />
+                app:icon="@drawable/ic_folder" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
