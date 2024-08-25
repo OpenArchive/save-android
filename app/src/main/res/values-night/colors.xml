@@ -11,7 +11,6 @@
     <color name="colorText">@color/c23_light_grey</color>
 
     <color name="colorBottomNavbar">#000A0A</color>
-    <color name="colorOnBottomNavbar">@color/white</color>
 
     <color name="colorAddButton">@color/colorPrimary</color>
     <color name="colorOnAddButton">@color/colorBackground</color>
@@ -24,7 +23,8 @@
     <color name="colorOnBackgroundTonedDown">@color/c23_medium_grey</color>
     <color name="colorOnBackgroundLowContrast">@color/c23_medium_grey</color>
     <color name="colorTextViewHint">@color/white</color>
-
+    <color name="colorSectionHeader">#00B4A6</color>
+    <color name="tabBarMenuButton">@color/c24_cream_95</color>
     <color name="colorPill">#434343</color>
     <color name="splashBackground">#151515</color>
 </resources>

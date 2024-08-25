@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.features.internetarchive.presentation.components
+package net.opendasharchive.openarchive.extensions
 
 import android.os.Bundle
 import androidx.core.os.bundleOf

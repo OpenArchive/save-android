@@ -10,9 +10,9 @@ import androidx.fragment.app.setFragmentResult
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.BackendResult
 import net.opendasharchive.openarchive.features.backends.BackendSetupFragment
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithBackendId
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.bundleWithNewSpace
-import net.opendasharchive.openarchive.features.internetarchive.presentation.components.getBackend
+import net.opendasharchive.openarchive.extensions.bundleWithBackendId
+import net.opendasharchive.openarchive.extensions.bundleWithNewSpace
+import net.opendasharchive.openarchive.extensions.getBackend
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import timber.log.Timber
 

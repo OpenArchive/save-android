@@ -17,22 +17,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.FragmentGdriveBinding
+import net.opendasharchive.openarchive.databinding.FragmentGdriveSignInBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 
-class GDriveFragment : CommonServiceFragment() {
+class GDriveSignInFragment : CommonServiceFragment() {
 
-    private lateinit var mBinding: FragmentGdriveBinding
+    private lateinit var binding: FragmentGdriveSignInBinding
 
     companion object {
         const val REQUEST_CODE_GOOGLE_AUTH = 21701
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        mBinding = FragmentGdriveBinding.inflate(inflater)
+        binding = FragmentGdriveSignInBinding.inflate(inflater)
 
-        mBinding.disclaimer1.text = HtmlCompat.fromHtml(
+        binding.disclaimer1.text = HtmlCompat.fromHtml(
             getString(
                 R.string.gdrive_disclaimer_1,
                 getString(R.string.app_name),
@@ -40,22 +40,22 @@ class GDriveFragment : CommonServiceFragment() {
                 getString(R.string.gdrive_sudp_name),
             ), HtmlCompat.FROM_HTML_MODE_COMPACT
         )
-        mBinding.disclaimer1.movementMethod = LinkMovementMethod.getInstance()
-        mBinding.disclaimer2.text = getString(
+        binding.disclaimer1.movementMethod = LinkMovementMethod.getInstance()
+        binding.disclaimer2.text = getString(
             R.string.gdrive_disclaimer_2,
             getString(R.string.google_name),
             getString(R.string.gdrive),
             getString(R.string.app_name),
         )
-        mBinding.error.visibility = View.GONE
+        binding.error.visibility = View.GONE
 
-        mBinding.btAuthenticate.setOnClickListener {
-            mBinding.error.visibility = View.GONE
+        binding.btAuthenticate.setOnClickListener {
+            binding.error.visibility = View.GONE
             authenticate()
-            mBinding.btAuthenticate.isEnabled = false
+            binding.btAuthenticate.isEnabled = false
         }
 
-        return mBinding.root
+        return binding.root
     }
 
     private fun authenticate() {
@@ -126,10 +126,10 @@ class GDriveFragment : CommonServiceFragment() {
     private fun authFailed(errorMessage: String?) {
         MainScope().launch {
             errorMessage?.let {
-                mBinding.error.text = errorMessage
-                mBinding.error.visibility = View.VISIBLE
+                binding.error.text = errorMessage
+                binding.error.visibility = View.VISIBLE
             }
-            mBinding.btAuthenticate.isEnabled = true
+            binding.btAuthenticate.isEnabled = true
         }
     }
 }

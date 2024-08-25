@@ -113,16 +113,23 @@
     </style>
 
     <style name="OATextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/c23_teal</item>
         <item name="boxBackgroundColor">@color/colorButtonOnBackground</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/cornerRadius</item>
         <item name="boxCornerRadiusTopEnd">@dimen/cornerRadius</item>
         <item name="boxCornerRadiusBottomStart">@dimen/cornerRadius</item>
         <item name="boxCornerRadiusTopStart">@dimen/cornerRadius</item>
-        <item name="hintTextColor">@color/colorPrimary</item>
+        <item name="hintTextColor">@color/c23_teal</item>
+        <item name="cursorColor">@color/c23_teal</item>
+    </style>
 
+    <style name="OAFloatingLabelStyle">
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <style name="OAMaterialButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:background">@drawable/button</item>
         <item name="android:textColor">@color/colorOnPrimary</item>
         <item name="android:textAllCaps">false</item>
@@ -132,6 +139,22 @@
         <item name="android:paddingTop">0dp</item>
         <item name="android:textSize">16sp</item>
         <item name="android:minWidth">24dp</item>
+        <item name="cornerRadius">@dimen/cornerRadius</item>
+    </style>
+
+    <style name="OAMaterialSignInButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@drawable/button</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:minWidth">24dp</item>
+        <item name="backgroundTint">@color/c23_teal</item>
         <item name="cornerRadius">@dimen/cornerRadius</item>
     </style>
 
@@ -147,11 +170,11 @@
         <item name="android:insetBottom">0dp</item>
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">0dp</item>
-        <item name="backgroundTint">@color/colorAddButton</item>
+        <item name="backgroundTint">@color/c24_cream_95</item>
         <item name="iconSize">38dp</item>
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">0dp</item>
-        <item name="iconTint">@color/colorOnBottomNavbar</item>
+        <item name="iconTint">#000000</item>
     </style>
 
     <style name="OAButtonStyle" parent="Widget.MaterialComponents.Button">
@@ -162,7 +185,7 @@
 
     <style name="OAMediaSelectionButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_margin">10dp</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
         <item name="android:background">@drawable/button</item>
         <item name="android:textAllCaps">false</item>
     </style>
@@ -173,14 +196,14 @@
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>
         <item name="android:text">@string/action_settings</item>
-        <item name="android:textColor">@color/colorOnBackground</item>
+        <item name="android:textColor">@color/tabBarMenuButton</item>
         <item name="android:textSize">14sp</item>
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="icon">@drawable/ic_settings</item>
         <item name="iconGravity">top</item>
         <item name="iconPadding">5dp</item>
         <item name="iconSize">32dp</item>
-        <item name="iconTint">@color/colorOnBottomNavbar</item>
+        <item name="iconTint">@color/tabBarMenuButton</item>
     </style>
 
     <style name="OAOutlinedButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">

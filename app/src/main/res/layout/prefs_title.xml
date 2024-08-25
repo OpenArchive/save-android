@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:layout_weight="1"
-        android:textColor="@color/colorPrimary"
+        android:text="Now is the time"
+        android:textColor="@color/colorSectionHeader"
         android:textSize="22sp" />
 </LinearLayout>

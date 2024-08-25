@@ -7,7 +7,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-private val c23_nav_drawer_night = Color(0xff101010)
 private val c23_darker_grey = Color(0xff212021)
 private val c23_dark_grey = Color(0xff333333)
 private val c23_medium_grey = Color(0xff696666)
@@ -25,6 +24,7 @@ private val c23_teal_30 = Color(0xff004e48) // v=30.6 -->
 private val c23_teal_20 = Color(0xff003530) // v=20.6 -->
 private val c23_teal_10 = Color(0xff001b19) // v=10.6 -->
 private val c23_powder_blue = Color(0xffaae6e1)
+private val color_chrome = Color(0xFF000A0A)
 
 @Immutable
 data class ColorTheme(
@@ -34,9 +34,17 @@ data class ColorTheme(
 
     val disabledContainer: Color = c23_teal_20,
     val onDisabledContainer: Color = c23_light_grey,
+
+    val background: Color,
+    val chrome: Color,
+    val backendIconBackground: Color
 )
 
 private val LightColorScheme = ColorTheme(
+    chrome = c23_teal,
+    background = Color(0xFFF5F1E7),
+    backendIconBackground = c23_light_grey,
+
     material = lightColorScheme(
 
         primary = c23_teal,
@@ -81,6 +89,10 @@ private val LightColorScheme = ColorTheme(
 )
 
 private val DarkColorScheme = ColorTheme(
+    chrome = Color(0xFF000A0A),
+    background = Color(0xFF16161D),
+    backendIconBackground = Color(0xBBFFFFFF),
+
     material = darkColorScheme(
         primary = c23_teal,
         onPrimary = Color.Black,

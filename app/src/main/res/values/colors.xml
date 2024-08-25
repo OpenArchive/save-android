@@ -31,6 +31,7 @@
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
 
     <color name="oablue">#00c8b7</color>
+    <color name="eigengrau">#16161D</color>
 
     <color name="intro1bg">#34c5ff</color>
     <color name="intro2bg">#34c5ff</color>
@@ -59,6 +60,12 @@
     <color name="c23_teal_10">#ff001b19</color> <!-- v=10.6 -->
     <color name="c23_powder_blue">#ffaae6e1</color>
 
+    <color name="c24_cream_100">#fffbf0</color>
+    <color name="c24_cream_95">#f2eee4</color>
+    <color name="c24_cream_90">#e5e2d8</color>
+    <color name="c24_cream_80">#ccc9c0</color>
+    <color name="c24_cream_70">#b3afa8</color>
+
     <!-- theme day colors -->
 
     <color name="colorBackground">#F5F1E7</color>
@@ -84,6 +91,7 @@
     <color name="colorBackgroundSpaceIcon">@color/c23_light_grey</color>
     <color name="colorButtonOnBackground">@color/white</color>
     <color name="colorTextViewHint">@color/colorPrimary</color>
+    <color name="colorSectionHeader">#00B4A6</color>
 
     <!--
 
@@ -107,5 +115,6 @@
     <color name="colorWaveformIndicator">#aa0000</color>
     <color name="colorWaveform">#999999</color>
     <color name="splashBackground">#e5e5e5</color>
+    <color name="tabBarMenuButton">@color/eigengrau</color>
 
 </resources>

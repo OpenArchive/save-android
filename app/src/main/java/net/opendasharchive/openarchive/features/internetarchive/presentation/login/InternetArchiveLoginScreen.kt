@@ -7,10 +7,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -19,16 +21,21 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,14 +52,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.core.presentation.theme.LocalColors
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeColors
 import net.opendasharchive.openarchive.core.presentation.theme.ThemeDimensions
 import net.opendasharchive.openarchive.core.state.Dispatch
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.BackendResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.InternetArchiveHeader
+import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.CreateLogin
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.Login
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.UpdatePassword
@@ -94,10 +104,10 @@ fun InternetArchiveLoginScreen(backend: Backend, onResult: (BackendResult) -> Un
     InternetArchiveLoginContent(state, viewModel::dispatch)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun InternetArchiveLoginContent(
-    state: InternetArchiveLoginState, dispatch: Dispatch<Action>
-) {
+private fun InternetArchiveLoginContent(state: InternetArchiveLoginState, dispatch: Dispatch<Action>) {
+    val localColors = LocalColors.current
 
     // If extra paranoid could pre-hash password in memory
     // and use the store/dispatcher
@@ -112,114 +122,145 @@ private fun InternetArchiveLoginContent(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(ThemeDimensions.spacing.medium),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        InternetArchiveHeader(
-            modifier = Modifier
-                .padding(
-                    bottom = ThemeDimensions.spacing.large,
-                    top = ThemeDimensions.spacing.medium),
-
-        )
-
-        OutlinedTextField(
-            value = state.username,
-            enabled = !state.isBusy,
-            onValueChange = { dispatch(UpdateUsername(it)) },
-            label = {
-                Text(stringResource(R.string.label_username))
-            },
-            singleLine = true,
-            shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next,
-                autoCorrect = false,
-                keyboardType = KeyboardType.Email
-            ),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = ThemeColors.material.inverseOnSurface,
-                unfocusedContainerColor = ThemeColors.material.inverseOnSurface,
-                disabledContainerColor = Color.White,
-                unfocusedBorderColor = Color.Gray,
-            ),
-            isError = state.isUsernameError,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(ThemeDimensions.spacing.large))
-
-        OutlinedTextField(
-            value = state.password,
-            enabled = !state.isBusy,
-            onValueChange = { dispatch(UpdatePassword(it)) },
-            label = {
-                Text(stringResource(R.string.label_password))
-            },
-            singleLine = true,
-            trailingIcon = {
-                IconButton(modifier = Modifier.sizeIn(ThemeDimensions.touchable), onClick = { showPassword = !showPassword }) {
-                    Icon(
-                        imageVector = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = "show password"
-                    )
-                }
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = ThemeColors.material.inverseOnSurface,
-                unfocusedContainerColor = ThemeColors.material.inverseOnSurface,
-                disabledContainerColor = Color.White,
-                unfocusedBorderColor = Color.Gray
-            ),
-            shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
-            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                autoCorrect = false,
-                imeAction = ImeAction.Go
-            ),
-            isError = state.isPasswordError,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        AnimatedVisibility(
-            visible = state.isLoginError,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Text(
-                text = stringResource(R.string.error_incorrect_username_or_password),
-                color = MaterialTheme.colorScheme.error
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text("Internet Archive", color = Color.White) },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        dispatch(InternetArchiveLoginAction.Cancel)
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = localColors.chrome,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    navigationIconContentColor = Color.White
+                )
             )
         }
-
-        Spacer(Modifier.height(ThemeDimensions.spacing.large))
-
-        Row(
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = ThemeDimensions.spacing.medium),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
+                .background(localColors.background)
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(start = 10.dp, end = 10.dp),
+            horizontalAlignment = Alignment.Start,
         ) {
-            Button(
+
+            InternetArchiveHeader(
+                modifier = Modifier
+                    .padding(
+                        bottom = ThemeDimensions.spacing.medium,
+                        top = ThemeDimensions.spacing.medium,
+                        start = 5.dp,
+                        end = 5.dp
+                    ),
+            )
+
+            OutlinedTextField(
+                value = state.username,
+                enabled = !state.isBusy,
+                onValueChange = { dispatch(UpdateUsername(it)) },
+                label = {
+                    Text(stringResource(R.string.label_username))
+                },
+                singleLine = true,
+                shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Email
+                ),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = ThemeColors.material.inverseOnSurface,
+                    unfocusedContainerColor = ThemeColors.material.inverseOnSurface,
+                    disabledContainerColor = Color.White,
+                    unfocusedBorderColor = Color.Gray,
+                ),
+                isError = state.isUsernameError,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(ThemeDimensions.spacing.large))
+
+            OutlinedTextField(
+                value = state.password,
+                enabled = !state.isBusy,
+                onValueChange = { dispatch(UpdatePassword(it)) },
+                label = {
+                    Text(stringResource(R.string.label_password))
+                },
+                singleLine = true,
+                trailingIcon = {
+                    IconButton(
+                        modifier = Modifier.sizeIn(ThemeDimensions.touchable),
+                        onClick = { showPassword = !showPassword }) {
+                        Icon(
+                            imageVector = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = "show password"
+                        )
+                    }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = ThemeColors.material.inverseOnSurface,
+                    unfocusedContainerColor = ThemeColors.material.inverseOnSurface,
+                    disabledContainerColor = Color.White,
+                    unfocusedBorderColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
+                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    autoCorrect = false,
+                    imeAction = ImeAction.Go
+                ),
+                isError = state.isPasswordError,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            AnimatedVisibility(
+                visible = state.isLoginError,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Text(
+                    text = stringResource(R.string.error_incorrect_username_or_password),
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
+            Spacer(Modifier.height(ThemeDimensions.spacing.large))
+
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(ThemeDimensions.touchable)
-                    .weight(1f),
-                enabled = !state.isBusy && state.isValid,
-                shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
-                onClick = { dispatch(Login) },
+                    .padding(top = ThemeDimensions.spacing.medium),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                if (state.isBusy) {
-                    CircularProgressIndicator(color = ThemeColors.material.primary)
-                } else {
-                    Text(color = Color.White,
-                         text = stringResource(R.string.label_login))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(ThemeDimensions.touchable)
+                        .weight(1f),
+                    enabled = !state.isBusy && state.isValid,
+                    shape = RoundedCornerShape(ThemeDimensions.roundedCorner),
+                    onClick = { dispatch(Login) },
+                ) {
+                    if (state.isBusy) {
+                        CircularProgressIndicator(color = ThemeColors.material.primary)
+                    } else {
+                        Text(
+                            color = Color.White,
+                            text = stringResource(R.string.label_login)
+                        )
+                    }
                 }
             }
         }

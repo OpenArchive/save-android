@@ -1,18 +1,23 @@
 package net.opendasharchive.openarchive.features.core
 
-import android.app.AlertDialog
+import android.os.Build
+import android.os.Bundle
 import android.view.MotionEvent
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
 
-abstract class BaseActivity(): AppCompatActivity() {
+abstract class BaseActivity: AppCompatActivity() {
 
     companion object {
         const val EXTRA_DATA_SPACE = "space"
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (event != null) {
             val obscuredTouch = event.flags and MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED != 0
@@ -20,6 +25,12 @@ abstract class BaseActivity(): AppCompatActivity() {
         }
 
         return super.dispatchTouchEvent(event)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.colorBottomNavbar)
     }
 
     override fun onResume() {
@@ -36,7 +47,7 @@ abstract class BaseActivity(): AppCompatActivity() {
         return true
     }
 
-    fun updateScreenshotPrevention() {
+    private fun updateScreenshotPrevention() {
         if (Prefs.prohibitScreenshots) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
@@ -47,17 +58,17 @@ abstract class BaseActivity(): AppCompatActivity() {
         }
     }
 
-    fun alertUserOfError(e: Error) {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(baseContext)
-
-        builder
-            .setTitle("Oops")
-            .setMessage(e.localizedMessage)
-            .setPositiveButton("OK") { dialog, which ->
-            }
-
-        val dialog: AlertDialog = builder.create()
-
-        dialog.show()
-    }
+//    fun alertUserOfError(e: Error) {
+//        val builder: AlertDialog.Builder = AlertDialog.Builder(baseContext)
+//
+//        builder
+//            .setTitle("Oops")
+//            .setMessage(e.localizedMessage)
+//            .setPositiveButton("OK") { dialog, which ->
+//            }
+//
+//        val dialog: AlertDialog = builder.create()
+//
+//        dialog.show()
+//    }
 }

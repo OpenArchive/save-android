@@ -138,7 +138,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    style="@style/OAMaterialButtonStyle"
+                    style="@style/OAMaterialSignInButtonStyle"
                     android:id="@+id/authentication_button"
                     android:enabled="false"
                     android:layout_width="match_parent"

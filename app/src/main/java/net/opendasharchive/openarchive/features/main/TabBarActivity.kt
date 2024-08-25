@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -33,7 +34,6 @@ import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.Picker.import
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.util.Prefs
@@ -42,11 +42,17 @@ import timber.log.Timber
 
 class TabBarActivity : BaseActivity() {
 
+    private enum class Screen {
+        MEDIA, SETTINGS
+    }
+
     private lateinit var binding: ActivityTabBarBinding
+    private lateinit var networkRequest: NetworkRequest
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var mediaPickerLauncher: ImagePickerLauncher
     private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
     private var wifiIssueIndicator: MenuItem? = null
+    private var visibleScreen = Screen.MEDIA
 
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -71,23 +77,44 @@ class TabBarActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.title = null
 
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            window.setDecorFitsSystemWindows(false)
+//            window.insetsController?.setSystemBarsAppearance(
+//                WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+//                WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+//            )
+//        } else {
+//            WindowCompat.setDecorFitsSystemWindows(window, false)
+//            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars = true
+//        }
+
         binding.bottomBar.addButton.setOnClickListener {
             didClickMediaButton()
         }
 
         binding.bottomBar.myMediaButton.setOnClickListener {
-            supportFragmentManager.commit() {
-                setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                replace(binding.navHostFragment.id, MainMediaFragment())
+            if (visibleScreen != Screen.MEDIA) {
+                visibleScreen = Screen.MEDIA
+                supportFragmentManager.commit() {
+                    setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    replace(binding.navHostFragment.id, MainMediaFragment())
+                }
+                updateNavBar()
             }
         }
 
         binding.bottomBar.settingsButton.setOnClickListener {
-            supportFragmentManager.commit() {
-                setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                replace(binding.navHostFragment.id, SettingsFragment())
+            if (visibleScreen != Screen.SETTINGS) {
+                visibleScreen = Screen.SETTINGS
+                supportFragmentManager.commit() {
+                    setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    replace(binding.navHostFragment.id, SettingsFragment())
+                }
+                updateNavBar()
             }
         }
+
+        updateNavBar()
 
         LocalBroadcastManager
             .getInstance(this)
@@ -133,6 +160,29 @@ class TabBarActivity : BaseActivity() {
             }
 
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        networkRequest = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build()
+
+        connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        connectivityManager.requestNetwork(networkRequest, networkCallback)
+    }
+
+    private fun updateNavBar() {
+        if (visibleScreen == Screen.MEDIA) {
+            binding.bottomBar.myMediaButton.setIconResource(R.drawable.perm_media_24px)
+            binding.bottomBar.settingsButton.setIconResource(R.drawable.ic_settings)
+        } else {
+            binding.bottomBar.myMediaButton.setIconResource(R.drawable.outline_perm_media_24)
+            binding.bottomBar.settingsButton.setIconResource(R.drawable.ic_settings_filled)
         }
     }
 
@@ -187,19 +237,8 @@ class TabBarActivity : BaseActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         val view = layoutInflater.inflate(R.layout.bottom_sheet_file_source, null)
 
-        view.findViewById<Button>(R.id.btnDocuments).setOnClickListener {
-            openFilePicker("application/*")
-            bottomSheetDialog.dismiss()
-        }
-
         view.findViewById<Button>(R.id.btnImages).setOnClickListener {
             openFilePicker("image/*")
-            bottomSheetDialog.dismiss()
-        }
-
-        view.findViewById<Button>(R.id.btnDownloads).setOnClickListener {
-            // openFilePicker("*/*")
-            Picker.pickMedia(this, mediaPickerLauncher)
             bottomSheetDialog.dismiss()
         }
 

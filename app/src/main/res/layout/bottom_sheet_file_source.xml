@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-
-    <com.google.android.material.button.MaterialButton
-        style="@style/OAMediaSelectionButtonStyle"
-        android:id="@+id/btnDocuments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Documents" />
 
     <com.google.android.material.button.MaterialButton
         style="@style/OAMediaSelectionButtonStyle"
@@ -19,13 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Images" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnDownloads"
-        style="@style/OAMediaSelectionButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Downloads" />
 
     <com.google.android.material.button.MaterialButton
         style="@style/OAMediaSelectionButtonStyle"

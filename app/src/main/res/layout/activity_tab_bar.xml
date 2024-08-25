@@ -24,7 +24,7 @@
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
                 android:src="@drawable/savelogo"
-                app:tint="#FFFFFF"
+                app:tint="@color/c24_cream_95"
                 tools:ignore="RtlHardcoded" />
 
         </com.google.android.material.appbar.MaterialToolbar>

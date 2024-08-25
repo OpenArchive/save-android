@@ -2,55 +2,46 @@ package net.opendasharchive.openarchive.services.gdrive
 
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.fragment.app.commit
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityGdriveBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import timber.log.Timber
 
 class GDriveActivity : BaseActivity() {
 
-    private lateinit var mBinding: ActivityGdriveBinding
+    companion object {
+        const val REQUEST_CODE_GOOGLE_AUTH = 21701
+    }
+
+    private lateinit var binding: ActivityGdriveBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var backend: Backend? = null
+        binding = ActivityGdriveBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        if (intent.hasExtra(EXTRA_DATA_SPACE)) {
-            backend = Backend.get(intent.getLongExtra(EXTRA_DATA_SPACE, -1L))
-        }
-
-        mBinding = ActivityGdriveBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
-
-        mBinding.btRemove.setOnClickListener {
-            if (backend != null) removeSpace(backend)
-        }
-
-        setSupportActionBar(mBinding.toolbar)
-        supportActionBar?.title = getString(R.string.gdrive)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.gdrive)
 
-        mBinding.gdriveId.setText(backend?.displayname ?: "")
-    }
+        val hasPerms = GDriveConduit.permissionsGranted(this)
+        Timber.d("Permissions granted already? $hasPerms")
 
-    private fun removeSpace(backend: Backend) {
-//        AlertHelper.show(this, R.string.are_you_sure_you_want_to_remove_this_server_from_the_app, R.string.remove_from_app, buttons = listOf(
-//            AlertHelper.positiveButton(R.string.remove) { _, _ ->
-//                // delete sign-in from database
-//                space.delete()
-//
-//                // google logout
-//                val googleSignInClient =
-//                    GoogleSignIn.getClient(applicationContext, GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                googleSignInClient.revokeAccess().addOnCompleteListener {
-//                    googleSignInClient.signOut()
-//                }
-//
-//                // leave activity
-//                Space.navigate(this)
-//            },
-//            AlertHelper.negativeButton()))
+        if (hasPerms) {
+            Timber.d("has perms")
+            supportFragmentManager.commit() {
+                setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                replace(binding.gdriveFragment.id, GDriveSignOutFragment())
+            }
+        } else {
+            Timber.d("no perms")
+            supportFragmentManager.commit() {
+                setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                replace(binding.gdriveFragment.id, GDriveSignInFragment())
+            }
+        }
     }
 
     // boilerplate to make back button in app bar work

@@ -16,8 +16,6 @@ import net.opendasharchive.openarchive.util.extensions.getVersionName
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-//    private lateinit var mBinding: FragmentSettingsBinding
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.prefs_general, rootKey)
 
