@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.esafirm.imagepicker.view.GridSpacingItemDecoration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +21,6 @@ import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
 import net.opendasharchive.openarchive.databinding.MediaGroupBinding
-import net.opendasharchive.openarchive.db.AppDatabase
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
@@ -103,12 +101,6 @@ class MainMediaFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         BroadcastManager.register(requireContext(), mMessageReceiver)
-
-        val db = Room.databaseBuilder(
-            requireContext(),
-            AppDatabase::class.java, "database-name"
-        ).build()
-
     }
 
     override fun onStop() {

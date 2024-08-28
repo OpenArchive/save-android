@@ -32,8 +32,8 @@ class VeilidFolderAdapter(listener: VeilidFolderAdapterListener?)
             val color = ContextCompat.getColor(context, R.color.colorPrimary)
             val icon = ContextCompat.getDrawable(context, R.drawable.baseline_folder_24)?.tint(color)
 
-            binding.button.icon = icon
-            binding.button.text = folder.description
+//            binding.button.icon = icon
+//            binding.button.text = folder.description
 
             binding.button.setOnClickListener {
                 listener?.get()?.folderSelected(folder)

@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentGdriveSignOutBinding
 import net.opendasharchive.openarchive.db.Backend
@@ -28,15 +32,19 @@ class GDriveSignOutFragment : CommonServiceFragment() {
     private fun removeMyself() {
         AlertHelper.show(requireContext(), R.string.are_you_sure_you_want_to_remove_this_server_from_the_app, R.string.remove_from_app, buttons = listOf(
             AlertHelper.positiveButton(R.string.remove) { _, _ ->
+                // Google logout
+                val googleSignInClient = GoogleSignIn.getClient(requireContext(), GoogleSignInOptions.DEFAULT_SIGN_IN)
+
+                googleSignInClient.revokeAccess().addOnCompleteListener {
+                    googleSignInClient.signOut()
+                }
+
                 Backend.get(Backend.Type.GDRIVE).firstOrNull() { backend ->
-                    // Google logout
-                    val googleSignInClient = GoogleSignIn.getClient(requireContext(), GoogleSignInOptions.DEFAULT_SIGN_IN)
-
-                    googleSignInClient.revokeAccess().addOnCompleteListener {
-                        googleSignInClient.signOut()
-                    }
-
                     backend.delete()
+                }
+
+                MainScope().launch {
+                    setFragmentResult(RESP_DELETED, bundleOf())
                 }
             },
             AlertHelper.negativeButton()))

@@ -14,7 +14,7 @@ import timber.log.Timber
 abstract class BaseActivity: AppCompatActivity() {
 
     companion object {
-        const val EXTRA_DATA_SPACE = "space"
+        const val EXTRA_DATA_BACKEND = "space"
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)

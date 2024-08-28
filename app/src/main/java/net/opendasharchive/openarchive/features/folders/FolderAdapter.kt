@@ -14,9 +14,7 @@ import net.opendasharchive.openarchive.db.Folder
 import java.lang.ref.WeakReference
 
 interface FolderAdapterListener {
-
     fun folderClicked(folder: Folder)
-
     fun getSelectedProject(): Folder?
 }
 
@@ -27,7 +25,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, Fold
     class ViewHolder(private val binding: OneLineRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(listener: WeakReference<FolderAdapterListener>?, folder: Folder?) {
-            binding.button.text = folder?.description
+            binding.button.setTitle(folder?.description)
 
             if (listener?.get()?.getSelectedProject()?.id == folder?.id) {
                 val icon = ContextCompat.getDrawable(binding.button.context,
@@ -35,7 +33,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, Fold
                 )
 //                val color = ContextCompat.getColor(binding.button.context, R.color.colorPrimary)
 //                icon?.setTint(color)
-                binding.button.icon = icon
+                binding.button.setLeftIcon(icon)
             } else {
                 val icon = ContextCompat.getDrawable(binding.button.context,
                     R.drawable.outline_folder_24
@@ -44,7 +42,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, Fold
 //                    R.color.colorOnBackground
 //                )
 //                icon?.setTint(color)
-                binding.button.icon = icon
+                binding.button.setLeftIcon(icon)
             }
 
 //            binding.button.setTextColor(

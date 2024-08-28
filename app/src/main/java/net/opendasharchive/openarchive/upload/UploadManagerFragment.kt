@@ -15,6 +15,7 @@ import net.opendasharchive.openarchive.databinding.FragmentUploadManagerBinding
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
+import net.opendasharchive.openarchive.features.main.SwipeToDeleteCallback
 
 open class UploadManagerFragment : Fragment() {
 
@@ -38,7 +39,7 @@ open class UploadManagerFragment : Fragment() {
         mBinding.uploadList.layoutManager = LinearLayoutManager(activity)
 
         val decorator = DividerItemDecoration(mBinding.uploadList.context, DividerItemDecoration.VERTICAL)
-        val divider = ContextCompat.getDrawable(mBinding.uploadList.context, R.drawable.oa_divider)
+        val divider = ContextCompat.getDrawable(mBinding.uploadList.context, R.drawable.save_list_item_spacing_small)
         if (divider != null) decorator.setDrawable(divider)
 
         mBinding.uploadList.addItemDecoration(decorator)

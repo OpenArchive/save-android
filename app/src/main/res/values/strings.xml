@@ -131,7 +131,7 @@
 
     <string name="tap_to_add">Tap the button below to add media.</string>
     <string name="tap_to_add_backend">Tap the button below to add a media server.</string>
-    <string name="to_get_started_connect_to_a_server_to_store_your_media">Connect to a server to store your media.</string>
+    <string name="to_get_started_connect_to_a_server_to_store_your_media">Add or remove servers to store your media.</string>
     <string name="send_directly_to_a_private_server">Send to a webdav server</string>
     <string name="upload_to_the_internet_archive">Upload to the IA</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> only connects to WebDAV-compatible servers, such as Nextcloud and ownCloud.</string>

@@ -7,7 +7,6 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityFoldersBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.CcSelector
@@ -56,9 +55,9 @@ class FoldersActivity: BaseActivity(), FolderAdapterListener {
         else {
             mBinding.cc.tvCc.setText(R.string.set_the_same_creative_commons_license_for_all_folders_on_this_server)
 
-            CcSelector.init(mBinding.cc, Backend.current?.license) {
-                val backend = Backend.current ?: return@init
+            val backend = Folder.current?.backend ?: return
 
+            CcSelector.init(mBinding.cc, backend.license) {
                 backend.license = it
                 backend.save()
             }
@@ -74,7 +73,9 @@ class FoldersActivity: BaseActivity(), FolderAdapterListener {
     override fun onResume() {
         super.onResume()
 
-        val folders = if (mArchived) Backend.current?.archivedFolders else Backend.current?.folders
+        val backend = Folder.current?.backend
+
+        val folders = if (mArchived) backend?.archivedFolders else backend?.folders
 
         mAdapter.update(folders ?: emptyList())
     }

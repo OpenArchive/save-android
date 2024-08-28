@@ -72,7 +72,7 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
             arrayOf(Scope(DriveScopes.DRIVE_FILE), Scope(Scopes.EMAIL))
 
         fun permissionsGranted(context: Context): Boolean {
-            Timber.v("GDriveConduit.permissionGranted()")
+            Timber.v("GDriveConduit checking permissionGranted")
             return GoogleSignIn.hasPermissions(
                 GoogleSignIn.getLastSignedInAccount(context),
                 *SCOPES
@@ -187,7 +187,7 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
                         .setFields("nextPageToken, files(id, name, createdTime)").execute()
                 for (f in folders.files) {
                     val date = Date(f.createdTime.value)
-                    result.add(Folder(f.name, backendId = backend.id, created = date))
+                    result.add(Folder(f.name, backend = backend, created = date))
                 }
                 pageToken = folders.nextPageToken
             } while (pageToken != null)

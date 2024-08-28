@@ -37,7 +37,7 @@ class WebDavActivity : BaseActivity() {
     companion object {
         // factory method parameters (bundle args)
         const val ARG_SPACE = "space"
-        const val ARG_VAL_NEW_SPACE = -1L
+        const val ARG_VAL_NEW_BACKEND = -1L
 
         // other internal constants
         const val REMOTE_PHP_ADDRESS = "/remote.php/webdav/"
@@ -53,7 +53,7 @@ class WebDavActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.private_server)
 
-        mBackendId = intent.getLongExtra(EXTRA_DATA_SPACE, ARG_VAL_NEW_SPACE)
+        mBackendId = intent.getLongExtra(EXTRA_DATA_BACKEND, ARG_VAL_NEW_BACKEND)
 
         setup()
     }
@@ -77,10 +77,10 @@ class WebDavActivity : BaseActivity() {
             }
         })
 
-        if (ARG_VAL_NEW_SPACE != mBackendId) {
+        if (ARG_VAL_NEW_BACKEND != mBackendId) {
             // setup views for editing and existing space
 
-            mBackend = Backend.get(mBackendId) ?: Backend(Backend.Type.WEBDAV)
+            mBackend = Backend.getById(mBackendId) ?: Backend(Backend.Type.WEBDAV)
 
             mBinding.header.visibility = View.GONE
             mBinding.server.isEnabled = false
@@ -177,7 +177,7 @@ class WebDavActivity : BaseActivity() {
             try {
                 testConnection()
                 mBackend.save()
-                Backend.current = mBackend
+                // Backend.current = mBackend
 
                 // setFragmentResult(RESP_CREATED, bundleOf())
             } catch (exception: IOException) {

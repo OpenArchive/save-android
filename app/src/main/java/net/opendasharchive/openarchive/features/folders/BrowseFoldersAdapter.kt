@@ -1,72 +1,100 @@
 package net.opendasharchive.openarchive.features.folders
 
-import android.graphics.drawable.Drawable
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FolderRowBinding
 import net.opendasharchive.openarchive.db.Folder
-import net.opendasharchive.openarchive.util.extensions.clone
-import net.opendasharchive.openarchive.util.extensions.scaled
-import net.opendasharchive.openarchive.util.extensions.tint
 import java.text.SimpleDateFormat
 
-class BrowseFoldersAdapter(
-    private val folders: List<Folder> = emptyList(),
-    private val onClick: (folder: Folder) -> Unit
-) : RecyclerView.Adapter<BrowseFoldersAdapter.FolderViewHolder>() {
+typealias OnFolderSelectedCallback = (folder: Folder) -> Unit
+
+sealed class ListItem {
+    data class SectionHeader(val title: String) : ListItem()
+    data class ContentItem(val folder: Folder) : ListItem()
+}
+
+class HeaderViewHolder(private val binding: FolderRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    companion object {
+        fun from(parent: ViewGroup): HeaderViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = FolderRowBinding.inflate(layoutInflater, parent, false)
+            return HeaderViewHolder(binding)
+        }
+    }
+
+    fun bind(item: ListItem.SectionHeader) {
+        binding.name.text = item.title
+    }
+}
+
+class ContentViewHolder(
+    private val binding: FolderRowBinding,
+    private val onClick: OnFolderSelectedCallback) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        private var sOriginalColor = 0
-        private var sHighlightColor = 0
-        private var sIcon: Drawable? = null
         private val formatter = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.LONG, SimpleDateFormat.MEDIUM)
+
+        fun from(parent: ViewGroup, onClick: OnFolderSelectedCallback): ContentViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = FolderRowBinding.inflate(layoutInflater, parent, false)
+            return ContentViewHolder(binding, onClick)
+        }
     }
 
-    private var mSelected = -1
+    fun bind(item: ListItem.ContentItem, position: Int) {
+        binding.apply {
+            name.text = item.folder.description
+            timestamp.text = formatter.format(item.folder.created)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FolderViewHolder {
-        val binding = FolderRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val context = binding.root.context
-
-        if (sOriginalColor == 0) sOriginalColor = binding.name.currentTextColor
-        if (sHighlightColor == 0) sHighlightColor = ContextCompat.getColor(context, R.color.colorPrimary)
-        if (sIcon == null) sIcon = ContextCompat.getDrawable(context, R.drawable.ic_folder)?.scaled(0.75, context)
-
-        return FolderViewHolder(binding, onClick)
-    }
-
-    override fun onBindViewHolder(holder: FolderViewHolder, position: Int) {
-        holder.onBindView(position, mSelected == position)
-    }
-
-    override fun getItemCount(): Int {
-        return folders.size
-    }
-
-    inner class FolderViewHolder(
-        private val binding: FolderRowBinding,
-        private val onClick: (folder: Folder) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root)
-    {
-        fun onBindView(position: Int, selected: Boolean) {
-            val color = if (selected) sHighlightColor else sOriginalColor
-
-            binding.icon.setImageDrawable(sIcon?.clone()?.tint(color))
-            binding.name.setTextColor(color)
-
-            val folder = folders[position]
-
-            binding.name.text = "${folder.backend!!.friendlyName} > ${folder.description}"
-            binding.timestamp.text = formatter.format(folders[position].created!!)
-
-            binding.root.setOnClickListener {
-                mSelected = position
-                this@BrowseFoldersAdapter.notifyDataSetChanged()
-                onClick.invoke(folders[position])
+            root.setOnClickListener {
+                onClick.invoke(item.folder)
             }
         }
+    }
+}
+
+class BrowseFoldersAdapter(private val onClick: OnFolderSelectedCallback) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        private const val VIEW_TYPE_HEADER = 0
+        private const val VIEW_TYPE_CONTENT = 1
+    }
+
+    private var items: List<ListItem> = emptyList()
+
+    override fun getItemCount(): Int = items.size
+
+    override fun getItemViewType(position: Int): Int {
+        return when (items[position]) {
+            is ListItem.SectionHeader -> VIEW_TYPE_HEADER
+            is ListItem.ContentItem -> VIEW_TYPE_CONTENT
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_HEADER -> HeaderViewHolder.from(parent)
+            VIEW_TYPE_CONTENT -> ContentViewHolder.from(parent, onClick)
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = items[position]) {
+            is ListItem.SectionHeader -> {
+                (holder as HeaderViewHolder).bind(item)
+            }
+            is ListItem.ContentItem -> {
+                (holder as ContentViewHolder).bind(item, position)
+            }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateItems(newItems: List<ListItem>) {
+        items = newItems
+        notifyDataSetChanged()
     }
 }

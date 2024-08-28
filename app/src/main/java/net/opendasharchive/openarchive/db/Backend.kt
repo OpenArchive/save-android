@@ -14,7 +14,6 @@ import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
-import net.opendasharchive.openarchive.util.Prefs
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
@@ -66,6 +65,12 @@ data class Backend(
     }
 
     companion object {
+        val ALL_BACKENDS = listOf(
+            Backend(Backend.Type.INTERNET_ARCHIVE),
+            Backend(Backend.Type.WEBDAV),
+            Backend(Backend.Type.GDRIVE),
+        )
+
         fun getAll(): Iterator<Backend> {
             return findAll(Backend::class.java)
         }
@@ -84,9 +89,7 @@ data class Backend(
                 whereArgs.add(username)
             }
 
-            val spaces = find(Backend::class.java, whereClause, whereArgs.toTypedArray(), null, null, null)
-
-            return spaces
+            return find(Backend::class.java, whereClause, whereArgs.toTypedArray(), null, null, null)
         }
 
         fun has(type: Type, host: String? = null, username: String? = null): Boolean {
@@ -94,22 +97,16 @@ data class Backend(
         }
 
 //        var current: Backend?
-//            get() = get(Prefs.currentBackendId)
+//            get() = getById(Prefs.currentBackendId)
 //            set(value) {
 //                Prefs.currentBackendId = value?.id ?: -1
 //            }
 
-        var current: Backend?
-            get() = get(Prefs.currentBackendId)
-            set(value) {
-                Prefs.currentBackendId = value?.id ?: -1
-            }
-
-        fun get(id: Long): Backend? {
+        fun getById(id: Long): Backend? {
             return findById(Backend::class.java, id)
         }
 
-        private fun getFolder(id: Long): Folder? {
+        fun getFolderById(id: Long): Folder? {
             return findById(Folder::class.java, id)
         }
 
@@ -166,6 +163,10 @@ data class Backend(
         if (description == null) { return false }
         // Cannot use `count` from Kotlin due to strange <T> in method signature.
         return find(Folder::class.java, "backend_id = ? AND description = ?", id.toString(), description).size > 0
+    }
+
+    fun getAllForType(type: Type): List<Backend> {
+        return get(type, null, null)
     }
 
     fun getAvatar(context: Context): Drawable? {

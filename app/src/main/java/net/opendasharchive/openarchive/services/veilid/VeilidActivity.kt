@@ -14,8 +14,8 @@ class VeilidActivity : BaseActivity() {
 
         var backend: Backend? = null
 
-        if (intent.hasExtra(EXTRA_DATA_SPACE)) {
-            backend = Backend.get(intent.getLongExtra(EXTRA_DATA_SPACE, -1L))
+        if (intent.hasExtra(EXTRA_DATA_BACKEND)) {
+            backend = Backend.getById(intent.getLongExtra(EXTRA_DATA_BACKEND, -1L))
         }
 
         viewBinding = ActivityVeilidBinding.inflate(layoutInflater)

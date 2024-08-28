@@ -21,4 +21,6 @@
     <dimen name="bottom_nav_padding">100dp</dimen>
 
     <dimen name="cornerRadius">8dp</dimen>
+    <dimen name="save_primary_button_height">60dp</dimen>
+    <dimen name="save_content_top_margin">10dp</dimen>
 </resources>

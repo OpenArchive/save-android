@@ -21,7 +21,7 @@ fun Bundle?.getBackend(type: Backend.Type): Pair<Backend, Boolean> {
     return if (isNewBackend) {
         Pair(Backend(type), true)
     } else {
-        Backend.get(mBackendId)?.let { Pair(it, false) } ?: Pair(Backend(type), true)
+        Backend.getById(mBackendId)?.let { Pair(it, false) } ?: Pair(Backend(type), true)
     }
 }
 

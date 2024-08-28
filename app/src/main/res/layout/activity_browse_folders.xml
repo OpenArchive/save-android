@@ -16,7 +16,7 @@
         android:background="@color/colorPrimary" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_folder_list"
+        android:id="@+id/folder_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?attr/actionBarSize" />

@@ -23,24 +23,22 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
-import com.esafirm.imagepicker.features.registerImagePicker
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityTabBarBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.media.Picker.import
+import net.opendasharchive.openarchive.features.media.Picker
+import net.opendasharchive.openarchive.features.media.Picker.pickMedia
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.util.Prefs
 import org.aviran.cookiebar2.CookieBar
 import timber.log.Timber
 
-class TabBarActivity : BaseActivity() {
+class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private enum class Screen {
         MEDIA, SETTINGS
@@ -53,6 +51,8 @@ class TabBarActivity : BaseActivity() {
     private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
     private var wifiIssueIndicator: MenuItem? = null
     private var visibleScreen = Screen.MEDIA
+    private lateinit var mMediaPickerLauncher: ImagePickerLauncher
+    private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
 
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -77,16 +77,17 @@ class TabBarActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.title = null
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//            window.setDecorFitsSystemWindows(false)
-//            window.insetsController?.setSystemBarsAppearance(
-//                WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-//                WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
-//            )
-//        } else {
-//            WindowCompat.setDecorFitsSystemWindows(window, false)
-//            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars = true
-//        }
+        val launchers = Picker.register(this, binding.root, { Folder.current }, { media ->
+            Timber.d("media = $media")
+//            showCurrentPage()
+//
+//            if (media.isNotEmpty()) {
+//                preview()
+//            }
+        })
+
+        mMediaPickerLauncher = launchers.first
+        mFilePickerLauncher = launchers.second
 
         binding.bottomBar.addButton.setOnClickListener {
             didClickMediaButton()
@@ -122,15 +123,10 @@ class TabBarActivity : BaseActivity() {
 
         wifiIssueIndicator?.setVisible(false)
 
-        mediaPickerLauncher = registerImagePicker { result ->
-            CoroutineScope(Dispatchers.IO).launch {
-                val media = import(this@TabBarActivity, folder = Folder.current, uris = result.map { it.uri })
-
-//                MainScope().launch {
-//                    completed(media)
-//                }
-            }
-        }
+//        val folder = Folder(description = "Testing", backend = Backend.getById(1)!!)
+        val folder = Folder.getById(1)
+//        folder.save()
+        Folder.current = folder
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -187,7 +183,7 @@ class TabBarActivity : BaseActivity() {
     }
 
     private fun didClickMediaButton() {
-        if (Backend.current == null) {
+        if (Folder.current == null) {
             addBackend()
         } else {
             showFileSourceActionSheet()
@@ -229,8 +225,33 @@ class TabBarActivity : BaseActivity() {
         }
     }
 
-    private fun openFilePicker(mimeType: String) {
-        getContent.launch(mimeType)
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                pickMedia(this, mMediaPickerLauncher)
+            } else {
+                Timber.d("le sigh")
+            }
+        }
+
+    private fun requestCameraPermission() {
+        when {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
+                startActivity(Intent(this, CameraCaptureActivity::class.java))
+            }
+
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+                Timber.d("really?")
+                // Provide an additional rationale to the user if the permission was not granted
+                // and the user would benefit from additional context for the use of the permission.
+            }
+
+            else -> {
+                // Ask for the permission
+                Timber.d("Asking permission for camera")
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
     }
 
     private fun showFileSourceActionSheet() {
@@ -238,18 +259,12 @@ class TabBarActivity : BaseActivity() {
         val view = layoutInflater.inflate(R.layout.bottom_sheet_file_source, null)
 
         view.findViewById<Button>(R.id.btnImages).setOnClickListener {
-            openFilePicker("image/*")
+            pickMedia(this, mMediaPickerLauncher)
             bottomSheetDialog.dismiss()
         }
 
         view.findViewById<Button>(R.id.camera_button).setOnClickListener {
-            if (allPermissionsGranted()) {
-                startActivity(Intent(this, CameraCaptureActivity::class.java))
-            } else {
-                ActivityCompat.requestPermissions(
-                    this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
-            }
-
+            requestCameraPermission()
             bottomSheetDialog.dismiss()
         }
 
@@ -257,9 +272,9 @@ class TabBarActivity : BaseActivity() {
         bottomSheetDialog.show()
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
+//    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+//        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+//    }
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {

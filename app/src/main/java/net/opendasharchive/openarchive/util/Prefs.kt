@@ -21,7 +21,7 @@ object Prefs {
     // private const val USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
     const val THEME = "theme"
     const val CURRENT_FOLDER_ID = "current_folder"
-    const val CURRENT_SPACE_ID = "current_space"
+//    const val CURRENT_BACKEND_ID = "current_backend"
     const val FLAG_HINT_SHOWN = "ft.flag"
     const val BATCH_HINT_SHOWN = "ft.batch"
     const val DONT_SHOW_UPLOAD_HINT = "ft.upload"
@@ -74,11 +74,11 @@ object Prefs {
             manager?.edit()?.putBoolean(USE_TOR, value)?.apply()
         }
 
-    var currentBackendId: Long
-        get() = manager?.getLong(CURRENT_SPACE_ID, -1) ?: -1
-        set(value) {
-            manager?.edit()?.putLong(CURRENT_SPACE_ID, value)?.apply()
-        }
+//    var currentBackendId: Long
+//        get() = manager?.getLong(CURRENT_BACKEND_ID, -1) ?: -1
+//        set(value) {
+//            manager?.edit()?.putLong(CURRENT_BACKEND_ID, value)?.apply()
+//        }
 
     var currentFolderId: Long
         get() = manager?.getLong(CURRENT_FOLDER_ID, -1) ?: -1

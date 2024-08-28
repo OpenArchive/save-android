@@ -65,15 +65,11 @@ class AlertHelper {
             return builder
         }
 
-        fun positiveButton(title: Int = R.string.lbl_ok,
-                           listener: ((DialogInterface, Int) -> Unit)? = null
-        ): Button {
+        fun positiveButton(title: Int = R.string.lbl_ok, listener: ((DialogInterface, Int) -> Unit)? = null): Button {
             return Button(Button.Type.Positive, title, listener)
         }
 
-        fun neutralButton(title: Int = R.string.lbl_Cancel,
-                          listener: ((DialogInterface, Int) -> Unit)? = null
-        ): Button {
+        fun neutralButton(title: Int = R.string.lbl_Cancel, listener: ((DialogInterface, Int) -> Unit)? = null): Button {
             return Button(Button.Type.Neutral, title, listener)
         }
 

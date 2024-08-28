@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.util.extensions.scaled
 import java.lang.ref.WeakReference
 
 interface BackendAdapterListener {
@@ -22,18 +23,16 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
 
             val context = binding.button.context
 
-            val icon = backend.getAvatar(context) // ?.scaled(32, context)
-            binding.button.icon = icon
+            binding.button.setLeftIcon(backend.getAvatar(context)?.scaled(40, context))
+            binding.button.setTitle(backend.friendlyName)
 
-            binding.button.text = backend.friendlyName
-
-//            binding.backendButton.setTextColor(
-//                FolderAdapter.getColor(
-//                    binding.backendButton.context,
-//                    false
-//                    // listener?.get()?.getSelectedBackend()?.id == backend?.id
-//                )
-//            )
+            if (backend.displayname.isEmpty()) {
+                binding.button.setSubTitle("Not connected")
+//                binding.button.setRightIcon(ContextCompat.getDrawable(context, R.drawable.outline_add_link_24)?.scaled(32, context))
+            } else {
+                binding.button.setSubTitle("Connected")
+//                binding.button.setRightIcon(ContextCompat.getDrawable(context, R.drawable.outline_link_off_24)?.scaled(32, context))
+            }
 
             binding.button.setOnClickListener {
                 listener?.get()?.backendClicked(backend)
@@ -65,16 +64,10 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
     }
 
     fun update(backends: List<Backend>) {
-//        notifyItemChanged(getIndex(mLastSelected))
-//
-//        @Suppress("NAME_SHADOWING")
-//        val backends = backends.toMutableList()
-//        backends.add(Backend(ADD_BACKEND_ID))
         submitList(backends)
     }
 
     override fun backendClicked(backend: Backend) {
-//        notifyItemChanged(getIndex(getSelectedBackend()))
         notifyItemChanged(getIndex(backend))
 
         mListener.get()?.backendClicked(backend)

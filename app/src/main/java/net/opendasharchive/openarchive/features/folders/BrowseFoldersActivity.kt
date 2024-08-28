@@ -1,13 +1,11 @@
 package net.opendasharchive.openarchive.features.folders
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBrowseFoldersBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.extensions.toggle
@@ -17,56 +15,66 @@ import java.util.Date
 
 class BrowseFoldersActivity : BaseActivity() {
 
-    private lateinit var mBinding: ActivityBrowseFoldersBinding
-    private lateinit var mViewModel: BrowseFoldersViewModel
-
-    private var mSelected: Folder? = null
+    private lateinit var binding: ActivityBrowseFoldersBinding
+    private lateinit var viewModel: BrowseFoldersViewModel
+    private lateinit var adapter: BrowseFoldersAdapter
     private var hasFolders = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = ActivityBrowseFoldersBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        binding = ActivityBrowseFoldersBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        mViewModel = BrowseFoldersViewModel()
+        viewModel = BrowseFoldersViewModel()
 
-        setSupportActionBar(mBinding.toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         title = getString(R.string.browse_existing)
 
-        mBinding.rvFolderList.layoutManager = LinearLayoutManager(this)
+        binding.folderList.layoutManager = LinearLayoutManager(this)
 
-//        try {
-//            mViewModel.getAllFolders(this)
-//        } catch (e: Error) {
-//            Timber.e(e)
+        try {
+            viewModel.loadData(this)
+        } catch (e: Error) {
+            Timber.e(e)
 //            alertUserOfError(e)
-//        }
-
-        mViewModel.folders.value?.forEach { it ->
-            Timber.d("Folder: $it.name")
         }
 
-        mViewModel.folders.observe(this) {
-//            hasFolders = it.isNotEmpty()
-
-            mBinding.foldersEmpty.toggle(it.isEmpty())
-
-            mBinding.rvFolderList.adapter = BrowseFoldersAdapter(it) { folder ->
-                // if (!folder.exists()) {
-                    folder.save()
-                // }
-                Folder.current = folder
-                finish()
+        viewModel.items.value?.forEach { it ->
+            (it as ListItem.ContentItem).let { item ->
+                Timber.d("Folder: ${item.folder.description}")
             }
+        }
+
+        adapter = BrowseFoldersAdapter() { folder ->
+            Timber.d("Click!")
+
+            if (!folder.exists()) {
+                Timber.d("Saving remote folder to local")
+                folder.save()
+            }
+
+            Folder.current = folder
+
+            finish()
+        }
+
+        binding.folderList.adapter = adapter
+
+        viewModel.items.observe(this) { items ->
+            Timber.d("Observed!")
+
+            binding.foldersEmpty.toggle(items.isEmpty())
+
+            adapter.updateItems(items)
 
             invalidateOptionsMenu()
         }
 
-        mViewModel.progressBarFlag.observe(this) {
-            mBinding.progressBar.toggle(it)
+        viewModel.progressBarFlag.observe(this) {
+            binding.progressBar.toggle(it)
         }
     }
 
@@ -85,7 +93,7 @@ class BrowseFoldersActivity : BaseActivity() {
                 return true
             }
             R.id.action_add -> {
-                addFolder(mSelected)
+                addFolder()
                 return true
             }
         }
@@ -93,12 +101,11 @@ class BrowseFoldersActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun addFolder(folder: Folder?) {
-        if (folder == null) return
-        val backend = Backend.current ?: return
+    private fun addFolder() {
+        val backend = Folder.current?.backend ?: return
 
         // This should not happen. These should have been filtered on display.
-        if (backend.hasFolder(folder.description)) return
+//        if (backend.hasFolder(folder.description)) return
 
         val license = backend.license
 
@@ -110,16 +117,16 @@ class BrowseFoldersActivity : BaseActivity() {
 //        }
 //        else {
             val folder = Folder(
-                description = folder.description,
+                description = "Foo",
                 created = Date(),
-                backendId = backend.id,
+                backend = backend,
                 licenseUrl = license)
         folder.save()
 
-            val i = Intent()
-            i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, folder.id)
-
-            setResult(RESULT_OK, i)
+//            val i = Intent()
+//            i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, folder.id)
+//
+//            setResult(RESULT_OK, i)
 //        }
 
         finish()

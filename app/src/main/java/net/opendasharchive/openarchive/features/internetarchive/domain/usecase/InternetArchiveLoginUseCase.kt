@@ -24,7 +24,7 @@ class InternetArchiveLoginUseCase(
             backend.metaData = gson.toJson(response.meta)
             backend.save()
 
-            Backend.current = backend
+            // Backend.current = backend
 
             response
         }

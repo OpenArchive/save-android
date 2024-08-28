@@ -10,7 +10,6 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.databinding.FragmentVeilidGroupsBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 
@@ -46,22 +45,22 @@ class VeilidFoldersFragment : CommonServiceFragment(), VeilidFolderAdapterListen
     }
 
     private fun createVeilidBackend(folder: Folder) {
-        arguments?.getString("uri")?.also { uri ->
-            val backend = Backend(type = Backend.Type.VEILID)
-            backend.host = uri
-            backend.save()
-
-            folder.backendId = backend.id
-            folder.save()
-
-            Backend.current = backend
-
-            setFragmentResult(RESP_CREATED, bundleOf())
-
-            // showSuccess()
-        } ?: {
-            showError()
-        }
+//        arguments?.getString("uri")?.also { uri ->
+//            val backend = Backend(type = Backend.Type.VEILID)
+//            backend.host = uri
+//            backend.save()
+//
+//            folder.backendId = backend.id
+//            folder.save()
+//
+//            Backend.current = backend
+//
+//            setFragmentResult(RESP_CREATED, bundleOf())
+//
+//            // showSuccess()
+//        } ?: {
+//            showError()
+//        }
     }
 
     private fun createViewModel() {

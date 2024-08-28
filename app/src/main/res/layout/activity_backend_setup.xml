@@ -17,12 +17,16 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:filterTouchesWhenObscured="true"
-        android:gravity="top"
         android:orientation="vertical"
+        android:showDividers="middle"
+        android:divider="@drawable/save_list_item_spacing_small"
+        android:layout_marginTop="@dimen/save_content_top_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <TextView
@@ -39,9 +43,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/backend_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="20dp" />
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

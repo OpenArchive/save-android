@@ -6,13 +6,10 @@ import androidx.fragment.app.commit
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityGdriveBinding
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.services.CommonServiceFragment.Companion.RESP_CREATED
 import timber.log.Timber
 
 class GDriveActivity : BaseActivity() {
-
-    companion object {
-        const val REQUEST_CODE_GOOGLE_AUTH = 21701
-    }
 
     private lateinit var binding: ActivityGdriveBinding
 
@@ -26,22 +23,7 @@ class GDriveActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.gdrive)
 
-        val hasPerms = GDriveConduit.permissionsGranted(this)
-        Timber.d("Permissions granted already? $hasPerms")
-
-        if (hasPerms) {
-            Timber.d("has perms")
-            supportFragmentManager.commit() {
-                setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                replace(binding.gdriveFragment.id, GDriveSignOutFragment())
-            }
-        } else {
-            Timber.d("no perms")
-            supportFragmentManager.commit() {
-                setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                replace(binding.gdriveFragment.id, GDriveSignInFragment())
-            }
-        }
+        showSignInScreen()
     }
 
     // boilerplate to make back button in app bar work
@@ -51,5 +33,16 @@ class GDriveActivity : BaseActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showSignInScreen() {
+        supportFragmentManager.commit() {
+            setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+            replace(binding.gdriveFragment.id, GDriveSignInFragment())
+            supportFragmentManager.setFragmentResultListener(RESP_CREATED, this@GDriveActivity) { _, _ ->
+                Timber.d("Signed in.")
+                finish()
+            }
+        }
     }
 }

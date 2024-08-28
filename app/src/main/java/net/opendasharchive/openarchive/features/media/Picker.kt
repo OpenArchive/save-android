@@ -68,8 +68,7 @@ object Picker {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (needAskForPermission(activity, arrayOf(
                     Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_VIDEO))
-            ) {
+                    Manifest.permission.READ_MEDIA_VIDEO))) {
                 return
             }
         }

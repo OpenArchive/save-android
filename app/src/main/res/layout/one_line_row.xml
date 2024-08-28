@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.button.MaterialButton
+<net.opendasharchive.openarchive.features.main.ui.CustomButton
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/OAOutlinedButtonStyle"
     android:id="@+id/button"
-    android:layout_marginTop="6dp"
-    android:text="@string/veilid" />
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:drawableStart="@drawable/logo_drive_2020q4_color_2x_web_64dp"
+    android:drawableEnd="@drawable/button_with_right_icon"
+    android:text="@string/fpo_short"
+    android:textAlignment="viewStart"
+    android:textSize="18sp"/>
