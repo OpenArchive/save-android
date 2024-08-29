@@ -20,11 +20,11 @@ import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveActivity
+import net.opendasharchive.openarchive.features.main.SwipeToDeleteCallback
 import net.opendasharchive.openarchive.services.gdrive.GDriveActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.veilid.VeilidActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavActivity
-import net.opendasharchive.openarchive.features.main.SwipeToDeleteCallback
 import net.opendasharchive.openarchive.util.AlertHelper
 import timber.log.Timber
 
@@ -155,7 +155,10 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
     }
 
     private fun removeGoogle() {
-        AlertHelper.show(this, R.string.are_you_sure_you_want_to_remove_this_server_from_the_app, R.string.remove_from_app, buttons = listOf(
+        AlertHelper.show(this,
+            R.string.are_you_sure_you_want_to_remove_this_server_from_the_app,
+            R.string.remove_from_app,
+            buttons = listOf(
             AlertHelper.positiveButton(R.string.remove) { _, _ ->
                 completeSignOut()
             },

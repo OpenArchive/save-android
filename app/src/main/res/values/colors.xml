@@ -104,7 +104,7 @@
      -->
 
     <color name="colorIcon">@color/white</color>
-    <color name="colorPill">@color/colorOnBackground</color>
+    <color name="colorPill">@color/c24_cream_80</color>
     <color name="colorMediaOverlayIcon">@color/white</color>
     <color name="colorDanger">@color/red</color>
     <color name="colorDivider">@color/light_grey</color>

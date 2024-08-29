@@ -3,34 +3,43 @@ package net.opendasharchive.openarchive.features.folders
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import net.opendasharchive.openarchive.databinding.FolderRowBinding
+import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.databinding.LayoutFolderRowBinding
+import net.opendasharchive.openarchive.databinding.LayoutFolderSectionHeaderBinding
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Folder
 import java.text.SimpleDateFormat
 
 typealias OnFolderSelectedCallback = (folder: Folder) -> Unit
 
 sealed class ListItem {
-    data class SectionHeader(val title: String) : ListItem()
+    data class SectionHeader(val backend: Backend) : ListItem()
     data class ContentItem(val folder: Folder) : ListItem()
 }
 
-class HeaderViewHolder(private val binding: FolderRowBinding) : RecyclerView.ViewHolder(binding.root) {
+class HeaderViewHolder(
+    private val binding: LayoutFolderSectionHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
+
     companion object {
         fun from(parent: ViewGroup): HeaderViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = FolderRowBinding.inflate(layoutInflater, parent, false)
+            val binding = LayoutFolderSectionHeaderBinding.inflate(layoutInflater, parent, false)
             return HeaderViewHolder(binding)
         }
     }
 
     fun bind(item: ListItem.SectionHeader) {
-        binding.name.text = item.title
+        binding.apply {
+            title.text = item.backend.friendlyName
+            leftIcon.setImageDrawable(item.backend.getAvatar(root.context))
+        }
     }
 }
 
 class ContentViewHolder(
-    private val binding: FolderRowBinding,
+    private val binding: LayoutFolderRowBinding,
     private val onClick: OnFolderSelectedCallback) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
@@ -38,19 +47,30 @@ class ContentViewHolder(
 
         fun from(parent: ViewGroup, onClick: OnFolderSelectedCallback): ContentViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = FolderRowBinding.inflate(layoutInflater, parent, false)
+            val binding = LayoutFolderRowBinding.inflate(layoutInflater, parent, false)
             return ContentViewHolder(binding, onClick)
         }
     }
 
-    fun bind(item: ListItem.ContentItem, position: Int) {
+    lateinit var folder: Folder
+
+    fun bind(item: ListItem.ContentItem) {
+        folder = item.folder
+
         binding.apply {
-            name.text = item.folder.description
-            timestamp.text = formatter.format(item.folder.created)
+            name.text = folder.description
+            timestamp.text = formatter.format(folder.created)
 
             root.setOnClickListener {
-                onClick.invoke(item.folder)
+                onClick.invoke(folder)
             }
+
+            if (folder == Folder.current) {
+                name.setTextColor(ContextCompat.getColor(itemView.context, R.color.c23_teal))
+                timestamp.setTextColor(ContextCompat.getColor(itemView.context, R.color.c23_teal))
+            }
+
+            currentFolderCount.text = folder.collections.size.toString()
         }
     }
 }
@@ -87,7 +107,7 @@ class BrowseFoldersAdapter(private val onClick: OnFolderSelectedCallback) : Recy
                 (holder as HeaderViewHolder).bind(item)
             }
             is ListItem.ContentItem -> {
-                (holder as ContentViewHolder).bind(item, position)
+                (holder as ContentViewHolder).bind(item)
             }
         }
     }

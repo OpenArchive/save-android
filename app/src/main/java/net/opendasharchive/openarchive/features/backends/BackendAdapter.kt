@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.util.extensions.scaled
 import java.lang.ref.WeakReference
 
@@ -21,21 +22,30 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
         fun bind(listener: WeakReference<BackendAdapterListener>?, backend: Backend?) {
             if (backend == null) { return }
 
-            val context = binding.button.context
+            val context = binding.root.context
 
             binding.button.setLeftIcon(backend.getAvatar(context)?.scaled(40, context))
             binding.button.setTitle(backend.friendlyName)
 
-            if (backend.displayname.isEmpty()) {
-                binding.button.setSubTitle("Not connected")
-//                binding.button.setRightIcon(ContextCompat.getDrawable(context, R.drawable.outline_add_link_24)?.scaled(32, context))
-            } else {
-                binding.button.setSubTitle("Connected")
-//                binding.button.setRightIcon(ContextCompat.getDrawable(context, R.drawable.outline_link_off_24)?.scaled(32, context))
-            }
+            setConnectionStatus(binding, backend)
 
             binding.button.setOnClickListener {
                 listener?.get()?.backendClicked(backend)
+            }
+        }
+
+        private fun setConnectionStatus(binding: OneLineRowBinding, backend: Backend) {
+            if (backend.tType == Backend.Type.GDRIVE) {
+                if (GDriveConduit.permissionsGranted(binding.root.context)) {
+                    binding.button.setSubTitle("Connected")
+                    return
+                }
+            }
+
+            if (backend.displayname.isEmpty()) {
+                binding.button.setSubTitle("Not connected")
+            } else {
+                binding.button.setSubTitle("Connected")
             }
         }
     }
@@ -68,7 +78,7 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
     }
 
     override fun backendClicked(backend: Backend) {
-        notifyItemChanged(getIndex(backend))
+//        notifyItemChanged(getIndex(backend))
 
         mListener.get()?.backendClicked(backend)
     }

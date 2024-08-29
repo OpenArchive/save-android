@@ -235,6 +235,7 @@ class MainMediaFragment : Fragment() {
             mBinding.currentFolder.currentFolderCount.visibility = View.GONE
             mBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
         } else {
+            mBinding.currentFolder.currentBackendButton.icon = folder.backend?.getAvatar(requireContext())
             mBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
             mBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
             mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())

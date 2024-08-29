@@ -1,6 +1,7 @@
 package net.opendasharchive.openarchive.services.gdrive
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -24,12 +25,21 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentGdriveSignInBinding
 import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.features.folders.BrowseFoldersActivity
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import timber.log.Timber
 
 class GDriveSignInFragment : CommonServiceFragment() {
 
     private lateinit var binding: FragmentGdriveSignInBinding
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            MainScope().launch {
+                setFragmentResult(RESP_CREATED, bundleOf())
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentGdriveSignInBinding.inflate(inflater)
@@ -79,10 +89,8 @@ class GDriveSignInFragment : CommonServiceFragment() {
 
         val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
-//        googleSignInClient.signOut().addOnCompleteListener {
-            val signInIntent = googleSignInClient.signInIntent
-            signInLauncher.launch(signInIntent)
-//        }
+        val signInIntent = googleSignInClient.signInIntent
+        signInLauncher.launch(signInIntent)
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
@@ -94,11 +102,8 @@ class GDriveSignInFragment : CommonServiceFragment() {
 
             if (GDriveConduit.permissionsGranted(requireContext())) {
                 backend.save()
-                // Backend.current = backend
 
-                MainScope().launch {
-                    setFragmentResult(RESP_CREATED, bundleOf())
-                }
+                openFolderBroswerActivityForBackend(backend)
             } else {
                 authFailed(
                     getString(
@@ -109,6 +114,12 @@ class GDriveSignInFragment : CommonServiceFragment() {
                 )
             }
         }
+    }
+
+    private fun openFolderBroswerActivityForBackend(backend: Backend) {
+        val intent = Intent(requireActivity(), BrowseFoldersActivity::class.java)
+        intent.putExtra("BACKEND_ID", backend.id)
+        resultLauncher.launch(intent)
     }
 
     private fun authFailed(errorMessage: String?) {

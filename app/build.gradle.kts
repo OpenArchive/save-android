@@ -24,9 +24,9 @@ android {
         patch = versionProps["PATCH"] as String? ?: ""
         major = versionProps["MAJOR"] as String? ?: ""
         minor = versionProps["MINOR"] as String? ?: ""
-        newVersionCode = versionProps["VERSION_CODE"] as String? ?: ""
+        newVersionCode = versionProps["VERSION_CODE"] as String? ?: "0"
 
-        versionProps["VERSION_CODE"] = newVersionCode
+        versionProps["VERSION_CODE"] = (newVersionCode.toInt() + 1).toString()
 
         versionProps.store(FileOutputStream(versionPropsFile), null)
     }

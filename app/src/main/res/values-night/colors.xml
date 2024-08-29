@@ -25,6 +25,6 @@
     <color name="colorTextViewHint">@color/white</color>
     <color name="colorSectionHeader">#00B4A6</color>
     <color name="tabBarMenuButton">@color/c24_cream_95</color>
-    <color name="colorPill">#434343</color>
+    <color name="colorPill">@color/c23_dark_grey</color>
     <color name="splashBackground">#151515</color>
 </resources>

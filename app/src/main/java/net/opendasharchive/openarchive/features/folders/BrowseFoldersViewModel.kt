@@ -28,21 +28,17 @@ class BrowseFoldersViewModel : ViewModel() {
         viewModelScope.launch {
             progressBarFlag.value = true
 
-            withContext(Dispatchers.IO) {
-                for (backend in Backend.getAll()) {
-                    Timber.d("Syncing folders for ${backend.friendlyName}")
-
-                    when (backend.tType) {
-                        Backend.Type.WEBDAV -> syncWebDav(context, backend)
-                        Backend.Type.GDRIVE -> syncGDrive(context, backend)
-                        else -> Unit
-                    }
-                }
-            }
-
             try {
+                val allFolders = mutableSetOf<ListItem>()
+
                 val value = withContext(Dispatchers.IO) {
-                    val allFolders = mutableSetOf<ListItem>()
+                    for (backend in Backend.getAll()) {
+                        when (backend.tType) {
+                            Backend.Type.WEBDAV -> syncWebDav(context, backend)
+                            Backend.Type.GDRIVE -> syncGDrive(context, backend)
+                            else -> Unit
+                        }
+                    }
 
                     for (backend in Backend.getAll()) {
                         Timber.d("Getting folders for ${backend.friendlyName}")
@@ -72,7 +68,7 @@ class BrowseFoldersViewModel : ViewModel() {
 
         if (folders.isNotEmpty()) {
             val allItems = mutableListOf<ListItem>()
-            allItems.add(ListItem.SectionHeader(backend.name))
+            allItems.add(ListItem.SectionHeader(backend))
             allItems.addAll(folders)
             return allItems
         }
@@ -80,55 +76,31 @@ class BrowseFoldersViewModel : ViewModel() {
         return emptyList()
     }
 
-//    @Throws(IOException::class)
-//    private suspend fun getWebDavFolders(context: Context, backend: Backend): List<ListItem> {
-//        val root = backend.hostUrl?.encodedPath
-//
-//        val folders = SaveClient.getSardine(context, backend).list(backend.host)?.mapNotNull {
-//            if (it?.isDirectory == true && it.path != root) {
-//                ListItem.ContentItem(Folder(
-//                    description = it.name,
-//                    backend = backend,
-//                    created = it.modified ?: Date()))
-//            }
-//            else {
-//                null
-//            }
-//        } ?: emptyList()
-//
-//        if (folders.isNotEmpty()) {
-//            val allItems = mutableListOf<ListItem>()
-//            allItems.add(ListItem.SectionHeader("Private Server"))
-//            allItems.addAll(folders)
-//            return allItems
-//        }
-//
-//        return emptyList()
-//    }
-//
-//    private fun getGDriveFolders(context: Context, backend: Backend): List<ListItem> {
-//        val folders = GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context), backend).map { ListItem.ContentItem(it) }
-//
-//        if (folders.isNotEmpty()) {
-//            val allItems = mutableListOf<ListItem>()
-//            allItems.add(ListItem.SectionHeader("Google Drive"))
-//            allItems.addAll(folders)
-//            return allItems
-//        }
-//
-//        return emptyList()
-//    }
-
     private fun syncGDrive(context: Context, backend: Backend) {
+        if (!backend.shouldSync()) {
+            return
+        }
+
+        Timber.d("Syncing folders for ${backend.friendlyName}")
+
         GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context), backend).forEach { folder ->
             if (folder.doesNotExist()) {
                 Timber.d("Syncing ${folder.description}")
                 folder.save()
             }
         }
+
+        backend.lastSyncDate = Date()
+        backend.save()
     }
 
     private suspend fun syncWebDav(context: Context, backend: Backend) {
+        if (!backend.shouldSync()) {
+            return
+        }
+
+        Timber.d("Syncing folders for ${backend.friendlyName}")
+
         val root = backend.hostUrl?.encodedPath
 
         SaveClient.getSardine(context, backend).list(backend.host)?.mapNotNull {
@@ -145,5 +117,8 @@ class BrowseFoldersViewModel : ViewModel() {
                 }
             }
         }
+
+        backend.lastSyncDate = Date()
+        backend.save()
     }
 }

@@ -16,7 +16,10 @@ import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import timber.log.Timber
+import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 enum class BackendResult() {
     Cancelled, Created, Deleted, Modified
@@ -30,6 +33,7 @@ data class Backend(
     var password: String = "",
     var host: String = "",
     var metaData: String = "",
+    var lastSyncDate: Date? = null,
     private var licenseUrl: String? = null
 ) : SugarRecord() {
 
@@ -154,15 +158,15 @@ data class Backend(
         }
 
     val folders: List<Folder>
-        get() = find(Folder::class.java, "backend_id = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
+        get() = find(Folder::class.java, "backend = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
 
     val archivedFolders: List<Folder>
-        get() = find(Folder::class.java, "backend_id = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
+        get() = find(Folder::class.java, "backend = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
 
     fun hasFolder(description: String?): Boolean {
         if (description == null) { return false }
         // Cannot use `count` from Kotlin due to strange <T> in method signature.
-        return find(Folder::class.java, "backend_id = ? AND description = ?", id.toString(), description).size > 0
+        return find(Folder::class.java, "backend = ? AND description = ?", id.toString(), description).size > 0
     }
 
     fun getAllForType(type: Type): List<Backend> {
@@ -204,6 +208,24 @@ data class Backend(
                 }
             }
         }
+    }
+
+    fun shouldSync(): Boolean {
+        if (lastSyncDate == null) {
+            return true
+        }
+
+        val duration = Date().time - lastSyncDate!!.time
+        val days = TimeUnit.MILLISECONDS.toDays(duration)
+
+        Timber.d("Days = $days")
+
+        if (days > 1) {
+            Timber.d("Sync not required")
+            return true
+        }
+
+        return false
     }
 
     override fun delete(): Boolean {

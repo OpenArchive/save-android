@@ -18,7 +18,7 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:filterTouchesWhenObscured="true"
         android:orientation="vertical"
         android:showDividers="middle"
@@ -27,7 +27,8 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
             android:layout_width="wrap_content"

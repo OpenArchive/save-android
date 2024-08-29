@@ -123,10 +123,11 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
         wifiIssueIndicator?.setVisible(false)
 
-//        val folder = Folder(description = "Testing", backend = Backend.getById(1)!!)
-        val folder = Folder.getById(1)
+//        val folder = Folder(description = "Testing", backend = Backend.getById(2)!!)
 //        folder.save()
-        Folder.current = folder
+
+//        val folder = Folder.getById(1)
+//        Folder.current = folder
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -3,35 +3,49 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:filterTouchesWhenObscured="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:showIn="@layout/fragment_main_media">
+    android:layout_height="50dp">
 
-    <com.google.android.material.button.MaterialButton
-        style="@style/OACurrentFolderButtonStyle"
-        android:id="@+id/current_backend_button"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="52dp"
         android:layout_marginEnd="10dp"
-        android:text="FPO > Folder FPO"
-        android:gravity="start|center_vertical"
-        app:backgroundTint="@android:color/transparent"
-        app:icon="@drawable/ic_veilid"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/current_folder_count"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        android:gravity="bottom">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                tools:text="Foobar Project" />
+
+            <TextView
+                android:id="@+id/timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorOnBackgroundTonedDown"
+                android:textSize="12sp"
+                tools:text="Tuesday, Jan 21, 2023" />
+
+        </LinearLayout>
 
     <TextView
         android:id="@+id/current_folder_count"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/pill"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textColor="@color/white"
-        app:layout_constraintBaseline_toBaselineOf="@id/current_backend_button"
-        app:layout_constraintTop_toTopOf="parent"
+        android:text="99+"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_min="30dp"

@@ -21,27 +21,23 @@ class AlertHelper {
 
     companion object {
         fun show(context: Context, message: Int?, title: Int? = R.string.error,
-                 icon: Int? = null, buttons: List<Button>? = listOf(Button())
-        ) {
+                 icon: Int? = null, buttons: List<Button>? = listOf(Button())) {
             build(context, message, title, icon, buttons).show()
         }
 
         fun build(context: Context, message: Int?, title: Int? = R.string.error,
-                  icon: Int? = null, buttons: List<Button>? = listOf(Button())
-        ) : AlertDialog.Builder {
+                  icon: Int? = null, buttons: List<Button>? = listOf(Button())) : AlertDialog.Builder {
             return build(context, if (message != null) context.getString(message) else null, title,
                 icon, buttons)
         }
 
         fun show(context: Context, message: String? = null, title: Int? = R.string.error,
-                 icon: Int? = null, buttons: List<Button>? = listOf(Button())
-        ) {
+                 icon: Int? = null, buttons: List<Button>? = listOf(Button())) {
             build(context, message, title, icon, buttons).show()
         }
 
         fun build(context: Context, message: String? = null, title: Int? = R.string.error,
-                  icon: Int? = null, buttons: List<Button>? = listOf(Button())
-        ) : AlertDialog.Builder {
+                  icon: Int? = null, buttons: List<Button>? = listOf(Button())) : AlertDialog.Builder {
             val builder = AlertDialog.Builder(ContextThemeWrapper(context, R.style.MaterialAlertDialogTheme))
 
             if (message != null) builder.setMessage(message)

@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textSize="20sp"
-                tools:text="Button Text" />
+                tools:text="Title" />
 
             <TextView
                 android:id="@+id/subTitle"
@@ -46,7 +46,7 @@
                 android:textColor="@color/colorOnBackgroundTonedDown"
                 android:layout_marginStart="10dp"
                 android:textSize="12sp"
-                tools:text="Button Text" />
+                tools:text="Subtitle" />
         </LinearLayout>
 
         <ImageView

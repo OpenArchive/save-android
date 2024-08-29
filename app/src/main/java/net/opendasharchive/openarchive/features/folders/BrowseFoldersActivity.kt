@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.features.folders
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -18,7 +19,6 @@ class BrowseFoldersActivity : BaseActivity() {
     private lateinit var binding: ActivityBrowseFoldersBinding
     private lateinit var viewModel: BrowseFoldersViewModel
     private lateinit var adapter: BrowseFoldersAdapter
-    private var hasFolders = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,25 +39,17 @@ class BrowseFoldersActivity : BaseActivity() {
             viewModel.loadData(this)
         } catch (e: Error) {
             Timber.e(e)
-//            alertUserOfError(e)
-        }
-
-        viewModel.items.value?.forEach { it ->
-            (it as ListItem.ContentItem).let { item ->
-                Timber.d("Folder: ${item.folder.description}")
-            }
         }
 
         adapter = BrowseFoldersAdapter() { folder ->
-            Timber.d("Click!")
+            Timber.d("Selected folder!")
 
-            if (!folder.exists()) {
-                Timber.d("Saving remote folder to local")
-                folder.save()
+            if (folder != Folder.current) {
+                Folder.current = folder
             }
 
-            Folder.current = folder
-
+            val intent = Intent()
+            setResult(123, intent)
             finish()
         }
 
@@ -65,6 +57,8 @@ class BrowseFoldersActivity : BaseActivity() {
 
         viewModel.items.observe(this) { items ->
             Timber.d("Observed!")
+
+            Timber.d("Loaded ${viewModel.items.value?.size} items")
 
             binding.foldersEmpty.toggle(items.isEmpty())
 
@@ -79,9 +73,7 @@ class BrowseFoldersActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (hasFolders) {
-            menuInflater.inflate(R.menu.menu_browse_folder, menu)
-        }
+        menuInflater.inflate(R.menu.menu_browse_folder, menu)
 
         return super.onCreateOptionsMenu(menu)
     }

@@ -148,7 +148,7 @@
     <string name="create_a_new_folder">Create a New Folder</string>
     <string name="edit">Edit</string>
     <string name="menu_done">Done</string>
-    <string name="remove_from_app">Remove from App</string>
+    <string name="remove_from_app">Remove this server?</string>
     <string name="action_remove_project">Are you sure you want to remove your project?</string>
     <string name="remove">Remove</string>
     <string name="action_archive_project">Archive Project</string>
