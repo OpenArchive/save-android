@@ -191,11 +191,11 @@ class WebDavActivity : BaseActivity() {
     }
 
     private fun enableIfReady() {
-        val isIncomplete = mBinding.server.text.isNullOrEmpty()
-                || mBinding.username.text.isNullOrEmpty()
-                || mBinding.password.text.isNullOrEmpty()
+        val isComplete = !mBinding.server.text.isNullOrEmpty()
+                && !mBinding.username.text.isNullOrEmpty()
+                && !mBinding.password.text.isNullOrEmpty()
 
-        mBinding.authenticationButton.isEnabled = !isIncomplete
+        mBinding.authenticationButton.isEnabled = isComplete
     }
 
     private fun fixUrl(url: CharSequence?): Uri? {

@@ -24,9 +24,12 @@ class BrowseFoldersViewModel : ViewModel() {
 
     val progressBarFlag = MutableLiveData(false)
 
-    fun loadData(context: Context) {
+    fun loadData(context: Context, showLoadingIndicator: Boolean = true) {
         viewModelScope.launch {
-            progressBarFlag.value = true
+
+            if (showLoadingIndicator) {
+                progressBarFlag.value = true
+            }
 
             try {
                 val allFolders = mutableSetOf<ListItem>()
@@ -58,13 +61,15 @@ class BrowseFoldersViewModel : ViewModel() {
                 Timber.e(e)
                 throw(e)
             } finally {
-                progressBarFlag.value = false
+                if (showLoadingIndicator) {
+                    progressBarFlag.value = false
+                }
             }
         }
     }
 
     private fun getLocalFolders(backend: Backend): List<ListItem> {
-        val folders = Folder.getLocalFoldersForBackend(backend).map { ListItem.ContentItem(it) }
+        val folders = Folder.getLocalFoldersForBackend(backend).sortedByDescending { it.created }.map { ListItem.ContentItem(it) }
 
         if (folders.isNotEmpty()) {
             val allItems = mutableListOf<ListItem>()
@@ -104,7 +109,7 @@ class BrowseFoldersViewModel : ViewModel() {
         val root = backend.hostUrl?.encodedPath
 
         SaveClient.getSardine(context, backend).list(backend.host)?.mapNotNull {
-            if (it?.isDirectory == true && it.path != root) {
+            if (it.isDirectory && it.path != root) {
                 val folder = Folder(
                     description = it.name,
                     backend = backend,

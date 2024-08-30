@@ -36,7 +36,7 @@ fun InternetArchiveHeader(modifier: Modifier = Modifier, titleSize: TextUnit = 1
     ) {
         Box(
             modifier = Modifier
-                .size(ThemeDimensions.touchable)
+                .size(ThemeDimensions.icon)
                 .background(
                     color = LocalColors.current.backendIconBackground,
                     shape = CircleShape

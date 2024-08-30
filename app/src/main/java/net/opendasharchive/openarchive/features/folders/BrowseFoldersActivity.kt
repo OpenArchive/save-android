@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBrowseFoldersBinding
@@ -11,7 +12,6 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.extensions.toggle
 import timber.log.Timber
-import java.util.Date
 
 
 class BrowseFoldersActivity : BaseActivity() {
@@ -33,7 +33,8 @@ class BrowseFoldersActivity : BaseActivity() {
 
         title = getString(R.string.browse_existing)
 
-        binding.folderList.layoutManager = LinearLayoutManager(this)
+        setupRecyclerView()
+        setupSwipeRefresh()
 
         try {
             viewModel.loadData(this)
@@ -41,26 +42,15 @@ class BrowseFoldersActivity : BaseActivity() {
             Timber.e(e)
         }
 
-        adapter = BrowseFoldersAdapter() { folder ->
-            Timber.d("Selected folder!")
-
-            if (folder != Folder.current) {
-                Folder.current = folder
-            }
-
-            val intent = Intent()
-            setResult(123, intent)
-            finish()
-        }
-
-        binding.folderList.adapter = adapter
-
         viewModel.items.observe(this) { items ->
             Timber.d("Observed!")
 
             Timber.d("Loaded ${viewModel.items.value?.size} items")
 
             binding.foldersEmpty.toggle(items.isEmpty())
+
+            // Stop the refreshing indicator
+            binding.swipeRefreshLayout.isRefreshing = false
 
             adapter.updateItems(items)
 
@@ -93,34 +83,65 @@ class BrowseFoldersActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun onFolderSelected(folder: Folder) {
+        Timber.d("Selected folder!")
+
+        if (folder != Folder.current) {
+            Folder.current = folder
+        }
+
+        val intent = Intent()
+        setResult(123, intent)
+        finish()
+    }
+
+    private fun refreshFolders() {
+        try {
+            viewModel.loadData(this, false)
+        } catch (e: Error) {
+            Timber.e(e)
+            Toast.makeText(this, "Problem refreshing folders", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupRecyclerView() {
+        adapter = BrowseFoldersAdapter() { folder ->
+            onFolderSelected(folder)
+        }
+
+        binding.folderList.layoutManager = LinearLayoutManager(this)
+
+        binding.folderList.adapter = adapter
+    }
+
+    private fun setupSwipeRefresh() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            refreshFolders()
+        }
+
+        binding.swipeRefreshLayout.setColorSchemeResources(
+            R.color.colorPrimary
+        )
+    }
+
     private fun addFolder() {
-        val backend = Folder.current?.backend ?: return
-
-        // This should not happen. These should have been filtered on display.
-//        if (backend.hasFolder(folder.description)) return
-
-        val license = backend.license
-
-//        if (license.isNullOrBlank()) {
-//            val i = Intent()
-//            i.putExtra(AddFolderActivity.EXTRA_FOLDER_NAME, folder.name)
+//        val backend = Folder.current?.backend ?: return
 //
-//            setResult(RESULT_CANCELED, i)
-//        }
-//        else {
-            val folder = Folder(
-                description = "Foo",
-                created = Date(),
-                backend = backend,
-                licenseUrl = license)
-        folder.save()
+//        val license = backend.license
+
+//        val folder = Folder(
+//            description = "Foo",
+//            created = Date(),
+//            backend = backend,
+//            licenseUrl = license)
+//
+//        folder.save()
 
 //            val i = Intent()
 //            i.putExtra(AddFolderActivity.EXTRA_FOLDER_ID, folder.id)
-//
 //            setResult(RESULT_OK, i)
 //        }
 
-        finish()
+//        finish()
     }
 }

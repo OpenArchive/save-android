@@ -26,8 +26,8 @@
             app:iconSpaceReserved="false"
             app:key="servers"
             app:singleLineTitle="true"
-            app:summary="Manage your media storage services"
-            app:title="Media Storage" />
+            app:summary="Add or remove media servers"
+            app:title="Media Servers" />
 
         <ListPreference
             app:allowDividerAbove="true"

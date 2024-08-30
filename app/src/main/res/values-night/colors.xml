@@ -27,4 +27,5 @@
     <color name="tabBarMenuButton">@color/c24_cream_95</color>
     <color name="colorPill">@color/c23_dark_grey</color>
     <color name="splashBackground">#151515</color>
+    <color name="swipeBackground">@color/black</color>
 </resources>

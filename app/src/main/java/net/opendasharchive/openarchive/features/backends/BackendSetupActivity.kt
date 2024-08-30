@@ -7,9 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.MenuProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,7 +41,7 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Manage Media Storage"
+        supportActionBar?.title = "Manage Media Servers"
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -66,10 +64,10 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
     private fun createBackendList() {
         adapter = BackendAdapter(this)
 
-        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        val drawable = AppCompatResources.getDrawable(this, R.drawable.separator)
-        divider.setDrawable(drawable!!)
-        binding.backendList.addItemDecoration(divider)
+//        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+//        val drawable = AppCompatResources.getDrawable(this, R.drawable.separator)
+//        divider.setDrawable(drawable!!)
+//        binding.backendList.addItemDecoration(divider)
 
         val itemTouchHelper = createItemTouchHelper()
         itemTouchHelper.attachToRecyclerView(binding.backendList)
@@ -91,8 +89,7 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
+                target: RecyclerView.ViewHolder): Boolean {
 //                adapter?.onItemMove(
 //                    viewHolder.bindingAdapterPosition,
 //                    target.bindingAdapterPosition

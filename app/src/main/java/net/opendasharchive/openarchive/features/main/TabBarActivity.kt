@@ -123,7 +123,7 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
         wifiIssueIndicator?.setVisible(false)
 
-//        val folder = Folder(description = "Testing", backend = Backend.getById(2)!!)
+//        val folder = Folder(description = "Photographer Collab", backend = Backend.getById(1)!!)
 //        folder.save()
 
 //        val folder = Folder.getById(1)

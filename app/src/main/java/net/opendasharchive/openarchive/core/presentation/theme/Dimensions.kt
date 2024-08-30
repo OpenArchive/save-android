@@ -26,7 +26,8 @@ data class Spacing(
 
 @Immutable
 data class DimensionsTheme(
-    val touchable: Dp = 48.dp,
+    val icon: Dp = 48.dp,
+    val button: Dp = 60.dp,
     val spacing: Spacing = Spacing(),
     val elevations: Elevations = Elevations(),
     val icons: Icons = Icons(),

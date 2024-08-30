@@ -156,8 +156,8 @@ private fun InternetArchiveLoginContent(state: InternetArchiveLoginState, dispat
             InternetArchiveHeader(
                 modifier = Modifier
                     .padding(
-                        bottom = ThemeDimensions.spacing.medium,
-                        top = ThemeDimensions.spacing.medium,
+                        bottom = 20.dp,
+                        top = 20.dp,
                         start = 5.dp,
                         end = 5.dp
                     ),
@@ -199,7 +199,7 @@ private fun InternetArchiveLoginContent(state: InternetArchiveLoginState, dispat
                 singleLine = true,
                 trailingIcon = {
                     IconButton(
-                        modifier = Modifier.sizeIn(ThemeDimensions.touchable),
+                        modifier = Modifier.sizeIn(ThemeDimensions.icon),
                         onClick = { showPassword = !showPassword }) {
                         Icon(
                             imageVector = if (showPassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
@@ -247,7 +247,7 @@ private fun InternetArchiveLoginContent(state: InternetArchiveLoginState, dispat
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(ThemeDimensions.touchable)
+                        .heightIn(ThemeDimensions.button)
                         .weight(1f),
                     enabled = !state.isBusy && state.isValid,
                     shape = RoundedCornerShape(ThemeDimensions.roundedCorner),

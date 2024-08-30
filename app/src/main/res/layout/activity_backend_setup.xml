@@ -21,8 +21,6 @@
         android:layout_height="0dp"
         android:filterTouchesWhenObscured="true"
         android:orientation="vertical"
-        android:showDividers="middle"
-        android:divider="@drawable/save_list_item_spacing_small"
         android:layout_marginTop="@dimen/save_content_top_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,15 +29,13 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="15dp"
-            android:alpha="0.75"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="@string/to_get_started_connect_to_a_server_to_store_your_media"
-            android:textSize="20sp" />
+            android:textColor="@color/colorOnBackgroundTonedDown"
+            android:textSize="18sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/backend_list"

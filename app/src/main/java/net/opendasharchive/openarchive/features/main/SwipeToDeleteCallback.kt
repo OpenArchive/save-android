@@ -14,7 +14,7 @@ import kotlin.math.roundToInt
 abstract class SwipeToDeleteCallback(context: Context?): ItemTouchHelper.Callback() {
 
     private val mBackground = if (context != null)
-        ColorDrawable(ContextCompat.getColor(context, R.color.colorDanger)) else null
+        ColorDrawable(ContextCompat.getColor(context, R.color.swipeBackground)) else null
 
     private val mIcon = if (context != null)
         ContextCompat.getDrawable(context, R.drawable.ic_delete) else null
@@ -24,11 +24,11 @@ abstract class SwipeToDeleteCallback(context: Context?): ItemTouchHelper.Callbac
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder
-    ): Int {
+        viewHolder: RecyclerView.ViewHolder): Int {
+
         if (isEditingAllowed()) {
-            return  makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-                ItemTouchHelper.START)
+            return makeMovementFlags(
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, ItemTouchHelper.START)
         }
 
         return 0
@@ -43,8 +43,8 @@ abstract class SwipeToDeleteCallback(context: Context?): ItemTouchHelper.Callbac
         dX: Float,
         dY: Float,
         actionState: Int,
-        isCurrentlyActive: Boolean
-    ) {
+        isCurrentlyActive: Boolean) {
+
         val iv = viewHolder.itemView
 
         val cancelled = dX == 0f && !isCurrentlyActive
@@ -65,7 +65,6 @@ abstract class SwipeToDeleteCallback(context: Context?): ItemTouchHelper.Callbac
 
         @Suppress("DEPRECATION")
         mIcon?.setColorFilter(mIconColor, PorterDuff.Mode.SRC_IN)
-
         mIcon?.setBounds(left, top, right, bottom)
         mIcon?.draw(c)
 

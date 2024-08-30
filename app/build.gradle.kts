@@ -58,11 +58,12 @@ android {
 
     buildTypes {
         getByName("debug") {
+            applicationIdSuffix = ".debug"
             isMinifyEnabled = false
         }
         getByName("release") {
             applicationIdSuffix = ".release"
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
@@ -104,11 +105,6 @@ dependencies {
 
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
 
     implementation("org.aviran.cookiebar2:cookiebar2:1.1.5")
 
@@ -156,7 +152,7 @@ dependencies {
     implementation("com.github.derlio:audio-waveform:v1.0.1")
     implementation("com.github.esafirm:android-image-picker:3.0.0")
     implementation("com.github.stfalcon:frescoimageviewer:0.5.0")
-    implementation("com.facebook.fresco:fresco:2.6.0")
+    implementation("com.facebook.fresco:fresco:3.2.0")
     implementation("com.squareup.picasso:picasso:2.5.2")
 
     implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
