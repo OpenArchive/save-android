@@ -220,11 +220,12 @@ data class Backend(
 
         Timber.d("Days = $days")
 
-        if (days > 1) {
-            Timber.d("Sync not required")
+        if (days > 7) {
+            Timber.d("Sync is required")
             return true
         }
 
+        Timber.d("Sync is not required")
         return false
     }
 

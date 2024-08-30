@@ -45,6 +45,7 @@ android {
     }
 
     compileSdk = 34
+
     defaultConfig {
         applicationId = "net.opendasharchive.openarchive"
         minSdk = 28
@@ -54,6 +55,15 @@ android {
         project.setProperty("archivesBaseName", "save-$versionName")
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+            isUniversalApk = true
+        }
     }
 
     buildTypes {

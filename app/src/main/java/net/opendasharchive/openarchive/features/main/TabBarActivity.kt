@@ -79,8 +79,6 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
         val launchers = Picker.register(this, binding.root, { Folder.current }, { media ->
             Timber.d("media = $media")
-//            showCurrentPage()
-//
 //            if (media.isNotEmpty()) {
 //                preview()
 //            }
@@ -128,6 +126,10 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
 //        val folder = Folder.getById(1)
 //        Folder.current = folder
+
+        val rusty = Rusty()
+        val greeting = rusty.rust_greeting("Hi")
+        Timber.d("Greeting = $greeting")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

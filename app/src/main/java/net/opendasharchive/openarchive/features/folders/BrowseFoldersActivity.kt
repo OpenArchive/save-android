@@ -120,7 +120,8 @@ class BrowseFoldersActivity : BaseActivity() {
         }
 
         binding.swipeRefreshLayout.setColorSchemeResources(
-            R.color.colorPrimary
+            R.color.colorPrimary,
+            R.color.colorPrimaryDark
         )
     }
 
