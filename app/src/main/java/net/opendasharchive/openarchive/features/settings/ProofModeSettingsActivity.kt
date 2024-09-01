@@ -45,6 +45,9 @@ class ProofModeSettingsActivity: BaseActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.prefs_proof_mode, rootKey)
 
+            findPreference<Preference>("proofmode_key_encryption")?.isVisible = Prefs.useProofMode
+            findPreference<Preference>("share_proofmode")?.isVisible = Prefs.useProofMode
+
             findPreference<Preference>("share_proofmode")?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     shareKey(requireActivity())
@@ -53,24 +56,35 @@ class ProofModeSettingsActivity: BaseActivity() {
 
             findPreference<Preference>(Prefs.USE_PROOFMODE)?.setOnPreferenceChangeListener { preference, newValue ->
                 if (newValue as Boolean) {
-                    PermissionX.init(this)
-                        .permissions(Manifest.permission.READ_PHONE_STATE)
-                        .onExplainRequestReason { _, _ ->
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                            val uri = Uri.fromParts("package", activity?.packageName, null)
-                            intent.data = uri
-                            activity?.startActivity(intent)
-                        }
-                        .request { allGranted, _, _ ->
-                            if (!allGranted) {
-                                (preference as? SwitchPreferenceCompat)?.isChecked = false
-                                Toast.makeText(activity,"Please allow all permissions", Toast.LENGTH_LONG).show()
+                        PermissionX.init(this)
+                            .permissions(Manifest.permission.READ_PHONE_STATE)
+                            .onExplainRequestReason { _, _ ->
                                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                                 val uri = Uri.fromParts("package", activity?.packageName, null)
                                 intent.data = uri
                                 activity?.startActivity(intent)
                             }
-                        }
+                            .request { allGranted, _, _ ->
+                                if (allGranted) {
+                                    findPreference<Preference>("proofmode_key_encryption")?.isVisible = true
+                                    findPreference<Preference>("share_proofmode")?.isVisible = true
+                                } else {
+                                    (preference as? SwitchPreferenceCompat)?.isChecked = false
+                                    Toast.makeText(
+                                        activity,
+                                        "Please allow all permissions",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    val intent =
+                                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                    val uri = Uri.fromParts("package", activity?.packageName, null)
+                                    intent.data = uri
+                                    activity?.startActivity(intent)
+                                }
+                            }
+                } else {
+                    findPreference<Preference>("proofmode_key_encryption")?.isVisible = false
+                    findPreference<Preference>("share_proofmode")?.isVisible = false
                 }
 
                 true
