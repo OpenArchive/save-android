@@ -161,8 +161,6 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("com.github.derlio:audio-waveform:v1.0.1")
     implementation("com.github.esafirm:android-image-picker:3.0.0")
-    implementation("com.github.stfalcon:frescoimageviewer:0.5.0")
-    implementation("com.facebook.fresco:fresco:3.2.0")
     implementation("com.squareup.picasso:picasso:2.5.2")
 
     implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
