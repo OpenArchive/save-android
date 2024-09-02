@@ -1,27 +1,24 @@
 package net.opendasharchive.openarchive.features.backends
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.view.MenuProvider
-import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.folders.CreateNewFolderActivity
 import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveActivity
-import net.opendasharchive.openarchive.features.main.SwipeToDeleteCallback
 import net.opendasharchive.openarchive.services.gdrive.GDriveActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
-import net.opendasharchive.openarchive.services.veilid.VeilidActivity
 import net.opendasharchive.openarchive.services.webdav.WebDavActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import timber.log.Timber
@@ -31,7 +28,21 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
     private lateinit var binding: ActivityBackendSetupBinding
     private val viewModel: BackendViewModel by viewModels()
     private lateinit var adapter: BackendAdapter
-    private lateinit var mItemTouchHelper: ItemTouchHelper
+//    private lateinit var mItemTouchHelper: ItemTouchHelper
+
+    private val newBackendCreator = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        Timber.d("Received result: ${result.resultCode}")
+        if (result.resultCode == Activity.RESULT_OK && !isFinishing && !isDestroyed) {
+            finishAffinity()
+            runOnUiThread {
+                try {
+                    startActivity(Intent(this@BackendSetupActivity, CreateNewFolderActivity::class.java))
+                } catch (e: Exception) {
+                    Timber.e("Error starting activity", e)
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,16 +52,7 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Manage Media Servers"
-
-        addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return false
-            }
-        })
+        supportActionBar?.title = "Available Media Servers"
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -64,13 +66,13 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
     private fun createBackendList() {
         adapter = BackendAdapter(this)
 
-//        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-//        val drawable = AppCompatResources.getDrawable(this, R.drawable.separator)
-//        divider.setDrawable(drawable!!)
-//        binding.backendList.addItemDecoration(divider)
+        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        val drawable = AppCompatResources.getDrawable(this, R.drawable.separator)
+        divider.setDrawable(drawable!!)
+        binding.backendList.addItemDecoration(divider)
 
-        val itemTouchHelper = createItemTouchHelper()
-        itemTouchHelper.attachToRecyclerView(binding.backendList)
+//        val itemTouchHelper = createItemTouchHelper()
+//        itemTouchHelper.attachToRecyclerView(binding.backendList)
 
         binding.backendList.layoutManager = LinearLayoutManager(this)
         binding.backendList.adapter = adapter
@@ -80,41 +82,40 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
         }
     }
 
-    private fun createItemTouchHelper(): ItemTouchHelper {
-        return ItemTouchHelper(object : SwipeToDeleteCallback(this) {
-            override fun isEditingAllowed(): Boolean {
-                return true
-            }
-
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder): Boolean {
-//                adapter?.onItemMove(
-//                    viewHolder.bindingAdapterPosition,
-//                    target.bindingAdapterPosition
-//                )
-
-                return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                // adapter?.deleteItem(viewHolder.bindingAdapterPosition)
-            }
-        })
-    }
+//    private fun createItemTouchHelper(): ItemTouchHelper {
+//        return ItemTouchHelper(object : SwipeToDeleteCallback(this) {
+//            override fun isEditingAllowed(): Boolean {
+//                return true
+//            }
+//
+//            override fun onMove(
+//                recyclerView: RecyclerView,
+//                viewHolder: RecyclerView.ViewHolder,
+//                target: RecyclerView.ViewHolder): Boolean {
+////                adapter?.onItemMove(
+////                    viewHolder.bindingAdapterPosition,
+////                    target.bindingAdapterPosition
+////                )
+//
+//                return true
+//            }
+//
+//            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+//                // adapter?.deleteItem(viewHolder.bindingAdapterPosition)
+//            }
+//        })
+//    }
 
     private fun showConfigScreenFor(backend: Backend) {
         when (backend.type) {
             Backend.Type.GDRIVE.id -> handleGoogle()
-            Backend.Type.INTERNET_ARCHIVE.id -> startActivity(Intent(this, InternetArchiveActivity::class.java))
-            Backend.Type.VEILID.id -> startActivity(Intent(this, VeilidActivity::class.java))
-            Backend.Type.WEBDAV.id -> startActivity(Intent(this, WebDavActivity::class.java))
+            Backend.Type.INTERNET_ARCHIVE.id -> newBackendCreator.launch(Intent(this, InternetArchiveActivity::class.java))
+            Backend.Type.WEBDAV.id -> newBackendCreator.launch(Intent(this, WebDavActivity::class.java))
         }
 
     }
 
-    override fun backendClicked(backend: Backend) {
+    override fun onBackendClicked(backend: Backend) {
         Timber.d("backendClicked")
 
         showConfigScreenFor(backend)
@@ -129,7 +130,7 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
             removeGoogle()
         } else {
             Timber.d("no perms")
-            startActivity(Intent(this, GDriveActivity::class.java))
+            newBackendCreator.launch(Intent(this, GDriveActivity::class.java))
         }
     }
 

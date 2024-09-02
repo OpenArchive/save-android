@@ -127,9 +127,9 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 //        val folder = Folder.getById(1)
 //        Folder.current = folder
 
-        val rusty = Rusty()
-        val greeting = rusty.rust_greeting("Hi")
-        Timber.d("Greeting = $greeting")
+//        val rusty = Rusty()
+//        val greeting = rusty.rust_greeting("Bob")
+//        Timber.d("Greeting = $greeting")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

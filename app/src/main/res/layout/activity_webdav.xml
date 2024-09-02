@@ -21,8 +21,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        tools:context=".services.webdav.WebDavFragment">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
             <LinearLayout
                 android:id="@+id/email_login_form"
@@ -144,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginTop="40dp"
-                    android:text="@string/label_login"  />
+                    android:text="@string/label_login" />
 
             </LinearLayout>
     </ScrollView>

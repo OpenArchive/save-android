@@ -107,7 +107,7 @@ class BackendSetupFragment : Fragment(), BackendAdapterListener {
         const val BACKEND_RESULT_BUNDLE_ACTION_KEY = "backend_setup_result_action_key"
     }
 
-    override fun backendClicked(backend: Backend) {
+    override fun onBackendClicked(backend: Backend) {
         Timber.d("backendClicked")
         // Backend.current = backend
         setFragmentResult(BACKEND_RESULT_REQUEST_KEY, bundleOf(BACKEND_RESULT_BUNDLE_TYPE_KEY to backend.type))

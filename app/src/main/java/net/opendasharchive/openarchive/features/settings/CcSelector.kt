@@ -37,6 +37,7 @@ object CcSelector {
 
             update?.invoke(license)
         }
+
         cc.swNc.setOnCheckedChangeListener { _, _ ->
             @Suppress("NAME_SHADOWING")
             val license = get(cc)

@@ -5,14 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.util.extensions.scaled
 import java.lang.ref.WeakReference
 
 interface BackendAdapterListener {
-    fun backendClicked(backend: Backend)
+    fun onBackendClicked(backend: Backend)
 }
 
 class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, BackendAdapter.ViewHolder>(DIFF_CALLBACK), BackendAdapterListener {
@@ -26,28 +26,29 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
 
             binding.button.setLeftIcon(backend.getAvatar(context)?.scaled(40, context))
             binding.button.setTitle(backend.friendlyName)
+            binding.button.setBackgroundResource(R.drawable.button_outlined)
 
-            setConnectionStatus(binding, backend)
+//            setConnectionStatus(binding, backend)
 
             binding.button.setOnClickListener {
-                listener?.get()?.backendClicked(backend)
+                listener?.get()?.onBackendClicked(backend)
             }
         }
 
-        private fun setConnectionStatus(binding: OneLineRowBinding, backend: Backend) {
-            if (backend.tType == Backend.Type.GDRIVE) {
-                if (GDriveConduit.permissionsGranted(binding.root.context)) {
-                    binding.button.setSubTitle("Connected")
-                    return
-                }
-            }
-
-            if (backend.displayname.isEmpty()) {
-                binding.button.setSubTitle("Not connected")
-            } else {
-                binding.button.setSubTitle("Connected")
-            }
-        }
+//        private fun setConnectionStatus(binding: OneLineRowBinding, backend: Backend) {
+//            if (backend.tType == Backend.Type.GDRIVE) {
+//                if (GDriveConduit.permissionsGranted(binding.root.context)) {
+//                    binding.button.setSubTitle("Connected")
+//                    return
+//                }
+//            }
+//
+//            if (backend.displayname.isEmpty()) {
+//                binding.button.setSubTitle("Not connected")
+//            } else {
+//                binding.button.setSubTitle("Connected")
+//            }
+//        }
     }
 
     companion object {
@@ -77,10 +78,8 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
         submitList(backends)
     }
 
-    override fun backendClicked(backend: Backend) {
-//        notifyItemChanged(getIndex(backend))
-
-        mListener.get()?.backendClicked(backend)
+    override fun onBackendClicked(backend: Backend) {
+        mListener.get()?.onBackendClicked(backend)
     }
 
     private fun getIndex(backend: Backend?): Int {

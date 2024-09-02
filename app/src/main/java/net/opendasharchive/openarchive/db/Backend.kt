@@ -75,8 +75,8 @@ data class Backend(
             Backend(Backend.Type.GDRIVE),
         )
 
-        fun getAll(): Iterator<Backend> {
-            return findAll(Backend::class.java)
+        fun getAll(): List<Backend> {
+            return findAll(Backend::class.java).asSequence().toList()
         }
 
         fun get(type: Type, host: String? = null, username: String? = null): List<Backend> {
@@ -115,7 +115,7 @@ data class Backend(
         }
 
         fun navigate(activity: AppCompatActivity) {
-            if (getAll().hasNext()) {
+            if (getAll().isNotEmpty()) {
                 activity.finish()
             }
             else {

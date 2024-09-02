@@ -131,14 +131,14 @@
 
     <string name="tap_to_add">Tap the button below to add media.</string>
     <string name="tap_to_add_backend">Tap the button below to add a media server.</string>
-    <string name="to_get_started_connect_to_a_server_to_store_your_media">Tap to connect to media servers.\nSwipe left to disconnect.</string>
+    <string name="to_get_started_connect_to_a_server_to_store_your_media">Tap to connect to a media server.</string>
     <string name="send_directly_to_a_private_server">Send to a webdav server</string>
     <string name="upload_to_the_internet_archive">Upload to the IA</string>
     <string name="save_connects_to_webdav_compatible_servers_only_such_as_nextcloud_and_owncloud"><b><i>Save</i></b> only connects to WebDAV-compatible servers, such as Nextcloud and ownCloud.</string>
     <string name="action_next">Next</string>
     <string name="action_done">Done</string>
     <string name="status_flagged">Significant Content</string>
-    <string name="select_where_to_store_your_media">Select where to store your media.</string>
+    <string name="select_where_to_store_your_media">First, choose your media server.</string>
     <string name="you_have_successfully_connected_to_a_veilid_group">You have successfully connected to a Veilid group!</string>
     <string name="you_have_successfully_connected_to_a_private_server">You have successfully connected to a private server!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">You have successfully connected to the Internet Archive!</string>
@@ -309,4 +309,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
+    <string name="pref_media_servers">pref_media_servers</string>
+    <string name="my_connected_media_servers">Manage your Media Servers.</string>
 </resources>

@@ -1,11 +1,14 @@
 package net.opendasharchive.openarchive.services.webdav
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,6 +17,7 @@ import net.opendasharchive.openarchive.databinding.ActivityWebdavBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
+import net.opendasharchive.openarchive.util.extensions.makeSnackBar
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
@@ -30,9 +34,9 @@ open class ReadyToAuthTextWatcher : TextWatcher {
 
 class WebDavActivity : BaseActivity() {
 
-    private lateinit var mBinding: ActivityWebdavBinding
-    private var mBackendId by Delegates.notNull<Long>()
-    private lateinit var mBackend: Backend
+    private lateinit var binding: ActivityWebdavBinding
+    private var backendId by Delegates.notNull<Long>()
+    private lateinit var backend: Backend
 
     companion object {
         // factory method parameters (bundle args)
@@ -46,75 +50,76 @@ class WebDavActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = ActivityWebdavBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        binding = ActivityWebdavBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setSupportActionBar(mBinding.toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.private_server)
 
-        mBackendId = intent.getLongExtra(EXTRA_DATA_BACKEND, ARG_VAL_NEW_BACKEND)
+        backendId = intent.getLongExtra(EXTRA_DATA_BACKEND, ARG_VAL_NEW_BACKEND)
 
         setup()
     }
 
     private fun setup() {
-        mBinding.server.addTextChangedListener(object : ReadyToAuthTextWatcher() {
+        binding.server.requestFocus()
+        binding.server.addTextChangedListener(object : ReadyToAuthTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 enableIfReady()
             }
         })
 
-        mBinding.username.addTextChangedListener(object : ReadyToAuthTextWatcher() {
+        binding.username.addTextChangedListener(object : ReadyToAuthTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 enableIfReady()
             }
         })
 
-        mBinding.password.addTextChangedListener(object : ReadyToAuthTextWatcher() {
+        binding.password.addTextChangedListener(object : ReadyToAuthTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
                 enableIfReady()
             }
         })
 
-        if (ARG_VAL_NEW_BACKEND != mBackendId) {
+        if (ARG_VAL_NEW_BACKEND != backendId) {
             // setup views for editing and existing space
 
-            mBackend = Backend.getById(mBackendId) ?: Backend(Backend.Type.WEBDAV)
+            backend = Backend.getById(backendId) ?: Backend(Backend.Type.WEBDAV)
 
-            mBinding.header.visibility = View.GONE
-            mBinding.server.isEnabled = false
-            mBinding.username.isEnabled = false
-            mBinding.password.isEnabled = false
+            binding.header.visibility = View.GONE
+            binding.server.isEnabled = false
+            binding.username.isEnabled = false
+            binding.password.isEnabled = false
 
-            mBinding.server.setText(mBackend.host)
-            mBinding.name.setText(mBackend.name)
-            mBinding.username.setText(mBackend.username)
-            mBinding.password.setText(mBackend.password)
+            binding.server.setText(backend.host)
+            binding.name.setText(backend.name)
+            binding.username.setText(backend.username)
+            binding.password.setText(backend.password)
 
-            mBinding.name.addTextChangedListener(object : ReadyToAuthTextWatcher() {
+            binding.name.addTextChangedListener(object : ReadyToAuthTextWatcher() {
                 override fun afterTextChanged(s: Editable?) {
                     if (s == null) return
 
-                    mBackend.name = s.toString()
-                    mBackend.save()
+                    backend.name = s.toString()
+                    backend.save()
                 }
             })
         } else {
             // setup views for creating a new space
             //
-            mBackend = Backend(Backend.Type.WEBDAV)
+            backend = Backend(Backend.Type.WEBDAV)
         }
 
-        mBinding.authenticationButton.setOnClickListener { attemptLogin() }
+        binding.authenticationButton.setOnClickListener { attemptLogin() }
 
-        mBinding.server.setOnFocusChangeListener { _, hasFocus ->
+        binding.server.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-                mBinding.server.setText(fixUrl(mBinding.server.text)?.toString())
+                binding.server.setText(fixUrl(binding.server.text)?.toString())
             }
         }
 
-        mBinding.password.setOnEditorActionListener { _, actionId, _ ->
+        binding.password.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
                 attemptLogin()
             }
@@ -130,43 +135,42 @@ class WebDavActivity : BaseActivity() {
      */
     private fun attemptLogin() {
         // Reset errors.
-        mBinding.username.error = null
-        mBinding.password.error = null
+        binding.username.error = null
+        binding.password.error = null
 
         // Store values at the time of the login attempt.
         var errorView: View? = null
 
-        mBackend.name = mBinding.name.text?.toString() ?: ""
+        backend.name = binding.name.text?.toString() ?: ""
 
-        mBackend.host = fixUrl(mBinding.server.text)?.toString() ?: ""
-        mBinding.server.setText(mBackend.host)
+        backend.host = fixUrl(binding.server.text)?.toString() ?: ""
+        binding.server.setText(backend.host)
 
-        mBackend.username = mBinding.username.text?.toString() ?: ""
-        mBackend.password = mBinding.password.text?.toString() ?: ""
+        backend.username = binding.username.text?.toString() ?: ""
+        backend.password = binding.password.text?.toString() ?: ""
 
-        if (mBackend.host.isEmpty()) {
-            mBinding.server.error = getString(R.string.error_field_required)
-            errorView = mBinding.server
-        } else if (mBackend.username.isEmpty()) {
-            mBinding.username.error = getString(R.string.error_field_required)
-            errorView = mBinding.username
-        } else if (mBackend.password.isEmpty()) {
-            mBinding.password.error = getString(R.string.error_field_required)
-            errorView = mBinding.password
+        if (backend.host.isEmpty()) {
+            binding.server.error = getString(R.string.error_field_required)
+            errorView = binding.server
+        } else if (backend.username.isEmpty()) {
+            binding.username.error = getString(R.string.error_field_required)
+            errorView = binding.username
+        } else if (backend.password.isEmpty()) {
+            binding.password.error = getString(R.string.error_field_required)
+            errorView = binding.password
         }
 
         if (errorView != null) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             errorView.requestFocus()
-
             return
         }
 
-        val other = Backend.get(Backend.Type.WEBDAV, mBackend.host, mBackend.username)
+        val other = Backend.get(Backend.Type.WEBDAV, backend.host, backend.username)
 
-        if (other.isNotEmpty() && other[0].id != mBackend.id) {
-            // return showError(getString(R.string.you_already_have_a_server_with_these_credentials))
+        if (other.isNotEmpty() && other[0].id != backend.id) {
+            return showMaterialWarning(message = getString(R.string.you_already_have_a_server_with_these_credentials))
         }
 
         // Show a progress spinner, and kick off a background task to
@@ -176,26 +180,41 @@ class WebDavActivity : BaseActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 testConnection()
-                mBackend.save()
-                // Backend.current = mBackend
-
-                // setFragmentResult(RESP_CREATED, bundleOf())
+                backend.save()
+                signalSuccess()
             } catch (exception: IOException) {
-//                if (exception.message?.startsWith("401") == true) {
-//                    showError(getString(R.string.error_incorrect_username_or_password), true)
-//                } else {
-//                    showError(exception.localizedMessage ?: getString(R.string.error))
-//                }
+                runOnUiThread {
+                    if (exception.message?.startsWith("401") == true) {
+                        showMaterialWarning(message = getString(R.string.error_incorrect_username_or_password)) {
+                            resetAfterBadTest()
+                        }
+                    } else {
+                        showMaterialWarning(message = exception.localizedMessage ?: getString(R.string.error)) {
+                            resetAfterBadTest()
+                        }
+                    }
+                }
             }
         }
     }
 
-    private fun enableIfReady() {
-        val isComplete = !mBinding.server.text.isNullOrEmpty()
-                && !mBinding.username.text.isNullOrEmpty()
-                && !mBinding.password.text.isNullOrEmpty()
+    private fun resetAfterBadTest() {
+        binding.server.text = null
+        binding.server.requestFocus()
+    }
 
-        mBinding.authenticationButton.isEnabled = isComplete
+    private fun signalSuccess() {
+        val resultIntent = Intent()
+        setResult(Activity.RESULT_OK, resultIntent)
+        finish()
+    }
+
+    private fun enableIfReady() {
+        val isComplete = !binding.server.text.isNullOrEmpty()
+                && !binding.username.text.isNullOrEmpty()
+                && !binding.password.text.isNullOrEmpty()
+
+        binding.authenticationButton.isEnabled = isComplete
     }
 
     private fun fixUrl(url: CharSequence?): Uri? {
@@ -219,9 +238,9 @@ class WebDavActivity : BaseActivity() {
     }
 
     private suspend fun testConnection() {
-        val url = mBackend.hostUrl ?: throw IOException("400 Bad Request")
+        val url = backend.hostUrl ?: throw IOException("400 Bad Request")
 
-        val client = SaveClient.get(this, mBackend.username, mBackend.password)
+        val client = SaveClient.get(this, backend.username, backend.password)
 
         val request =
             Request.Builder().url(url).method("GET", null).addHeader("OCS-APIRequest", "true")
@@ -246,6 +265,20 @@ class WebDavActivity : BaseActivity() {
                     it.resumeWith(Result.success(Unit))
                 }
             })
+        }
+    }
+
+    private fun showError(text: CharSequence, onForm: Boolean = false) {
+        runOnUiThread {
+            if (onForm) {
+                binding.password.error = text
+                binding.password.requestFocus()
+            } else {
+                val snackbar = binding.root.makeSnackBar(text, Snackbar.LENGTH_LONG)
+                snackbar.show()
+
+                binding.server.requestFocus()
+            }
         }
     }
 }

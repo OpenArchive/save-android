@@ -42,7 +42,6 @@
     <!-- colors from 2023 redesign -->
 
     <color name="transparent">#00000000</color>
-    <color name="c23_nav_drawer_night">#ff101010</color>
     <color name="c23_darker_grey">#ff212021</color>
     <color name="c23_dark_grey">#ff333333</color>
     <color name="c23_medium_grey">#ff696666</color>
@@ -72,7 +71,8 @@
     <color name="colorOnBackground">@color/black</color>
     <color name="colorOnBackgroundTonedDown">@color/c23_medium_grey</color>
     <color name="colorOnBackgroundLowContrast">@color/c23_grey</color>
-    <color name="colorOnPrimary">@color/white</color>
+    <color name="colorOnPrimary">@color/c24_cream_95</color>
+    <color name="colorOnPrimaryTonedDown">#ffffff</color>
     <color name="colorPrimary">@color/c23_teal</color>
     <color name="colorPrimaryDark">@color/c23_teal_40</color>
     <color name="colorPrimaryBright">@color/c23_powder_blue</color>
@@ -92,6 +92,9 @@
     <color name="colorButtonOnBackground">@color/white</color>
     <color name="colorTextViewHint">@color/colorPrimary</color>
     <color name="colorSectionHeader">#00B4A6</color>
+    <color name="colorBackendButton">@color/white</color>
+    <color name="colorBackendButtonInactive">@color/c24_cream_70</color>
+    <color name="colorBackendButtonBorder">@color/c23_grey</color>
 
     <!--
 
@@ -104,7 +107,7 @@
      -->
 
     <color name="colorIcon">@color/white</color>
-    <color name="colorPill">@color/c24_cream_80</color>
+    <color name="colorPill">@color/c24_cream_70</color>
     <color name="colorMediaOverlayIcon">@color/white</color>
     <color name="colorDanger">@color/red</color>
     <color name="colorDivider">@color/light_grey</color>

@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:checked="false"
+            android:checked="true"
             android:showText="true"
             android:textOff="@string/answer_no"
             android:textOn="@string/answer_yes" />
@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:checked="false"
+            android:checked="true"
             android:gravity="center_vertical"
             android:textOff="@string/answer_no"
             android:textOn="@string/answer_yes" />
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:checked="false"
+            android:checked="true"
             android:textOff="@string/answer_no"
             android:textOn="@string/answer_yes" />
 

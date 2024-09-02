@@ -75,6 +75,8 @@ class MainMediaFragment : Fragment() {
     private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         private val handler = Handler(Looper.getMainLooper())
         override fun onReceive(context: Context, intent: Intent) {
+            Timber.d("Got a broadcast!")
+
             val action = BroadcastManager.getAction(intent) ?: return
 
             when (action) {
@@ -192,7 +194,9 @@ class MainMediaFragment : Fragment() {
     }
 
     fun refresh() {
-        mCollections = Collection.getByFolder(mFolderId).associateBy { it.id }.toMutableMap()
+        val folder = Folder.current ?: return
+
+        mCollections = Collection.getByFolder(folder.id).associateBy { it.id }.toMutableMap()
 
         // Remove all sections, which' collections don't exist anymore.
         val toDelete = mAdapters.keys.filter { id ->
@@ -239,7 +243,7 @@ class MainMediaFragment : Fragment() {
             mBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
             mBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
             mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())
-            mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown storage") + " > " + folder.description
+            mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown server") + " > " + folder.description
 
             mBinding.currentFolder.currentBackendButton.setOnClickListener {
                 startActivity(Intent(context, BrowseFoldersActivity::class.java))

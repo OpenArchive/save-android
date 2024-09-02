@@ -7,25 +7,12 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.view.MenuProvider
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.backends.BackendViewModel.Companion.Filter
 import net.opendasharchive.openarchive.features.core.BaseActivity
-
-
-class BackendViewModelFactory(private val filter: Filter) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(BackendViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return BackendViewModel(filter) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
 
 class BackendSelectionActivity : BaseActivity(), BackendAdapterListener {
     private lateinit var viewBinding: ActivityBackendSelectionBinding
@@ -78,7 +65,7 @@ class BackendSelectionActivity : BaseActivity(), BackendAdapterListener {
         }
     }
 
-    override fun backendClicked(backend: Backend) {
+    override fun onBackendClicked(backend: Backend) {
 //        Backend.current = backend
 //        finish()
     }

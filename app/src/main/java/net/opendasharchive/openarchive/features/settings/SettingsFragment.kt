@@ -8,8 +8,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.SaveApp
+import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
-import net.opendasharchive.openarchive.features.folders.CreateNewFolderActivity
+import net.opendasharchive.openarchive.features.folders.BrowseFoldersActivity
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import net.opendasharchive.openarchive.util.extensions.getVersionName
@@ -24,21 +25,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference<Preference>("servers")?.setOnPreferenceClickListener {
-            startActivity(Intent(context, BackendSetupActivity::class.java))
-            true
-        }
+        getPrefByKey<Preference>(R.string.pref_media_servers)?.setOnPreferenceClickListener {
+            if (Backend.getAll().isEmpty()) {
+                startActivity(Intent(context, BackendSetupActivity::class.java))
+            } else {
+                startActivity(Intent(context, BrowseFoldersActivity::class.java))
+            }
 
-        findPreference<Preference>("folders")?.setOnPreferenceClickListener {
-            startActivity(Intent(context, CreateNewFolderActivity::class.java))
             true
         }
 
         findPreference<Preference>(Prefs.USE_TOR)?.setOnPreferenceChangeListener { _, newValue ->
             val activity = activity ?: return@setOnPreferenceChangeListener true
-
-            if (newValue as Boolean) {
-            }
 
             true
         }
@@ -69,6 +67,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 )
             )
         }
+    }
+
+    private fun <T: Preference> getPrefByKey(key: Int): T? {
+        return findPreference(getString(key))
     }
 }
 

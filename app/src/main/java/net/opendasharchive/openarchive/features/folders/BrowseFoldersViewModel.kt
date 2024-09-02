@@ -24,7 +24,7 @@ class BrowseFoldersViewModel : ViewModel() {
 
     val progressBarFlag = MutableLiveData(false)
 
-    fun loadData(context: Context, showLoadingIndicator: Boolean = true) {
+    fun loadData(context: Context, forceLoad: Boolean = false, showLoadingIndicator: Boolean = true) {
         viewModelScope.launch {
 
             if (showLoadingIndicator) {
@@ -36,11 +36,7 @@ class BrowseFoldersViewModel : ViewModel() {
 
                 val value = withContext(Dispatchers.IO) {
                     for (backend in Backend.getAll()) {
-                        when (backend.tType) {
-                            Backend.Type.WEBDAV -> syncWebDav(context, backend)
-                            Backend.Type.GDRIVE -> syncGDrive(context, backend)
-                            else -> Unit
-                        }
+                        syncBackend(context, backend, forceLoad)
                     }
 
                     for (backend in Backend.getAll()) {
@@ -82,30 +78,15 @@ class BrowseFoldersViewModel : ViewModel() {
     }
 
     private fun syncGDrive(context: Context, backend: Backend) {
-        if (!backend.shouldSync()) {
-            return
-        }
-
-        Timber.d("Syncing folders for ${backend.friendlyName}")
-
         GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context), backend).forEach { folder ->
             if (folder.doesNotExist()) {
                 Timber.d("Syncing ${folder.description}")
                 folder.save()
             }
         }
-
-        backend.lastSyncDate = Date()
-        backend.save()
     }
 
     private suspend fun syncWebDav(context: Context, backend: Backend) {
-        if (!backend.shouldSync()) {
-            return
-        }
-
-        Timber.d("Syncing folders for ${backend.friendlyName}")
-
         val root = backend.hostUrl?.encodedPath
 
         SaveClient.getSardine(context, backend).list(backend.host)?.mapNotNull {
@@ -121,6 +102,20 @@ class BrowseFoldersViewModel : ViewModel() {
                     folder.save()
                 }
             }
+        }
+    }
+
+    private suspend fun syncBackend(context: Context, backend: Backend, forceLoad: Boolean = false) {
+        if (!forceLoad && !backend.shouldSync()) {
+            return
+        }
+
+        Timber.d("Syncing folders for ${backend.friendlyName}")
+
+        when (backend.tType) {
+            Backend.Type.WEBDAV -> syncWebDav(context, backend)
+            Backend.Type.GDRIVE -> syncGDrive(context, backend)
+            else -> Unit
         }
 
         backend.lastSyncDate = Date()

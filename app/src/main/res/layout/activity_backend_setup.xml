@@ -31,7 +31,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:text="@string/to_get_started_connect_to_a_server_to_store_your_media"
             android:textColor="@color/colorOnBackgroundTonedDown"
@@ -40,7 +40,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/backend_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp" />
 
     </LinearLayout>
 

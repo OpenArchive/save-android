@@ -24,9 +24,9 @@
             app:allowDividerAbove="true"
             app:allowDividerBelow="false"
             app:iconSpaceReserved="false"
-            app:key="servers"
+            app:key="@string/pref_media_servers"
             app:singleLineTitle="true"
-            app:summary="Add or remove media servers"
+            app:summary="Add or remove media servers and folders"
             app:title="Media Servers" />
 
         <ListPreference

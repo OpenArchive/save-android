@@ -40,9 +40,9 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
         }
     }
 
-    private lateinit var mBinding: ActivityPreviewBinding
-    private lateinit var mMediaPickerLauncher: ImagePickerLauncher
-    private lateinit var mFilesPickerLauncher: ActivityResultLauncher<Intent>
+    private lateinit var binding: ActivityPreviewBinding
+    private lateinit var mediaPickerLauncher: ImagePickerLauncher
+    private lateinit var filesPickerLauncher: ActivityResultLauncher<Intent>
 
     private val mLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -52,7 +52,7 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
     private var mFolder: Folder? = null
 
     private val mAdapter: PreviewAdapter?
-        get() = mBinding.mediaGrid.adapter as? PreviewAdapter
+        get() = binding.mediaGrid.adapter as? PreviewAdapter
 
     private var mMedia: List<Media>
         get() = mAdapter?.currentList ?: emptyList()
@@ -67,53 +67,53 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = ActivityPreviewBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        binding = ActivityPreviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         mFolder = Folder.getById(intent.getLongExtra(FOLDER_ID_EXTRA, -1))
 
-        val launchers = Picker.register(this, mBinding.root, { mFolder }, {
+        val launchers = Picker.register(this, binding.root, { mFolder }, {
             refresh()
         })
-        mMediaPickerLauncher = launchers.first
-        mFilesPickerLauncher = launchers.second
+        mediaPickerLauncher = launchers.first
+        filesPickerLauncher = launchers.second
 
-        setSupportActionBar(mBinding.toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.title = getString(R.string.preview_media)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        mBinding.mediaGrid.layoutManager = GridLayoutManager(this, 2)
-        mBinding.mediaGrid.adapter = PreviewAdapter(this)
-        mBinding.mediaGrid.setHasFixedSize(true)
-        mBinding.mediaGrid.addItemDecoration(GridSpacingItemDecoration(2, 20, false))
+        binding.mediaGrid.layoutManager = GridLayoutManager(this, 2)
+        binding.mediaGrid.adapter = PreviewAdapter(this)
+        binding.mediaGrid.setHasFixedSize(true)
+        binding.mediaGrid.addItemDecoration(GridSpacingItemDecoration(2, 20, false))
 
-        mBinding.btAddMore.setOnClickListener(this)
-        mBinding.btBatchEdit.setOnClickListener(this)
-        mBinding.btSelectAll.setOnClickListener(this)
-        mBinding.btRemove.setOnClickListener(this)
+        binding.uploadButton.setOnClickListener(this)
+        binding.btBatchEdit.setOnClickListener(this)
+        binding.btSelectAll.setOnClickListener(this)
+        binding.btRemove.setOnClickListener(this)
 
         if (Picker.canPickFiles(this)) {
-            mBinding.btAddMore.setOnLongClickListener {
-                mBinding.addMenu.container.show(animate = true)
-                true
-            }
+//            mBinding.btAddMore.setOnLongClickListener {
+//                mBinding.addMenu.container.show(animate = true)
+//                true
+//            }
 
-            mBinding.addMenu.container.setOnClickListener {
+            binding.addMenu.container.setOnClickListener {
                 it.hide(animate = true)
             }
 
-            mBinding.addMenu.menu.setNavigationItemSelectedListener {
+            binding.addMenu.menu.setNavigationItemSelectedListener {
                 when (it.itemId) {
-                    R.id.action_upload_media -> {
-                        onClick(mBinding.btAddMore)
-                    }
+//                    R.id.action_upload_media -> {
+//                        onClick(mBinding.btAddMore)
+//                    }
 
                     R.id.action_upload_files -> {
-                        Picker.pickFiles(mFilesPickerLauncher)
+                        Picker.pickFiles(filesPickerLauncher)
                     }
                 }
 
-                mBinding.addMenu.container.hide(animate = true)
+                binding.addMenu.container.hide(animate = true)
 
                 true
             }
@@ -139,44 +139,8 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
                 return true
             }
 
-            R.id.menu_upload -> {
-                val queue = {
-                    mMedia.forEach {
-                        it.status = Media.Status.Queued
-                        it.selected = false
-                        it.save()
-                    }
-
-                    finish()
-                }
-
-                if (Prefs.dontShowUploadHint) {
-                    queue()
-                } else {
-                    var dontShowAgain = false
-
-                    val d = AlertDialog.Builder(ContextThemeWrapper(this, R.style.MaterialAlertDialogTheme))
-                        .setTitle(R.string.once_uploaded_you_will_not_be_able_to_edit_media)
-                        .setIcon(R.drawable.baseline_cloud_upload_black_48)
-                        .setPositiveButton(
-                            R.string.got_it
-                        ) { _: DialogInterface, _: Int ->
-                            Prefs.dontShowUploadHint = dontShowAgain
-                            queue()
-                        }
-                        .setNegativeButton(R.string.lbl_Cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-                        .setMultiChoiceItems(
-                            arrayOf(getString(R.string.do_not_show_me_this_again)),
-                            booleanArrayOf(false)
-                        )
-                        { _, _, isChecked ->
-                            dontShowAgain = isChecked
-                        }.show()
-
-                    // hack for making sure this dialog always shows all lines of the pretty long title, even on small screens
-                    d.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)?.maxLines = 99
-
-                }
+            R.id.menu_add_media -> {
+                Picker.pickMedia(this, mediaPickerLauncher)
                 return true
             }
         }
@@ -184,13 +148,57 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onClick(view: View?) {
-        when (view) {
-            mBinding.btAddMore -> {
-                Picker.pickMedia(this, mMediaPickerLauncher)
+    private fun uploadMedia() {
+        val queue = {
+            mMedia.forEach {
+                it.status = Media.Status.Queued
+                it.selected = false
+                it.save()
             }
 
-            mBinding.btBatchEdit -> {
+            finish()
+        }
+
+        if (Prefs.dontShowUploadHint) {
+            queue()
+        } else {
+            var dontShowAgain = false
+
+            val d = AlertDialog.Builder(ContextThemeWrapper(this, R.style.MaterialAlertDialogTheme))
+                .setTitle(R.string.once_uploaded_you_will_not_be_able_to_edit_media)
+                .setIcon(R.drawable.baseline_cloud_upload_black_48)
+                .setPositiveButton(
+                    R.string.got_it
+                ) { _: DialogInterface, _: Int ->
+                    Prefs.dontShowUploadHint = dontShowAgain
+                    queue()
+                }
+                .setNegativeButton(R.string.lbl_Cancel) { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+                .setMultiChoiceItems(
+                    arrayOf(getString(R.string.do_not_show_me_this_again)),
+                    booleanArrayOf(false)
+                )
+                { _, _, isChecked ->
+                    dontShowAgain = isChecked
+                }.show()
+
+            // hack for making sure this dialog always shows all lines of the pretty long title, even on small screens
+            d.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)?.maxLines = 99
+
+        }
+    }
+
+    override fun onClick(view: View?) {
+        when (view) {
+//            mBinding.btAddMore -> {
+//                Picker.pickMedia(this, mMediaPickerLauncher)
+//            }
+
+            binding.uploadButton -> {
+                uploadMedia()
+            }
+
+            binding.btBatchEdit -> {
                 val selected = mMedia.filter { it.selected }
 
                 if (selected.size == 1) {
@@ -206,7 +214,7 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
                 }
             }
 
-            mBinding.btSelectAll -> {
+            binding.btSelectAll -> {
                 val select = mMedia.firstOrNull { !it.selected } != null
 
                 mMedia.forEach {
@@ -220,7 +228,7 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
                 mediaSelectionChanged()
             }
 
-            mBinding.btRemove -> {
+            binding.btRemove -> {
                 mMedia.forEach {
                     if (it.selected) {
                         it.delete()
@@ -238,11 +246,11 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
 
     override fun mediaSelectionChanged() {
         if (mMedia.firstOrNull { it.selected } != null) {
-            mBinding.btAddMore.hide()
-            mBinding.bottomBar.show()
+            binding.uploadButton.hide()
+            binding.bottomBar.show()
         } else {
-            mBinding.btAddMore.toggle(mFolder != null)
-            mBinding.bottomBar.hide()
+            binding.uploadButton.toggle(mFolder != null)
+            binding.bottomBar.hide()
         }
     }
 

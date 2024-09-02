@@ -2,9 +2,6 @@ package net.opendasharchive.openarchive
 
 import android.content.Context
 import androidx.multidex.MultiDex
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.core.ImagePipelineConfig
-import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.orm.SugarApp
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.core.di.coreModule
@@ -34,13 +31,14 @@ class SaveApp : SugarApp() {
             modules(coreModule, featuresModule)
         }
 
-        val config = ImagePipelineConfig.newBuilder(this)
-            .setProgressiveJpegConfig(SimpleProgressiveJpegConfig())
-            .setResizeAndRotateEnabledForNetwork(true)
-            .setDownsampleEnabled(true)
-            .build()
+//        val config = ImagePipelineConfig.newBuilder(this)
+//            .setProgressiveJpegConfig(SimpleProgressiveJpegConfig())
+//            .setResizeAndRotateEnabledForNetwork(true)
+//            .setDownsampleEnabled(true)
+//            .build()
 
-        Fresco.initialize(this, config)
+//        Fresco.initialize(this, config)
+
         Prefs.load(this)
 
         if (Prefs.useTor) initNetCipher()

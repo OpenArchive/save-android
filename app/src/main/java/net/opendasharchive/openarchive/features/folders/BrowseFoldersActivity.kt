@@ -97,7 +97,7 @@ class BrowseFoldersActivity : BaseActivity() {
 
     private fun refreshFolders() {
         try {
-            viewModel.loadData(this, false)
+            viewModel.loadData(this,  false)
         } catch (e: Error) {
             Timber.e(e)
             Toast.makeText(this, "Problem refreshing folders", Toast.LENGTH_SHORT).show()
@@ -126,6 +126,8 @@ class BrowseFoldersActivity : BaseActivity() {
     }
 
     private fun addFolder() {
+        startActivity(Intent(this, AddFolderActivity::class.java))
+
 //        val backend = Folder.current?.backend ?: return
 //
 //        val license = backend.license

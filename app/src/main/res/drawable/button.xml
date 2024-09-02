@@ -2,25 +2,27 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 <!-- Disabled state -->
 <item android:state_enabled="false">
-    <shape android:shape="rectangle">
-        <solid android:color="#CCCCCC" /> <!-- Gray color for disabled state -->
+    <shape android:layout_width="match_parent" android:layout_height="match_parent" android:shape="rectangle">
+        <solid android:color="@color/colorBackendButtonInactive" />
         <corners android:radius="5dp" />
     </shape>
 </item>
 
 <!-- Enabled state -->
 <item android:state_enabled="true">
-    <shape android:shape="rectangle">
-        <solid android:color="@color/c23_teal" /> <!-- Blue color for enabled state -->
+    <shape android:layout_width="match_parent" android:layout_height="match_parent" android:shape="rectangle">
+        <solid android:color="@color/c23_teal" />
         <corners android:radius="5dp" />
+        <stroke android:width="0.5dp" android:color="@color/colorBackendButtonBorder" />
     </shape>
 </item>
 
 <!-- Default state (should be the same as enabled) -->
 <item>
-    <shape android:shape="rectangle">
-        <solid android:color="@color/c23_teal" /> <!-- Blue color for default state -->
+    <shape android:layout_width="match_parent" android:shape="rectangle">
+        <solid android:color="@color/c23_teal" />
         <corners android:radius="5dp" />
+        <stroke android:width="0.5dp" android:color="@color/colorBackendButtonBorder" />
     </shape>
 </item>
 </selector>

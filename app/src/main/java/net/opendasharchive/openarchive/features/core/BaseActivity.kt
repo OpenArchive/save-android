@@ -7,6 +7,7 @@ import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
@@ -56,6 +57,29 @@ abstract class BaseActivity: AppCompatActivity() {
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
+    }
+
+    fun showMaterialWarning(title: String = "Oops", message: String? = null, positiveButtonText: String = "Ok", completion: (() -> Unit)? = null) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(positiveButtonText) { _, _ ->
+                completion?.invoke()
+            }
+            .show()
+    }
+
+    fun showMaterialPrompt(title: String, message: String? = null, positiveButtonText: String, negativeButtonText: String, completion: (Boolean) -> Unit) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(positiveButtonText) { _, _ ->
+                completion.invoke(true)
+            }
+            .setNegativeButton(negativeButtonText) { _, _ ->
+                completion.invoke(false)
+            }
+            .show()
     }
 
 //    fun alertUserOfError(e: Error) {
