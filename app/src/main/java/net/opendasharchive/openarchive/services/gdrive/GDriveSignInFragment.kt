@@ -28,6 +28,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentGdriveSignInBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.services.CommonServiceFragment
+import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
 class GDriveSignInFragment : CommonServiceFragment() {
@@ -101,15 +102,35 @@ class GDriveSignInFragment : CommonServiceFragment() {
         }
     }
 
-    fun switchAccounts() {
+    private fun switchAccounts() {
         googleSignInClient.signOut().addOnCompleteListener {
             signIn()
         }
     }
 
     private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        signInLauncher.launch(signInIntent)
+        if (GDriveConduit.permissionsGranted(requireContext())) {
+            promptUserToSignOut()
+        } else {
+            val signInIntent = googleSignInClient.signInIntent
+            signInLauncher.launch(signInIntent)
+        }
+
+    }
+
+    private fun promptUserToSignOut() {
+        Utility.showMaterialPrompt(
+            context = requireContext(),
+            title = "Hi, there!",
+            message = "You are already signed into a Google account. If you want to sign into another account you will need to sign out first. Do that now?",
+            positiveButtonText = "Yes",
+            negativeButtonText = "No") { affirm ->
+            if (affirm) {
+                switchAccounts()
+            } else {
+                setFragmentResult(RESP_CANCEL, bundleOf())
+            }
+        }
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {

@@ -100,18 +100,8 @@ data class Backend(
             return get(type, host, username).isNotEmpty()
         }
 
-//        var current: Backend?
-//            get() = getById(Prefs.currentBackendId)
-//            set(value) {
-//                Prefs.currentBackendId = value?.id ?: -1
-//            }
-
         fun getById(id: Long): Backend? {
             return findById(Backend::class.java, id)
-        }
-
-        fun getFolderById(id: Long): Folder? {
-            return findById(Folder::class.java, id)
         }
 
         fun navigate(activity: AppCompatActivity) {
@@ -136,6 +126,9 @@ data class Backend(
 
     val initial: String
         get() = (friendlyName.firstOrNull() ?: 'X').uppercase(Locale.getDefault())
+
+    val isCurrent: Boolean
+        get() = folders.any { it.isCurrent }
 
     val hostUrl: HttpUrl?
         get() = host.toHttpUrlOrNull()

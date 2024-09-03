@@ -1,10 +1,8 @@
 package net.opendasharchive.openarchive.features.folders
 
-import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +17,7 @@ import net.opendasharchive.openarchive.features.backends.BackendViewModel
 import net.opendasharchive.openarchive.features.backends.BackendViewModelFactory
 import net.opendasharchive.openarchive.features.backends.ItemAction
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import timber.log.Timber
 
@@ -78,14 +77,8 @@ class AddFolderActivity : BaseActivity() {
     }
 
     private fun deleteBackend(backend: Backend) {
-//        val initialHeight = binding.backendList.height
-//        viewModel.deleteBackend(backend)
-//        animateRecyclerViewHeight(initialHeight)
-
-        val parentViewGroup = recyclerView.parent as? ViewGroup ?: return
-
         val transition = AutoTransition().apply {
-            duration = 300
+            duration = 500
             addTarget(recyclerView)
         }
 
@@ -111,28 +104,23 @@ class AddFolderActivity : BaseActivity() {
         }
     }
 
-    private fun animateRecyclerViewHeight(initialHeight: Int) {
-        Timber.d("Animating")
+    private fun removeInternetArchive() {
+        val backend = Backend.get(type = Backend.Type.INTERNET_ARCHIVE).firstOrNull()
 
-        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                val targetHeight = if (adapter.itemCount > 0) {
-                    recyclerView.computeVerticalScrollRange()
-                } else {
-                    0
-                }
-
-                ValueAnimator.ofInt(initialHeight, targetHeight).apply {
-                    addUpdateListener { valueAnimator ->
-                        val layoutParams = recyclerView.layoutParams
-                        layoutParams.height = valueAnimator.animatedValue as Int
-                        recyclerView.layoutParams = layoutParams
-                    }
-                    duration = 300
-                    start()
-                }
-            }
-        })
+        if (backend != null) {
+            AlertHelper.show(
+                this,
+                R.string.are_you_sure_you_want_to_remove_this_server_from_the_app,
+                R.string.remove_from_app,
+                buttons = listOf(
+                    AlertHelper.positiveButton(R.string.remove) { _, _ ->
+                        backend.delete()
+                    },
+                    AlertHelper.negativeButton()
+                )
+            )
+        } else {
+            Timber.d("Unable to find backend.")
+        }
     }
 }

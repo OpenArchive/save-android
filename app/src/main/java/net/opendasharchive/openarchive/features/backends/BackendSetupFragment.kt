@@ -48,28 +48,6 @@ class BackendSetupFragment : Fragment() {
         }
     }
 
-    private fun removeInternetArchive() {
-        val backend = Backend.get(type = Backend.Type.INTERNET_ARCHIVE).firstOrNull()
-
-        if (backend != null) {
-            AlertHelper.show(
-                requireContext(),
-                R.string.are_you_sure_you_want_to_remove_this_server_from_the_app,
-                R.string.remove_from_app,
-                buttons = listOf(
-                    AlertHelper.positiveButton(R.string.remove) { _, _ ->
-                        backend.delete()
-                        // refreshUI()
-                        Toast.makeText(requireContext(), "Successfully removed media storage!", Toast.LENGTH_SHORT).show()
-                    },
-                    AlertHelper.negativeButton()
-                )
-            )
-        } else {
-            Timber.d("Unable to find backend.")
-        }
-    }
-
     private fun removeGoogleSpace() {
         val backend = Backend.get(type = Backend.Type.GDRIVE).firstOrNull()
 

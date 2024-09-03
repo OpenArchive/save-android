@@ -43,7 +43,7 @@ class ContentViewHolder(
     private val onClick: OnFolderSelectedCallback) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        private val formatter = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.LONG, SimpleDateFormat.MEDIUM)
+        private val formatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM) //.getDateTimeInstance(SimpleDateFormat.LONG, SimpleDateFormat.)
 
         fun from(parent: ViewGroup, onClick: OnFolderSelectedCallback): ContentViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
@@ -59,7 +59,7 @@ class ContentViewHolder(
 
         binding.apply {
             name.text = folder.description
-            timestamp.text = formatter.format(folder.created)
+            timestamp.text = "Created: " + formatter.format(folder.created)
 
             root.setOnClickListener {
                 onClick.invoke(folder)

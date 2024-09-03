@@ -1,10 +1,12 @@
 package net.opendasharchive.openarchive.features.backends
 
+import android.graphics.drawable.GradientDrawable
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +44,13 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
             }
 
             if (backend.displayname.isNotEmpty()) {
+                if (backend.isCurrent) {
+                    Timber.d("Is current ${backend.id}")
+                    changeStrokeColor(binding.button, 3, ContextCompat.getColor(itemView.context, R.color.c23_teal))
+                } else {
+                    changeStrokeColor(binding.button, 1, ContextCompat.getColor(itemView.context, R.color.c23_grey))
+                }
+
                 binding.button.setOnLongClickListener { view ->
                     Timber.d("LONG PRESS!")
                     view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
@@ -49,6 +58,11 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
                     true
                 }
             }
+        }
+
+        private fun changeStrokeColor(view: View, width: Int, color: Int) {
+            val drawable = view.background as? GradientDrawable
+            drawable?.setStroke(width, color)
         }
 
         private fun addAccountInfo(binding: OneLineRowBinding, backend: Backend) {
@@ -63,6 +77,11 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
         private fun showPopupMenu(view: View, backend: Backend) {
             PopupMenu(view.context, view).apply {
                 menuInflater.inflate(R.menu.menu_backend_context, menu)
+
+                if (backend.isCurrent) {
+                    menu.findItem(R.id.menu_delete).isVisible = false
+                }
+
                 setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.menu_rename -> {

@@ -68,6 +68,9 @@ data class Folder(
             }
         }
 
+    val isCurrent
+        get() = (id == current?.id)
+
     val isUploading
         get() = collections.any { it.isUploading }
 
