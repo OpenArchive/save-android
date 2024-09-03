@@ -11,6 +11,8 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.services.webdav.ReadyToAuthTextWatcher
+import net.opendasharchive.openarchive.util.Utility.showMaterialPrompt
+import net.opendasharchive.openarchive.util.Utility.showMaterialWarning
 import net.opendasharchive.openarchive.util.extensions.hide
 import java.util.Date
 
@@ -30,7 +32,7 @@ class CreateNewFolderActivity : BaseActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.new_folder)
+        supportActionBar?.title = "Create New Folder" // getString(R.string.new_folder)
 
         binding.newFolderName.requestFocus()
 
@@ -88,14 +90,14 @@ class CreateNewFolderActivity : BaseActivity() {
         if (name.isBlank()) return
 
         if (name.matches(SPECIAL_CHARS.toRegex())) {
-            showMaterialWarning("Oops", getString(R.string.please_do_not_include_special_characters_in_the_name), "Ok")
+            showMaterialWarning(this, "Oops", getString(R.string.please_do_not_include_special_characters_in_the_name), "Ok")
             return
         }
 
         val backend = Folder.current?.backend ?: return
 
         if (backend.hasFolder(name)) {
-            showMaterialWarning("Oops", getString(R.string.folder_name_already_exists), "Ok")
+            showMaterialWarning(this, "Oops", getString(R.string.folder_name_already_exists), "Ok")
             return
         }
 
@@ -105,6 +107,7 @@ class CreateNewFolderActivity : BaseActivity() {
         folder.save()
 
         showMaterialPrompt(
+            this,
             "Folder created",
             "Would you like to make this your current folder?",
             "Yes", "No") { affirm ->

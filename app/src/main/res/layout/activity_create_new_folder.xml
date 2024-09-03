@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/create_folder_name"
             android:imeOptions="actionDone"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:singleLine="true" />
 
     </com.google.android.material.textfield.TextInputLayout>

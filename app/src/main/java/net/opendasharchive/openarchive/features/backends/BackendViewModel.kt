@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import net.opendasharchive.openarchive.db.Backend
+import timber.log.Timber
 
 class BackendViewModel(private val filter: Filter = Filter.ALL) : ViewModel() {
     companion object {
@@ -19,7 +20,14 @@ class BackendViewModel(private val filter: Filter = Filter.ALL) : ViewModel() {
         _backends.value = if (filter == Filter.ALL) {
             Backend.ALL_BACKENDS
         } else {
-            Backend.getAll().asSequence().toList()
+            Backend.getAll().toList()
         }
     }
+
+    fun deleteBackend(backend: Backend) {
+        Timber.d("Deleting backend ID ${backend.id}")
+        backend.delete()
+        _backends.value = _backends.value?.filter { it.id != backend.id }
+    }
+
 }

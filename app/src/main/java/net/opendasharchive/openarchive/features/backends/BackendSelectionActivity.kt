@@ -10,13 +10,12 @@ import androidx.core.view.MenuProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBackendSelectionBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.backends.BackendViewModel.Companion.Filter
 import net.opendasharchive.openarchive.features.core.BaseActivity
 
-class BackendSelectionActivity : BaseActivity(), BackendAdapterListener {
+class BackendSelectionActivity : BaseActivity() {
     private lateinit var viewBinding: ActivityBackendSelectionBinding
-    private lateinit var adapter: BackendAdapter
+    private val adapter = BackendAdapter()
     private val viewModel: BackendViewModel by viewModels() {
         BackendViewModelFactory(Filter.CONNECTED)
     }
@@ -55,18 +54,11 @@ class BackendSelectionActivity : BaseActivity(), BackendAdapterListener {
     }
 
     private fun configureViewBinding() {
-        adapter = BackendAdapter(this)
-
         viewBinding.backendList.layoutManager = LinearLayoutManager(this)
         viewBinding.backendList.adapter = adapter
 
         viewModel.backends.observe(this) { backends ->
             adapter.submitList(backends)
         }
-    }
-
-    override fun onBackendClicked(backend: Backend) {
-//        Backend.current = backend
-//        finish()
     }
 }

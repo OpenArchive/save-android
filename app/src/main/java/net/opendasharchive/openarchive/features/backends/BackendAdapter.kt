@@ -1,7 +1,10 @@
 package net.opendasharchive.openarchive.features.backends
 
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -9,17 +12,21 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.util.extensions.scaled
-import java.lang.ref.WeakReference
+import timber.log.Timber
 
 interface BackendAdapterListener {
-    fun onBackendClicked(backend: Backend)
+    fun onItemAction(backend: Backend)
 }
 
-class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, BackendAdapter.ViewHolder>(DIFF_CALLBACK), BackendAdapterListener {
+enum class ItemAction {
+    SELECTED, REQUEST_DELETE, REQUEST_RENAME
+}
 
-    class ViewHolder(private val binding: OneLineRowBinding) : RecyclerView.ViewHolder(binding.root) {
+class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? = null) : ListAdapter<Backend, BackendAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-        fun bind(listener: WeakReference<BackendAdapterListener>?, backend: Backend?) {
+    inner class ViewHolder(private val binding: OneLineRowBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(backend: Backend?) {
             if (backend == null) { return }
 
             val context = binding.root.context
@@ -28,27 +35,52 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
             binding.button.setTitle(backend.friendlyName)
             binding.button.setBackgroundResource(R.drawable.button_outlined)
 
-//            setConnectionStatus(binding, backend)
+            addAccountInfo(binding, backend)
 
             binding.button.setOnClickListener {
-                listener?.get()?.onBackendClicked(backend)
+                onItemAction?.invoke(backend, ItemAction.SELECTED)
+            }
+
+            if (backend.displayname.isNotEmpty()) {
+                binding.button.setOnLongClickListener { view ->
+                    Timber.d("LONG PRESS!")
+                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                    showPopupMenu(view, backend)
+                    true
+                }
             }
         }
 
-//        private fun setConnectionStatus(binding: OneLineRowBinding, backend: Backend) {
-//            if (backend.tType == Backend.Type.GDRIVE) {
-//                if (GDriveConduit.permissionsGranted(binding.root.context)) {
-//                    binding.button.setSubTitle("Connected")
-//                    return
-//                }
-//            }
-//
-//            if (backend.displayname.isEmpty()) {
-//                binding.button.setSubTitle("Not connected")
-//            } else {
-//                binding.button.setSubTitle("Connected")
-//            }
-//        }
+        private fun addAccountInfo(binding: OneLineRowBinding, backend: Backend) {
+            if (backend.tType == Backend.Type.GDRIVE) {
+                if (backend.displayname.isNotEmpty()) {
+                    binding.button.setSubTitle(backend.displayname)
+                    return
+                }
+            }
+        }
+
+        private fun showPopupMenu(view: View, backend: Backend) {
+            PopupMenu(view.context, view).apply {
+                menuInflater.inflate(R.menu.menu_backend_context, menu)
+                setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.menu_rename -> {
+                            onItemAction?.invoke(backend, ItemAction.REQUEST_RENAME)
+                            true
+                        }
+
+                        R.id.menu_delete -> {
+                            onItemAction?.invoke(backend, ItemAction.REQUEST_DELETE)
+                            true
+                        }
+
+                        else -> return@setOnMenuItemClickListener false
+                    }
+                }
+                show()
+            }
+        }
     }
 
     companion object {
@@ -63,23 +95,17 @@ class BackendAdapter(listener: BackendAdapterListener?) : ListAdapter<Backend, B
         }
     }
 
-    private val mListener = WeakReference(listener)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(OneLineRowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val backend = getItem(position)
-        holder.bind(WeakReference(this), backend)
+        holder.bind(backend)
     }
 
     fun update(backends: List<Backend>) {
         submitList(backends)
-    }
-
-    override fun onBackendClicked(backend: Backend) {
-        mListener.get()?.onBackendClicked(backend)
     }
 
     private fun getIndex(backend: Backend?): Int {

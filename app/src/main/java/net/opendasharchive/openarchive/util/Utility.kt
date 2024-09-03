@@ -3,7 +3,10 @@ package net.opendasharchive.openarchive.util
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
@@ -49,6 +52,33 @@ object Utility {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
 
         return File(dir, "$timeStamp.$fileName")
+    }
+
+    fun showMaterialWarning(context: Context, title: String = "Oops", message: String? = null, positiveButtonText: String = "Ok", completion: (() -> Unit)? = null) {
+        Handler(Looper.getMainLooper()).post {
+            MaterialAlertDialogBuilder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveButtonText) { _, _ ->
+                    completion?.invoke()
+                }
+                .show()
+        }
+    }
+
+    fun showMaterialPrompt(context: Context, title: String, message: String? = null, positiveButtonText: String, negativeButtonText: String, completion: (Boolean) -> Unit) {
+        Handler(Looper.getMainLooper()).post {
+            MaterialAlertDialogBuilder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveButtonText) { _, _ ->
+                    completion.invoke(true)
+                }
+                .setNegativeButton(negativeButtonText) { _, _ ->
+                    completion.invoke(false)
+                }
+                .show()
+        }
     }
 
     fun writeStreamToFile(input: InputStream?, file: File?): Boolean {

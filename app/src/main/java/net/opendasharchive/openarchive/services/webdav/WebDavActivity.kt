@@ -17,6 +17,7 @@ import net.opendasharchive.openarchive.databinding.ActivityWebdavBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
+import net.opendasharchive.openarchive.util.Utility.showMaterialWarning
 import net.opendasharchive.openarchive.util.extensions.makeSnackBar
 import okhttp3.Call
 import okhttp3.Callback
@@ -170,7 +171,7 @@ class WebDavActivity : BaseActivity() {
         val other = Backend.get(Backend.Type.WEBDAV, backend.host, backend.username)
 
         if (other.isNotEmpty() && other[0].id != backend.id) {
-            return showMaterialWarning(message = getString(R.string.you_already_have_a_server_with_these_credentials))
+            return showMaterialWarning(context = this, message = getString(R.string.you_already_have_a_server_with_these_credentials))
         }
 
         // Show a progress spinner, and kick off a background task to
@@ -185,11 +186,11 @@ class WebDavActivity : BaseActivity() {
             } catch (exception: IOException) {
                 runOnUiThread {
                     if (exception.message?.startsWith("401") == true) {
-                        showMaterialWarning(message = getString(R.string.error_incorrect_username_or_password)) {
+                        showMaterialWarning(context = this@WebDavActivity, message = getString(R.string.error_incorrect_username_or_password)) {
                             resetAfterBadTest()
                         }
                     } else {
-                        showMaterialWarning(message = exception.localizedMessage ?: getString(R.string.error)) {
+                        showMaterialWarning(context = this@WebDavActivity, message = exception.localizedMessage ?: getString(R.string.error)) {
                             resetAfterBadTest()
                         }
                     }

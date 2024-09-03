@@ -4,7 +4,6 @@
     android:id="@+id/button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
     android:drawableStart="@drawable/logo_drive_2020q4_color_2x_web_64dp"
     android:drawableEnd="@drawable/button_with_right_icon"
     android:padding="16dp"

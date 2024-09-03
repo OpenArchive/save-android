@@ -271,6 +271,9 @@ dependencies {
     // Optional - Integration with RxJava
     implementation("androidx.compose.runtime:runtime-rxjava2")
 
+    // A more customization popup menu
+    implementation("com.github.skydoves:powermenu:2.2.4")
+
     // Tests
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.7.3")

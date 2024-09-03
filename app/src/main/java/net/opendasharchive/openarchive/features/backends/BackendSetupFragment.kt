@@ -20,11 +20,16 @@ import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.util.AlertHelper
 import timber.log.Timber
 
-class BackendSetupFragment : Fragment(), BackendAdapterListener {
+class BackendSetupFragment : Fragment() {
 
     private lateinit var viewBinding: FragmentBackendSetupBinding
+    private val adapter = BackendAdapter { backend, action ->
+        when (action) {
+            ItemAction.SELECTED -> setFragmentResult(BACKEND_RESULT_REQUEST_KEY, bundleOf(BACKEND_RESULT_BUNDLE_TYPE_KEY to backend.type))
+            else -> Unit
+        }
+    }
     private val viewModel: BackendViewModel by viewModels()
-    private lateinit var adapter: BackendAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentBackendSetupBinding.inflate(inflater)
@@ -35,8 +40,6 @@ class BackendSetupFragment : Fragment(), BackendAdapterListener {
     }
 
     private fun createBackendList() {
-        adapter = BackendAdapter(this)
-
         viewBinding.backendList.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.backendList.adapter = adapter
 
@@ -105,11 +108,5 @@ class BackendSetupFragment : Fragment(), BackendAdapterListener {
         const val BACKEND_RESULT_REQUEST_KEY = "backend_setup_fragment_result"
         const val BACKEND_RESULT_BUNDLE_TYPE_KEY = "backend_setup_result_type_key"
         const val BACKEND_RESULT_BUNDLE_ACTION_KEY = "backend_setup_result_action_key"
-    }
-
-    override fun onBackendClicked(backend: Backend) {
-        Timber.d("backendClicked")
-        // Backend.current = backend
-        setFragmentResult(BACKEND_RESULT_REQUEST_KEY, bundleOf(BACKEND_RESULT_BUNDLE_TYPE_KEY to backend.type))
     }
 }

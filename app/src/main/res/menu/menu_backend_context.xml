@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:filterTouchesWhenObscured="true"
+    tools:context=".features.main.MainActivity">
+
+    <item
+        android:id="@+id/menu_rename"
+        android:icon="@drawable/ic_edit_unselected"
+        android:iconTint="@color/colorOnBackground"
+        android:title="Rename"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/menu_delete"
+        android:icon="@drawable/outline_delete_24"
+        android:iconTint="@color/colorOnBackground"
+        android:title="Delete"
+        android:visible="true" />
+
+</menu>

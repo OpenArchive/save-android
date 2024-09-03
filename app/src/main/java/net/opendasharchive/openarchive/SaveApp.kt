@@ -49,7 +49,7 @@ class SaveApp : SugarApp() {
             Timber.plant(Timber.DebugTree())
         }
 
-        Timber.d("Starting app")
+        Timber.d("Starting app $packageName ")
     }
 
     private fun initNetCipher() {

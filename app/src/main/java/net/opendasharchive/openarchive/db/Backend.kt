@@ -157,6 +157,19 @@ data class Backend(
             }
         }
 
+    fun exists(): Boolean {
+        try {
+            val items = find(
+                Backend::class.java,
+                "type = ? AND displayname = ?", type.toString(), displayname)
+
+            return items.isNotEmpty()
+        } catch (e: Exception) {
+            Timber.d("Error = ${e.localizedMessage}")
+            return false
+        }
+    }
+
     val folders: List<Folder>
         get() = find(Folder::class.java, "backend = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
 

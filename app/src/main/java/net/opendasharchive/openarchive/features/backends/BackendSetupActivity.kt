@@ -6,8 +6,6 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -21,13 +19,20 @@ import net.opendasharchive.openarchive.services.gdrive.GDriveActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavActivity
 import net.opendasharchive.openarchive.util.AlertHelper
+import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import timber.log.Timber
 
-class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
+
+class BackendSetupActivity : BaseActivity() {
 
     private lateinit var binding: ActivityBackendSetupBinding
     private val viewModel: BackendViewModel by viewModels()
-    private lateinit var adapter: BackendAdapter
+    private val adapter = BackendAdapter { backend, action ->
+        when (action) {
+            ItemAction.SELECTED -> showConfigScreenFor(backend)
+            else -> Unit
+        }
+    }
 //    private lateinit var mItemTouchHelper: ItemTouchHelper
 
     private val newBackendCreator = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -64,12 +69,8 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
     }
 
     private fun createBackendList() {
-        adapter = BackendAdapter(this)
-
-        val divider = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        val drawable = AppCompatResources.getDrawable(this, R.drawable.separator)
-        divider.setDrawable(drawable!!)
-        binding.backendList.addItemDecoration(divider)
+        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.list_item_spacing)
+        binding.backendList.addItemDecoration(SpacingItemDecoration(spacingInPixels))
 
 //        val itemTouchHelper = createItemTouchHelper()
 //        itemTouchHelper.attachToRecyclerView(binding.backendList)
@@ -81,6 +82,18 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
             adapter.submitList(backends)
         }
     }
+
+//        val powerMenu = PowerMenu.Builder(this).build()
+//
+//        powerMenu.showAsDropDown(view)
+
+//    private val onIconMenuItemClickListener: OnMenuItemClickListener<IconPowerMenuItem> =
+//        object : OnMenuItemClickListener<IconPowerMenuItem?>() {
+//            fun onItemClick(position: Int, item: IconPowerMenuItem) {
+//                Toast.makeText(baseContext, item.getTitle(), Toast.LENGTH_SHORT).show()
+//                iconMenu.dismiss()
+//            }
+//        }
 
 //    private fun createItemTouchHelper(): ItemTouchHelper {
 //        return ItemTouchHelper(object : SwipeToDeleteCallback(this) {
@@ -108,17 +121,11 @@ class BackendSetupActivity : BaseActivity(), BackendAdapterListener {
 
     private fun showConfigScreenFor(backend: Backend) {
         when (backend.type) {
-            Backend.Type.GDRIVE.id -> handleGoogle()
+            Backend.Type.GDRIVE.id -> newBackendCreator.launch(Intent(this, GDriveActivity::class.java))
             Backend.Type.INTERNET_ARCHIVE.id -> newBackendCreator.launch(Intent(this, InternetArchiveActivity::class.java))
             Backend.Type.WEBDAV.id -> newBackendCreator.launch(Intent(this, WebDavActivity::class.java))
         }
 
-    }
-
-    override fun onBackendClicked(backend: Backend) {
-        Timber.d("backendClicked")
-
-        showConfigScreenFor(backend)
     }
 
     private fun handleGoogle() {
