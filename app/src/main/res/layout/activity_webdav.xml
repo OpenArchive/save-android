@@ -87,23 +87,6 @@
                     android:layout_marginTop="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/server_name_optional"
-                        android:inputType="textNoSuggestions"
-                        android:maxLines="1"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/OATextInputLayoutStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -143,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginTop="40dp"
-                    android:text="@string/label_login" />
+                    android:text="@string/action_sign_in_short" />
 
             </LinearLayout>
     </ScrollView>

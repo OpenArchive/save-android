@@ -16,7 +16,7 @@
     <color name="colorSpaceSetupProgressOff">@color/c23_medium_grey</color>
     <color name="colorBackgroundSpaceIcon">@color/transparent_white</color>
     <color name="colorButtonOnBackground">@color/black</color>
-    <color name="colorOnBackgroundTonedDown">@color/c23_medium_grey</color>
+    <color name="colorOnBackgroundTonedDown">@color/c23_grey</color>
     <color name="colorOnBackgroundLowContrast">@color/c23_medium_grey</color>
     <color name="colorTextViewHint">@color/white</color>
     <color name="colorSectionHeader">#00B4A6</color>

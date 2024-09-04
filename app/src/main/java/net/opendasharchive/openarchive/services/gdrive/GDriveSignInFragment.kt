@@ -122,7 +122,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
         Utility.showMaterialPrompt(
             context = requireContext(),
             title = "Hi, there!",
-            message = "You are already signed into a Google account. If you want to sign into another account you will need to sign out first. Do that now?",
+            message = "You are already signed into a Google account. If you want to sign into s different account you will need to sign out first. Do that now?",
             positiveButtonText = "Yes",
             negativeButtonText = "No") { affirm ->
             if (affirm) {

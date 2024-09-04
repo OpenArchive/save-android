@@ -105,7 +105,7 @@
     <string name="label_password">@string/prompt_password</string>
     <string name="placeholder_password">Enter a password</string>
 
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_in_short">Sign In</string>
     <string name="error_incorrect_username_or_password">Incorrect username or password</string>
     <string name="error_field_required">This field is required</string>
 
@@ -117,7 +117,7 @@
     <string name="action_about">About %s</string>
     <string name="add_a_folder">Add a folder</string>
     <string name="browse_existing_folders">Browse existing folders</string>
-    <string name="browse_existing">Browse Folders</string>
+    <string name="browse_existing">Your Folders</string>
     <string name="title_activity_upload_manager">Upload Manager</string>
 
     <string name="uploads">Uploads</string>

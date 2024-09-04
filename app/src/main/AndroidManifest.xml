@@ -135,6 +135,10 @@
             android:taskAffinity=""
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".features.backends.BackendMetadataActivity"
+            android:exported="false"
+            android:taskAffinity="" />
+        <activity
             android:name=".features.backends.BackendSelectionActivity"
             android:exported="false"
             android:label="@string/title_activity_first_start"

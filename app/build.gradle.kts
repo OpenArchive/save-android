@@ -14,25 +14,29 @@ android {
     val major: String
     val minor: String
     val newVersionCode: String
-    val versionPropsFile = file("version.properties")
 
-    if (versionPropsFile.canRead()) {
-        val versionProps = Properties()
-
-        versionProps.load(versionPropsFile.inputStream())
-
-        patch = versionProps["PATCH"] as String? ?: ""
-        major = versionProps["MAJOR"] as String? ?: ""
-        minor = versionProps["MINOR"] as String? ?: ""
-        newVersionCode = versionProps["VERSION_CODE"] as String? ?: "0"
-
-        versionProps["VERSION_CODE"] = (newVersionCode.toInt() + 1).toString()
-
-        versionProps.store(FileOutputStream(versionPropsFile), null)
+    val localPropsFile = file("../local.properties")
+    val localProps = Properties()
+    if (!localPropsFile.canRead()) {
+        throw GradleException("Could not read local.properties!")
     }
-    else {
+    localProps.load(localPropsFile.inputStream())
+
+    val versionPropsFile = file("version.properties")
+    val versionProps = Properties()
+    if (!versionPropsFile.canRead()) {
         throw GradleException("Could not read version.properties!")
     }
+    versionProps.load(versionPropsFile.inputStream())
+
+    patch = versionProps["PATCH"] as String? ?: ""
+    major = versionProps["MAJOR"] as String? ?: ""
+    minor = versionProps["MINOR"] as String? ?: ""
+    newVersionCode = versionProps["VERSION_CODE"] as String? ?: "0"
+
+    versionProps["VERSION_CODE"] = (newVersionCode.toInt() + 1).toString()
+
+    versionProps.store(FileOutputStream(versionPropsFile), null)
 
     val newVersionName = "${major}.${minor}.${patch}.${newVersionCode}"
 
@@ -55,6 +59,7 @@ android {
         project.setProperty("archivesBaseName", "save-$versionName")
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        resValue("string", "mixpanel_key", localProps.getProperty("mixpanel.key") ?: "")
     }
 
     splits {
@@ -273,6 +278,9 @@ dependencies {
 
     // A more customization popup menu
     implementation("com.github.skydoves:powermenu:2.2.4")
+
+    // Mixpanel analytics
+    implementation("com.mixpanel.android:mixpanel-android:7.5.2")
 
     // Tests
     testImplementation("junit:junit:4.13.2")

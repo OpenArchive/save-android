@@ -35,8 +35,8 @@ class AddFolderActivity : BaseActivity() {
     }
     private val adapter = BackendAdapter { backend, action ->
         when (action) {
-            ItemAction.REQUEST_RENAME -> renameBackend(backend)
-            ItemAction.REQUEST_DELETE -> deleteBackend(backend)
+            ItemAction.REQUEST_EDIT -> editBackend(backend)
+            ItemAction.REQUEST_REMOVE -> deleteBackend(backend)
             ItemAction.SELECTED -> startActivity(Intent(this, CreateNewFolderActivity::class.java))
         }
     }
@@ -49,7 +49,7 @@ class AddFolderActivity : BaseActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Media Servers"
+        supportActionBar?.title = "Create New Folder"
 
         createBackendList()
 
@@ -72,7 +72,7 @@ class AddFolderActivity : BaseActivity() {
 //        }
     }
 
-    private fun renameBackend(backend: Backend) {
+    private fun editBackend(backend: Backend) {
 
     }
 

@@ -21,7 +21,7 @@ interface BackendAdapterListener {
 }
 
 enum class ItemAction {
-    SELECTED, REQUEST_DELETE, REQUEST_RENAME
+    SELECTED, REQUEST_REMOVE, REQUEST_EDIT
 }
 
 class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? = null) : ListAdapter<Backend, BackendAdapter.ViewHolder>(DIFF_CALLBACK) {
@@ -43,7 +43,7 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
                 onItemAction?.invoke(backend, ItemAction.SELECTED)
             }
 
-            if (backend.displayname.isNotEmpty()) {
+            if (backend.id != null && backend.name.isNotEmpty()) {
                 if (backend.isCurrent) {
                     Timber.d("Is current ${backend.id}")
                     changeStrokeColor(binding.button, 3, ContextCompat.getColor(itemView.context, R.color.c23_teal))
@@ -84,13 +84,13 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
 
                 setOnMenuItemClickListener { item ->
                     when (item.itemId) {
-                        R.id.menu_rename -> {
-                            onItemAction?.invoke(backend, ItemAction.REQUEST_RENAME)
+                        R.id.menu_edit -> {
+                            onItemAction?.invoke(backend, ItemAction.REQUEST_EDIT)
                             true
                         }
 
                         R.id.menu_delete -> {
-                            onItemAction?.invoke(backend, ItemAction.REQUEST_DELETE)
+                            onItemAction?.invoke(backend, ItemAction.REQUEST_REMOVE)
                             true
                         }
 

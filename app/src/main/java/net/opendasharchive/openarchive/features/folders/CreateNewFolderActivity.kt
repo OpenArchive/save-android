@@ -3,7 +3,6 @@ package net.opendasharchive.openarchive.features.folders
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityCreateNewFolderBinding
@@ -32,7 +31,7 @@ class CreateNewFolderActivity : BaseActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Create New Folder" // getString(R.string.new_folder)
+        supportActionBar?.title = "Almost Done"
 
         binding.newFolderName.requestFocus()
 
@@ -64,19 +63,15 @@ class CreateNewFolderActivity : BaseActivity() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                return true
-            }
-//            R.id.action_done -> {
-//                store()
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            android.R.id.home -> {
+//                finish()
 //                return true
 //            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
     private fun enableIfReady() {
         val isComplete = !binding.newFolderName.text.isNullOrEmpty()

@@ -6,6 +6,7 @@ import com.orm.SugarApp
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.core.di.coreModule
 import net.opendasharchive.openarchive.core.di.featuresModule
+import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import org.koin.android.ext.koin.androidContext
@@ -13,10 +14,6 @@ import org.koin.core.context.startKoin
 import timber.log.Timber
 
 class SaveApp : SugarApp() {
-
-    companion object {
-        var hasThemeChanged = false
-    }
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
@@ -31,6 +28,10 @@ class SaveApp : SugarApp() {
             modules(coreModule, featuresModule)
         }
 
+        if (BuildConfig.DEBUG){
+            Timber.plant(Timber.DebugTree())
+        }
+
 //        val config = ImagePipelineConfig.newBuilder(this)
 //            .setProgressiveJpegConfig(SimpleProgressiveJpegConfig())
 //            .setResizeAndRotateEnabledForNetwork(true)
@@ -39,15 +40,13 @@ class SaveApp : SugarApp() {
 
 //        Fresco.initialize(this, config)
 
+        Analytics.init(this)
+
         Prefs.load(this)
 
         if (Prefs.useTor) initNetCipher()
 
         Theme.set(Prefs.theme)
-
-        if (BuildConfig.DEBUG){
-            Timber.plant(Timber.DebugTree())
-        }
 
         Timber.d("Starting app $packageName ")
     }

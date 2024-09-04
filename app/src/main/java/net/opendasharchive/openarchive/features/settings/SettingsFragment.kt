@@ -7,7 +7,6 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.folders.BrowseFoldersActivity
@@ -56,7 +55,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         themePreference?.summaryProvider = ListPreferenceSummaryProvider()
         themePreference?.setOnPreferenceChangeListener { _, newValue ->
             Theme.set(Theme.get(newValue as? String))
-            SaveApp.hasThemeChanged = true
             true
         }
 

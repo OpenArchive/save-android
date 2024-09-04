@@ -54,10 +54,14 @@ data class Backend(
             Type.VEILID -> {
                 name = "Veilid"
             }
+            Type.UNKNOWN -> {
+                name = "Unknown"
+            }
         }
     }
 
     enum class Type(val id: Long, val friendlyName: String) {
+        UNKNOWN(-1, "UNKNOWN"),
         WEBDAV(0, WebDavConduit.NAME),
         INTERNET_ARCHIVE(1, IaConduit.NAME),
         GDRIVE(4, GDriveConduit.NAME),
@@ -191,6 +195,10 @@ data class Backend(
 
             else -> TextDrawable.builder().buildRound(initial, color)
         }
+    }
+
+    fun hasValidType(): Boolean {
+        return tType != Type.UNKNOWN
     }
 
     fun setAvatar(view: ImageView) {

@@ -5,17 +5,24 @@
     tools:context=".features.main.MainActivity">
 
     <item
-        android:id="@+id/menu_rename"
+        android:id="@+id/menu_edit"
         android:icon="@drawable/ic_edit_unselected"
         android:iconTint="@color/colorOnBackground"
-        android:title="Rename"
+        android:title="Edit"
         android:visible="true" />
 
     <item
-        android:id="@+id/menu_delete"
+        android:id="@+id/menu_hide"
+        android:icon="@drawable/outline_perm_media_24"
+        android:iconTint="@color/colorOnBackground"
+        android:title="Hide"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/menu_remove"
         android:icon="@drawable/outline_delete_24"
         android:iconTint="@color/colorOnBackground"
-        android:title="Delete"
+        android:title="Remove"
         android:visible="true" />
 
 </menu>

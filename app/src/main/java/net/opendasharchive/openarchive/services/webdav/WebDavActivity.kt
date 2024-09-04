@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +17,6 @@ import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.Utility.showMaterialWarning
-import net.opendasharchive.openarchive.util.extensions.makeSnackBar
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
@@ -41,7 +39,6 @@ class WebDavActivity : BaseActivity() {
 
     companion object {
         // factory method parameters (bundle args)
-        const val ARG_SPACE = "space"
         const val ARG_VAL_NEW_BACKEND = -1L
 
         // other internal constants
@@ -56,7 +53,7 @@ class WebDavActivity : BaseActivity() {
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.private_server)
+        supportActionBar?.title = "Private Server"
 
         backendId = intent.getLongExtra(EXTRA_DATA_BACKEND, ARG_VAL_NEW_BACKEND)
 
@@ -94,25 +91,17 @@ class WebDavActivity : BaseActivity() {
             binding.password.isEnabled = false
 
             binding.server.setText(backend.host)
-            binding.name.setText(backend.name)
             binding.username.setText(backend.username)
             binding.password.setText(backend.password)
-
-            binding.name.addTextChangedListener(object : ReadyToAuthTextWatcher() {
-                override fun afterTextChanged(s: Editable?) {
-                    if (s == null) return
-
-                    backend.name = s.toString()
-                    backend.save()
-                }
-            })
         } else {
             // setup views for creating a new space
             //
             backend = Backend(Backend.Type.WEBDAV)
         }
 
-        binding.authenticationButton.setOnClickListener { attemptLogin() }
+        binding.authenticationButton.setOnClickListener {
+            attemptLogin()
+        }
 
         binding.server.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
@@ -142,7 +131,7 @@ class WebDavActivity : BaseActivity() {
         // Store values at the time of the login attempt.
         var errorView: View? = null
 
-        backend.name = binding.name.text?.toString() ?: ""
+//        backend.name = binding.name.text?.toString() ?: ""
 
         backend.host = fixUrl(binding.server.text)?.toString() ?: ""
         binding.server.setText(backend.host)
@@ -200,7 +189,6 @@ class WebDavActivity : BaseActivity() {
     }
 
     private fun resetAfterBadTest() {
-        binding.server.text = null
         binding.server.requestFocus()
     }
 
@@ -266,20 +254,6 @@ class WebDavActivity : BaseActivity() {
                     it.resumeWith(Result.success(Unit))
                 }
             })
-        }
-    }
-
-    private fun showError(text: CharSequence, onForm: Boolean = false) {
-        runOnUiThread {
-            if (onForm) {
-                binding.password.error = text
-                binding.password.requestFocus()
-            } else {
-                val snackbar = binding.root.makeSnackBar(text, Snackbar.LENGTH_LONG)
-                snackbar.show()
-
-                binding.server.requestFocus()
-            }
         }
     }
 }

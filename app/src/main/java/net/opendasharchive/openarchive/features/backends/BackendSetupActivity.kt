@@ -3,22 +3,16 @@ package net.opendasharchive.openarchive.features.backends
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.folders.CreateNewFolderActivity
 import net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveActivity
-import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavActivity
-import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import timber.log.Timber
 
@@ -35,17 +29,23 @@ class BackendSetupActivity : BaseActivity() {
     }
 //    private lateinit var mItemTouchHelper: ItemTouchHelper
 
-    private val newBackendCreator = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val backendAuthLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         Timber.d("Received result: ${result.resultCode}")
-        if (result.resultCode == Activity.RESULT_OK && !isFinishing && !isDestroyed) {
-            finishAffinity()
+        if (result.resultCode == Activity.RESULT_OK) {
             runOnUiThread {
                 try {
-                    startActivity(Intent(this@BackendSetupActivity, CreateNewFolderActivity::class.java))
+                    backendMetaLauncher.launch(Intent(this@BackendSetupActivity, BackendMetadataActivity::class.java))
                 } catch (e: Exception) {
                     Timber.e("Error starting activity", e)
                 }
             }
+        }
+    }
+
+    private val backendMetaLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        Timber.d("Received result: ${result.resultCode}")
+        if (result.resultCode == Activity.RESULT_OK) {
+            finishAffinity()
         }
     }
 
@@ -59,11 +59,11 @@ class BackendSetupActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Available Media Servers"
 
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        })
+//        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                finish()
+//            }
+//        })
 
         createBackendList()
     }
@@ -121,52 +121,52 @@ class BackendSetupActivity : BaseActivity() {
 
     private fun showConfigScreenFor(backend: Backend) {
         when (backend.type) {
-            Backend.Type.GDRIVE.id -> newBackendCreator.launch(Intent(this, GDriveActivity::class.java))
-            Backend.Type.INTERNET_ARCHIVE.id -> newBackendCreator.launch(Intent(this, InternetArchiveActivity::class.java))
-            Backend.Type.WEBDAV.id -> newBackendCreator.launch(Intent(this, WebDavActivity::class.java))
+            Backend.Type.GDRIVE.id -> backendAuthLauncher.launch(Intent(this, GDriveActivity::class.java))
+            Backend.Type.INTERNET_ARCHIVE.id -> backendAuthLauncher.launch(Intent(this, InternetArchiveActivity::class.java))
+            Backend.Type.WEBDAV.id -> backendAuthLauncher.launch(Intent(this, WebDavActivity::class.java))
         }
 
     }
 
-    private fun handleGoogle() {
-        val hasPerms = GDriveConduit.permissionsGranted(this)
-        Timber.d("Permissions granted already? $hasPerms")
-
-        if (hasPerms) {
-            Timber.d("has perms")
-            removeGoogle()
-        } else {
-            Timber.d("no perms")
-            newBackendCreator.launch(Intent(this, GDriveActivity::class.java))
-        }
-    }
-
-    private fun completeSignOut() {
-        val googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
-
-        googleSignInClient.revokeAccess().addOnCompleteListener { result ->
-            Timber.d("result = $result")
-
-            if (result.isSuccessful) {
-                googleSignInClient.signOut()
-            }
-
-            // Regardless of result, we need to remove GDrive from local config.
-            //
-            Backend.get(Backend.Type.GDRIVE).firstOrNull() { backend ->
-                backend.delete()
-            }
-        }
-    }
-
-    private fun removeGoogle() {
-        AlertHelper.show(this,
-            R.string.are_you_sure_you_want_to_remove_this_server_from_the_app,
-            R.string.remove_from_app,
-            buttons = listOf(
-            AlertHelper.positiveButton(R.string.remove) { _, _ ->
-                completeSignOut()
-            },
-            AlertHelper.negativeButton()))
-    }
+//    private fun handleGoogle() {
+//        val hasPerms = GDriveConduit.permissionsGranted(this)
+//        Timber.d("Permissions granted already? $hasPerms")
+//
+//        if (hasPerms) {
+//            Timber.d("has perms")
+//            removeGoogle()
+//        } else {
+//            Timber.d("no perms")
+//            backendAuthLauncher.launch(Intent(this, GDriveActivity::class.java))
+//        }
+//    }
+//
+//    private fun completeSignOut() {
+//        val googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+//
+//        googleSignInClient.revokeAccess().addOnCompleteListener { result ->
+//            Timber.d("result = $result")
+//
+//            if (result.isSuccessful) {
+//                googleSignInClient.signOut()
+//            }
+//
+//            // Regardless of result, we need to remove GDrive from local config.
+//            //
+//            Backend.get(Backend.Type.GDRIVE).firstOrNull() { backend ->
+//                backend.delete()
+//            }
+//        }
+//    }
+//
+//    private fun removeGoogle() {
+//        AlertHelper.show(this,
+//            R.string.are_you_sure_you_want_to_remove_this_server_from_the_app,
+//            R.string.remove_from_app,
+//            buttons = listOf(
+//            AlertHelper.positiveButton(R.string.remove) { _, _ ->
+//                completeSignOut()
+//            },
+//            AlertHelper.negativeButton()))
+//    }
 }
