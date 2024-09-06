@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:filterTouchesWhenObscured="true"
+    tools:context=".features.main.MainActivity">
+
+    <item
+        android:id="@+id/menu_edit"
+        android:icon="@drawable/ic_edit_unselected"
+        android:iconTint="@color/colorOnBackground"
+        android:title="Edit"
+        android:visible="true" />
+
+</menu>

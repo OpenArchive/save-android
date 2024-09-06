@@ -9,6 +9,8 @@ import org.json.JSONObject
 @SuppressLint("StaticFieldLeak")
 object Analytics {
 
+    const val NEW_BACKEND_ADDED = "new_backend_added"
+
     private var mixpanel: MixpanelAPI? = null
 
     fun init(context: Context) {
@@ -16,7 +18,11 @@ object Analytics {
         mixpanel = MixpanelAPI.getInstance(context, token, false)
     }
 
-    fun log(eventName: String, props: JSONObject? = null) {
-        mixpanel?.track(eventName, props)
+    fun log(eventName: String, props: MutableMap<String?, Any?>? = null) {
+        val jsonObject = props?.let { strongProps ->
+            JSONObject(strongProps)
+        }
+
+        mixpanel?.track(eventName, jsonObject)
     }
 }

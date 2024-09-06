@@ -145,8 +145,6 @@ class GDriveSignInFragment : CommonServiceFragment() {
                     Timber.d("Account already exists")
                     setFragmentResult(RESP_CANCEL, bundleOf())
                 } else {
-                    backend.save()
-                    Timber.d("Account created")
                     setFragmentResult(RESP_CREATED, bundleOf())
                 }
             } else {

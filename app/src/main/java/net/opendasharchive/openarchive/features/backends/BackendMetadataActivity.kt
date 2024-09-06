@@ -6,6 +6,7 @@ import net.opendasharchive.openarchive.databinding.ActivityBackendMetaBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.CcSelector
+import net.opendasharchive.openarchive.util.Analytics
 
 class BackendMetadataActivity : BaseActivity() {
     private lateinit var binding: ActivityBackendMetaBinding
@@ -37,7 +38,14 @@ class BackendMetadataActivity : BaseActivity() {
 
             backend.license = CcSelector.get(binding.cc)
 
+            Analytics.log(Analytics.NEW_BACKEND_ADDED, mutableMapOf("type" to backend.name))
+
             backend.save()
+
+            // Mixing "name" and "type" here, but it should make more sense
+            // for the humans reading the logs.
+            //
+            Analytics.log(Analytics.NEW_BACKEND_ADDED, mutableMapOf("type" to backend.name))
 
             signalSuccess()
         }

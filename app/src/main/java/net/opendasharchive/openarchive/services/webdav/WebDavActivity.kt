@@ -170,7 +170,6 @@ class WebDavActivity : BaseActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 testConnection()
-                backend.save()
                 signalSuccess()
             } catch (exception: IOException) {
                 runOnUiThread {

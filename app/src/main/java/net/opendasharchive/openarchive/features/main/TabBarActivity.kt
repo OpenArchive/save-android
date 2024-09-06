@@ -127,9 +127,23 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 //        val folder = Folder.getById(1)
 //        Folder.current = folder
 
-        val rusty = Rusty()
-        val greeting = rusty.rust_greeting("Bob")
-        Timber.d("Greeting = $greeting")
+//        val socketFile = File(filesDir, "rust_server.sock")
+//        val socketPath = socketFile.absolutePath
+//        val resp = SnowbirdBridge.startServer(socketPath)
+//
+//        Timber.d("resp = $resp")
+//        Timber.d("Rusty Server started")
+//
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val client = UnixSocketClient(socketPath)
+//
+//            delay(1000)
+//
+//            when (val response = client.sendRequest<OAGroup>("/status")) {
+//                is ApiResponse.Success -> Timber.d("User: ${response.data}")
+//                is ApiResponse.Error -> Timber.d("Error: ${response.code} - ${response.message}")
+//            }
+//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
