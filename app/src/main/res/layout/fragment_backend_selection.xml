@@ -7,14 +7,7 @@
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
     android:orientation="vertical"
-    tools:context=".features.folders.AddFolderActivity">
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:theme="@style/OAToolbar"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary" />
+    tools:context=".features.backends.BackendSelectionFragment">
 
     <ScrollView
         android:layout_width="match_parent"

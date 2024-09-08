@@ -34,9 +34,7 @@ import timber.log.Timber
 class GDriveSignInFragment : CommonServiceFragment() {
 
     private lateinit var binding: FragmentGdriveSignInBinding
-
     private lateinit var gso: GoogleSignInOptions
-
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -128,6 +126,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
             if (affirm) {
                 switchAccounts()
             } else {
+                binding.btAuthenticate.isEnabled = true
                 setFragmentResult(RESP_CANCEL, bundleOf())
             }
         }

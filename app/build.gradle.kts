@@ -2,10 +2,11 @@ import java.io.FileOutputStream
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
     id("kotlin-android")
-    id("org.jetbrains.kotlin.android")
+    id("com.android.application")
     id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.android")
+    id("androidx.navigation.safeargs.kotlin")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.10"
     kotlin("plugin.serialization") version "1.8.10"
 }
@@ -110,7 +111,6 @@ android {
 
     namespace = "net.opendasharchive.openarchive"
 }
-
 
 dependencies {
     val cameraxVersion = "1.3.4"

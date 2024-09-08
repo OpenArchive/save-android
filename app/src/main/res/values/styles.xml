@@ -13,21 +13,14 @@
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:divider">@drawable/save_list_item_spacing_small</item>
         <item name="android:listDivider">@drawable/save_list_item_spacing_small</item>
-        <item name="android:colorControlNormal">@color/white</item>
-<!--        <item name="android:windowAnimationStyle">@style/WindowAnimationStyle</item>-->
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorOnPrimary">@color/colorOnPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorOnPrimary">@color/colorOnPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
 
         <item name="actionOverflowMenuStyle">@style/OAOptionsMenu</item>
         <item name="appBarLayoutStyle">@style/AppBarStyle</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetTheme</item>
-        <item name="dialogTheme">@style/AppDialogTheme</item>
-        <item name="materialAlertDialogTheme">@style/MaterialAlertDialogTheme</item>
-        <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
-        <item name="switchPreferenceCompatStyle">@style/OASwitchPreferenceStyle</item>
-        <item name="preferenceTheme">@style/OAPreferenceStyle</item>
         <item name="cookieTitleColor">@color/default_title_color</item>
         <item name="cookieMessageColor">@color/default_message_color</item>
         <item name="cookieActionColor">@color/default_action_color</item>
@@ -36,6 +29,16 @@
         <item name="cookieTitleSize">24sp</item>
         <item name="cookieMessageSize">16sp</item>
         <item name="cookieActionSize">18sp</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/c23_teal</item>
+        <item name="android:textSelectHandle">@color/red</item>
+        <item name="android:textSelectHandleLeft">@color/c23_teal</item>
+        <item name="android:textSelectHandleRight">@color/c23_teal</item>
+        <item name="dialogTheme">@style/AppDialogTheme</item>
+        <item name="materialAlertDialogTheme">@style/MaterialAlertDialogTheme</item>
+        <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
+        <item name="preferenceTheme">@style/OAPreferenceStyle</item>
+        <item name="switchPreferenceCompatStyle">@style/OASwitchPreferenceStyle</item>
     </style>
 
     <style name="CustomMenuTextAppearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
@@ -62,7 +65,8 @@
         <item name="android:popupBackground">@color/blue</item>
     </style>
 
-    <style name="OAToolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+    <style name="OAToolbar" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="titleTextColor">@color/white</item>
         <item name="subtitleTextColor">@color/white</item>

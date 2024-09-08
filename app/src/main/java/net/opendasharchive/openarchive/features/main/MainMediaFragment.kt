@@ -26,7 +26,7 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
-import net.opendasharchive.openarchive.features.folders.BrowseFoldersActivity
+import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.cloak
@@ -246,7 +246,7 @@ class MainMediaFragment : Fragment() {
             mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown server") + " > " + folder.description
 
             mBinding.currentFolder.currentBackendButton.setOnClickListener {
-                startActivity(Intent(context, BrowseFoldersActivity::class.java))
+                startActivity(Intent(context, BackendSetupActivity::class.java))
             }
         }
     }

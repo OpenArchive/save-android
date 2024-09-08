@@ -120,30 +120,6 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
             .registerReceiver(onWifiStatusChanged, IntentFilter(Prefs.UPLOAD_WIFI_ONLY))
 
         wifiIssueIndicator?.setVisible(false)
-
-//        val folder = Folder(description = "Photographer Collab", backend = Backend.getById(1)!!)
-//        folder.save()
-
-//        val folder = Folder.getById(1)
-//        Folder.current = folder
-
-//        val socketFile = File(filesDir, "rust_server.sock")
-//        val socketPath = socketFile.absolutePath
-//        val resp = SnowbirdBridge.startServer(socketPath)
-//
-//        Timber.d("resp = $resp")
-//        Timber.d("Rusty Server started")
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val client = UnixSocketClient(socketPath)
-//
-//            delay(1000)
-//
-//            when (val response = client.sendRequest<OAGroup>("/status")) {
-//                is ApiResponse.Success -> Timber.d("User: ${response.data}")
-//                is ApiResponse.Error -> Timber.d("Error: ${response.code} - ${response.message}")
-//            }
-//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

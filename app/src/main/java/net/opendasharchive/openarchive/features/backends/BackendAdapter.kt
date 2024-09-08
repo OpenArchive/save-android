@@ -43,7 +43,7 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
                 onItemAction?.invoke(backend, ItemAction.SELECTED)
             }
 
-            if (backend.id != null && backend.name.isNotEmpty()) {
+            if (backend.name.isNotEmpty()) {
                 if (backend.isCurrent) {
                     Timber.d("Is current ${backend.id}")
                     changeStrokeColor(binding.button, 3, ContextCompat.getColor(itemView.context, R.color.c23_teal))

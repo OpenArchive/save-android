@@ -31,7 +31,9 @@
         android:importantForAccessibility="no" />
 
     <com.google.android.material.button.MaterialButton
-        style="@style/OAPrimaryButtonStyle"
+        style="@style/OAMaterialSignInButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:id="@+id/bt_authenticate"
         android:layout_marginBottom="30dp"
         android:text="@string/action_done"

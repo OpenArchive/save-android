@@ -9,19 +9,10 @@
     android:gravity="center_horizontal"
     tools:context="net.opendasharchive.openarchive.services.webdav.WebDavActivity">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        style="@style/OAToolbar"
-        android:id="@+id/toolbar"
-        android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:id="@+id/email_login_form"
@@ -74,6 +65,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/enter_url"
+                        android:textSelectHandle="@color/red"
+                        android:textSelectHandleLeft="@color/red"
+                        android:textSelectHandleRight="@color/red"
+                        android:text="nx27277.your-storageshare.de"
                         android:inputType="textUri"
                         android:maxLines="1"
                         android:singleLine="true" />
@@ -92,6 +87,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_email"
                         android:inputType="textNoSuggestions"
+                        android:text="richard@open-archive.org"
                         android:maxLines="1"
                         android:singleLine="true" />
 
@@ -110,6 +106,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_password"
+                        android:text="D1etC0keD1etC0ke!"
                         android:imeActionId="6"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:imeOptions="actionUnspecified"

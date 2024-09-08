@@ -9,7 +9,7 @@ import org.json.JSONObject
 @SuppressLint("StaticFieldLeak")
 object Analytics {
 
-    const val NEW_BACKEND_ADDED = "new_backend_added"
+    const val NEW_BACKEND_CONNECTED = "new_backend_connected"
 
     private var mixpanel: MixpanelAPI? = null
 

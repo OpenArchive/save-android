@@ -51,8 +51,8 @@ data class Backend(
             Type.GDRIVE -> {
                 name = GDriveConduit.NAME
             }
-            Type.VEILID -> {
-                name = "Veilid"
+            Type.SNOWBIRD -> {
+                name = "Snowbird"
             }
             Type.UNKNOWN -> {
                 name = "Unknown"
@@ -65,7 +65,7 @@ data class Backend(
         WEBDAV(0, WebDavConduit.NAME),
         INTERNET_ARCHIVE(1, IaConduit.NAME),
         GDRIVE(4, GDriveConduit.NAME),
-        VEILID(5, "Veilid");
+        SNOWBIRD(5, "Snowbird");
 
         companion object {
             operator fun invoke(raw: Long): Type? = entries.firstOrNull { it.id == raw }
@@ -77,6 +77,7 @@ data class Backend(
             Backend(Backend.Type.INTERNET_ARCHIVE),
             Backend(Backend.Type.WEBDAV),
             Backend(Backend.Type.GDRIVE),
+            Backend(Backend.Type.SNOWBIRD),
         )
 
         fun getAll(): List<Backend> {
@@ -148,10 +149,10 @@ data class Backend(
         set(value) {
             licenseUrl = value
 
-            for (folder in folders) {
-                folder.licenseUrl = licenseUrl
-                folder.save()
-            }
+//            for (folder in folders) {
+//                folder.licenseUrl = licenseUrl
+//                folder.save()
+//            }
         }
 
     fun exists(): Boolean {
@@ -168,7 +169,12 @@ data class Backend(
     }
 
     val folders: List<Folder>
-        get() = find(Folder::class.java, "backend = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
+        get() {
+            if (id == null) {
+                return listOf()
+            }
+            return find(Folder::class.java, "backend = ? AND NOT archived", arrayOf(id.toString()), null, "id DESC", null)
+        }
 
     val archivedFolders: List<Folder>
         get() = find(Folder::class.java, "backend = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
@@ -192,6 +198,8 @@ data class Backend(
             Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ic_internet_archive)
 
             Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.logo_drive_2020q4_color_2x_web_64dp)
+
+            Type.SNOWBIRD -> ContextCompat.getDrawable(context, R.drawable.snowbird)
 
             else -> TextDrawable.builder().buildRound(initial, color)
         }

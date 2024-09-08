@@ -32,6 +32,10 @@ data class Folder(
         }
     }
 
+    fun hasBackend(): Boolean {
+        return (backend != null)
+    }
+
     companion object {
         var current: Folder?
             get() = getById(Prefs.currentFolderId)

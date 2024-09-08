@@ -4,17 +4,8 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
-import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
-import androidx.lifecycle.Lifecycle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -34,27 +25,27 @@ open class CommonServiceFragment : Fragment()  {
 
         accountManager = activity?.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager
 
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                // Nop
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    android.R.id.home -> {
-                        requireActivity().onBackPressedDispatcher.onBackPressed()
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                onBackPressed()
-            }
-        })
+//        requireActivity().addMenuProvider(object : MenuProvider {
+//            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+//                // Nop
+//            }
+//
+//            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+//                return when (menuItem.itemId) {
+//                    android.R.id.home -> {
+//                        requireActivity().onBackPressedDispatcher.onBackPressed()
+//                        true
+//                    }
+//                    else -> false
+//                }
+//            }
+//        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+//
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                onBackPressed()
+//            }
+//        })
     }
 
     fun accountExists(accountName: String, accountType: String): Boolean {
@@ -96,11 +87,7 @@ open class CommonServiceFragment : Fragment()  {
         accountManager.removeAccount(account, requireActivity(), null, null)
     }
 
-    open fun onBackPressed() {
-        setFragmentResult(RESP_CANCEL, bundleOf())
-    }
-
-    fun setActionBarTitle(title: String) {
-        (requireActivity() as? AppCompatActivity)?.supportActionBar?.title = title
-    }
+//    open fun onBackPressed() {
+//        setFragmentResult(RESP_CANCEL, bundleOf())
+//    }
 }

@@ -1,11 +1,11 @@
-package net.opendasharchive.openarchive.services.veilid
+package net.opendasharchive.openarchive.services.snowbird
 
 import android.content.Context
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.services.Conduit
 import timber.log.Timber
 
-class VeilidConduit (media: Media, context: Context) : Conduit(media, context) {
+class SnowbirdConduit (media: Media, context: Context) : Conduit(media, context) {
     override suspend fun upload(): Boolean {
         Timber.d("upload")
         return true

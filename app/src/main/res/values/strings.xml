@@ -30,7 +30,7 @@
     <string name="filecoin" translatable="false">Filecoin</string>
     <string name="gdrive_tm" translatable="false">Google Drive™</string>
     <string name="upload_to_gdrive">Upload to Google Drive</string>
-    <string name="sign_in_or_create_an_account_with_gdrive">Sign in or create an account with Google Drive</string>
+    <string name="sign_in_or_create_an_account_with_gdrive">Sign in or create an account\nwith Google Drive</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
 
@@ -117,7 +117,7 @@
     <string name="action_about">About %s</string>
     <string name="add_a_folder">Add a folder</string>
     <string name="browse_existing_folders">Browse existing folders</string>
-    <string name="browse_existing">Your Folders</string>
+    <string name="browse_existing">Your Media Storage</string>
     <string name="title_activity_upload_manager">Upload Manager</string>
 
     <string name="uploads">Uploads</string>
@@ -159,7 +159,7 @@
     <string name="info_archiveorg_keys"><b><i>Save</i></b> needs your Internet Archive account\'s API keys to be able to upload media.</string>
     <string name="action_acquire_keys">Acquire Keys</string>
     <string name="new_folder">Add Folder</string>
-    <string name="please_do_not_include_special_characters_in_the_name">Please do not include special characters in the name.</string>
+    <string name="please_do_not_include_special_characters_in_the_name">Please use only letters and numbers in the name.</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Are you sure you want to remove this server from the app?</string>
     <string name="folder_name_already_exists">Folder name already exists.</string>
     <string name="metadata">Metadata</string>

@@ -3,7 +3,6 @@ package net.opendasharchive.openarchive.extensions
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.backends.BackendSetupFragment
 
 private const val ARG_VAL_NEW_BACKEND = -1L
 
@@ -25,8 +24,8 @@ fun Bundle?.getBackend(type: Backend.Type): Pair<Backend, Boolean> {
     }
 }
 
-fun Bundle.getBackendType(): Backend.Type? {
-    return this.getLong(BackendSetupFragment.BACKEND_RESULT_BUNDLE_TYPE_KEY).let { rawType ->
-        Backend.Type(raw = rawType)
-    }
-}
+//fun Bundle.getBackendType(): Backend.Type? {
+//    return this.getLong(BackendSetupFragment.BACKEND_RESULT_BUNDLE_TYPE_KEY).let { rawType ->
+//        Backend.Type(raw = rawType)
+//    }
+//}

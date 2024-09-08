@@ -41,7 +41,7 @@
 //import net.opendasharchive.openarchive.db.Media
 //import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 //import net.opendasharchive.openarchive.features.core.BaseActivity
-//import net.opendasharchive.openarchive.features.folders.AddFolderActivity
+//import net.opendasharchive.openarchive.features.backends.AddFolderActivity
 //import net.opendasharchive.openarchive.features.media.AddMediaDialogFragment
 //import net.opendasharchive.openarchive.features.media.Picker
 //import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity

@@ -49,11 +49,12 @@ buildscript {
         }
     }
     dependencies {
+        classpath("com.testdroid:gradle:2.63.1")
         classpath("com.android.tools.build:gradle:8.5.2")
         classpath("com.neenbedankt.gradle.plugins:android-apt:1.8")
-        classpath("com.testdroid:gradle:2.63.1")
-        classpath("gradle.plugin.com.browserstack.gradle:browserstack-gradle-plugin:2.3.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.10")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.8.0")
+        classpath("gradle.plugin.com.browserstack.gradle:browserstack-gradle-plugin:2.3.1")
     }
 }
 

@@ -5,20 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:filterTouchesWhenObscured="true"
-    tools:context=".features.folders.BrowseFoldersActivity">
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:theme="@style/OAToolbar"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary" />
+    tools:context=".features.folders.BrowseFoldersFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_width="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/folder_list"

@@ -5,11 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
-import androidx.core.os.bundleOf
-import androidx.fragment.app.setFragmentResult
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.BackendResult
-import net.opendasharchive.openarchive.features.backends.BackendSetupFragment
 import net.opendasharchive.openarchive.extensions.bundleWithBackendId
 import net.opendasharchive.openarchive.extensions.bundleWithNewSpace
 import net.opendasharchive.openarchive.extensions.getBackend
@@ -36,10 +33,10 @@ class InternetArchiveFragment : CommonServiceFragment() {
     }
 
     private fun finish(result: BackendResult) {
-        Timber.d("IA result vbalue = $result")
-        setFragmentResult(
-            BackendSetupFragment.BACKEND_RESULT_REQUEST_KEY,
-            bundleOf(BackendSetupFragment.BACKEND_RESULT_BUNDLE_TYPE_KEY to Backend.Type.INTERNET_ARCHIVE))
+        Timber.d("IA result value = $result")
+//        setFragmentResult(
+//            BackendSetupFragment.BACKEND_RESULT_REQUEST_KEY,
+//            bundleOf(BackendSetupFragment.BACKEND_RESULT_BUNDLE_TYPE_KEY to Backend.Type.INTERNET_ARCHIVE))
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.services.veilid
+package net.opendasharchive.openarchive.services.snowbird
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,42 +9,41 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import net.opendasharchive.openarchive.databinding.FragmentVeilidGroupsBinding
-import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.databinding.FragmentShowbirdListGroupsBinding
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 
-class VeilidFoldersFragment : CommonServiceFragment(), VeilidFolderAdapterListener {
+class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterListener {
 
-    private lateinit var viewBinding: FragmentVeilidGroupsBinding
-    private val viewModel: VeilidFoldersViewModel by viewModels()
-    private lateinit var adapter: VeilidFolderAdapter
+    private lateinit var viewBinding: FragmentShowbirdListGroupsBinding
+    private val viewModel: SnowbirdGroupsViewModel by viewModels()
+    private lateinit var adapter: SnowbirdGroupsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewBinding = FragmentVeilidGroupsBinding.inflate(inflater)
+        viewBinding = FragmentShowbirdListGroupsBinding.inflate(inflater)
 
         createViewModel()
 
         return viewBinding.root
     }
 
-    override fun onBackPressed() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+//    override fun onBackPressed() {
+//        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+//
+//        builder
+//            .setTitle("Just a second")
+//            .setMessage("If you cancel you'll lose what you've configured so far. Go ahead?")
+//            .setPositiveButton("Yes") { dialog, which ->
+//                setFragmentResult(RESP_CANCEL, bundleOf())
+//            }
+//            .setNegativeButton("No") { dialog, which ->
+//                // Nop
+//            }
+//
+//        val dialog: AlertDialog = builder.create()
+//        dialog.show()
+//    }
 
-        builder
-            .setTitle("Just a second")
-            .setMessage("If you cancel you'll lose what you've configured so far. Go ahead?")
-            .setPositiveButton("Yes") { dialog, which ->
-                setFragmentResult(RESP_CANCEL, bundleOf())
-            }
-            .setNegativeButton("No") { dialog, which ->
-                // Nop
-            }
-
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
-    }
-
-    private fun createVeilidBackend(folder: Folder) {
+    private fun createSnowbirdBackend(group: SnowbirdGroup) {
 //        arguments?.getString("uri")?.also { uri ->
 //            val backend = Backend(type = Backend.Type.VEILID)
 //            backend.host = uri
@@ -64,7 +63,7 @@ class VeilidFoldersFragment : CommonServiceFragment(), VeilidFolderAdapterListen
     }
 
     private fun createViewModel() {
-        adapter = VeilidFolderAdapter(this)
+        adapter = SnowbirdGroupsAdapter(this)
 
         viewBinding.groupList.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.groupList.adapter = adapter
@@ -102,7 +101,7 @@ class VeilidFoldersFragment : CommonServiceFragment(), VeilidFolderAdapterListen
         dialog.show()
     }
 
-    override fun folderSelected(folder: Folder) {
-         createVeilidBackend(folder)
+    override fun groupSelected(group: SnowbirdGroup) {
+        createSnowbirdBackend(group)
     }
 }

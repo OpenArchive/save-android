@@ -47,7 +47,7 @@
     <color name="c23_medium_grey">#ff696666</color>
     <color name="c23_grey">#ff9f9f9f</color>
     <color name="c23_light_grey">#ffe3e3e4</color>
-    <color name="c23_teal_100">#ff00ffeb</color> <!-- h=175,3 s=100 v=100 -->
+    <color name="c23_teal_100">#FF5722</color> <!-- h=175,3 s=100 v=100 -->
     <color name="c23_teal_90">#ff00e7d5</color> <!-- v=90.6 -->
     <color name="c23_teal_80">#ff00cebe</color> <!-- v=80.6 -->
     <color name="c23_teal">#ff00b4a6</color> <!-- v=70.6 -->

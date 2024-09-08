@@ -57,7 +57,7 @@
         Trail of bits ticket: https://github.com/OpenArchive/OA-Trail-of-Bits/issues/23
         -->
         <activity
-            android:name=".features.folders.BrowseFoldersActivity"
+            android:name=".features.folders.BrowseFoldersFragment"
             android:exported="false"
             android:label="@string/browse_existing"
             android:taskAffinity=""
@@ -108,12 +108,6 @@
             android:name=".features.internetarchive.presentation.InternetArchiveActivity"
             android:label="@string/title_activity_login"
             android:taskAffinity="" />
-        <activity android:name=".services.gdrive.GDriveActivity"
-            android:launchMode="singleTop" />
-        <activity
-            android:name=".features.folders.FoldersActivity"
-            android:exported="false"
-            android:label="@string/folders" />
         <activity
             android:name=".features.settings.ProofModeSettingsActivity"
             android:exported="false"
@@ -136,7 +130,7 @@
             android:taskAffinity=""
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".features.backends.BackendMetadataActivity"
+            android:name=".features.backends.BackendMetadataFragment"
             android:exported="false"
             android:taskAffinity="" />
         <activity
@@ -164,12 +158,12 @@
             android:noHistory="true"
             android:taskAffinity="" />
         <activity
-            android:name=".features.folders.CreateNewFolderActivity"
+            android:name=".features.folders.CreateNewFolderFragment"
             android:label="@string/new_folder"
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".features.folders.AddFolderActivity"
+            android:name=".features.backends.BackendSelectionFragment"
             android:taskAffinity=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

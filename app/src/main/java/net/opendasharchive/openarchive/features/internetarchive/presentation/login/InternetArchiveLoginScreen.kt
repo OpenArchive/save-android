@@ -41,10 +41,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -108,6 +111,7 @@ fun InternetArchiveLoginScreen(backend: Backend, onResult: (BackendResult) -> Un
 @Composable
 private fun InternetArchiveLoginContent(state: InternetArchiveLoginState, dispatch: Dispatch<Action>) {
     val localColors = LocalColors.current
+    val focusRequester = remember { FocusRequester() }
 
     // If extra paranoid could pre-hash password in memory
     // and use the store/dispatcher
@@ -116,6 +120,8 @@ private fun InternetArchiveLoginContent(state: InternetArchiveLoginState, dispat
     }
 
     LaunchedEffect(state.isLoginError) {
+        focusRequester.requestFocus()
+
         while (state.isLoginError) {
             delay(3000)
             dispatch(Action.ErrorClear)
@@ -184,7 +190,7 @@ private fun InternetArchiveLoginContent(state: InternetArchiveLoginState, dispat
                     unfocusedBorderColor = Color.Gray,
                 ),
                 isError = state.isUsernameError,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester)
             )
 
             Spacer(Modifier.height(ThemeDimensions.spacing.large))

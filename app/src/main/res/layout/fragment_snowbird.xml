@@ -12,45 +12,38 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/header_container"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/veilid_logo"
+                android:id="@+id/snowbird_logo"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/ic_veilid"
-                android:contentDescription="Veilid"
+                android:background="@drawable/snowbird"
+                android:contentDescription="Snowbird"
                 app:iconSize="50dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/help_text_header"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:text="Veilid"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@id/help_text_subheader"
-                app:layout_constraintStart_toEndOf="@id/veilid_logo"
-                app:layout_constraintTop_toTopOf="@id/veilid_logo" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:id="@+id/help_text_subheader"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:lines="1"
-                android:text="Connect to the veilid!"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:lines="3"
+                android:text="Snowbird is Open Archive's decentralized web service built with Iroh and Veilid."
                 android:textColor="@color/colorSectionHeaderText"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/veilid_logo"
-                app:layout_constraintStart_toStartOf="@id/help_text_header" />
+                app:layout_constraintStart_toEndOf="@id/snowbird_logo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -79,10 +72,10 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            style="@style/OAMaterialButtonStyle"
+            style="@style/OAMaterialSignInButtonStyle"
             android:id="@+id/ok_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginTop="20dp"
             android:enabled="false"
             android:text="Next"
