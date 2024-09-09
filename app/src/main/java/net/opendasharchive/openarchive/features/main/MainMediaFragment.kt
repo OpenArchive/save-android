@@ -80,6 +80,12 @@ class MainMediaFragment : Fragment() {
             val action = BroadcastManager.getAction(intent) ?: return
 
             when (action) {
+                BroadcastManager.Action.Add -> {
+                    handler.post {
+                        refresh()
+                    }
+                }
+
                 BroadcastManager.Action.Change -> {
                     handler.post {
                         updateItem(action.collectionId, action.mediaId, action.progress)

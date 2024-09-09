@@ -29,7 +29,7 @@ class MediaAdapter(
     var media: ArrayList<Media> = ArrayList(data)
         private set
 
-    var doImageFade = true
+    var doImageFade = false
 
     var isEditMode = false
 

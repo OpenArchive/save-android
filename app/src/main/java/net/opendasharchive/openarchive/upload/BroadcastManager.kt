@@ -9,6 +9,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 object BroadcastManager {
 
     enum class Action(val id: String, var collectionId: Long = -1, var mediaId: Long = -1, var progress: Long = -1) {
+        Add("media_add_intent"),
         Change("media_change_intent"),
         Delete("media_delete_intent")
     }

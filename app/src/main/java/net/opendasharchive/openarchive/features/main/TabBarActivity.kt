@@ -34,6 +34,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.Picker.pickMedia
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
+import net.opendasharchive.openarchive.upload.BroadcastManager.Action
 import net.opendasharchive.openarchive.util.Prefs
 import org.aviran.cookiebar2.CookieBar
 import timber.log.Timber
@@ -79,6 +80,11 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
         val launchers = Picker.register(this, binding.root, { Folder.current }, { media ->
             Timber.d("media = $media")
+
+            val i = Intent(Action.Add.id)
+
+            LocalBroadcastManager.getInstance(this).sendBroadcastSync(i)
+
 //            if (media.isNotEmpty()) {
 //                preview()
 //            }
