@@ -194,10 +194,11 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="OAMediaSelectionButtonStyle" parent="Widget.MaterialComponents.Button">
+    <style name="OAMediaSelectionButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_margin">10dp</item>
         <item name="android:textColor">@color/colorOnPrimary</item>
         <item name="android:background">@drawable/button</item>
+        <item name="backgroundTint">@null</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
