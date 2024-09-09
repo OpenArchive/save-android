@@ -4,19 +4,19 @@
     android:filterTouchesWhenObscured="true"
     tools:context=".features.main.MainActivity">
 
-    <item
-        android:id="@+id/menu_edit"
-        android:icon="@drawable/ic_edit_unselected"
-        android:iconTint="@color/colorOnBackground"
-        android:title="Edit"
-        android:visible="true" />
+<!--    <item-->
+<!--        android:id="@+id/menu_edit"-->
+<!--        android:icon="@drawable/ic_edit_unselected"-->
+<!--        android:iconTint="@color/colorOnBackground"-->
+<!--        android:title="Edit"-->
+<!--        android:visible="true" />-->
 
-    <item
-        android:id="@+id/menu_hide"
-        android:icon="@drawable/outline_perm_media_24"
-        android:iconTint="@color/colorOnBackground"
-        android:title="Hide"
-        android:visible="true" />
+<!--    <item-->
+<!--        android:id="@+id/menu_hide"-->
+<!--        android:icon="@drawable/outline_perm_media_24"-->
+<!--        android:iconTint="@color/colorOnBackground"-->
+<!--        android:title="Hide"-->
+<!--        android:visible="true" />-->
 
     <item
         android:id="@+id/menu_remove"

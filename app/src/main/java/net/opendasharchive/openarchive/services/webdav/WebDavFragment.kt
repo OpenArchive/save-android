@@ -17,8 +17,9 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentWebdavBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.folders.NewFolderViewModel
-import net.opendasharchive.openarchive.features.folders.WizardNavigationAction
+import net.opendasharchive.openarchive.features.folders.NewFolderDataViewModel
+import net.opendasharchive.openarchive.features.folders.NewFolderNavigationAction
+import net.opendasharchive.openarchive.features.folders.NewFolderNavigationViewModel
 import net.opendasharchive.openarchive.services.SaveClient
 import net.opendasharchive.openarchive.util.Utility.showMaterialWarning
 import okhttp3.Call
@@ -38,7 +39,8 @@ class WebDavFragment : Fragment() {
 
     private lateinit var binding: FragmentWebdavBinding
     private lateinit var backend: Backend
-    private val newFolderViewModel: NewFolderViewModel by activityViewModels()
+    private val newFolderDataViewModel: NewFolderDataViewModel by activityViewModels()
+    private val newFolderNavigationViewModel: NewFolderNavigationViewModel by activityViewModels()
 
     companion object {
         // factory method parameters (bundle args)
@@ -100,8 +102,8 @@ class WebDavFragment : Fragment() {
             false
         }
 
-        newFolderViewModel.observeNavigation(viewLifecycleOwner) { action ->
-            if (action == WizardNavigationAction.UserAuthenticated) {
+        newFolderNavigationViewModel.observeNavigation(viewLifecycleOwner) { action ->
+            if (action == NewFolderNavigationAction.UserAuthenticated) {
                 findNavController().navigate(WebDavFragmentDirections.navigationSegueToBackendMetadata())
             }
         }
@@ -207,8 +209,11 @@ class WebDavFragment : Fragment() {
     }
 
     private fun signalSuccess() {
-        newFolderViewModel.backend = backend
-        newFolderViewModel.triggerNavigation(WizardNavigationAction.UserAuthenticated)
+        newFolderDataViewModel.updateFolder { folder ->
+            folder.copy(backend = backend)
+        }
+
+        newFolderNavigationViewModel.triggerNavigation(NewFolderNavigationAction.UserAuthenticated)
     }
 
     private fun enableIfReady() {

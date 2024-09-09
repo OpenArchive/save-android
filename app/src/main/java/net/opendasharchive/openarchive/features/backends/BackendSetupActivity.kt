@@ -11,7 +11,7 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.folders.NewFolderViewModel
+import net.opendasharchive.openarchive.features.folders.NewFolderNavigationViewModel
 import timber.log.Timber
 
 
@@ -20,7 +20,7 @@ class BackendSetupActivity : BaseActivity() {
     private lateinit var binding: ActivityBackendSetupBinding
     private lateinit var navController: NavController
     private lateinit var navGraph: NavGraph
-    private val newFolderViewModel: NewFolderViewModel by viewModels()
+    private val newFolderNavigationViewModel: NewFolderNavigationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

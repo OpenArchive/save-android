@@ -15,8 +15,8 @@ import androidx.transition.TransitionManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.db.Folder
-import net.opendasharchive.openarchive.features.folders.NewFolderViewModel
+import net.opendasharchive.openarchive.features.folders.NewFolderDataViewModel
+import net.opendasharchive.openarchive.features.folders.NewFolderNavigationViewModel
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import timber.log.Timber
 
@@ -34,7 +34,8 @@ class BackendSelectionFragment : Fragment() {
             ItemAction.SELECTED -> connectToExistingBackend(backend)
         }
     }
-    private val newFolderViewModel: NewFolderViewModel by activityViewModels()
+    private val newFolderDataViewModel: NewFolderDataViewModel by activityViewModels()
+    private val newFolderNavigationViewModel: NewFolderNavigationViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentBackendSelectionBinding.inflate(inflater)
@@ -78,7 +79,9 @@ class BackendSelectionFragment : Fragment() {
     }
 
     private fun connectToExistingBackend(backend: Backend) {
-        newFolderViewModel.folder = Folder(backend = backend)
+        newFolderDataViewModel.updateFolder { folder ->
+            folder.copy(backend = backend)
+        }
 
         findNavController().navigate(BackendSelectionFragmentDirections.navigationSegueCreateNewFolder())
     }

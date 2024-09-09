@@ -79,7 +79,7 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
                 menuInflater.inflate(R.menu.menu_backend_context, menu)
 
                 if (backend.isCurrent) {
-                    menu.findItem(R.id.menu_delete).isVisible = false
+                    menu.findItem(R.id.menu_remove).isVisible = false
                 }
 
                 setOnMenuItemClickListener { item ->
@@ -89,7 +89,7 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
                             true
                         }
 
-                        R.id.menu_delete -> {
+                        R.id.menu_remove -> {
                             onItemAction?.invoke(backend, ItemAction.REQUEST_REMOVE)
                             true
                         }

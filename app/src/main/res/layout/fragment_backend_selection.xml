@@ -1,90 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:filterTouchesWhenObscured="true"
-    android:orientation="vertical"
-    tools:context=".features.backends.BackendSelectionFragment">
+    android:layout_height="match_parent">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/select_where_to_store_your_media"
+            android:textColor="@color/colorOnBackgroundTonedDown"
+            android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="@string/select_where_to_store_your_media"
-                android:textColor="@color/colorOnBackgroundTonedDown"
-                android:textSize="18sp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/backend_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/backend_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <View
+                android:id="@+id/or_1"
+                android:layout_width="30dp"
+                android:layout_height="1dp"
+                android:background="@color/colorOnBackgroundTonedDown"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/or_2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/or_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_gravity="center">
+                android:text="OR"
+                android:textColor="@color/colorOnBackgroundTonedDown"
+                android:gravity="center"
+                app:layout_constraintStart_toEndOf="@id/or_1"
+                app:layout_constraintEnd_toStartOf="@id/or_3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
-                <View
-                    android:id="@+id/or_1"
-                    android:layout_width="30dp"
-                    android:layout_height="1dp"
-                    android:background="@color/colorOnBackgroundTonedDown"
-                    android:layout_marginEnd="5dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/or_2"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+            <View
+                android:id="@+id/or_3"
+                android:layout_width="30dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="5dp"
+                android:background="@color/colorOnBackgroundTonedDown"
+                app:layout_constraintStart_toEndOf="@id/or_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/or_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="OR"
-                    android:textColor="@color/colorOnBackgroundTonedDown"
-                    android:gravity="center"
-                    app:layout_constraintStart_toEndOf="@id/or_1"
-                    app:layout_constraintEnd_toStartOf="@id/or_3"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:id="@+id/or_3"
-                    android:layout_width="30dp"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="5dp"
-                    android:background="@color/colorOnBackgroundTonedDown"
-                    app:layout_constraintStart_toEndOf="@id/or_2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/connect_new_media_server_button"
-                style="@style/OAMaterialSignInButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="30dp"
-                android:enabled="true"
-                android:text="Connect New Media Server" />
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/connect_new_media_server_button"
+            style="@style/OAMaterialSignInButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="30dp"
+            android:enabled="true"
+            android:text="Connect New Media Server" />
+    </LinearLayout>
+</ScrollView>

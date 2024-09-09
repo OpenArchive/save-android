@@ -31,7 +31,7 @@ class BrowseFoldersFragment : Fragment() {
     private lateinit var binding: FragmentBrowseFoldersBinding
     private lateinit var viewModel: BrowseFoldersViewModel
     private lateinit var adapter: BrowseFoldersAdapter
-    private val newFolderViewModel: NewFolderViewModel by activityViewModels()
+    private val newFolderNavigationViewModel: NewFolderNavigationViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentBrowseFoldersBinding.inflate(layoutInflater)

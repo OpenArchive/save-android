@@ -11,7 +11,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -20,14 +22,14 @@ import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentGdriveSignInBinding
 import net.opendasharchive.openarchive.db.Backend
+import net.opendasharchive.openarchive.features.folders.NewFolderDataViewModel
 import net.opendasharchive.openarchive.services.CommonServiceFragment
+import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
@@ -36,6 +38,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
     private lateinit var binding: FragmentGdriveSignInBinding
     private lateinit var gso: GoogleSignInOptions
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val newFolderDataViewModel: NewFolderDataViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentGdriveSignInBinding.inflate(inflater)
@@ -113,7 +116,41 @@ class GDriveSignInFragment : CommonServiceFragment() {
             val signInIntent = googleSignInClient.signInIntent
             signInLauncher.launch(signInIntent)
         }
+    }
 
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        MainScope().launch {
+            val backend = Backend(Backend.Type.GDRIVE)
+            val account = completedTask.getResult(ApiException::class.java)
+
+            backend.displayname = account.email ?: ""
+
+            if (GDriveConduit.permissionsGranted(requireContext())) {
+                backend.save()
+                updateWorkingFolder(backend)
+                Analytics.log(Analytics.NEW_BACKEND_CONNECTED, mutableMapOf("type" to backend.name))
+                findNavController().navigate(GDriveSignInFragmentDirections.navigationSegueToFolderCreation())
+            } else {
+                Timber.d("Permissions not granted")
+                showWarning()
+            }
+        }
+    }
+
+    private fun updateWorkingFolder(backend: Backend) {
+        newFolderDataViewModel.updateFolder { folder ->
+            folder.copy(backend = backend)
+        }
+    }
+
+    private fun authFailed(errorMessage: String?) {
+        MainScope().launch {
+            errorMessage?.let {
+                binding.error.text = errorMessage
+                binding.error.visibility = View.VISIBLE
+            }
+            binding.btAuthenticate.isEnabled = true
+        }
     }
 
     private fun promptUserToSignOut() {
@@ -127,45 +164,22 @@ class GDriveSignInFragment : CommonServiceFragment() {
                 switchAccounts()
             } else {
                 binding.btAuthenticate.isEnabled = true
-                setFragmentResult(RESP_CANCEL, bundleOf())
             }
         }
     }
 
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val backend = Backend(Backend.Type.GDRIVE)
-            val account = completedTask.getResult(ApiException::class.java)
-
-            backend.displayname = account.email ?: ""
-
-            if (GDriveConduit.permissionsGranted(requireContext())) {
-                if (backend.exists()) {
-                    Timber.d("Account already exists")
-                    setFragmentResult(RESP_CANCEL, bundleOf())
-                } else {
-                    setFragmentResult(RESP_CREATED, bundleOf())
-                }
+    private fun showWarning() {
+        Utility.showMaterialPrompt(
+            context = requireContext(),
+            title = "Oops",
+            message = "We will need permissions to access your GDrive in order to store your media there. Would you like to grant permissions?",
+            positiveButtonText = "Yes",
+            negativeButtonText = "No") { affirm ->
+            if (affirm) {
+                signIn()
             } else {
-                Timber.d("Permissions not granted")
-                setFragmentResult(RESP_CANCEL, bundleOf())
+                binding.btAuthenticate.isEnabled = true
             }
-        }
-    }
-
-//    private fun openFolderBroswerActivityForBackend(backend: Backend) {
-//        val intent = Intent(requireActivity(), BrowseFoldersActivity::class.java)
-//        intent.putExtra("BACKEND_ID", backend.id)
-//        resultLauncher.launch(intent)
-//    }
-
-    private fun authFailed(errorMessage: String?) {
-        MainScope().launch {
-            errorMessage?.let {
-                binding.error.text = errorMessage
-                binding.error.visibility = View.VISIBLE
-            }
-            binding.btAuthenticate.isEnabled = true
         }
     }
 }

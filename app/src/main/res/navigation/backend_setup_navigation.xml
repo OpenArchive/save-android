@@ -106,7 +106,15 @@
     <fragment
         android:id="@+id/gdrive"
         android:name="net.opendasharchive.openarchive.services.gdrive.GDriveSignInFragment"
-        android:label="@string/gdrive"/>
+        android:label="@string/gdrive">
+        <action
+            android:id="@+id/navigation_segue_to_folder_creation"
+            app:destination="@id/createNewFolderFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/fade_out" />
+    </fragment>
     <fragment
         android:id="@+id/private_server"
         android:name="net.opendasharchive.openarchive.services.webdav.WebDavFragment"
