@@ -1,6 +1,6 @@
 package net.opendasharchive.openarchive.features.settings
 
-import net.opendasharchive.openarchive.databinding.ContentCcBinding
+import net.opendasharchive.openarchive.databinding.CcBackendBinding
 import net.opendasharchive.openarchive.util.extensions.openBrowser
 import net.opendasharchive.openarchive.util.extensions.styleAsLink
 import net.opendasharchive.openarchive.util.extensions.toggle
@@ -10,7 +10,7 @@ object CcSelector {
     private const val CC_DOMAIN = "creativecommons.org"
     private const val CC_URL = "https://%s/licenses/%s/4.0/"
 
-    fun init(cc: ContentCcBinding, license: String? = null, enabled: Boolean = true, update: ((license: String?) -> Unit)? = null) {
+    fun init(cc: CcBackendBinding, license: String? = null, enabled: Boolean = true, update: ((license: String?) -> Unit)? = null) {
         set(cc, license, enabled)
 
         cc.swCc.setOnCheckedChangeListener { _, isChecked ->
@@ -50,7 +50,7 @@ object CcSelector {
         }
     }
 
-    fun set(cc: ContentCcBinding, license: String?, enabled: Boolean = true) {
+    fun set(cc: CcBackendBinding, license: String?, enabled: Boolean = true) {
         val isCc = license?.contains(CC_DOMAIN, true) ?: false
 
         cc.swCc.isChecked = isCc
@@ -70,7 +70,7 @@ object CcSelector {
         cc.swNc.isEnabled = enabled
     }
 
-    fun get(cc: ContentCcBinding): String? {
+    fun get(cc: CcBackendBinding): String? {
         var license: String? = null
 
         if (cc.swCc.isChecked) {
@@ -106,7 +106,7 @@ object CcSelector {
         return license
     }
 
-    private fun toggle(cc: ContentCcBinding, value: Boolean) {
+    private fun toggle(cc: CcBackendBinding, value: Boolean) {
         cc.row1.toggle(value)
         cc.row2.toggle(value)
         cc.row3.toggle(value)

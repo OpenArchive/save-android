@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentConnectNewBackendBinding
 import net.opendasharchive.openarchive.db.Backend
@@ -15,14 +17,13 @@ import net.opendasharchive.openarchive.util.SpacingItemDecoration
 
 class ConnectNewBackend : Fragment() {
     private lateinit var viewBinding: FragmentConnectNewBackendBinding
-
-    private val adapter = BackendAdapter { backend, action ->
+    private val viewModel: BackendListViewModel by viewModels()
+    private val adapter = BackendAdapter { _, backend, action ->
         when (action) {
             ItemAction.SELECTED -> showAuthScreenFor(backend)
             else -> Unit
         }
     }
-    private val viewModel: BackendViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentConnectNewBackendBinding.inflate(inflater)
@@ -50,19 +51,20 @@ class ConnectNewBackend : Fragment() {
 
     private fun showAuthScreenFor(backend: Backend) {
         val nextScreen = when (backend.type) {
-            Backend.Type.GDRIVE.id -> ConnectNewBackendDirections.navigationSegueToGdrive()
-            Backend.Type.INTERNET_ARCHIVE.id -> ConnectNewBackendDirections.navigationSegueToInternetArchive()
-            Backend.Type.WEBDAV.id -> ConnectNewBackendDirections.navigationSegueToPrivateServer()
-            Backend.Type.SNOWBIRD.id -> ConnectNewBackendDirections.navigationSegueToSnowbird()
-            else -> ConnectNewBackendDirections.navigationSegueToSnowbird()
+            Backend.Type.GDRIVE.id -> ConnectNewBackendDirections.navigateToGdriveScreen()
+            Backend.Type.INTERNET_ARCHIVE.id -> ConnectNewBackendDirections.navigateToInternetArchiveScreen()
+            Backend.Type.WEBDAV.id -> ConnectNewBackendDirections.navigateToPrivateServerScreen()
+            Backend.Type.SNOWBIRD.id -> ConnectNewBackendDirections.navigateToSnowbirdScreen()
+            else -> ConnectNewBackendDirections.navigateToSnowbirdScreen()
         }
 
         findNavController().navigate(nextScreen)
     }
 
+    private fun playServicesAvailable(): Boolean {
+        return GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(requireContext()) == ConnectionResult.SUCCESS
+    }
 
-//        val powerMenu = PowerMenu.Builder(this).build()
-//        powerMenu.showAsDropDown(view)
 
     //    private fun handleGoogle() {
 //        val hasPerms = GDriveConduit.permissionsGranted(this)

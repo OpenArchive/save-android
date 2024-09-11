@@ -42,7 +42,7 @@ data class Media(
 
     @Expose
     @SerializedName("usage")
-    var licenseUrl: String? = null,
+    var license: String? = null,
 
     var mediaHash: ByteArray = byteArrayOf(),
 

@@ -41,8 +41,13 @@ import timber.log.Timber
 
 class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private enum class Screen {
-        MEDIA, SETTINGS
+    enum class Screen(val value: Int) {
+        MEDIA(1),
+        SETTINGS(2);
+
+        companion object {
+            fun fromInt(value: Int) = entries.first { it.value == value }
+        }
     }
 
     private lateinit var binding: ActivityTabBarBinding
@@ -119,13 +124,17 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
             }
         }
 
-        updateNavBar()
-
         LocalBroadcastManager
             .getInstance(this)
             .registerReceiver(onWifiStatusChanged, IntentFilter(Prefs.UPLOAD_WIFI_ONLY))
 
         wifiIssueIndicator?.setVisible(false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        updateNavBar()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -156,6 +165,26 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        Timber.d("Restoring state")
+
+        val previousScreen = savedInstanceState.getInt("VISIBLE_SCREEN")
+
+        if (previousScreen != 0) {
+            visibleScreen = Screen.fromInt(previousScreen)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        Timber.d("Saving state")
+
+        outState.putInt("VISIBLE_SCREEN", visibleScreen.value)
     }
 
     override fun onStart() {

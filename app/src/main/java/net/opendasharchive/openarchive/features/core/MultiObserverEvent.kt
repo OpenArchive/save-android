@@ -38,7 +38,7 @@ class MultiObserverLiveData<T> : MutableLiveData<MultiObserverEvent<T>>() {
         postValue(MultiObserverEvent(value))
     }
 
-    fun setEvent(value: T) {
-        setValue(MultiObserverEvent(value))
-    }
+//    fun setEvent(value: T) {
+//        setValue(MultiObserverEvent(value))
+//    }
 }

@@ -40,7 +40,7 @@ class EditFolderActivity : BaseActivity() {
                 val newName = mBinding.folderName.text.toString()
 
                 if (newName.isNotBlank()) {
-                    mFolder.description = newName
+                    mFolder.name = newName
                     mFolder.save()
 
                     supportActionBar?.title = newName
@@ -61,7 +61,7 @@ class EditFolderActivity : BaseActivity() {
         }
 
         CcSelector.init(mBinding.cc, null) {
-            mFolder.licenseUrl = it
+            mFolder.license = it
             mFolder.save()
         }
 
@@ -86,11 +86,11 @@ class EditFolderActivity : BaseActivity() {
     }
 
     private fun updateUi() {
-        supportActionBar?.title = mFolder.description
+        supportActionBar?.title = mFolder.name
 
         mBinding.folderName.isEnabled = !mFolder.isArchived
-        mBinding.folderName.hint = mFolder.description
-        mBinding.folderName.setText(mFolder.description)
+        mBinding.folderName.hint = mFolder.name
+        mBinding.folderName.setText(mFolder.name)
 
         mBinding.btArchive.setText(if (mFolder.isArchived)
             R.string.action_unarchive_project else
@@ -102,7 +102,7 @@ class EditFolderActivity : BaseActivity() {
             mBinding.cc.tvCc.setText(R.string.set_the_same_creative_commons_license_for_all_folders_on_this_server)
         }
 
-        CcSelector.set(mBinding.cc, mFolder.licenseUrl, !mFolder.isArchived && !global)
+        CcSelector.set(mBinding.cc, mFolder.license, !mFolder.isArchived && !global)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

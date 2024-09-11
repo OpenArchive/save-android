@@ -3,7 +3,6 @@ package net.opendasharchive.openarchive.services.snowbird
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,9 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.google.zxing.integration.android.IntentResult
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdBinding
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
+import net.opendasharchive.openarchive.services.webdav.ReadyToAuthTextWatcher
 import timber.log.Timber
+
 
 class SnowbirdFragment : Fragment() {
 
@@ -42,31 +43,19 @@ class SnowbirdFragment : Fragment() {
         viewBinding.serverUri.requestFocus()
     }
 
+    private fun enableIfReady() {
+        val isComplete = !viewBinding.serverUri.text.isNullOrEmpty()
+
+        viewBinding.okButton.isEnabled = isComplete
+    }
+
     private fun pushSnowbirdGroupSelectionFragment(uri: String) {
-//        val frag = SnowbirdGroupsFragment()
-//
-//        val args = Bundle()
-//        args.putString("uri", uri)
-//        frag.arguments = args
-//
-//        val fragmentManager = requireActivity().supportFragmentManager
-//
-//        val transaction = fragmentManager.beginTransaction()
     }
 
     private fun setupTextListener() {
-        viewBinding.serverUri.addTextChangedListener(object : TextWatcher {
+        viewBinding.serverUri.addTextChangedListener(object : ReadyToAuthTextWatcher() {
             override fun afterTextChanged(s: Editable?) {
-                // Enable the button if there's text, disable it if it's empty
-                viewBinding.okButton.isEnabled = !s.isNullOrEmpty()
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Not needed for this implementation
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Not needed for this implementation
+                enableIfReady()
             }
         })
     }

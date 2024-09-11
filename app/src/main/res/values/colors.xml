@@ -120,5 +120,6 @@
     <color name="splashBackground">#e5e5e5</color>
     <color name="tabBarMenuButton">@color/eigengrau</color>
     <color name="swipeBackground">@color/c24_cream_80</color>
+    <color name="colorRipple">#bbe3e3e4</color>
 
 </resources>

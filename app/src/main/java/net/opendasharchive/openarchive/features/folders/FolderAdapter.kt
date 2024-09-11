@@ -25,7 +25,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, Fold
     class ViewHolder(private val binding: OneLineRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(listener: WeakReference<FolderAdapterListener>?, folder: Folder?) {
-            binding.button.setTitle(folder?.description)
+            binding.button.setTitle(folder?.name)
 
             if (listener?.get()?.getSelectedProject()?.id == folder?.id) {
                 val icon = ContextCompat.getDrawable(binding.button.context,
@@ -68,7 +68,7 @@ class FolderAdapter(listener: FolderAdapterListener?) : ListAdapter<Folder, Fold
             }
 
             override fun areContentsTheSame(oldItem: Folder, newItem: Folder): Boolean {
-                return oldItem.description == newItem.description
+                return oldItem.name == newItem.name
             }
         }
 

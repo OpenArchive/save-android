@@ -12,7 +12,6 @@ import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.folders.NewFolderNavigationViewModel
-import timber.log.Timber
 
 
 class BackendSetupActivity : BaseActivity() {
@@ -35,15 +34,6 @@ class BackendSetupActivity : BaseActivity() {
         if (savedInstanceState == null) {
             setupNavigation()
         }
-
-//        newFolderViewModel.observeNavigation(this) { action ->
-//            Timber.d("Action $action completed")
-//
-//            if (action == WizardNavigationAction.FolderCreated) {
-//                Timber.d("YAY")
-////                navController.navigate(R.id.browseFoldersFragment)
-//            }
-//        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -63,9 +53,7 @@ class BackendSetupActivity : BaseActivity() {
     }
 
     private fun showTheCorrectFragment() {
-        Timber.d("is empty? ${Backend.getAll().isEmpty()}")
-
-        navGraph.setStartDestination(if (Backend.getAll().isEmpty()) R.id.connectNewBackendFragment else R.id.browseFoldersFragment)
+        navGraph.setStartDestination(if (Backend.getAll().isEmpty()) R.id.connect_new_backend_screen else R.id.browse_folders_screen)
         navController.graph = navGraph
     }
 }

@@ -1,7 +1,9 @@
 package net.opendasharchive.openarchive.features.folders
 
 import android.annotation.SuppressLint
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +15,7 @@ import net.opendasharchive.openarchive.db.Folder
 import java.text.SimpleDateFormat
 
 typealias OnFolderSelectedCallback = (folder: Folder) -> Unit
+typealias OnFolderLongPressCallback = (folder: Folder, view: View) -> Unit
 
 sealed class ListItem {
     data class SectionHeader(val backend: Backend) : ListItem()
@@ -40,15 +43,16 @@ class HeaderViewHolder(
 
 class ContentViewHolder(
     private val binding: LayoutFolderRowBinding,
-    private val onClick: OnFolderSelectedCallback) : RecyclerView.ViewHolder(binding.root) {
+    private val onClick: OnFolderSelectedCallback,
+    private val onLongPress: OnFolderLongPressCallback) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         private val formatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM) //.getDateTimeInstance(SimpleDateFormat.LONG, SimpleDateFormat.)
 
-        fun from(parent: ViewGroup, onClick: OnFolderSelectedCallback): ContentViewHolder {
+        fun from(parent: ViewGroup, onClick: OnFolderSelectedCallback, onLongPress: OnFolderLongPressCallback): ContentViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = LayoutFolderRowBinding.inflate(layoutInflater, parent, false)
-            return ContentViewHolder(binding, onClick)
+            return ContentViewHolder(binding, onClick, onLongPress)
         }
     }
 
@@ -58,7 +62,7 @@ class ContentViewHolder(
         folder = item.folder
 
         binding.apply {
-            name.text = folder.description
+            name.text = folder.name
             timestamp.text = "Created: " + formatter.format(folder.created)
 
             root.setOnClickListener {
@@ -71,11 +75,17 @@ class ContentViewHolder(
             }
 
             currentFolderCount.text = folder.collections.size.toString()
+
+            root.setOnLongClickListener { view ->
+                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                onLongPress.invoke(folder, binding.root)
+                true
+            }
         }
     }
 }
 
-class BrowseFoldersAdapter(private val onClick: OnFolderSelectedCallback) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class BrowseFoldersAdapter(private val onClick: OnFolderSelectedCallback, private val onLongPress: OnFolderLongPressCallback) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val VIEW_TYPE_HEADER = 0
@@ -96,7 +106,7 @@ class BrowseFoldersAdapter(private val onClick: OnFolderSelectedCallback) : Recy
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder.from(parent)
-            VIEW_TYPE_CONTENT -> ContentViewHolder.from(parent, onClick)
+            VIEW_TYPE_CONTENT -> ContentViewHolder.from(parent, onClick, onLongPress)
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }

@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentGdriveSignInBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.folders.NewFolderDataViewModel
+import net.opendasharchive.openarchive.features.folders.FolderViewModel
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Utility
@@ -38,7 +38,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
     private lateinit var binding: FragmentGdriveSignInBinding
     private lateinit var gso: GoogleSignInOptions
     private lateinit var googleSignInClient: GoogleSignInClient
-    private val newFolderDataViewModel: NewFolderDataViewModel by activityViewModels()
+    private val folderViewModel: FolderViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentGdriveSignInBinding.inflate(inflater)
@@ -129,7 +129,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
                 backend.save()
                 updateWorkingFolder(backend)
                 Analytics.log(Analytics.NEW_BACKEND_CONNECTED, mutableMapOf("type" to backend.name))
-                findNavController().navigate(GDriveSignInFragmentDirections.navigationSegueToFolderCreation())
+                findNavController().navigate(GDriveSignInFragmentDirections.navigateToCreateNewFolderScreen())
             } else {
                 Timber.d("Permissions not granted")
                 showWarning()
@@ -138,7 +138,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
     }
 
     private fun updateWorkingFolder(backend: Backend) {
-        newFolderDataViewModel.updateFolder { folder ->
+        folderViewModel.updateFolder { folder ->
             folder.copy(backend = backend)
         }
     }

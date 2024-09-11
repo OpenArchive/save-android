@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
@@ -31,7 +30,6 @@ class BrowseFoldersFragment : Fragment() {
     private lateinit var binding: FragmentBrowseFoldersBinding
     private lateinit var viewModel: BrowseFoldersViewModel
     private lateinit var adapter: BrowseFoldersAdapter
-    private val newFolderNavigationViewModel: NewFolderNavigationViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentBrowseFoldersBinding.inflate(layoutInflater)
@@ -58,8 +56,6 @@ class BrowseFoldersFragment : Fragment() {
             binding.swipeRefreshLayout.isRefreshing = false
 
             adapter.updateItems(items)
-
-//            invalidateOptionsMenu()
         }
 
         viewModel.progressBarFlag.observe(viewLifecycleOwner) {
@@ -125,13 +121,38 @@ class BrowseFoldersFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = BrowseFoldersAdapter() { folder ->
-            onFolderSelected(folder)
-        }
+        adapter = BrowseFoldersAdapter(
+            onClick = { folder ->
+                onFolderSelected(folder)
+            },
+            onLongPress = { folder, view ->
+                Timber.d("long press!")
+                showContextMenu(view)
+                //folderContextMenu?.showAsAnchorCenter(view)
+            }
+        )
 
         binding.folderList.layoutManager = LinearLayoutManager(requireContext())
 
         binding.folderList.adapter = adapter
+    }
+
+    private fun showContextMenu(anchorView: View) {
+//        val menuItems = listOf(
+//            CustomPopupMenuDialog.MenuItem(R.drawable.ic_description, "Edit"),
+//            CustomPopupMenuDialog.MenuItem(R.drawable.ic_error, "Share"),
+//            CustomPopupMenuDialog.MenuItem(R.drawable.ic_delete, "Delete")
+//        )
+//
+//        val popupMenu = CustomPopupMenuDialog(requireContext(), menuItems) { item ->
+//            when (item.text) {
+//                "Edit" -> { /* Handle edit action */ }
+//                "Share" -> { /* Handle share action */ }
+//                "Delete" -> { /* Handle delete action */ }
+//            }
+//        }
+//
+//        popupMenu.show(anchorView)
     }
 
     private fun setupSwipeRefresh() {
@@ -146,6 +167,6 @@ class BrowseFoldersFragment : Fragment() {
     }
 
     private fun addFolder() {
-        findNavController().navigate(BrowseFoldersFragmentDirections.navigationSegueAddBackend())
+        findNavController().navigate(BrowseFoldersFragmentDirections.navigateToAddBackendScreen())
     }
 }

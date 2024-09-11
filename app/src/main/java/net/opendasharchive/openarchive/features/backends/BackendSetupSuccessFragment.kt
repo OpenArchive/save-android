@@ -6,30 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSetupSuccessBinding
+import net.opendasharchive.openarchive.features.folders.FolderViewModel
 
 class BackendSetupSuccessFragment : Fragment() {
     private lateinit var mBinding: FragmentBackendSetupSuccessBinding
-    private var message = ""
+    private val folderViewModel: FolderViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            message = it.getString(ARG_MESSAGE, "")
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         mBinding = FragmentBackendSetupSuccessBinding.inflate(inflater)
 
-        if (message.isNotEmpty()) {
-            mBinding.successMessage.text = message
-        }
+        val backendName = getBackendName()
 
         mBinding.btAuthenticate.setOnClickListener { _ ->
-            findNavController().popBackStack(R.id.browseFoldersFragment, false)
+            findNavController().popBackStack(R.id.browse_folders_screen, false)
         }
 
         return mBinding.root
@@ -41,17 +38,7 @@ class BackendSetupSuccessFragment : Fragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
-    companion object {
-        const val RESP_DONE = "backend_setup_success_fragment_resp_done"
-        const val RESP_BACKEND_LINKED = "backend_setup_success_fragment_resp_linked"
-        const val ARG_MESSAGE = "backend_setup_success_fragment_arg_message"
-
-        @JvmStatic
-        fun newInstance(message: String) =
-            BackendSetupSuccessFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_MESSAGE, message)
-                }
-            }
+    private fun getBackendName(): String {
+        return folderViewModel.folder.value.backend?.displayname ?: "an unknown server"
     }
 }

@@ -145,6 +145,7 @@
     <string name="you_have_successfully_connected_to_gdrive">You have successfully connected to Google Drive!</string>
     <string name="you_have_successfully_connected_to_veilid">You have successfully connected to Veilid!</string>
     <string name="you_have_successfully_connected_to_filecoin">You have successfully connected to Filecoin!</string>
+    <string name="you_have_successfully_connected_to">You have successfully connected to %1$s!</string>
     <string name="create_a_new_folder">Create a New Folder</string>
     <string name="edit">Edit</string>
     <string name="menu_done">Done</string>

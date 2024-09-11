@@ -1,33 +1,17 @@
 package net.opendasharchive.openarchive.features.backends
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import net.opendasharchive.openarchive.db.Backend
-import timber.log.Timber
 
-class BackendViewModel(private val filter: Filter = Filter.ALL) : ViewModel() {
-    companion object {
-        enum class Filter() {
-            ALL, CONNECTED
-        }
+class BackendViewModel : ViewModel() {
+    private val _backend = MutableStateFlow(Backend())
+    val backend: StateFlow<Backend> = _backend.asStateFlow()
+
+    fun updateBackend(update: (Backend) -> Backend) {
+        _backend.update(update)
     }
-
-    private val _backends = MutableLiveData<List<Backend>>()
-    val backends: LiveData<List<Backend>> = _backends
-
-    init {
-        _backends.value = if (filter == Filter.ALL) {
-            Backend.ALL_BACKENDS
-        } else {
-            Backend.getAll().toList()
-        }
-    }
-
-    fun deleteBackend(backend: Backend) {
-        Timber.d("Deleting backend ID ${backend.id}")
-        backend.delete()
-        _backends.value = _backends.value?.filter { it.id != backend.id }
-    }
-
 }

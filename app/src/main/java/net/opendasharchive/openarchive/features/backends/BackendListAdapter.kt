@@ -5,7 +5,6 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,17 +13,12 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.util.extensions.scaled
-import timber.log.Timber
-
-interface BackendAdapterListener {
-    fun onItemAction(backend: Backend)
-}
 
 enum class ItemAction {
-    SELECTED, REQUEST_REMOVE, REQUEST_EDIT
+    SELECTED, LONG_PRESSED
 }
 
-class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? = null) : ListAdapter<Backend, BackendAdapter.ViewHolder>(DIFF_CALLBACK) {
+class BackendAdapter(private val onItemAction: ((View, Backend, ItemAction) -> Unit)? = null) : ListAdapter<Backend, BackendAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     inner class ViewHolder(private val binding: OneLineRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -35,26 +29,24 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
 
             binding.button.setLeftIcon(backend.getAvatar(context)?.scaled(40, context))
             binding.button.setTitle(backend.friendlyName)
-            binding.button.setBackgroundResource(R.drawable.button_outlined)
+            binding.button.setBackgroundResource(R.drawable.button_outlined_ripple)
 
             addAccountInfo(binding, backend)
 
             binding.button.setOnClickListener {
-                onItemAction?.invoke(backend, ItemAction.SELECTED)
+                onItemAction?.invoke(binding.root, backend, ItemAction.SELECTED)
             }
 
             if (backend.name.isNotEmpty()) {
                 if (backend.isCurrent) {
-                    Timber.d("Is current ${backend.id}")
                     changeStrokeColor(binding.button, 3, ContextCompat.getColor(itemView.context, R.color.c23_teal))
                 } else {
                     changeStrokeColor(binding.button, 1, ContextCompat.getColor(itemView.context, R.color.c23_grey))
                 }
 
                 binding.button.setOnLongClickListener { view ->
-                    Timber.d("LONG PRESS!")
                     view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                    showPopupMenu(view, backend)
+                    onItemAction?.invoke(binding.root, backend, ItemAction.LONG_PRESSED)
                     true
                 }
             }
@@ -71,33 +63,6 @@ class BackendAdapter(private val onItemAction: ((Backend, ItemAction) -> Unit)? 
                     binding.button.setSubTitle(backend.displayname)
                     return
                 }
-            }
-        }
-
-        private fun showPopupMenu(view: View, backend: Backend) {
-            PopupMenu(view.context, view).apply {
-                menuInflater.inflate(R.menu.menu_backend_context, menu)
-
-                if (backend.isCurrent) {
-                    menu.findItem(R.id.menu_remove).isVisible = false
-                }
-
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.menu_edit -> {
-                            onItemAction?.invoke(backend, ItemAction.REQUEST_EDIT)
-                            true
-                        }
-
-                        R.id.menu_remove -> {
-                            onItemAction?.invoke(backend, ItemAction.REQUEST_REMOVE)
-                            true
-                        }
-
-                        else -> return@setOnMenuItemClickListener false
-                    }
-                }
-                show()
             }
         }
     }

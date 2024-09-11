@@ -22,7 +22,7 @@
         android:id="@+id/menu_remove"
         android:icon="@drawable/outline_delete_24"
         android:iconTint="@color/colorOnBackground"
-        android:title="Remove"
+        android:title="Disconnect"
         android:visible="true" />
 
 </menu>

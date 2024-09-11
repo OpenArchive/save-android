@@ -35,7 +35,7 @@ class PreviewAdapter(listener: Listener? = null): ListAdapter<Media, MediaViewHo
                         && oldItem.author == newItem.author
                         && oldItem.location == newItem.location
                         && oldItem.tags == newItem.tags
-                        && oldItem.licenseUrl == newItem.licenseUrl
+                        && oldItem.license == newItem.license
                         && oldItem.mediaHash.contentEquals(newItem.mediaHash)
                         && oldItem.mediaHashString == newItem.mediaHashString
                         && oldItem.status == newItem.status

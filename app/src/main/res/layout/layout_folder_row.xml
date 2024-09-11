@@ -4,20 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:filterTouchesWhenObscured="true"
+    android:background="@drawable/ripple_background"
     android:layout_width="match_parent"
-    android:layout_height="50dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="52dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginVertical="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/current_folder_count"
         android:orientation="vertical"
-        android:gravity="bottom">
+        android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/name"
@@ -46,6 +48,7 @@
         android:textSize="16sp"
         android:textColor="@color/white"
         android:text="99+"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_min="30dp"

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="@string/you_have_successfully_connected_to_a_private_server"
+        android:text="You have successfully\nadded a new folder."
         android:textAlignment="center"
         android:textSize="22sp"
         app:layout_constraintTop_toTopOf="parent" />

@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentCreateNewFolderBinding
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.features.backends.BackendViewModel
 import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.services.webdav.ReadyToAuthTextWatcher
 import net.opendasharchive.openarchive.util.Utility.showMaterialPrompt
@@ -28,7 +29,8 @@ class CreateNewFolderFragment : Fragment() {
 
     private lateinit var binding: FragmentCreateNewFolderBinding
     private val newFolderNavigationViewModel: NewFolderNavigationViewModel by activityViewModels()
-    private val newFolderDataViewModel: NewFolderDataViewModel by activityViewModels()
+    private val backendViewModel: BackendViewModel by activityViewModels()
+    private val folderViewModel: FolderViewModel by activityViewModels()
     private val navController by lazy { findNavController() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -39,13 +41,15 @@ class CreateNewFolderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Transfer the backend to the folder now.
+        //
+        folderViewModel.folder.value.backend = backendViewModel.backend.value
+
         binding.newFolderName.requestFocus()
-
-        // binding.newFolderName.setText(intent.getStringExtra(BackendSelectionFragment.EXTRA_FOLDER_NAME))
-
+        binding.createFolderButton.text = "Create"
         setFolderNameListeners()
 
-        if (Folder.current?.backend?.license == null) {
+        if (backendViewModel.backend.value.license == null) {
             CcSelector.init(binding.cc, license = "https://creativecommons.org/licenses/by-sa/4.0")
         }
         else {
@@ -84,7 +88,7 @@ class CreateNewFolderFragment : Fragment() {
     private fun setupActions() {
         newFolderNavigationViewModel.observeNavigation(viewLifecycleOwner) { action ->
             when (action) {
-                is NewFolderNavigationAction.FolderCreated -> navController.navigate(CreateNewFolderFragmentDirections.navigationSegueSuccess())
+                is NewFolderNavigationAction.FolderCreated -> navController.navigate(CreateNewFolderFragmentDirections.navigateToSuccessScreen())
                 else -> Unit
             }
         }
@@ -96,12 +100,12 @@ class CreateNewFolderFragment : Fragment() {
         if (name.isBlank()) return
 
         if (name.matches(SPECIAL_CHARS.toRegex())) {
-            showMaterialWarning(requireContext(), "Oops", getString(R.string.please_do_not_include_special_characters_in_the_name), "Ok")
+            showMaterialWarning(requireContext(), getString(R.string.please_do_not_include_special_characters_in_the_name), "Ok")
             return
         }
 
         if (folderWithNameExists(name)) {
-            showMaterialWarning(requireContext(), "Oops", getString(R.string.folder_name_already_exists), "Ok")
+            showMaterialWarning(requireContext(), getString(R.string.folder_name_already_exists), "Ok")
             return
         }
 
@@ -125,29 +129,29 @@ class CreateNewFolderFragment : Fragment() {
 
     private fun saveFolder() {
         lifecycleScope.launch {
-            val folder = newFolderDataViewModel.folder.value
+            val folder = folderViewModel.folder.value
             folder.save()
         }
     }
 
     private fun setFolderAsCurrent() {
         lifecycleScope.launch {
-            val folder = newFolderDataViewModel.folder.value
+            val folder = folderViewModel.folder.value
             Folder.current = folder
         }
     }
 
     private fun updateWorkingFolder(name: String) {
-        newFolderDataViewModel.updateFolder { folder ->
-            folder.copy(description = name)
+        folderViewModel.updateFolder { folder ->
+            folder.copy(name = name)
         }
     }
 
     private fun folderWithNameExists(name: String): Boolean {
-        val workingFolder = newFolderDataViewModel.folder.value
+        val workingFolder = folderViewModel.folder.value
 
         workingFolder.backend?.let { backend ->
-            val found = Folder.getLocalFoldersForBackend(backend).firstOrNull { it.description == name }
+            val found = Folder.getLocalFoldersForBackend(backend).firstOrNull { it.name == name }
             return (found != null)
         }
 

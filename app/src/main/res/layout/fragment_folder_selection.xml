@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,26 +14,26 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="20dp"
             android:gravity="center"
-            android:text="@string/select_where_to_store_your_media"
+            android:text="Choose an existing folder\nor create a new one."
             android:textColor="@color/colorOnBackgroundTonedDown"
             android:textSize="18sp" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/backend_list"
+            android:id="@+id/folder_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <include layout="@layout/layout_divider" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/connect_new_media_server_button"
+            android:id="@+id/create_new_folder_button"
             style="@style/OAMaterialSignInButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="30dp"
             android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:enabled="true"
-            android:text="Connect New Media Server" />
+            android:text="Create New Folder" />
 
     </LinearLayout>
 </ScrollView>

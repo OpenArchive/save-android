@@ -43,11 +43,11 @@
 
         <include
             android:id="@+id/cc"
-            layout="@layout/content_cc" />
+            layout="@layout/cc_backend" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/OAMaterialSignInButtonStyle"
-            android:id="@+id/authentication_button"
+            android:id="@+id/create_backend_button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="40dp"

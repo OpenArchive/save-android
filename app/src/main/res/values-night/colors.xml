@@ -27,4 +27,5 @@
     <color name="colorBackendButton">@color/black</color>
     <color name="colorBackendButtonInactive">@color/c23_dark_grey</color>
     <color name="colorBackendButtonBorder">@color/c23_teal</color>
+    <color name="colorRipple">#33e3e3e4</color>
 </resources>

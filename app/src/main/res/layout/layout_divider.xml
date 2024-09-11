@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="30dp"
+    android:layout_gravity="center">
+
+    <View
+        android:id="@+id/or_1"
+        android:layout_width="30dp"
+        android:layout_height="1dp"
+        android:background="@color/colorOnBackgroundTonedDown"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/or_2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/or_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OR"
+        android:textColor="@color/colorOnBackgroundTonedDown"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@id/or_1"
+        app:layout_constraintEnd_toStartOf="@id/or_3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <View
+        android:id="@+id/or_3"
+        android:layout_width="30dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="5dp"
+        android:background="@color/colorOnBackgroundTonedDown"
+        app:layout_constraintStart_toEndOf="@id/or_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

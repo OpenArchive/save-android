@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
+    android:background="@drawable/ripple_background"
     android:orientation="horizontal">
 
     <ImageView
@@ -51,22 +52,7 @@
         android:id="@+id/space_toggle_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
-        android:padding="0dp"
-        android:paddingLeft="0dp"
-        android:paddingTop="0dp"
-        android:paddingRight="0dp"
-        android:paddingBottom="0dp"
-        app:elevation="0dp"
         app:icon="@drawable/outline_link_off_24"
-        app:iconPadding="0dp"
-        app:iconSize="40dp"
-        app:iconTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@id/space_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/space_icon" />

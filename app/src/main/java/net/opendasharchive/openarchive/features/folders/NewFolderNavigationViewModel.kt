@@ -9,7 +9,7 @@ import net.opendasharchive.openarchive.features.core.MultiObserverLiveData
 
 sealed class NewFolderNavigationAction {
     data object FolderCreated : NewFolderNavigationAction()
-    data object FolderMetadataCreated : NewFolderNavigationAction()
+    data object BackendMetadataCreated : NewFolderNavigationAction()
     data object UserAuthenticated : NewFolderNavigationAction()
 }
 
@@ -22,6 +22,6 @@ class NewFolderNavigationViewModel : ViewModel() {
     }
 
     fun triggerNavigation(action: NewFolderNavigationAction) {
-        _navigationEvent.setEvent(action)
+        _navigationEvent.postEvent(action)
     }
 }

@@ -135,11 +135,11 @@ abstract class Conduit(
         mMedia.tagSet = tags
 
         // Update to the latest project license.
-        mMedia.licenseUrl = mMedia.folder?.licenseUrl
+        mMedia.license = mMedia.folder?.license
     }
 
     protected fun getPath(): List<String>? {
-        val projectName = mMedia.folder?.description ?: return null
+        val projectName = mMedia.folder?.name ?: return null
         val collectionName =
             mDateFormat.format(mMedia.collection?.uploadDate ?: mMedia.createDate ?: Date())
 

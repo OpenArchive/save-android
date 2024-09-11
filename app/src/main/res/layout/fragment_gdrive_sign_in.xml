@@ -22,7 +22,8 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="10dp"
             android:visibility="visible">
 
             <ImageView
@@ -68,12 +69,14 @@
             android:layout_height="wrap_content"
             android:text="@string/gdrive_disclaimer_1"
             android:textColor="@color/colorOnBackgroundTonedDown"
+            android:layout_marginHorizontal="10dp"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/disclaimer2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:text="@string/gdrive_disclaimer_1"

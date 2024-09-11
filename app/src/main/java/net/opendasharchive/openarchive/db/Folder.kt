@@ -2,16 +2,17 @@ package net.opendasharchive.openarchive.db
 
 import com.orm.SugarRecord
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.Prefs.licenseUrl
 import timber.log.Timber
 import java.util.Date
 
 data class Folder(
-    var description: String? = null,
+    var name: String? = null,
     var created: Date = Date(),
     var backend: Backend? = null,
     private var archived: Boolean = false,
     private var openCollectionId: Long = -1,
-    var licenseUrl: String? = null
+    var license: String? = null
 ) : SugarRecord() {
 
     fun doesNotExist(): Boolean {
@@ -19,10 +20,14 @@ data class Folder(
     }
 
     fun exists(): Boolean {
+        if (backend?.id == null) {
+            return false
+        }
+
         try {
             val items = find(
                 Folder::class.java,
-                "backend = ? AND description = ?", backend?.id.toString(), description
+                "backend = ? AND name = ?", backend?.id.toString(), name
             )
 
             return items.isNotEmpty()
@@ -51,6 +56,13 @@ data class Folder(
         }
 
         fun getLocalFoldersForBackend(backend: Backend): List<Folder> {
+            // It's possible that this Folder's backend hasn't been
+            // created yet.
+            //
+            if (backend.id == null) {
+                return listOf()
+            }
+
             return find(
                 Folder::class.java,
                 "backend = ?", backend.id.toString()

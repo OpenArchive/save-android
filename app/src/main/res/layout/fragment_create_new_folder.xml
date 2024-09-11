@@ -12,7 +12,7 @@
         android:id="@+id/hero_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:paddingVertical="20dp"
         android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
         android:gravity="center"
         android:text="Let's get that folder set up."
@@ -28,7 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hero_text">
@@ -57,7 +56,7 @@
 
         <include
             android:id="@+id/cc"
-            layout="@layout/content_cc" />
+            layout="@layout/cc_backend" />
 
     </RelativeLayout>
 

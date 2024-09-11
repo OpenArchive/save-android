@@ -1,9 +1,11 @@
 package net.opendasharchive.openarchive.features.backends
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -12,30 +14,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.folders.NewFolderDataViewModel
-import net.opendasharchive.openarchive.features.folders.NewFolderNavigationViewModel
+import net.opendasharchive.openarchive.features.folders.FolderViewModel
+import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import timber.log.Timber
+import java.util.Date
 
 class BackendSelectionFragment : Fragment() {
 
     private lateinit var viewBinding: FragmentBackendSelectionBinding
     private lateinit var recyclerView: RecyclerView
-    private val viewModel: BackendViewModel by viewModels() {
-        BackendViewModelFactory(BackendViewModel.Companion.Filter.CONNECTED)
+    private val backendViewModel: BackendViewModel by activityViewModels()
+    private val folderViewModel: FolderViewModel by activityViewModels()
+    private val viewModel: BackendListViewModel by viewModels() {
+        BackendListViewModelFactory(BackendListViewModel.Companion.Filter.CONNECTED)
     }
-    private val adapter = BackendAdapter { backend, action ->
+    private val adapter = BackendAdapter { view, backend, action ->
         when (action) {
-            ItemAction.REQUEST_EDIT -> editBackend(backend)
-            ItemAction.REQUEST_REMOVE -> deleteBackend(backend)
             ItemAction.SELECTED -> connectToExistingBackend(backend)
+            ItemAction.LONG_PRESSED -> showPopupMenu(view, backend)
         }
     }
-    private val newFolderDataViewModel: NewFolderDataViewModel by activityViewModels()
-    private val newFolderNavigationViewModel: NewFolderNavigationViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentBackendSelectionBinding.inflate(inflater)
@@ -43,7 +49,7 @@ class BackendSelectionFragment : Fragment() {
         createBackendList()
 
         viewBinding.connectNewMediaServerButton.setOnClickListener {
-            findNavController().navigate(BackendSelectionFragmentDirections.navigationSegueConnectToNewBackend())
+            findNavController().navigate(BackendSelectionFragmentDirections.navigateToConnectNewBackendScreen())
         }
 
         return viewBinding.root
@@ -79,11 +85,59 @@ class BackendSelectionFragment : Fragment() {
     }
 
     private fun connectToExistingBackend(backend: Backend) {
-        newFolderDataViewModel.updateFolder { folder ->
-            folder.copy(backend = backend)
+        backendViewModel.updateBackend { backend }
+
+        Timber.d("Working folder = ${folderViewModel.folder.value}")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val numFolders = syncBackend(requireContext(), backend, true)
+
+            MainScope().launch {
+                // Pulling this out. User has ability to select existing folders before this, so doing it here
+                // is redundant.
+                //
+//                if (numFolders > 0) {
+//                    findNavController().navigate(BackendSelectionFragmentDirections.navigateToFolderSelectionScreen())
+//                } else {
+                    findNavController().navigate(BackendSelectionFragmentDirections.navigateToCreateNewFolderScreen())
+//                }
+            }
+        }
+    }
+
+    // TODO: Refactor this. Copied from Backend.kt
+    //
+    private fun syncBackend(context: Context, backend: Backend, forceLoad: Boolean = false): Int {
+        if (!forceLoad && !backend.shouldSync()) {
+            return 0
         }
 
-        findNavController().navigate(BackendSelectionFragmentDirections.navigationSegueCreateNewFolder())
+        Timber.d("Syncing folders for ${backend.friendlyName}")
+
+        val numFolders = when (backend.tType) {
+            Backend.Type.GDRIVE -> syncGDrive(context, backend)
+            else -> 0
+        }
+
+        backend.lastSyncDate = Date()
+        backend.save()
+
+        Timber.d("Got $numFolders folders")
+
+        return numFolders
+    }
+
+    private fun syncGDrive(context: Context, backend: Backend): Int {
+        val folders = GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context), backend)
+
+        folders.forEach { folder ->
+            if (folder.doesNotExist()) {
+                Timber.d("Syncing ${folder.name}")
+                folder.save()
+            }
+        }
+
+        return folders.size
     }
 
     private fun createBackendList() {
@@ -100,6 +154,33 @@ class BackendSelectionFragment : Fragment() {
                 Timber.d("Backend = ${backend.id} $backend")
             }
             adapter.submitList(backends)
+        }
+    }
+
+    private fun showPopupMenu(view: View, backend: Backend) {
+        PopupMenu(view.context, view).apply {
+            menuInflater.inflate(R.menu.menu_backend_context, menu)
+
+            if (backend.isCurrent) {
+                menu.findItem(R.id.menu_remove).isVisible = false
+            }
+
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.menu_edit -> {
+                        editBackend(backend)
+                        true
+                    }
+
+                    R.id.menu_remove -> {
+                        deleteBackend(backend)
+                        true
+                    }
+
+                    else -> return@setOnMenuItemClickListener false
+                }
+            }
+            show()
         }
     }
 

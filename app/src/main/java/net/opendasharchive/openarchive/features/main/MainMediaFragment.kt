@@ -249,7 +249,7 @@ class MainMediaFragment : Fragment() {
             mBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
             mBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
             mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())
-            mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown server") + " > " + folder.description
+            mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown server") + " > " + folder.name
 
             mBinding.currentFolder.currentBackendButton.setOnClickListener {
                 startActivity(Intent(context, BackendSetupActivity::class.java))

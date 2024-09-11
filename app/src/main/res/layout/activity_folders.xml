@@ -21,7 +21,7 @@
 
         <include
             android:id="@+id/cc"
-            layout="@layout/content_cc" />
+            layout="@layout/cc_backend" />
 
     </RelativeLayout>
 

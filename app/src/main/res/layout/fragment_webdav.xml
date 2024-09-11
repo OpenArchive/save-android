@@ -25,7 +25,7 @@
                     android:id="@+id/header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="20dp"
+                    android:layout_marginTop="30dp"
                     android:visibility="visible">
 
                     <ImageView
@@ -58,7 +58,8 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/OATextInputLayoutStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/server"
@@ -68,9 +69,9 @@
                         android:textSelectHandle="@color/red"
                         android:textSelectHandleLeft="@color/red"
                         android:textSelectHandleRight="@color/red"
-                        android:text="nx27277.your-storageshare.de"
                         android:inputType="textUri"
                         android:maxLines="1"
+                        android:text="nx27277.your-storageshare.de"
                         android:singleLine="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -87,8 +88,8 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_email"
                         android:inputType="textNoSuggestions"
-                        android:text="richard@open-archive.org"
                         android:maxLines="1"
+                        android:text="richard@open-archive.org"
                         android:singleLine="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -106,12 +107,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_password"
-                        android:text="D1etC0keD1etC0ke!"
                         android:imeActionId="6"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
                         android:maxLines="1"
+                        android:text="D1etC0keD1etC0ke!"
                         android:singleLine="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>

@@ -80,7 +80,7 @@ class BrowseFoldersViewModel : ViewModel() {
     private fun syncGDrive(context: Context, backend: Backend) {
         GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context), backend).forEach { folder ->
             if (folder.doesNotExist()) {
-                Timber.d("Syncing ${folder.description}")
+                Timber.d("Syncing ${folder.name}")
                 folder.save()
             }
         }
@@ -92,13 +92,13 @@ class BrowseFoldersViewModel : ViewModel() {
         SaveClient.getSardine(context, backend).list(backend.host)?.mapNotNull {
             if (it.isDirectory && it.path != root) {
                 val folder = Folder(
-                    description = it.name,
+                    name = it.name,
                     backend = backend,
                     created = it.modified ?: Date()
                 )
 
                 if (folder.doesNotExist()) {
-                    Timber.d("Syncing ${folder.description}")
+                    Timber.d("Syncing ${folder.name}")
                     folder.save()
                 }
             }

@@ -16,6 +16,7 @@ import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import org.bouncycastle.asn1.x500.style.RFC4519Style.description
 import timber.log.Timber
 import java.util.Date
 import java.util.Locale
@@ -179,10 +180,10 @@ data class Backend(
     val archivedFolders: List<Folder>
         get() = find(Folder::class.java, "backend = ? AND archived", arrayOf(id.toString()), null, "id DESC", null)
 
-    fun hasFolder(description: String?): Boolean {
-        if (description == null) { return false }
+    fun hasFolder(name: String?): Boolean {
+        if (name == null) { return false }
         // Cannot use `count` from Kotlin due to strange <T> in method signature.
-        return find(Folder::class.java, "backend = ? AND description = ?", id.toString(), description).size > 0
+        return find(Folder::class.java, "backend = ? AND name = ?", id.toString(), name).size > 0
     }
 
     fun getAllForType(type: Type): List<Backend> {

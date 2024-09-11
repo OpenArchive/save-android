@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentWebdavBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.folders.NewFolderDataViewModel
+import net.opendasharchive.openarchive.features.backends.BackendViewModel
 import net.opendasharchive.openarchive.features.folders.NewFolderNavigationAction
 import net.opendasharchive.openarchive.features.folders.NewFolderNavigationViewModel
 import net.opendasharchive.openarchive.services.SaveClient
@@ -39,13 +39,10 @@ class WebDavFragment : Fragment() {
 
     private lateinit var binding: FragmentWebdavBinding
     private lateinit var backend: Backend
-    private val newFolderDataViewModel: NewFolderDataViewModel by activityViewModels()
+    private val backendViewModel: BackendViewModel by activityViewModels()
     private val newFolderNavigationViewModel: NewFolderNavigationViewModel by activityViewModels()
 
     companion object {
-        // factory method parameters (bundle args)
-        const val ARG_VAL_NEW_BACKEND = -1L
-
         // other internal constants
         const val REMOTE_PHP_ADDRESS = "/remote.php/webdav/"
     }
@@ -104,7 +101,10 @@ class WebDavFragment : Fragment() {
 
         newFolderNavigationViewModel.observeNavigation(viewLifecycleOwner) { action ->
             if (action == NewFolderNavigationAction.UserAuthenticated) {
-                findNavController().navigate(WebDavFragmentDirections.navigationSegueToBackendMetadata())
+                backendViewModel.updateBackend {
+                    backend
+                }
+                findNavController().navigate(WebDavFragmentDirections.navigateToBackendMetadataScreen())
             }
         }
     }
@@ -181,7 +181,7 @@ class WebDavFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 testConnection()
-                signalSuccess()
+                navigate()
             } catch (exception: IOException) {
                 activity?.runOnUiThread {
                     if (exception.message?.startsWith("401") == true) {
@@ -208,11 +208,7 @@ class WebDavFragment : Fragment() {
         binding.server.requestFocus()
     }
 
-    private fun signalSuccess() {
-        newFolderDataViewModel.updateFolder { folder ->
-            folder.copy(backend = backend)
-        }
-
+    private fun navigate() {
         newFolderNavigationViewModel.triggerNavigation(NewFolderNavigationAction.UserAuthenticated)
     }
 

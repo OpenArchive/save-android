@@ -54,7 +54,11 @@ object Utility {
         return File(dir, "$timeStamp.$fileName")
     }
 
-    fun showMaterialWarning(context: Context, title: String = "Oops", message: String? = null, positiveButtonText: String = "Ok", completion: (() -> Unit)? = null) {
+    fun showMaterialWarning(context: Context, message: String? = null, positiveButtonText: String = "Ok", completion: (() -> Unit)? = null) {
+        showMaterialMessage(context, "Oops", message, positiveButtonText, completion)
+    }
+
+    fun showMaterialMessage(context: Context, title: String = "Oops", message: String? = null, positiveButtonText: String = "Ok", completion: (() -> Unit)? = null) {
         Handler(Looper.getMainLooper()).post {
             MaterialAlertDialogBuilder(context)
                 .setTitle(title)

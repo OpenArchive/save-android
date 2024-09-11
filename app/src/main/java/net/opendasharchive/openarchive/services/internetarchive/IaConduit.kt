@@ -202,7 +202,7 @@ class IaConduit(media: Media, context: Context) : Conduit(media, context) {
             builder.add("x-archive-meta-title", mMedia.title)
         }
 
-        var licenseUrl = mMedia.licenseUrl
+        var licenseUrl = mMedia.license
 
         if (licenseUrl.isNullOrEmpty()) {
             licenseUrl = "https://creativecommons.org/licenses/by/4.0/"

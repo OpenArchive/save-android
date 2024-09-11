@@ -2,133 +2,115 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/backend_setup_navigation"
-    app:startDestination="@id/browseFoldersFragment">
+    app:startDestination="@id/browse_folders_screen">
+
+    <activity
+        android:id="@+id/backend_setup_activity"
+        android:name="net.opendasharchive.openarchive.features.backends.BackendSetupActivity" />
 
     <fragment
-        android:id="@+id/connectNewBackendFragment"
-        android:name="net.opendasharchive.openarchive.features.backends.ConnectNewBackend"
-        android:label="All Media Servers">
-<!--        <argument-->
-<!--            android:name="backendId"-->
-<!--            app:argType="integer" />-->
-        <action
-            android:id="@+id/navigation_segue_to_gdrive"
-            app:destination="@id/gdrive"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
-        <action
-            android:id="@+id/navigation_segue_to_private_server"
-            app:destination="@id/private_server"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
-        <action
-            android:id="@+id/navigation_segue_to_internet_archive"
-            app:destination="@id/internet_archive"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
-        <action
-            android:id="@+id/navigation_segue_to_snowbird"
-            app:destination="@id/snowbird"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
-    </fragment>
-    <fragment
-        android:id="@+id/backend_metadata"
-        android:name="net.opendasharchive.openarchive.features.backends.BackendMetadataFragment"
-        android:label="Server Info">
-        <action
-            android:id="@+id/navigation_segue_to_folder_creation"
-            app:destination="@id/createNewFolderFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
-    </fragment>
-    <fragment
-        android:id="@+id/browseFoldersFragment"
-        android:name="net.opendasharchive.openarchive.features.folders.BrowseFoldersFragment"
-        android:label="Servers and Folders">
-        <action
-            android:id="@+id/navigation_segue_add_backend"
-            app:destination="@id/backendSelectionFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
-    </fragment>
-    <fragment
-        android:id="@+id/createNewFolderFragment"
-        android:name="net.opendasharchive.openarchive.features.folders.CreateNewFolderFragment"
-        android:label="Create New Folder">
-        <action
-            android:id="@+id/navigation_segue_success"
-            app:destination="@id/successFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
-    </fragment>
-    <fragment
-        android:id="@+id/snowbird"
-        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFragment"
-        android:label="Snowbird"/>
-    <activity
-        android:id="@+id/internet_archive"
-        android:name="net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveActivity"
-        android:label="@string/internet_archive_description" />
-    <fragment
-        android:id="@+id/backendSelectionFragment"
+        android:id="@+id/select_backend_screen"
         android:name="net.opendasharchive.openarchive.features.backends.BackendSelectionFragment"
         android:label="Media Servers">
         <action
-            android:id="@+id/navigation_segue_create_new_folder"
-            app:destination="@id/createNewFolderFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
+            android:id="@+id/navigate_to_folder_selection_screen"
+            app:destination="@id/folder_selection_screen" />
         <action
-            android:id="@+id/navigation_segue_connect_to_new_backend"
-            app:destination="@id/connectNewBackendFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
+            android:id="@+id/navigate_to_create_new_folder_screen"
+            app:destination="@id/create_new_folder_screen" />
+        <action
+            android:id="@+id/navigate_to_connect_new_backend_screen"
+            app:destination="@id/connect_new_backend_screen" />
     </fragment>
     <fragment
-        android:id="@+id/gdrive"
-        android:name="net.opendasharchive.openarchive.services.gdrive.GDriveSignInFragment"
-        android:label="@string/gdrive">
+        android:id="@+id/connect_new_backend_screen"
+        android:name="net.opendasharchive.openarchive.features.backends.ConnectNewBackend"
+        android:label="All Media Servers">
         <action
-            android:id="@+id/navigation_segue_to_folder_creation"
-            app:destination="@id/createNewFolderFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
+            android:id="@+id/navigate_to_gdrive_screen"
+            app:destination="@id/gdrive_screen" />
+        <action
+            android:id="@+id/navigate_to_private_server_screen"
+            app:destination="@id/private_server_screen" />
+        <action
+            android:id="@+id/navigate_to_internet_archive_screen"
+            app:destination="@id/internet_archive_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_screen"
+            app:destination="@id/snowbird_screen" />
     </fragment>
     <fragment
-        android:id="@+id/private_server"
+        android:id="@+id/backend_metadata_screen"
+        android:name="net.opendasharchive.openarchive.features.backends.BackendMetadataFragment"
+        android:label="Server Info">
+        <action
+            android:id="@+id/navigate_to_folder_selection_screen"
+            app:destination="@id/folder_selection_screen" />
+    </fragment>
+
+    <!-- Folders -->
+
+    <fragment
+        android:id="@+id/browse_folders_screen"
+        android:name="net.opendasharchive.openarchive.features.folders.BrowseFoldersFragment"
+        android:label="Servers and Folders">
+        <action
+            android:id="@+id/navigate_to_add_backend_screen"
+            app:destination="@id/select_backend_screen" />
+    </fragment>
+    <fragment
+        android:id="@+id/folder_selection_screen"
+        android:name="net.opendasharchive.openarchive.features.folders.FolderSelectionFragment"
+        android:label="Folder Selection">
+        <action
+            android:id="@+id/navigate_to_create_new_folder_screen"
+            app:destination="@id/create_new_folder_screen" />
+        <action
+            android:id="@+id/navigate_to_success_screen"
+            app:destination="@id/success_screen"
+            app:enterAnim="@anim/slide_in_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/create_new_folder_screen"
+        android:name="net.opendasharchive.openarchive.features.folders.CreateNewFolderFragment"
+        android:label="Create New Folder">
+        <action
+            android:id="@+id/navigate_to_success_screen"
+            app:destination="@id/success_screen" />
+    </fragment>
+
+    <!-- Media Servers -->
+
+    <fragment
+        android:id="@+id/snowbird_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFragment"
+        android:label="Snowbird"/>
+    <activity
+        android:id="@+id/internet_archive_screen"
+        android:name="net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveActivity"
+        android:label="@string/internet_archive_description" />
+    <fragment
+        android:id="@+id/private_server_screen"
         android:name="net.opendasharchive.openarchive.services.webdav.WebDavFragment"
         android:label="@string/private_server">
         <action
-            android:id="@+id/navigation_segue_to_backend_metadata"
-            app:destination="@id/backend_metadata"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/fade_out" />
+            android:id="@+id/navigate_to_backend_metadata_screen"
+            app:destination="@id/backend_metadata_screen" />
     </fragment>
     <fragment
-        android:id="@+id/successFragment"
+        android:id="@+id/gdrive_screen"
+        android:name="net.opendasharchive.openarchive.services.gdrive.GDriveSignInFragment"
+        android:label="@string/gdrive">
+        <action
+            android:id="@+id/navigate_to_create_new_folder_screen"
+            app:destination="@id/create_new_folder_screen" />
+    </fragment>
+
+    <!-- SUCCESS -->
+
+    <fragment
+        android:id="@+id/success_screen"
         android:name="net.opendasharchive.openarchive.features.backends.BackendSetupSuccessFragment"
-        android:label="Success!"/>
+        android:label="Success!">
+    </fragment>
 </navigation>
