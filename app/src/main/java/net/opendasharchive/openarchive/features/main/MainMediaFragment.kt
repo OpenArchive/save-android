@@ -140,6 +140,7 @@ class MainMediaFragment : Fragment() {
 
         setCurrentFolderState()
         refreshCurrentFolderCount()
+        refresh()
     }
 
     override fun onCreateView(
@@ -249,7 +250,7 @@ class MainMediaFragment : Fragment() {
             mBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
             mBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
             mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())
-            mBinding.currentFolder.currentBackendButton.text = (folder.backend?.name ?: "Unknown server") + " > " + folder.name
+            mBinding.currentFolder.currentBackendButton.text = getString(R.string.current_folder_label, folder.backend?.friendlyName, folder.name)
 
             mBinding.currentFolder.currentBackendButton.setOnClickListener {
                 startActivity(Intent(context, BackendSetupActivity::class.java))

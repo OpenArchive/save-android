@@ -37,7 +37,7 @@ class BackendMetadataFragment : Fragment() {
 
         newFolderNavigationViewModel.observeNavigation(viewLifecycleOwner) { action ->
             if (action == NewFolderNavigationAction.BackendMetadataCreated) {
-                findNavController().navigate(BackendMetadataFragmentDirections.navigateToFolderSelectionScreen())
+                findNavController().navigate(BackendMetadataFragmentDirections.navigateToCreateNewFolderScreen())
             }
         }
     }
@@ -52,17 +52,18 @@ class BackendMetadataFragment : Fragment() {
 
         backendViewModel.updateBackend { backend ->
             backend.copy(
-                licenseUrl = license,
-                displayname = nickname
+                license = license,
+                nickname = nickname
             )
         }
 
         Utility.showMaterialMessage(
             requireContext(),
-            message = "You have now configured a new server.\n\nThe next step is to specify which folder you want to use.",
-            title = "Congratulations",
-            positiveButtonText = "Ok") {
+            title = "Congratulations!",
+            message = "You can now add folders to your server.",
+            positiveButtonText = "ADD FOLDERS") {
 
+            backendViewModel.backend.value.save()
             navigateToNextScreen()
         }
     }

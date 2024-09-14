@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.features.backends
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.findNavController
@@ -11,7 +10,6 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.folders.NewFolderNavigationViewModel
 
 
 class BackendSetupActivity : BaseActivity() {
@@ -19,7 +17,6 @@ class BackendSetupActivity : BaseActivity() {
     private lateinit var binding: ActivityBackendSetupBinding
     private lateinit var navController: NavController
     private lateinit var navGraph: NavGraph
-    private val newFolderNavigationViewModel: NewFolderNavigationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.ConnectionResult
@@ -17,7 +17,8 @@ import net.opendasharchive.openarchive.util.SpacingItemDecoration
 
 class ConnectNewBackend : Fragment() {
     private lateinit var viewBinding: FragmentConnectNewBackendBinding
-    private val viewModel: BackendListViewModel by viewModels()
+    private val backendListiewModel: BackendListViewModel by activityViewModels()
+    private val backendViewModel: BackendViewModel by activityViewModels()
     private val adapter = BackendAdapter { _, backend, action ->
         when (action) {
             ItemAction.SELECTED -> showAuthScreenFor(backend)
@@ -44,15 +45,17 @@ class ConnectNewBackend : Fragment() {
         viewBinding.backendList.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.backendList.adapter = adapter
 
-        viewModel.backends.observe(viewLifecycleOwner) { backends ->
+        backendListiewModel.backends.observe(viewLifecycleOwner) { backends ->
             adapter.submitList(backends)
         }
     }
 
     private fun showAuthScreenFor(backend: Backend) {
+        backendViewModel.updateBackend { backend }
+
         val nextScreen = when (backend.type) {
             Backend.Type.GDRIVE.id -> ConnectNewBackendDirections.navigateToGdriveScreen()
-            Backend.Type.INTERNET_ARCHIVE.id -> ConnectNewBackendDirections.navigateToInternetArchiveScreen()
+            Backend.Type.INTERNET_ARCHIVE.id -> ConnectNewBackendDirections.navigateToInternetArchiveScreen(backend, true)
             Backend.Type.WEBDAV.id -> ConnectNewBackendDirections.navigateToPrivateServerScreen()
             Backend.Type.SNOWBIRD.id -> ConnectNewBackendDirections.navigateToSnowbirdScreen()
             else -> ConnectNewBackendDirections.navigateToSnowbirdScreen()

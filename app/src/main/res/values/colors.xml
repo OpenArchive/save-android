@@ -20,7 +20,7 @@
     <color name="light_black">#212121</color>
     <color name="brand_accent">#A92E33</color>
 
-    <color name="black_semi_transparent">#B2000000</color>
+    <color name="black_semi_transparent">#44000000</color>
     <color name="background">#e5e5e5</color>
     <color name="half_black">#808080</color>
     <color name="white">#fafafa</color>
@@ -64,6 +64,12 @@
     <color name="c24_cream_90">#e5e2d8</color>
     <color name="c24_cream_80">#ccc9c0</color>
     <color name="c24_cream_70">#b3afa8</color>
+    <color name="c24_cream_60">#999690</color>
+    <color name="c24_cream_50">#807d78</color>
+    <color name="c24_cream_40">#666460</color>
+    <color name="c24_cream_30">#4d4b48</color>
+    <color name="c24_cream_20">#333230</color>
+    <color name="c24_cream_10">#1a1918</color>
 
     <!-- theme day colors -->
 
@@ -108,6 +114,7 @@
 
     <color name="colorIcon">@color/white</color>
     <color name="colorPill">@color/c24_cream_70</color>
+    <color name="dragHandle">@color/c24_cream_70</color>
     <color name="colorMediaOverlayIcon">@color/white</color>
     <color name="colorDanger">@color/red</color>
     <color name="colorDivider">@color/light_grey</color>
@@ -121,5 +128,6 @@
     <color name="tabBarMenuButton">@color/eigengrau</color>
     <color name="swipeBackground">@color/c24_cream_80</color>
     <color name="colorRipple">#bbe3e3e4</color>
+    <color name="bottomSheetBackground">@color/c24_cream_100</color>
 
 </resources>

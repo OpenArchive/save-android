@@ -23,10 +23,16 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/image_capture_button"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginBottom="50dp"
+        android:background="@drawable/camera_button"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
         android:text="Take Photo"
+        android:textAllCaps="true"
+        android:textColor="@color/transparent_white"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

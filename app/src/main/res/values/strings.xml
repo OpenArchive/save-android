@@ -46,6 +46,7 @@
     <string name="lbl_ok">OK</string>
     <string name="archive_title">E-mail Confirmation</string>
     <string name="archive_message">Please confirm your e-mail address and return to connect your Internet Archive account.</string>
+    <string name="current_folder_label">%1$s > %2$s</string>
 
     <!-- original CC license questions
     <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
@@ -80,7 +81,7 @@
     <string name="prefs_user_interface_title">Presentation</string>
     <string name="prefs_theme_title">Theme</string>
     <string name="prefs_theme_summary">Change Save\'s theme to light/dark</string>
-    <string name="prefs_theme_system">System Controlled</string>
+    <string name="prefs_theme_system">System Theme</string>
     <string name="prefs_theme_light">Light</string>
     <string name="prefs_theme_dark">Dark</string>
     <string name="prefs_theme_val_system" translatable="false">system</string>

@@ -21,11 +21,9 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,7 +33,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -65,7 +62,6 @@ import net.opendasharchive.openarchive.core.state.Dispatch
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.BackendResult
 import net.opendasharchive.openarchive.features.internetarchive.presentation.components.InternetArchiveHeader
-import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.CreateLogin
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.Login
 import net.opendasharchive.openarchive.features.internetarchive.presentation.login.InternetArchiveLoginAction.UpdatePassword
@@ -120,7 +116,7 @@ private fun InternetArchiveLoginContent(state: InternetArchiveLoginState, dispat
     }
 
     LaunchedEffect(state.isLoginError) {
-        focusRequester.requestFocus()
+        // focusRequester.requestFocus()
 
         while (state.isLoginError) {
             delay(3000)
@@ -129,26 +125,26 @@ private fun InternetArchiveLoginContent(state: InternetArchiveLoginState, dispat
     }
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Internet Archive", color = Color.White) },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        dispatch(InternetArchiveLoginAction.Cancel)
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = localColors.chrome,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    navigationIconContentColor = Color.White
-                )
-            )
-        }
+//        topBar = {
+//            CenterAlignedTopAppBar(
+//                title = { Text("Internet Archive", color = Color.White) },
+//                navigationIcon = {
+//                    IconButton(onClick = {
+//                        dispatch(InternetArchiveLoginAction.Cancel)
+//                    }) {
+//                        Icon(
+//                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//                            contentDescription = "Back"
+//                        )
+//                    }
+//                },
+//                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+//                    containerColor = localColors.chrome,
+//                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//                    navigationIconContentColor = Color.White
+//                )
+//            )
+//        }
     ) { paddingValues ->
         Column(
             modifier = Modifier

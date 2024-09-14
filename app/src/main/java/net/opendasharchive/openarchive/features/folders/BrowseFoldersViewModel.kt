@@ -51,8 +51,7 @@ class BrowseFoldersViewModel : ViewModel() {
                 }
 
                 mItems.value = value
-            }
-            catch (e: Error) {
+            } catch (e: Error) {
                 mItems.value = emptyList()
                 Timber.e(e)
                 throw(e)

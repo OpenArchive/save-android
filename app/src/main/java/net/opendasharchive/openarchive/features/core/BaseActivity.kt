@@ -47,6 +47,19 @@ abstract class BaseActivity: AppCompatActivity() {
         return true
     }
 
+//    override fun onBackPressed() {
+//        if (supportFragmentManager.backStackEntryCount > 1) {
+//            // If there's more than one fragment in the stack, let the system handle it
+//            super.onBackPressed()
+//        } else if (supportFragmentManager.backStackEntryCount == 1) {
+//            // If this is the last fragment, pop it and return to the activity
+//            supportFragmentManager.popBackStack()
+//        } else {
+//            // If the back stack is empty, let the system handle it (will likely finish the activity)
+//            super.onBackPressed()
+//        }
+//    }
+
     private fun updateScreenshotPrevention() {
         if (Prefs.prohibitScreenshots) {
             window.setFlags(

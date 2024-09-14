@@ -44,6 +44,9 @@
         android:name="net.opendasharchive.openarchive.features.backends.BackendMetadataFragment"
         android:label="Server Info">
         <action
+            android:id="@+id/navigate_to_create_new_folder_screen"
+            app:destination="@id/create_new_folder_screen" />
+        <action
             android:id="@+id/navigate_to_folder_selection_screen"
             app:destination="@id/folder_selection_screen" />
     </fragment>
@@ -57,6 +60,9 @@
         <action
             android:id="@+id/navigate_to_add_backend_screen"
             app:destination="@id/select_backend_screen" />
+        <action
+            android:id="@+id/navigate_to_connect_new_backend_screen"
+            app:destination="@id/connect_new_backend_screen" />
     </fragment>
     <fragment
         android:id="@+id/folder_selection_screen"
@@ -85,10 +91,17 @@
         android:id="@+id/snowbird_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFragment"
         android:label="Snowbird"/>
-    <activity
+    <fragment
         android:id="@+id/internet_archive_screen"
-        android:name="net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveActivity"
-        android:label="@string/internet_archive_description" />
+        android:name="net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveFragment"
+        android:label="Internet Archive">
+        <argument
+            android:name="backend"
+            app:argType="net.opendasharchive.openarchive.db.Backend" />
+        <argument
+            android:name="isNewSpace"
+            app:argType="boolean" />
+    </fragment>
     <fragment
         android:id="@+id/private_server_screen"
         android:name="net.opendasharchive.openarchive.services.webdav.WebDavFragment"
@@ -102,8 +115,8 @@
         android:name="net.opendasharchive.openarchive.services.gdrive.GDriveSignInFragment"
         android:label="@string/gdrive">
         <action
-            android:id="@+id/navigate_to_create_new_folder_screen"
-            app:destination="@id/create_new_folder_screen" />
+            android:id="@+id/navigate_to_backend_metadata_screen"
+            app:destination="@id/backend_metadata_screen" />
     </fragment>
 
     <!-- SUCCESS -->

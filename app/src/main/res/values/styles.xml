@@ -63,6 +63,7 @@
     <style name="AppBottomSheetTheme" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="buttonStyle">@style/OAMaterialButtonStyle</item>
         <item name="materialButtonStyle">@style/OAMaterialButtonStyle</item>
+        <item name="backgroundColor">@color/red</item>
     </style>
 
     <style name="OAOptionsMenu" parent="Widget.MaterialComponents.PopupMenu.Overflow">
@@ -110,6 +111,7 @@
 
     <style name="CustomMaterialAlertDialog.Body.Text" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
         <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginVertical">10dp</item>
     </style>
 
     <style name="CustomMaterialAlertDialog.Title.Text" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
@@ -120,7 +122,7 @@
 
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/c23_grey</item>
-        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginEnd">5dp</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
@@ -148,7 +150,6 @@
     </style>
 
     <style name="OAMaterialButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="android:background">@drawable/button</item>
         <item name="android:insetLeft">0dp</item>
         <item name="android:insetRight">0dp</item>
         <item name="android:insetTop">0dp</item>
@@ -162,6 +163,7 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/colorOnPrimary</item>
         <item name="android:textSize">16sp</item>
+        <item name="backgroundTint">@null</item>
         <item name="cornerRadius">@dimen/cornerRadius</item>
         <item name="iconPadding">0dp</item>
         <item name="iconSize">40dp</item>
@@ -207,7 +209,6 @@
     </style>
 
     <style name="OAMediaSelectionButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
-        <item name="android:layout_margin">10dp</item>
         <item name="android:textColor">@color/colorOnPrimary</item>
         <item name="android:background">@drawable/button</item>
         <item name="backgroundTint">@null</item>

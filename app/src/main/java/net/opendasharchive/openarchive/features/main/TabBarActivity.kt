@@ -11,11 +11,12 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -23,19 +24,21 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityTabBarBinding
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
+import net.opendasharchive.openarchive.features.main.ui.OABottomSheetDialogFragment
 import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.Picker.pickMedia
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.upload.BroadcastManager.Action
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.Utility
 import org.aviran.cookiebar2.CookieBar
 import timber.log.Timber
 
@@ -53,23 +56,24 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
     private lateinit var binding: ActivityTabBarBinding
     private lateinit var networkRequest: NetworkRequest
     private lateinit var connectivityManager: ConnectivityManager
-    private lateinit var mediaPickerLauncher: ImagePickerLauncher
-    private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
     private var wifiIssueIndicator: MenuItem? = null
     private var visibleScreen = Screen.MEDIA
     private lateinit var mMediaPickerLauncher: ImagePickerLauncher
     private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
 
-    companion object {
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-    }
-
     private val newFolderResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
-                Timber.d("Got media")
-                // refreshProjects(it.data?.getLongExtra(AddFolderActivity.EXTRA_FOLDER_ID, -1))
+                Timber.d("Got new folder")
+            }
+        }
+
+    private val cameraResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            Timber.d("step 10")
+            when (it.resultCode) {
+                RESULT_OK -> processIntentResult(it.data)
+                else -> Timber.d("Failed with code ${it.resultCode}")
             }
         }
 
@@ -150,16 +154,7 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_no_wifi -> {
-                CookieBar.build(this@TabBarActivity)
-                    .setTitle("Hi, there!")
-                    .setMessage("You have chosen to only upload media over wifi and there is currently no connection.\n\nIf you'd like to disable this, please go to the Settings screen. If not, your uploads will resume once you are connected to wifi again.")     // i.e. R.string.message
-                    .setCookiePosition(CookieBar.BOTTOM)
-                    .setIcon(R.mipmap.ic_launcher_round)
-                    .setAnimationIn(R.anim.slide_down, R.anim.slide_up)
-                    .setAnimationOut(R.anim.slide_up, R.anim.slide_down)
-                    .setDuration(5000)
-                    .show()
-
+                showWifiStatusDialog()
                 true
             }
 
@@ -170,8 +165,6 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
-        Timber.d("Restoring state")
-
         val previousScreen = savedInstanceState.getInt("VISIBLE_SCREEN")
 
         if (previousScreen != 0) {
@@ -181,8 +174,6 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
-        Timber.d("Saving state")
 
         outState.putInt("VISIBLE_SCREEN", visibleScreen.value)
     }
@@ -200,6 +191,18 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         connectivityManager.requestNetwork(networkRequest, networkCallback)
     }
 
+    private fun showWifiStatusDialog() {
+        CookieBar.build(this@TabBarActivity)
+            .setTitle("Hi, there!")
+            .setMessage("You have chosen to only upload media over wifi and there is currently no connection.\n\nIf you'd like to disable this, please go to the Settings screen. If not, your uploads will resume once you are connected to wifi again.")     // i.e. R.string.message
+            .setCookiePosition(CookieBar.BOTTOM)
+            .setIcon(R.mipmap.ic_launcher_round)
+            .setAnimationIn(R.anim.slide_down, R.anim.slide_up)
+            .setAnimationOut(R.anim.slide_up, R.anim.slide_down)
+            .setDuration(5000)
+            .show()
+    }
+
     private fun updateNavBar() {
         if (visibleScreen == Screen.MEDIA) {
             binding.bottomBar.myMediaButton.setIconResource(R.drawable.perm_media_24px)
@@ -214,12 +217,22 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         if (Folder.current == null) {
             addBackend()
         } else {
-            showFileSourceActionSheet()
+            showBottomActionSheet()
         }
     }
 
     private fun addBackend() {
-        newFolderResultLauncher.launch(Intent(this, BackendSetupActivity::class.java))
+        Utility.showMaterialPrompt(
+            this,
+            "Question",
+            "You don't have any media servers or folders. Would you like to set one up now?",
+            "YES",
+            "NO") { affirm ->
+
+            if (affirm) {
+                newFolderResultLauncher.launch(Intent(this, BackendSetupActivity::class.java))
+            }
+        }
     }
 
     private fun setWifiIndicator(uploadOnWifiOnly: Boolean) {
@@ -247,9 +260,20 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         }
     }
 
-    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            Timber.d("Selected file URI: $it")
+    private fun processIntentResult(result: Intent?) {
+        Timber.d("Got camera results")
+
+        result?.let { intent ->
+            val returnedUris = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableArrayListExtra("URI_SET", Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableArrayListExtra<Uri>("URI_SET")
+            }
+
+            returnedUris?.let { uris ->
+                handleSelectedImages(uris)
+            }
         }
     }
 
@@ -258,46 +282,117 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
             if (isGranted) {
                 pickMedia(this, mMediaPickerLauncher)
             } else {
-                Timber.d("le sigh")
+                Timber.d("External storage permission denied")
             }
         }
 
-    private fun requestCameraPermission() {
-        when {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
-                startActivity(Intent(this, CameraCaptureActivity::class.java))
-            }
+    private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            cameraResultLauncher.launch(Intent(this, CameraCaptureActivity::class.java))
+        } else {
+            Timber.d("Camera permission denied")
+        }
+    }
 
-            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                Timber.d("really?")
-                // Provide an additional rationale to the user if the permission was not granted
-                // and the user would benefit from additional context for the use of the permission.
-            }
+    private val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
+        handleSelectedImages(uris)
+    }
 
-            else -> {
-                // Ask for the permission
-                Timber.d("Asking permission for camera")
-                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+    private val legacyPickMultipleMedia = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        handleSelectedImages(uris)
+    }
+
+    private fun handleSelectedImages(uris: List<Uri>) {
+        if (uris.isNotEmpty()) {
+            for (uri in uris) {
+                val mimeType = contentResolver.getType(uri)
+                when {
+                    mimeType?.startsWith("image/") == true -> handleImage(uri)
+                    mimeType?.startsWith("video/") == true -> handleVideo(uri)
+                    else -> {
+                        Timber.d("Unknown type picked: $mimeType")
+                    }
+                }
+            }
+        } else {
+            // No images were selected
+            Timber.d("No images selected")
+        }
+    }
+
+    private fun handleImage(uri: Uri) {
+        Picker.import(this@TabBarActivity, Folder.current, uri)?.let { media ->
+            media.status = Media.Status.Local
+            media.selected = false
+            media.save()
+        }
+    }
+
+    private fun handleVideo(uri: Uri) {
+        Picker.import(this@TabBarActivity, Folder.current, uri)?.let { media ->
+            media.status = Media.Status.Local
+            media.selected = false
+            media.save()
+        }
+    }
+
+    private fun launchLegacyPicker() {
+        legacyPickMultipleMedia.launch("image/*")
+    }
+
+    private fun launchImagePicker() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                launchLegacyPicker()
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }
     }
 
-    private fun showFileSourceActionSheet() {
-        val bottomSheetDialog = BottomSheetDialog(this)
-        val view = layoutInflater.inflate(R.layout.bottom_sheet_file_source, null)
+    private fun requestCameraPermission() {
+        when {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
 
-        view.findViewById<Button>(R.id.btnImages).setOnClickListener {
-            pickMedia(this, mMediaPickerLauncher)
-            bottomSheetDialog.dismiss()
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+                Timber.d("shouldShowRequestPermissionRationale")
+
+                showRationaleDialog()
+            }
+
+            else -> {
+                Timber.d("Asking permission for camera")
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    private fun showRationaleDialog() {
+        Utility.showMaterialMessage(
+            this,
+            title = "Note",
+            message = "The app is asking for access so that you can add photos directly from the camera. This is indeed optional though.",
+            positiveButtonText = "TRY AGAIN") {
+
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun showBottomActionSheet() {
+        val bottomSheetFragment = OABottomSheetDialogFragment.newInstance()
+
+        bottomSheetFragment.onMediaSourceSelected = { source ->
+            when (source) {
+                OABottomSheetDialogFragment.MediaSource.Camera -> requestCameraPermission()
+                OABottomSheetDialogFragment.MediaSource.Images -> launchImagePicker()
+            }
         }
 
-        view.findViewById<Button>(R.id.camera_button).setOnClickListener {
-            requestCameraPermission()
-            bottomSheetDialog.dismiss()
-        }
-
-        bottomSheetDialog.setContentView(view)
-        bottomSheetDialog.show()
+        bottomSheetFragment.show(supportFragmentManager, OABottomSheetDialogFragment.TAG)
     }
 
 //    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {

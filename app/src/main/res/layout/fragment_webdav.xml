@@ -71,7 +71,6 @@
                         android:textSelectHandleRight="@color/red"
                         android:inputType="textUri"
                         android:maxLines="1"
-                        android:text="nx27277.your-storageshare.de"
                         android:singleLine="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -89,7 +88,6 @@
                         android:hint="@string/prompt_email"
                         android:inputType="textNoSuggestions"
                         android:maxLines="1"
-                        android:text="richard@open-archive.org"
                         android:singleLine="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -112,7 +110,6 @@
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:text="D1etC0keD1etC0ke!"
                         android:singleLine="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -128,5 +125,4 @@
 
             </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

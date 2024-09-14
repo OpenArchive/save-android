@@ -9,6 +9,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.10"
     kotlin("plugin.serialization") version "1.8.10"
+    id("kotlin-parcelize")
 }
 
 android {
@@ -113,6 +114,8 @@ android {
 }
 
 dependencies {
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+
     val cameraxVersion = "1.3.4"
     implementation("androidx.camera:camera-core:${cameraxVersion}")
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")
@@ -148,7 +151,7 @@ dependencies {
     implementation("androidx.work:work-testing:2.9.1")
     implementation("androidx.compose.material3:material3:1.3.0")
 
-    val composeVersion = "1.7.0"
+    val composeVersion = "1.7.1"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")

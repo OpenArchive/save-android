@@ -8,9 +8,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" /> -->
-    <!-- <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> -->
-    <!-- <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" /> -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -101,11 +100,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".services.webdav.WebDavActivity"
-            android:label="@string/title_activity_login"
-            android:taskAffinity="" />
-        <activity
-            android:name=".features.internetarchive.presentation.InternetArchiveActivity"
+            android:name=".features.internetarchive.presentation.InternetArchiveFragment"
             android:label="@string/title_activity_login"
             android:taskAffinity="" />
         <activity
@@ -132,11 +127,6 @@
         <activity
             android:name=".features.backends.BackendMetadataFragment"
             android:exported="false"
-            android:taskAffinity="" />
-        <activity
-            android:name=".features.backends.BackendSelectionActivity"
-            android:exported="false"
-            android:label="@string/title_activity_first_start"
             android:taskAffinity="" />
         <activity
             android:name=".features.backends.BackendSetupActivity"

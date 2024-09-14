@@ -5,50 +5,55 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.BackendResult
-import net.opendasharchive.openarchive.extensions.bundleWithBackendId
-import net.opendasharchive.openarchive.extensions.bundleWithNewSpace
-import net.opendasharchive.openarchive.extensions.getBackend
-import net.opendasharchive.openarchive.services.CommonServiceFragment
-import timber.log.Timber
 
-class InternetArchiveFragment : CommonServiceFragment() {
+class InternetArchiveFragment : Fragment() {
+    private var backend: Backend? = null
+    private var isNewSpace: Boolean = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            backend = it.getParcelable("backend")
+            isNewSpace = it.getBoolean("isNewSpace", false)
+        }
+    }
 
-        val (backend, isNewBackend) = arguments.getBackend(Backend.Type.INTERNET_ARCHIVE)
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                InternetArchiveScreen(backend, isNewBackend) { result ->
-                    finish(result)
+                InternetArchiveScreen(backend!!, isNewSpace) { result ->
+                    parentFragmentManager.setFragmentResult("internetArchiveResult", bundleOf("result" to result))
+                    findNavController().navigateUp()
                 }
             }
         }
     }
 
-    private fun finish(result: BackendResult) {
-        Timber.d("IA result value = $result")
-//        setFragmentResult(
-//            BackendSetupFragment.BACKEND_RESULT_REQUEST_KEY,
-//            bundleOf(BackendSetupFragment.BACKEND_RESULT_BUNDLE_TYPE_KEY to Backend.Type.INTERNET_ARCHIVE))
-    }
-
     companion object {
-        @JvmStatic
-        fun newInstance(args: Bundle) = InternetArchiveFragment().apply {
-            arguments = args
+        fun newInstance(backend: Backend, isNewSpace: Boolean) = InternetArchiveFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable("backend", backend)
+                putBoolean("isNewSpace", isNewSpace)
+            }
+        }
+    }
+}
+
+private fun finish(result: BackendResult) {
+    when (result) {
+        BackendResult.Created -> {
+//                startActivity(Intent(this, TabBarActivity::class.java))
         }
 
-        @JvmStatic
-        fun newInstance(backendId: Long) = newInstance(args = bundleWithBackendId(backendId))
+        BackendResult.Cancelled -> Unit // finish()
 
-        @JvmStatic
-        fun newInstance() = newInstance(args = bundleWithNewSpace())
+        BackendResult.Deleted -> Unit // Backend.navigate(requireActivity())
+
+        else -> Unit
     }
 }

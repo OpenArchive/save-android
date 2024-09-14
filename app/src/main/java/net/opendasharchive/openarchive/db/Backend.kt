@@ -3,12 +3,14 @@ package net.opendasharchive.openarchive.db
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Parcelable
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.amulyakhare.textdrawable.TextDrawable
 import com.github.abdularis.civ.AvatarImageView
 import com.orm.SugarRecord
+import kotlinx.parcelize.Parcelize
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
@@ -16,27 +18,27 @@ import net.opendasharchive.openarchive.services.internetarchive.IaConduit
 import net.opendasharchive.openarchive.services.webdav.WebDavConduit
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import org.bouncycastle.asn1.x500.style.RFC4519Style.description
 import timber.log.Timber
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 enum class BackendResult() {
-    Cancelled, Created, Deleted, Modified
+    Cancelled, Created, Deleted
 }
 
+@Parcelize
 data class Backend(
     var type: Long = 0,
     var name: String = "",
     var username: String = "",
-    var displayname: String = "",
+    var nickname: String = "",
     var password: String = "",
     var host: String = "",
     var metaData: String = "",
     var lastSyncDate: Date? = null,
-    private var licenseUrl: String? = null
-) : SugarRecord() {
+    var license: String? = null
+) : SugarRecord(), Parcelable {
 
     constructor(type: Type) : this() {
         tType = type
@@ -78,7 +80,7 @@ data class Backend(
             Backend(Backend.Type.INTERNET_ARCHIVE),
             Backend(Backend.Type.WEBDAV),
             Backend(Backend.Type.GDRIVE),
-            Backend(Backend.Type.SNOWBIRD),
+//            Backend(Backend.Type.SNOWBIRD),
         )
 
         fun getAll(): List<Backend> {
@@ -123,11 +125,11 @@ data class Backend(
 
     val friendlyName: String
         get() {
-            if (name.isNotBlank()) {
-                return name
+            return when {
+                nickname.isNotEmpty() -> nickname
+                name.isNotEmpty() -> name
+                else -> "an unkn own server"
             }
-
-            return hostUrl?.host ?: name
         }
 
     val initial: String
@@ -145,22 +147,22 @@ data class Backend(
             type = (value ?: Type.WEBDAV).id
         }
 
-    var license: String?
-        get() = this.licenseUrl
-        set(value) {
-            licenseUrl = value
+//    var license: String?
+//        get() = this.license
+//        set(value) {
+//            license = value
 
 //            for (folder in folders) {
 //                folder.licenseUrl = licenseUrl
 //                folder.save()
 //            }
-        }
+//        }
 
     fun exists(): Boolean {
         try {
             val items = find(
                 Backend::class.java,
-                "type = ? AND displayname = ?", type.toString(), displayname)
+                "type = ? AND username = ?", type.toString(), username)
 
             return items.isNotEmpty()
         } catch (e: Exception) {

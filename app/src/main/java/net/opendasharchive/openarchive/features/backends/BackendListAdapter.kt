@@ -59,8 +59,8 @@ class BackendAdapter(private val onItemAction: ((View, Backend, ItemAction) -> U
 
         private fun addAccountInfo(binding: OneLineRowBinding, backend: Backend) {
             if (backend.tType == Backend.Type.GDRIVE) {
-                if (backend.displayname.isNotEmpty()) {
-                    binding.button.setSubTitle(backend.displayname)
+                if (backend.nickname.isNotEmpty()) {
+                    binding.button.setSubTitle(backend.nickname)
                     return
                 }
             }

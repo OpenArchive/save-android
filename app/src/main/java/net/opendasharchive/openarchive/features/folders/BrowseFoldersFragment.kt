@@ -10,10 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,40 +26,12 @@ import timber.log.Timber
 
 class BrowseFoldersFragment : Fragment() {
 
+    private val viewModel: BrowseFoldersViewModel by activityViewModels()
     private lateinit var binding: FragmentBrowseFoldersBinding
-    private lateinit var viewModel: BrowseFoldersViewModel
     private lateinit var adapter: BrowseFoldersAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentBrowseFoldersBinding.inflate(layoutInflater)
-
-        viewModel = BrowseFoldersViewModel()
-
-        setupRecyclerView()
-        setupSwipeRefresh()
-
-        try {
-            viewModel.loadData(requireContext())
-        } catch (e: Error) {
-            Timber.e(e)
-        }
-
-        viewModel.items.observe(viewLifecycleOwner) { items ->
-            Timber.d("Observed!")
-
-            Timber.d("Loaded ${viewModel.items.value?.size} items")
-
-            binding.foldersEmpty.toggle(items.isEmpty())
-
-            // Stop the refreshing indicator
-            binding.swipeRefreshLayout.isRefreshing = false
-
-            adapter.updateItems(items)
-        }
-
-        viewModel.progressBarFlag.observe(viewLifecycleOwner) {
-            binding.progressBar.toggle(it)
-        }
 
         return binding.root
     }
@@ -85,6 +56,30 @@ class BrowseFoldersFragment : Fragment() {
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        setupRecyclerView()
+        setupSwipeRefresh()
+
+        try {
+            viewModel.loadData(requireContext())
+        } catch (e: Error) {
+            Timber.e(e)
+        }
+
+        viewModel.items.observe(viewLifecycleOwner) { items ->
+            Timber.d("Observed!")
+
+            Timber.d("Loaded ${viewModel.items.value?.size} items")
+
+            // Stop the refreshing indicator
+            binding.swipeRefreshLayout.isRefreshing = false
+
+            adapter.updateItems(items)
+        }
+
+        viewModel.progressBarFlag.observe(viewLifecycleOwner) {
+            binding.progressBar.toggle(it)
+        }
     }
 
     private fun onFolderSelected(folder: Folder) {
@@ -93,8 +88,8 @@ class BrowseFoldersFragment : Fragment() {
         if (folder != Folder.current) {
             showMaterialPrompt(
                 requireContext(),
-                "Confirming",
-                "Would you like to make this your current folder?",
+                "Question",
+                "Would you like to make this your active folder?",
                 "Yes", "No") { affirm ->
 
                 if (affirm) {
@@ -108,7 +103,6 @@ class BrowseFoldersFragment : Fragment() {
     private fun setFolderAsDefault(folder: Folder) {
         Folder.current = folder
         adapter.notifyDataSetChanged()
-        setFragmentResult("FOLDER_BROWSER", bundleOf("folderId" to 123))
     }
 
     private fun refreshFolders() {
@@ -121,23 +115,27 @@ class BrowseFoldersFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+        val recyclerView = binding.folderList
+
         adapter = BrowseFoldersAdapter(
             onClick = { folder ->
                 onFolderSelected(folder)
             },
-            onLongPress = { folder, view ->
+            onLongPress = { _, view ->
                 Timber.d("long press!")
                 showContextMenu(view)
                 //folderContextMenu?.showAsAnchorCenter(view)
             }
         )
 
-        binding.folderList.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
 
-        binding.folderList.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun showContextMenu(anchorView: View) {
+        Toast.makeText(requireContext(), "Context menu coming soon", Toast.LENGTH_LONG).show()
+
 //        val menuItems = listOf(
 //            CustomPopupMenuDialog.MenuItem(R.drawable.ic_description, "Edit"),
 //            CustomPopupMenuDialog.MenuItem(R.drawable.ic_error, "Share"),

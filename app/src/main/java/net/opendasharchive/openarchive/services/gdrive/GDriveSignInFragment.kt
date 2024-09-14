@@ -2,6 +2,7 @@ package net.opendasharchive.openarchive.services.gdrive
 
 import android.accounts.Account
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -22,15 +23,17 @@ import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentGdriveSignInBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.folders.FolderViewModel
+import net.opendasharchive.openarchive.features.backends.BackendViewModel
 import net.opendasharchive.openarchive.services.CommonServiceFragment
-import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Utility
+import net.opendasharchive.openarchive.util.extensions.toggle
 import timber.log.Timber
 
 class GDriveSignInFragment : CommonServiceFragment() {
@@ -38,7 +41,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
     private lateinit var binding: FragmentGdriveSignInBinding
     private lateinit var gso: GoogleSignInOptions
     private lateinit var googleSignInClient: GoogleSignInClient
-    private val folderViewModel: FolderViewModel by activityViewModels()
+    private val backendViewModel: BackendViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentGdriveSignInBinding.inflate(inflater)
@@ -123,24 +126,52 @@ class GDriveSignInFragment : CommonServiceFragment() {
             val backend = Backend(Backend.Type.GDRIVE)
             val account = completedTask.getResult(ApiException::class.java)
 
-            backend.displayname = account.email ?: ""
+            backend.nickname = account.email ?: ""
+            backend.username = account.email ?: ""
 
             if (GDriveConduit.permissionsGranted(requireContext())) {
-                backend.save()
-                updateWorkingFolder(backend)
-                Analytics.log(Analytics.NEW_BACKEND_CONNECTED, mutableMapOf("type" to backend.name))
-                findNavController().navigate(GDriveSignInFragmentDirections.navigateToCreateNewFolderScreen())
+                saveNewBackend(backend)
+
+                binding.progressBar.toggle(true)
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    syncGDrive(requireContext(), backend)
+
+                    MainScope().launch {
+                        binding.progressBar.toggle(false)
+
+                        Utility.showMaterialMessage(
+                            requireContext(),
+                            title = "Success!",
+                            message = "You have successfully authenticated! Now let's continue setting up your media server.") {
+                            findNavController().navigate(GDriveSignInFragmentDirections.navigateToBackendMetadataScreen())
+                        }
+                    }
+                }
             } else {
                 Timber.d("Permissions not granted")
-                showWarning()
+                showPermissionsWarning()
             }
         }
     }
 
-    private fun updateWorkingFolder(backend: Backend) {
-        folderViewModel.updateFolder { folder ->
-            folder.copy(backend = backend)
+    private fun saveNewBackend(backend: Backend) {
+        backend.save()
+        backendViewModel.updateBackend { backend }
+        //                Analytics.log(Analytics.NEW_BACKEND_CONNECTED, mutableMapOf("type" to backend.name))
+    }
+
+    private fun syncGDrive(context: Context, backend: Backend): Int {
+        val folders = GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context), backend)
+
+        folders.forEach { folder ->
+            if (folder.doesNotExist()) {
+                Timber.d("Syncing ${folder.name}")
+                folder.save()
+            }
         }
+
+        return folders.size
     }
 
     private fun authFailed(errorMessage: String?) {
@@ -157,7 +188,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
         Utility.showMaterialPrompt(
             context = requireContext(),
             title = "Hi, there!",
-            message = "You are already signed into a Google account. If you want to sign into s different account you will need to sign out first. Do that now?",
+            message = "You are already signed into a Google account. If you want to sign into a different account you will need to sign out first. Do that now?",
             positiveButtonText = "Yes",
             negativeButtonText = "No") { affirm ->
             if (affirm) {
@@ -168,7 +199,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
         }
     }
 
-    private fun showWarning() {
+    private fun showPermissionsWarning() {
         Utility.showMaterialPrompt(
             context = requireContext(),
             title = "Oops",

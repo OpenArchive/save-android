@@ -24,6 +24,7 @@ import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.folders.FolderViewModel
 import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
+import net.opendasharchive.openarchive.util.extensions.toggle
 import timber.log.Timber
 import java.util.Date
 
@@ -51,6 +52,8 @@ class BackendSelectionFragment : Fragment() {
         viewBinding.connectNewMediaServerButton.setOnClickListener {
             findNavController().navigate(BackendSelectionFragmentDirections.navigateToConnectNewBackendScreen())
         }
+
+        viewBinding.progressBar.toggle(false)
 
         return viewBinding.root
     }
@@ -85,33 +88,24 @@ class BackendSelectionFragment : Fragment() {
     }
 
     private fun connectToExistingBackend(backend: Backend) {
+        viewBinding.progressBar.toggle(true)
+
         backendViewModel.updateBackend { backend }
 
         Timber.d("Working folder = ${folderViewModel.folder.value}")
 
         CoroutineScope(Dispatchers.IO).launch {
-            val numFolders = syncBackend(requireContext(), backend, true)
+            syncBackend(requireContext(), backend)
 
             MainScope().launch {
-                // Pulling this out. User has ability to select existing folders before this, so doing it here
-                // is redundant.
-                //
-//                if (numFolders > 0) {
-//                    findNavController().navigate(BackendSelectionFragmentDirections.navigateToFolderSelectionScreen())
-//                } else {
-                    findNavController().navigate(BackendSelectionFragmentDirections.navigateToCreateNewFolderScreen())
-//                }
+                findNavController().navigate(BackendSelectionFragmentDirections.navigateToCreateNewFolderScreen())
             }
         }
     }
 
     // TODO: Refactor this. Copied from Backend.kt
     //
-    private fun syncBackend(context: Context, backend: Backend, forceLoad: Boolean = false): Int {
-        if (!forceLoad && !backend.shouldSync()) {
-            return 0
-        }
-
+    private fun syncBackend(context: Context, backend: Backend): Int {
         Timber.d("Syncing folders for ${backend.friendlyName}")
 
         val numFolders = when (backend.tType) {

@@ -111,12 +111,12 @@ class CreateNewFolderFragment : Fragment() {
 
         updateWorkingFolder(name)
 
-        saveFolder()
+        saveNewFolder()
 
         showMaterialPrompt(
             requireContext(),
             "Folder Created!",
-            "Would you like to make this your current folder?",
+            "Would you like to make this your active folder?",
             "Yes", "No") { affirm ->
 
             if (affirm) {
@@ -127,10 +127,9 @@ class CreateNewFolderFragment : Fragment() {
         }
     }
 
-    private fun saveFolder() {
+    private fun saveNewFolder() {
         lifecycleScope.launch {
-            val folder = folderViewModel.folder.value
-            folder.save()
+            folderViewModel.folder.value.save()
         }
     }
 
@@ -148,14 +147,11 @@ class CreateNewFolderFragment : Fragment() {
     }
 
     private fun folderWithNameExists(name: String): Boolean {
-        val workingFolder = folderViewModel.folder.value
+        val backend = backendViewModel.backend.value
 
-        workingFolder.backend?.let { backend ->
-            val found = Folder.getLocalFoldersForBackend(backend).firstOrNull { it.name == name }
-            return (found != null)
-        }
+        val exists = Folder.getLocalFoldersForBackend(backend).firstOrNull { it.name == name }
 
-        return false
+        return (exists != null)
     }
 
     private fun signalSuccess() {

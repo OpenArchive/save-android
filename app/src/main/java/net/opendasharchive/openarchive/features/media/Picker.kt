@@ -166,8 +166,7 @@ object Picker {
         media.createDate = createDate
         media.updateDate = media.createDate
         media.status = Media.Status.Local
-        media.mediaHashString =
-            HashUtils.getSHA256FromFileContent(context.contentResolver.openInputStream(uri))
+        media.mediaHashString = HashUtils.getSHA256FromFileContent(context.contentResolver.openInputStream(uri))
         media.folderId = folder.id
         media.title = title
         media.save()

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,9 @@ import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.backends.BackendViewModel
 import net.opendasharchive.openarchive.features.folders.NewFolderNavigationAction
 import net.opendasharchive.openarchive.features.folders.NewFolderNavigationViewModel
+import net.opendasharchive.openarchive.features.main.ui.ProgressDialogFragment
 import net.opendasharchive.openarchive.services.SaveClient
+import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.Utility.showMaterialWarning
 import okhttp3.Call
 import okhttp3.Callback
@@ -41,6 +44,10 @@ class WebDavFragment : Fragment() {
     private lateinit var backend: Backend
     private val backendViewModel: BackendViewModel by activityViewModels()
     private val newFolderNavigationViewModel: NewFolderNavigationViewModel by activityViewModels()
+    private var progressDialog: ProgressDialogFragment? = null
+
+//    private lateinit var fadeInAnimation: Animation
+//    private lateinit var fadeOutAnimation: Animation
 
     companion object {
         // other internal constants
@@ -101,12 +108,44 @@ class WebDavFragment : Fragment() {
 
         newFolderNavigationViewModel.observeNavigation(viewLifecycleOwner) { action ->
             if (action == NewFolderNavigationAction.UserAuthenticated) {
-                backendViewModel.updateBackend {
-                    backend
-                }
+                backendViewModel.updateBackend { backend }
                 findNavController().navigate(WebDavFragmentDirections.navigateToBackendMetadataScreen())
             }
         }
+
+//        fadeInAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in)
+//        fadeInAnimation.setAnimationListener(object : Animation.AnimationListener {
+//            override fun onAnimationStart(animation: Animation?) {}
+//            override fun onAnimationRepeat(animation: Animation?) {}
+//            override fun onAnimationEnd(animation: Animation?) {
+//                binding.progressBar.toggle(true)
+//            }
+//        })
+//
+//        fadeOutAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out)
+//        fadeOutAnimation.setAnimationListener(object : Animation.AnimationListener {
+//            override fun onAnimationStart(animation: Animation?) {}
+//            override fun onAnimationRepeat(animation: Animation?) {}
+//            override fun onAnimationEnd(animation: Animation?) {
+//                binding.dimOverlay.root.visibility = View.GONE
+//                binding.progressBar.toggle(false)
+//            }
+//        })
+    }
+
+    private fun showWaitState() {
+//        binding.dimOverlay.root.visibility = View.VISIBLE
+//        binding.dimOverlay.root.startAnimation(fadeInAnimation)
+
+        progressDialog = ProgressDialogFragment().also { dialog ->
+            dialog.show(parentFragmentManager, ProgressDialogFragment.TAG)
+        }
+    }
+
+    private fun hideWaitState() {
+        progressDialog?.dismiss()
+        progressDialog = null
+//        binding.dimOverlay.root.startAnimation(fadeOutAnimation)
     }
 
     private fun setupSignInButtonEnablers() {
@@ -176,7 +215,8 @@ class WebDavFragment : Fragment() {
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
-        // mSnackbar.show()
+        //
+        showWaitState()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -194,6 +234,10 @@ class WebDavFragment : Fragment() {
                         }
                     }
                 }
+            } finally {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    hideWaitState()
+                }
             }
         }
     }
@@ -209,7 +253,12 @@ class WebDavFragment : Fragment() {
     }
 
     private fun navigate() {
-        newFolderNavigationViewModel.triggerNavigation(NewFolderNavigationAction.UserAuthenticated)
+        Utility.showMaterialMessage(
+            requireContext(),
+            title = "Success!",
+            message = "You have successfully authenticated! Now let's continue setting up your media server.") {
+            newFolderNavigationViewModel.triggerNavigation(NewFolderNavigationAction.UserAuthenticated)
+        }
     }
 
     private fun enableIfReady() {

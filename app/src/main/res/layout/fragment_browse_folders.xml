@@ -7,17 +7,23 @@
     android:filterTouchesWhenObscured="true"
     tools:context=".features.folders.BrowseFoldersFragment">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/folder_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/folder_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -26,14 +32,5 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_marginBottom="8dp" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/folders_empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/no_more_folders"
-        android:textSize="18sp"
-        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

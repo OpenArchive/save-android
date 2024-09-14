@@ -24,28 +24,6 @@ open class CommonServiceFragment : Fragment()  {
         super.onViewCreated(view, savedInstanceState)
 
         accountManager = activity?.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager
-
-//        requireActivity().addMenuProvider(object : MenuProvider {
-//            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-//                // Nop
-//            }
-//
-//            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-//                return when (menuItem.itemId) {
-//                    android.R.id.home -> {
-//                        requireActivity().onBackPressedDispatcher.onBackPressed()
-//                        true
-//                    }
-//                    else -> false
-//                }
-//            }
-//        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-//
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                onBackPressed()
-//            }
-//        })
     }
 
     fun accountExists(accountName: String, accountType: String): Boolean {
@@ -86,8 +64,4 @@ open class CommonServiceFragment : Fragment()  {
     fun removeAccount(account: Account) {
         accountManager.removeAccount(account, requireActivity(), null, null)
     }
-
-//    open fun onBackPressed() {
-//        setFragmentResult(RESP_CANCEL, bundleOf())
-//    }
 }

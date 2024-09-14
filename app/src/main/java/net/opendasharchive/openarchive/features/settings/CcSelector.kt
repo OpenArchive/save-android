@@ -7,6 +7,10 @@ import net.opendasharchive.openarchive.util.extensions.toggle
 
 object CcSelector {
 
+    enum class Scope {
+        Backend, Folder
+    }
+
     private const val CC_DOMAIN = "creativecommons.org"
     private const val CC_URL = "https://%s/licenses/%s/4.0/"
 
