@@ -129,6 +129,10 @@
             android:exported="false"
             android:taskAffinity="" />
         <activity
+            android:name=".features.main.WebViewActivity"
+            android:exported="false"
+            android:taskAffinity="" />
+        <activity
             android:name=".features.backends.BackendSetupActivity"
             android:exported="false"
             android:label="@string/title_activity_first_start"

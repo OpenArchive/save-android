@@ -8,6 +8,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
+import net.opendasharchive.openarchive.features.main.WebViewActivity
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import net.opendasharchive.openarchive.util.extensions.getVersionName
@@ -23,18 +24,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         getPrefByKey<Preference>(R.string.pref_media_servers)?.setOnPreferenceClickListener {
-//            if (Backend.getAll().isEmpty()) {
-                startActivity(Intent(context, BackendSetupActivity::class.java))
-//            } else {
-//                startActivity(Intent(context, BrowseFoldersActivity::class.java))
-//            }
-
+            startActivity(Intent(context, BackendSetupActivity::class.java))
             true
         }
 
         findPreference<Preference>(Prefs.USE_TOR)?.setOnPreferenceChangeListener { _, newValue ->
             val activity = activity ?: return@setOnPreferenceChangeListener true
-
             true
         }
 
@@ -46,6 +41,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>(Prefs.UPLOAD_WIFI_ONLY)?.setOnPreferenceChangeListener { _, newValue ->
             val intent = Intent(Prefs.UPLOAD_WIFI_ONLY).apply{putExtra("value", newValue as Boolean)}
             LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent)
+            true
+        }
+
+        findPreference<Preference>(Prefs.PRIVACY_POLICY)?.setOnPreferenceClickListener {
+            val intent = WebViewActivity.newIntent(requireContext(), "https://open-archive.org/privacy")
+            startActivity(intent)
             true
         }
 

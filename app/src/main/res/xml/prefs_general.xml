@@ -120,18 +120,8 @@
             app:iconSpaceReserved="false"
             app:key="privacy_policy"
             app:singleLineTitle="true"
-            app:title="Privacy Policy"
-            app:summary="Tap to view our Privacy Policy" />
-
-        <Preference
-            app:allowDividerAbove="false"
-            app:allowDividerBelow="false"
-            app:enabled="true"
-            app:iconSpaceReserved="false"
-            app:key="terms_and_conditions"
-            app:singleLineTitle="true"
-            app:title="Terms &amp; Conditions"
-            app:summary="Tap to view our Terms &amp; Conditions" />
+            app:title="Terms &amp; Privacy Policy"
+            app:summary="Tap to view our Terms &amp; Privacy Policy" />
 
         <Preference
             app:allowDividerAbove="false"

@@ -29,6 +29,7 @@ object Prefs {
     const val ADD_FOLDER_HINT_SHOWN = "ft.add_folder"
     const val LICENSE_URL = "archive_pref_share_license_url"
     const val PROOFMODE_ENCRYPTED_PASSPHRASE = "proof_mode_encrypted_passphrase"
+    const val PRIVACY_POLICY = "privacy_policy"
 
     var manager: SharedPreferences? = null
 

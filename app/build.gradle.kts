@@ -291,6 +291,8 @@ dependencies {
     // Mixpanel analytics
     implementation("com.mixpanel.android:mixpanel-android:7.5.2")
 
+    implementation("androidx.webkit:webkit:1.11.0")
+
     // Tests
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.7.3")
