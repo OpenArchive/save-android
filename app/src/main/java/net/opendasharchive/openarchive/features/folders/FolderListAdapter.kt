@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.features.folders
 
 import android.graphics.drawable.GradientDrawable
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,12 +40,6 @@ class FolderListAdapter(private val onItemAction: ((View, Folder, ItemAction) ->
                         changeStrokeColor(binding.button, 3, ContextCompat.getColor(itemView.context, R.color.c23_teal))
                     }
                 }
-            }
-
-            binding.button.setOnLongClickListener { view ->
-                view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                onItemAction?.invoke(binding.root, folder, ItemAction.LONG_PRESSED)
-                true
             }
         }
 

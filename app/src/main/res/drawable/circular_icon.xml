@@ -2,8 +2,7 @@
 <layer-list
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:drawable="@drawable/circle_shape"
-         />
+    <item android:drawable="@drawable/circle_shape" />
     <item android:drawable="@drawable/ic_private_server"
         android:left="0dp"
         android:top="0dp"

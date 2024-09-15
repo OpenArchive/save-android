@@ -1,32 +1,22 @@
 package net.opendasharchive.openarchive.features.backends
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.AutoTransition
-import androidx.transition.TransitionManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.folders.FolderViewModel
-import net.opendasharchive.openarchive.services.gdrive.GDriveConduit
-import net.opendasharchive.openarchive.util.SpacingItemDecoration
+import net.opendasharchive.openarchive.util.extensions.tint
 import net.opendasharchive.openarchive.util.extensions.toggle
-import timber.log.Timber
-import java.util.Date
 
 class BackendSelectionFragment : Fragment() {
 
@@ -34,14 +24,9 @@ class BackendSelectionFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private val backendViewModel: BackendViewModel by activityViewModels()
     private val folderViewModel: FolderViewModel by activityViewModels()
-    private val viewModel: BackendListViewModel by viewModels() {
-        BackendListViewModelFactory(BackendListViewModel.Companion.Filter.CONNECTED)
-    }
-    private val adapter = BackendAdapter { view, backend, action ->
-        when (action) {
-            ItemAction.SELECTED -> connectToExistingBackend(backend)
-            ItemAction.LONG_PRESSED -> showPopupMenu(view, backend)
-        }
+    private val viewModel: BackendSelectionViewModel by viewModels()
+    private val adapter = BackendSelectionAdapter { item ->
+        useBackend(item.backend)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -49,20 +34,26 @@ class BackendSelectionFragment : Fragment() {
 
         createBackendList()
 
-        viewBinding.connectNewMediaServerButton.setOnClickListener {
-            findNavController().navigate(BackendSelectionFragmentDirections.navigateToConnectNewBackendScreen())
-        }
-
-        viewBinding.progressBar.toggle(false)
+//        viewBinding.connectNewMediaServerButton.setOnClickListener {
+//            findNavController().navigate(BackendSelectionFragmentDirections.navigateToConnectNewBackendScreen())
+//        }
 
         return viewBinding.root
     }
 
-//        val arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_right)
-//        arrow?.tint(ContextCompat.getColor(this, R.color.colorPrimary))
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-//        mBinding.newFolder.setDrawable(arrow, Position.End, tint = false)
-//        mBinding.browseFolders.setDrawable(arrow, Position.End, tint = false)
+        viewBinding.progressBar.toggle(false)
+
+        val color = ContextCompat.getColor(requireContext(), R.color.c23_teal)
+        val leftIcon = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_info_24)?.tint(color)
+
+        viewBinding.screenTitle.leftIcon.setImageDrawable(leftIcon)
+//        viewBinding.screenTitle.title.setTextColor(ContextCompat.getColor(requireContext(), R.color.c23_teal))
+        viewBinding.screenTitle.title.text = getString(R.string.select_where_to_store_your_media)
+        viewBinding.screenTitle.title.maxLines = 2
+    }
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,
         // as it doesn't make sense to show a one-option menu.
@@ -72,109 +63,34 @@ class BackendSelectionFragment : Fragment() {
 //            finish()
 //        }
 
-    private fun editBackend(backend: Backend) {
-
-    }
-
-    private fun deleteBackend(backend: Backend) {
-        val transition = AutoTransition().apply {
-            duration = 250
-            addTarget(recyclerView)
-        }
-
-        TransitionManager.beginDelayedTransition(recyclerView.parent as ViewGroup, transition)
-
-        viewModel.deleteBackend(backend)
-    }
-
-    private fun connectToExistingBackend(backend: Backend) {
-        viewBinding.progressBar.toggle(true)
+    private fun useBackend(backend: Backend) {
+//        viewBinding.progressBar.toggle(true)
 
         backendViewModel.updateBackend { backend }
 
-        Timber.d("Working folder = ${folderViewModel.folder.value}")
-
-        CoroutineScope(Dispatchers.IO).launch {
-            syncBackend(requireContext(), backend)
-
-            MainScope().launch {
-                findNavController().navigate(BackendSelectionFragmentDirections.navigateToCreateNewFolderScreen())
+        if (backend.exists()) {
+            findNavController().navigate(BackendSelectionFragmentDirections.navigateToCreateNewFolderScreen())
+        } else {
+            when (backend.tType) {
+                Backend.Type.WEBDAV -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToPrivateServerScreen())
+                Backend.Type.INTERNET_ARCHIVE -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToInternetArchiveScreen(backend, true))
+                Backend.Type.GDRIVE -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToGdriveScreen())
+                else -> Unit
             }
         }
-    }
-
-    // TODO: Refactor this. Copied from Backend.kt
-    //
-    private fun syncBackend(context: Context, backend: Backend): Int {
-        Timber.d("Syncing folders for ${backend.friendlyName}")
-
-        val numFolders = when (backend.tType) {
-            Backend.Type.GDRIVE -> syncGDrive(context, backend)
-            else -> 0
-        }
-
-        backend.lastSyncDate = Date()
-        backend.save()
-
-        Timber.d("Got $numFolders folders")
-
-        return numFolders
-    }
-
-    private fun syncGDrive(context: Context, backend: Backend): Int {
-        val folders = GDriveConduit.listFoldersInRoot(GDriveConduit.getDrive(context), backend)
-
-        folders.forEach { folder ->
-            if (folder.doesNotExist()) {
-                Timber.d("Syncing ${folder.name}")
-                folder.save()
-            }
-        }
-
-        return folders.size
     }
 
     private fun createBackendList() {
         recyclerView = viewBinding.backendList
 
-        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.list_item_spacing)
-        viewBinding.backendList.addItemDecoration(SpacingItemDecoration(spacingInPixels))
+//        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.list_item_spacing)
+//        viewBinding.backendList.addItemDecoration(SpacingItemDecoration(spacingInPixels))
 
         viewBinding.backendList.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.backendList.adapter = adapter
 
-        viewModel.backends.observe(viewLifecycleOwner) { backends ->
-            backends.forEach { backend ->
-                Timber.d("Backend = ${backend.id} $backend")
-            }
-            adapter.submitList(backends)
-        }
-    }
-
-    private fun showPopupMenu(view: View, backend: Backend) {
-        PopupMenu(view.context, view).apply {
-            menuInflater.inflate(R.menu.menu_backend_context, menu)
-
-            if (backend.isCurrent) {
-                menu.findItem(R.id.menu_remove).isVisible = false
-            }
-
-            setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.menu_edit -> {
-                        editBackend(backend)
-                        true
-                    }
-
-                    R.id.menu_remove -> {
-                        deleteBackend(backend)
-                        true
-                    }
-
-                    else -> return@setOnMenuItemClickListener false
-                }
-            }
-            show()
+        viewModel.backends.observe(viewLifecycleOwner) { groupedBackends ->
+            adapter.submitList(groupedBackends.toFlattenedList())
         }
     }
 

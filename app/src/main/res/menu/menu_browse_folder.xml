@@ -7,7 +7,7 @@
         android:id="@+id/action_add"
         android:icon="@drawable/outline_create_new_folder_24"
         android:iconTint="@color/transparent_white"
-        android:title="Add folder"
+        android:title="ADD FOLDER"
         app:showAsAction="always" />
 
 </menu>

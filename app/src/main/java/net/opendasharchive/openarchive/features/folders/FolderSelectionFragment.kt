@@ -30,7 +30,6 @@ class FolderSelectionFragment : Fragment() {
     private val adapter = FolderListAdapter { view, folder, action ->
         when (action) {
             ItemAction.SELECTED -> useExistingFolder(folder)
-            ItemAction.LONG_PRESSED -> Unit
         }
     }
 

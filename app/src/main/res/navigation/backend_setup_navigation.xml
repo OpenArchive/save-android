@@ -21,6 +21,15 @@
         <action
             android:id="@+id/navigate_to_connect_new_backend_screen"
             app:destination="@id/connect_new_backend_screen" />
+        <action
+            android:id="@+id/navigate_to_private_server_screen"
+            app:destination="@id/private_server_screen" />
+        <action
+            android:id="@+id/navigate_to_gdrive_screen"
+            app:destination="@id/gdrive_screen" />
+        <action
+            android:id="@+id/navigate_to_internet_archive_screen"
+            app:destination="@id/internet_archive_screen" />
     </fragment>
     <fragment
         android:id="@+id/connect_new_backend_screen"

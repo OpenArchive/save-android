@@ -17,10 +17,8 @@ import java.util.Date
 
 class BrowseFoldersViewModel : ViewModel() {
 
-    private val mItems = MutableLiveData<List<ListItem>>()
-
-    val items: LiveData<List<ListItem>>
-        get() = mItems
+    private val _items = MutableLiveData<List<ListItem>>()
+    val items: LiveData<List<ListItem>> = _items
 
     val progressBarFlag = MutableLiveData(false)
 
@@ -35,24 +33,26 @@ class BrowseFoldersViewModel : ViewModel() {
                 val allFolders = mutableSetOf<ListItem>()
 
                 val value = withContext(Dispatchers.IO) {
+                    Timber.d("Copying down all backend folders (if necessary")
+
                     for (backend in Backend.getAll()) {
                         syncBackend(context, backend, forceLoad)
                     }
 
                     for (backend in Backend.getAll()) {
-                        Timber.d("Getting folders for ${backend.friendlyName}")
+                        Timber.d("Loading local folders for ${backend.friendlyName}")
 
-                        val someFolders = getLocalFolders(backend)
+                        val someLocalFolders = getLocalFolders(backend)
 
-                        allFolders.addAll(someFolders)
+                        allFolders.addAll(someLocalFolders)
                     }
 
                     allFolders.toList()
                 }
 
-                mItems.value = value
+                _items.value = value
             } catch (e: Error) {
-                mItems.value = emptyList()
+                _items.value = emptyList()
                 Timber.e(e)
                 throw(e)
             } finally {

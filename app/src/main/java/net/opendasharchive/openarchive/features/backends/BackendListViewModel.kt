@@ -29,5 +29,4 @@ class BackendListViewModel(private val filter: Filter = Filter.ALL) : ViewModel(
         backend.delete()
         _backends.value = _backends.value?.filter { it.id != backend.id }
     }
-
 }

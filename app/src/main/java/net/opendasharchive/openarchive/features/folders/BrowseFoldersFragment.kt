@@ -39,6 +39,9 @@ class BrowseFoldersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Needs a special case since our root Fragment isn't really the root of our backstack.
+        // Will probably look into addressing this properly at a later date.
+        //
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         requireActivity().addMenuProvider(object : MenuProvider {
@@ -134,8 +137,8 @@ class BrowseFoldersFragment : Fragment() {
     }
 
     private fun showContextMenu(anchorView: View) {
-        Toast.makeText(requireContext(), "Context menu coming soon", Toast.LENGTH_LONG).show()
-
+//        Toast.makeText(requireContext(), "Context menu coming soon", Toast.LENGTH_LONG).show()
+//
 //        val menuItems = listOf(
 //            CustomPopupMenuDialog.MenuItem(R.drawable.ic_description, "Edit"),
 //            CustomPopupMenuDialog.MenuItem(R.drawable.ic_error, "Share"),

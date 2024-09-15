@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.features.backends
 
 import android.graphics.drawable.GradientDrawable
-import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,7 @@ import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.util.extensions.scaled
 
 enum class ItemAction {
-    SELECTED, LONG_PRESSED
+    SELECTED
 }
 
 class BackendAdapter(private val onItemAction: ((View, Backend, ItemAction) -> Unit)? = null) : ListAdapter<Backend, BackendAdapter.ViewHolder>(DIFF_CALLBACK) {
@@ -42,12 +41,6 @@ class BackendAdapter(private val onItemAction: ((View, Backend, ItemAction) -> U
                     changeStrokeColor(binding.button, 3, ContextCompat.getColor(itemView.context, R.color.c23_teal))
                 } else {
                     changeStrokeColor(binding.button, 1, ContextCompat.getColor(itemView.context, R.color.c23_grey))
-                }
-
-                binding.button.setOnLongClickListener { view ->
-                    view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                    onItemAction?.invoke(binding.root, backend, ItemAction.LONG_PRESSED)
-                    true
                 }
             }
         }

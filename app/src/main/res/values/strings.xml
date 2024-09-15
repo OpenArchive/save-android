@@ -139,7 +139,7 @@
     <string name="action_next">Next</string>
     <string name="action_done">Done</string>
     <string name="status_flagged">Significant Content</string>
-    <string name="select_where_to_store_your_media">First, choose your media server.\nLong-press for additional options.</string>
+    <string name="select_where_to_store_your_media">Please choose which server you would like to use.</string>
     <string name="you_have_successfully_connected_to_a_veilid_group">You have successfully connected to a Veilid group!</string>
     <string name="you_have_successfully_connected_to_a_private_server">You have successfully connected to a private server!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">You have successfully connected to the Internet Archive!</string>
@@ -274,7 +274,7 @@
     <string name="edit_media">Edit Media</string>
     <string name="uploading_is_paused">Uploading is paused</string>
     <string name="add_media_using">Add Media using:</string>
-    <string name="photo_gallery">Photo Gallery</string>
+    <string name="photo_gallery">Photos and Videos</string>
     <string name="files">Files</string>
     <string name="health_checks">Health Checks</string>
     <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Help improve the app by running health checks when uploads fail.</string>

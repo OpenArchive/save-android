@@ -13,32 +13,28 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/select_where_to_store_your_media"-->
+<!--                android:textColor="@color/colorOnBackgroundTonedDown"-->
+<!--                android:textSize="18sp" />-->
+
+            <include
+                layout="@layout/backend_item"
+                android:id="@+id/screen_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="20dp"
-                android:gravity="center"
-                android:text="@string/select_where_to_store_your_media"
-                android:textColor="@color/colorOnBackgroundTonedDown"
-                android:textSize="18sp" />
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/backend_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <include layout="@layout/layout_divider" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/connect_new_media_server_button"
-                style="@style/OAMaterialSignInButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-                android:enabled="true"
-                android:text="Connect New Media Server" />
-
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp" />
         </LinearLayout>
     </ScrollView>
 
@@ -48,6 +44,5 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="8dp"
-         />
+        android:layout_marginBottom="8dp" />
 </FrameLayout>
