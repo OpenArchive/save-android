@@ -54,9 +54,9 @@ class PreviewAdapter(listener: Listener? = null): ListAdapter<Media, MediaViewHo
     private val mListener = WeakReference(listener)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
-        val mvh = MediaViewHolder.Box(parent)
+        val holder = MediaViewHolder.SmallBox(parent)
 
-        mvh.itemView.setOnClickListener { view ->
+        holder.itemView.setOnClickListener { view ->
             val media = getMedia(view) ?: return@setOnClickListener
 
             if (currentList.firstOrNull { it.selected } != null) {
@@ -68,7 +68,7 @@ class PreviewAdapter(listener: Listener? = null): ListAdapter<Media, MediaViewHo
             mListener.get()?.mediaClicked(media)
         }
 
-        mvh.itemView.setOnLongClickListener { view ->
+        holder.itemView.setOnLongClickListener { view ->
             val media = getMedia(view) ?: return@setOnLongClickListener false
 
             toggleSelection(media)
@@ -76,7 +76,7 @@ class PreviewAdapter(listener: Listener? = null): ListAdapter<Media, MediaViewHo
             return@setOnLongClickListener true
         }
 
-        return  mvh
+        return  holder
     }
 
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {

@@ -28,11 +28,15 @@
 
         <include
             layout="@layout/layout_media"
-            android:id="@+id/media_container" />
+            android:id="@+id/media_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <include
             layout="@layout/layout_media_hint"
-            android:id="@+id/add_media_hint" />
+            android:id="@+id/add_media_hint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

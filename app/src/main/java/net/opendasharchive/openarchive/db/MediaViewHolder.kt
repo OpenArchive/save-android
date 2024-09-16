@@ -5,6 +5,8 @@ import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -20,7 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.RvMediaBoxBinding
+import net.opendasharchive.openarchive.databinding.RvMediaBoxSmallBinding
 import net.opendasharchive.openarchive.databinding.RvMediaRowSmallBinding
 import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.extensions.hide
@@ -31,35 +33,35 @@ import kotlin.math.roundToInt
 
 abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView.ViewHolder(binding.root) {
 
-    class Box(parent: ViewGroup): MediaViewHolder(
-        RvMediaBoxBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    class SmallBox(parent: ViewGroup): MediaViewHolder(
+        RvMediaBoxSmallBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     ) {
         override val image: ImageView
-            get() = (binding as RvMediaBoxBinding).image
+            get() = (binding as RvMediaBoxSmallBinding).image
 
         override val waveform: SimpleWaveformView
-            get() = (binding as RvMediaBoxBinding).waveform
+            get() = (binding as RvMediaBoxSmallBinding).waveform
 
         override val videoIndicator: ImageView
-            get() = (binding as RvMediaBoxBinding).videoIndicator
+            get() = (binding as RvMediaBoxSmallBinding).videoIndicator
 
         override val overlayContainer: View
-            get() = (binding as RvMediaBoxBinding).overlayContainer
+            get() = (binding as RvMediaBoxSmallBinding).overlayContainer
 
         override val progress: CircularProgressIndicator
-            get() = (binding as RvMediaBoxBinding).progress
+            get() = (binding as RvMediaBoxSmallBinding).progress
 
         override val progressText: TextView
-            get() = (binding as RvMediaBoxBinding).progressText
+            get() = (binding as RvMediaBoxSmallBinding).progressText
 
         override val error: ImageView
-            get() = (binding as RvMediaBoxBinding).error
+            get() = (binding as RvMediaBoxSmallBinding).error
 
         override val title: TextView?
-            get() = null //(binding as RvMediaBoxBinding).title
+            get() = null //(binding as RvMediaBoxSmallBinding).title
 
         override val fileInfo: TextView?
-            get() = null //(binding as RvMediaBoxBinding).fileInfo
+            get() = null //(binding as RvMediaBoxSmallBinding).fileInfo
 
         override val locationIndicator: ImageView?
             get() = null
@@ -73,11 +75,14 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val flagIndicator: ImageView?
             get() = null
 
-        override val selectedIndicator: View
-            get() = (binding as RvMediaBoxBinding).selectedIndicator
+        override val deleteIndicator: View?
+            get() = (binding as RvMediaBoxSmallBinding).deleteIndicator
 
         override val handle: ImageView?
             get() = null
+
+        override val mediaView: View
+            get() = (binding as RvMediaBoxSmallBinding).mediaView
     }
 
     class SmallRow(parent: ViewGroup): MediaViewHolder(
@@ -122,11 +127,13 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val flagIndicator: ImageView?
             get() = null
 
-        override val selectedIndicator: View?
+        override val deleteIndicator: View?
             get() = null
 
         override val handle: ImageView
             get() = (binding as RvMediaRowSmallBinding).handle
+
+        override val mediaView: View? = null
     }
 
     companion object {
@@ -146,10 +153,13 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     abstract val tagsIndicator: ImageView?
     abstract val descIndicator: ImageView?
     abstract val flagIndicator: ImageView?
-    abstract val selectedIndicator: View?
+    abstract val deleteIndicator: View?
     abstract val handle: ImageView?
+    abstract val mediaView: View?
 
     private val mContext = itemView.context
+
+    val wiggleAnimation: Animation = AnimationUtils.loadAnimation(itemView.context, R.anim.wiggle)
 
     private val mPicasso = Picasso.Builder(mContext)
         .addRequestHandler(VideoRequestHandler(mContext))
@@ -160,119 +170,32 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         itemView.tag = media?.id
 
         if (batchMode && media?.selected == true) {
-            itemView.setBackgroundResource(R.color.colorPrimary)
-            selectedIndicator?.show()
+            itemView.setBackgroundResource(R.color.c23_teal)
+//            selectedIndicator?.show()
         }
         else {
             itemView.setBackgroundResource(R.color.transparent)
-            selectedIndicator?.hide()
+//            selectedIndicator?.hide()
         }
 
         image.alpha = if (media?.status == Media.Status.Uploaded || !doImageFade) 1f else 0.75f
         image.setClipToOutline(true)
 
         if (media?.mimeType?.startsWith("image") == true) {
-//            val progress = CircularProgressDrawable(mContext)
-//            progress.strokeWidth = 5f
-//            progress.centerRadius = 30f
-//            progress.start()
-
-            Glide.with(mContext)
-                .load(media.fileUri)
-                .fitCenter()
-                .into(image)
-
-            image.show()
-            waveform.hide()
-            videoIndicator?.hide()
+            handleImageMediaType(media)
         }
         else if (media?.mimeType?.startsWith("video") == true) {
-            mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + media.originalFilePath)
-                .fit()
-                .centerCrop()
-                .into(image)
-
-            image.show()
-            waveform.hide()
-            videoIndicator?.show()
+            handleVideoMediaType(media)
         }
         else if (media?.mimeType?.startsWith("audio") == true) {
-            videoIndicator?.hide()
-
-            val soundFile = soundCache[media.originalFilePath]
-
-            if (soundFile != null) {
-                image.hide()
-                waveform.setAudioFile(soundFile)
-                waveform.show()
-            }
-            else {
-                image.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_thumbnail))
-                image.show()
-                waveform.hide()
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    @Suppress("NAME_SHADOWING")
-                    val soundFile = try {
-                        SoundFile.create(media.originalFilePath) {
-                            return@create true
-                        }
-                    }
-                    catch (e: Throwable) {
-                        Timber.d(e)
-
-                        null
-                    }
-
-                    if (soundFile != null) {
-                        soundCache[media.originalFilePath] = soundFile
-
-                        MainScope().launch {
-                            waveform.setAudioFile(soundFile)
-                            image.hide()
-                            waveform.show()
-                        }
-                    }
-                }
-            }
+            handleAudioMediaType(media)
         }
         else {
-            image.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_thumbnail))
-            image.show()
-            waveform.hide()
-            videoIndicator?.hide()
+            handleUnknownMediaType()
         }
 
         if (media != null) {
-            val file = media.file
-
-            if (file.exists()) {
-                fileInfo?.text = Formatter.formatShortFileSize(mContext, file.length())
-            } else {
-                if (media.contentLength == -1L) {
-                    var iStream: InputStream? = null
-                    try {
-                        iStream = mContext.contentResolver.openInputStream(media.fileUri)
-
-                        if (iStream != null) {
-                            media.contentLength = iStream.available().toLong()
-                            media.save()
-                        }
-                    }
-                    catch (e: Throwable) {
-                        Timber.e(e)
-                    } finally {
-                        iStream?.close()
-                    }
-                }
-
-                fileInfo?.text = if (media.contentLength > 0) {
-                    Formatter.formatShortFileSize(mContext, media.contentLength)
-                } else {
-                    media.formattedCreateDate
-                }
-            }
-
+            buildFileInfo(media)
             fileInfo?.show()
         }
         else {
@@ -317,6 +240,111 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         flagIndicator?.setImageResource(
             if (media.flag) R.drawable.ic_flag_selected
             else R.drawable.ic_flag_unselected)
+    }
+
+    private fun buildFileInfo(media: Media) {
+        val file = media.file
+
+        if (file.exists()) {
+            fileInfo?.text = Formatter.formatShortFileSize(mContext, file.length())
+        } else {
+            if (media.contentLength == -1L) {
+                var iStream: InputStream? = null
+                try {
+                    iStream = mContext.contentResolver.openInputStream(media.fileUri)
+
+                    if (iStream != null) {
+                        media.contentLength = iStream.available().toLong()
+                        media.save()
+                    }
+                }
+                catch (e: Throwable) {
+                    Timber.e(e)
+                } finally {
+                    iStream?.close()
+                }
+            }
+
+            fileInfo?.text = if (media.contentLength > 0) {
+                Formatter.formatShortFileSize(mContext, media.contentLength)
+            } else {
+                media.formattedCreateDate
+            }
+        }
+    }
+
+    private fun handleAudioMediaType(media: Media) {
+        videoIndicator?.hide()
+
+        val soundFile = soundCache[media.originalFilePath]
+
+        if (soundFile != null) {
+            image.hide()
+            waveform.setAudioFile(soundFile)
+            waveform.show()
+        }
+        else {
+            image.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_thumbnail))
+            image.show()
+            waveform.hide()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                @Suppress("NAME_SHADOWING")
+                val soundFile = try {
+                    SoundFile.create(media.originalFilePath) {
+                        return@create true
+                    }
+                }
+                catch (e: Throwable) {
+                    Timber.d(e)
+                    null
+                }
+
+                if (soundFile != null) {
+                    soundCache[media.originalFilePath] = soundFile
+
+                    MainScope().launch {
+                        waveform.setAudioFile(soundFile)
+                        image.hide()
+                        waveform.show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleImageMediaType(media: Media) {
+        //            val progress = CircularProgressDrawable(mContext)
+//            progress.strokeWidth = 5f
+//            progress.centerRadius = 30f
+//            progress.start()
+
+        Glide.with(mContext)
+            .load(media.fileUri)
+            .fitCenter()
+            .into(image)
+
+        image.show()
+        waveform.hide()
+        videoIndicator?.hide()
+    }
+
+    private fun handleUnknownMediaType() {
+        image.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_thumbnail))
+        image.show()
+        waveform.hide()
+        videoIndicator?.hide()
+    }
+
+    private fun handleVideoMediaType(media: Media) {
+        mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + media.originalFilePath)
+            .fit()
+            .centerCrop()
+            .into(image)
+
+        image.show()
+        waveform.hide()
+        videoIndicator?.show()
     }
 
     private fun handleError(media: Media) {

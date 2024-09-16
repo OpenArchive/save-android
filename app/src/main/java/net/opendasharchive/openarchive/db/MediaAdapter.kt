@@ -6,15 +6,15 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.extensions.propagateClickToParent
 import net.opendasharchive.openarchive.features.media.PreviewActivity
 import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.upload.UploadManagerActivity
 import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.extensions.toggle
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 class MediaAdapter(
@@ -38,6 +38,11 @@ class MediaAdapter(
 
     private var mActivity = WeakReference(activity)
 
+    var deleteMode = false
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
         val mediaViewHolder = generator(parent)
@@ -124,7 +129,7 @@ class MediaAdapter(
                             UploadService.startUploadService(it)
                         },
                         AlertHelper.negativeButton(R.string.remove) { _, _ ->
-                            deleteItem(index)
+                            removeItemByPosition(index)
                         },
                         AlertHelper.neutralButton()
                     )
@@ -139,7 +144,45 @@ class MediaAdapter(
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
         holder.bind(media[position], selecting, doImageFade)
 
-        holder.handle?.toggle(isEditMode)
+//        holder.handle?.toggle(isEditMode)
+
+        holder.deleteIndicator?.visibility = if (deleteMode) View.VISIBLE else View.GONE
+
+        if (deleteMode) {
+            startStaggeredAnimation(holder, position)
+        } else {
+            holder.image.clearAnimation()
+        }
+
+        holder.image.setOnClickListener { v ->
+            if (deleteMode) {
+                deleteMode = false
+            } else {
+                v.propagateClickToParent()
+            }
+        }
+
+        holder.image.setOnLongClickListener {
+            if (!deleteMode) {
+                deleteMode = true
+                true
+            } else false
+        }
+
+        holder.deleteIndicator?.setOnClickListener {
+            Timber.d("CLick!")
+            removeItemByPosition(position)
+            notifyItemRemoved(position)
+            if (media.isEmpty()) {
+                deleteMode = false
+            }
+        }
+    }
+
+    private fun startStaggeredAnimation(holder: MediaViewHolder, position: Int) {
+        val delay = (0L..125L).random()
+        holder.image.clearAnimation()
+        holder.image.postDelayed({ holder.mediaView?.startAnimation(holder.wiggleAnimation) }, delay)
     }
 
     fun updateItem(mediaId: Long, progress: Long): Boolean {
@@ -157,7 +200,7 @@ class MediaAdapter(
         return true
     }
 
-    fun removeItem(mediaId: Long): Boolean {
+    fun removeItemById(mediaId: Long): Boolean {
         val idx = media.indexOfFirst { it.id == mediaId }
         if (idx < 0) return false
 
@@ -214,49 +257,15 @@ class MediaAdapter(
         notifyItemMoved(oldPos, newPos)
     }
 
-    fun deleteItem(pos: Int) {
+    fun removeItemByPosition(pos: Int) {
         if (pos < 0 || pos >= media.size) return
 
         val item = media[pos]
-        var undone = false
 
-        val snackbar = Snackbar.make(recyclerView, R.string.confirm_remove_media, Snackbar.LENGTH_LONG)
-        snackbar.setAction(R.string.undo) { _ ->
-            undone = true
-            media.add(pos, item)
+        Timber.d("Removing item ${item.id}")
 
-            notifyItemInserted(pos)
-        }
-
-        snackbar.addCallback(object : Snackbar.Callback() {
-            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                if (!undone) {
-                    val collection = item.collection
-
-                    // Delete collection along with the item, if the collection
-                    // would become empty.
-                    if ((collection?.size ?: 0) < 2) {
-                        collection?.delete()
-                    } else {
-                        item.delete()
-                    }
-
-                    BroadcastManager.postDelete(recyclerView.context, item.id)
-                }
-
-                super.onDismissed(transientBottomBar, event)
-            }
-        })
-
-        snackbar.show()
-
-        removeItem(item.id)
-
-        mActivity.get()?.let {
-            BroadcastManager.postDelete(it, item.id)
-        }
+        removeItemById(item.id)
     }
-
 
     fun deleteSelected(): Boolean {
         var hasDeleted = false

@@ -32,6 +32,7 @@ import net.opendasharchive.openarchive.databinding.FragmentGdriveSignInBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.backends.BackendViewModel
 import net.opendasharchive.openarchive.services.CommonServiceFragment
+import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.toggle
 import timber.log.Timber
@@ -158,7 +159,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
     private fun saveNewBackend(backend: Backend) {
         backend.save()
         backendViewModel.updateBackend { backend }
-        //                Analytics.log(Analytics.NEW_BACKEND_CONNECTED, mutableMapOf("type" to backend.name))
+        Analytics.log(Analytics.NEW_BACKEND_CONNECTED, mutableMapOf("type" to backend.name))
     }
 
     private fun syncGDrive(context: Context, backend: Backend): Int {

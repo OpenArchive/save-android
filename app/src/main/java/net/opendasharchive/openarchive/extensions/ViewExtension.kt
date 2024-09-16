@@ -8,3 +8,11 @@ fun View.getMeasurments(): Pair<Int, Int> {
     val height = measuredHeight
     return width to height
 }
+
+fun View.propagateClickToParent() {
+    var parent = this.parent as? View
+    while (parent != null && !parent.isClickable) {
+        parent = parent.parent as? View
+    }
+    parent?.performClick()
+}

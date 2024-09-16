@@ -9,12 +9,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
-import com.esafirm.imagepicker.features.ImagePickerLauncher
-import com.esafirm.imagepicker.view.GridSpacingItemDecoration
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewBinding
 import net.opendasharchive.openarchive.db.Folder
@@ -41,8 +38,8 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
     }
 
     private lateinit var binding: ActivityPreviewBinding
-    private lateinit var mediaPickerLauncher: ImagePickerLauncher
-    private lateinit var filesPickerLauncher: ActivityResultLauncher<Intent>
+//    private lateinit var mediaPickerLauncher: ImagePickerLauncher
+//    private lateinit var filesPickerLauncher: ActivityResultLauncher<Intent>
 
     private val mLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -72,11 +69,11 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
 
         mFolder = Folder.getById(intent.getLongExtra(FOLDER_ID_EXTRA, -1))
 
-        val launchers = Picker.register(this, binding.root, { mFolder }, {
-            refresh()
-        })
-        mediaPickerLauncher = launchers.first
-        filesPickerLauncher = launchers.second
+//        val launchers = Picker.register(this, { mFolder }, {
+//            refresh()
+//        })
+//        mediaPickerLauncher = launchers.first
+//        filesPickerLauncher = launchers.second
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = getString(R.string.preview_media)
@@ -85,7 +82,7 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
         binding.mediaGrid.layoutManager = GridLayoutManager(this, 2)
         binding.mediaGrid.adapter = PreviewAdapter(this)
         binding.mediaGrid.setHasFixedSize(true)
-        binding.mediaGrid.addItemDecoration(GridSpacingItemDecoration(2, 20, false))
+//        binding.mediaGrid.addItemDecoration(GridSpacingItemDecoration(2, 20, false))
 
         binding.uploadButton.setOnClickListener(this)
         binding.btBatchEdit.setOnClickListener(this)
@@ -109,7 +106,8 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
 //                    }
 
                     R.id.action_upload_files -> {
-                        Picker.pickFiles(filesPickerLauncher)
+//                        showBottomActionSheet()
+                        // Picker.pickFiles(filesPickerLauncher)
                     }
                 }
 
@@ -140,7 +138,8 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
             }
 
             R.id.menu_add_media -> {
-                Picker.pickMedia(this, mediaPickerLauncher)
+                showBottomActionSheet()
+//                Picker.pickMedia(this, mediaPickerLauncher)
                 return true
             }
         }

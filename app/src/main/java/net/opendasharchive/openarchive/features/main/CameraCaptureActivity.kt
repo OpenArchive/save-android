@@ -15,10 +15,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import net.opendasharchive.openarchive.databinding.ActivityCameraCaptureBinding
-import net.opendasharchive.openarchive.db.Folder
-import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity
-import net.opendasharchive.openarchive.features.media.Picker
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -76,22 +73,22 @@ class CameraCaptureActivity : BaseActivity() {
         cameraProvider.unbindAll()
     }
 
-    private fun handleSelectedImages(uris: List<Uri>) {
-        if (uris.isNotEmpty()) {
-            val mediaList = Picker.import(this@CameraCaptureActivity, Folder.current, uris)
+//    fun handleSelectedImages(uris: List<Uri>) {
+//        if (uris.isNotEmpty()) {
+//            val mediaList = Picker.import(this@CameraCaptureActivity, Folder.current, uris)
+//
+//            mediaList.forEach { media ->
+//                media.status = Media.Status.Local
+//                media.selected = false
+//                media.save()
+//            }
+//        } else {
+//            // No images were selected
+//            Timber.d("No images selected")
+//        }
+//    }
 
-            mediaList.forEach { media ->
-                media.status = Media.Status.Local
-                media.selected = false
-                media.save()
-            }
-        } else {
-            // No images were selected
-            Timber.d("No images selected")
-        }
-    }
-
-    private fun startCamera() {
+    fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({

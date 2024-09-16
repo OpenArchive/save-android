@@ -76,7 +76,7 @@ open class UploadManagerFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                mediaAdapter?.deleteItem(viewHolder.bindingAdapterPosition)
+                mediaAdapter?.removeItemByPosition(viewHolder.bindingAdapterPosition)
             }
         })
 
@@ -96,7 +96,7 @@ open class UploadManagerFragment : Fragment() {
     }
 
     open fun removeItem(mediaId: Long) {
-        mediaAdapter?.removeItem(mediaId)
+        mediaAdapter?.removeItemById(mediaId)
     }
 
     fun setEditMode(isEditMode: Boolean) {

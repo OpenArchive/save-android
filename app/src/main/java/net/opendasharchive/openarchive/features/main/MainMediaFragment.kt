@@ -1,23 +1,12 @@
 package net.opendasharchive.openarchive.features.main
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.esafirm.imagepicker.view.GridSpacingItemDecoration
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
 import net.opendasharchive.openarchive.databinding.MediaGroupBinding
@@ -27,12 +16,9 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaAdapter
 import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
-import net.opendasharchive.openarchive.upload.BroadcastManager
-import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
-import timber.log.Timber
 import java.text.NumberFormat
 import kotlin.collections.set
 
@@ -53,18 +39,6 @@ class MainMediaFragment : Fragment() {
         }
     }
 
-    private val observer = object : RecyclerView.AdapterDataObserver() {
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            super.onItemRangeInserted(positionStart, itemCount)
-            Timber.d("onItemRangeInserted")
-        }
-
-        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-            super.onItemRangeChanged(positionStart, itemCount)
-            Timber.d("onItemRangeChanged")
-        }
-    }
-
     private var mAdapters = HashMap<Long, MediaAdapter>()
     private var mSection = HashMap<Long, SectionViewHolder>()
     private var mFolderId = -1L
@@ -72,68 +46,68 @@ class MainMediaFragment : Fragment() {
 
     private lateinit var mBinding: FragmentMainMediaBinding
 
-    private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        private val handler = Handler(Looper.getMainLooper())
-        override fun onReceive(context: Context, intent: Intent) {
-            Timber.d("Got a broadcast!")
+//    private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+//        private val handler = Handler(Looper.getMainLooper())
+//        override fun onReceive(context: Context, intent: Intent) {
+//            Timber.d("Got a broadcast!")
+//
+//            val action = BroadcastManager.getAction(intent) ?: return
+//
+//            when (action) {
+//                BroadcastManager.Action.Add -> {
+//                    handler.post {
+//                        refresh()
+//                    }
+//                }
+//
+//                BroadcastManager.Action.Change -> {
+//                    handler.post {
+//                        updateItem(action.collectionId, action.mediaId, action.progress)
+//                    }
+//                }
+//
+//                BroadcastManager.Action.Delete -> {
+//                    handler.post {
+//                        refresh()
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-            val action = BroadcastManager.getAction(intent) ?: return
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setHasOptionsMenu(true)
+//    }
 
-            when (action) {
-                BroadcastManager.Action.Add -> {
-                    handler.post {
-                        refresh()
-                    }
-                }
+//    override fun onStart() {
+//        super.onStart()
+//        BroadcastManager.register(requireContext(), mMessageReceiver)
+//    }
+//
+//    override fun onStop() {
+//        super.onStop()
+//        BroadcastManager.unregister(requireContext(), mMessageReceiver)
+//    }
 
-                BroadcastManager.Action.Change -> {
-                    handler.post {
-                        updateItem(action.collectionId, action.mediaId, action.progress)
-                    }
-                }
-
-                BroadcastManager.Action.Delete -> {
-                    handler.post {
-                        refresh()
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        BroadcastManager.register(requireContext(), mMessageReceiver)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        BroadcastManager.unregister(requireContext(), mMessageReceiver)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_delete -> {
-                AlertHelper.show(
-                    requireContext(), R.string.confirm_remove_media, null, buttons = listOf(
-                        AlertHelper.positiveButton(R.string.remove) { _, _ ->
-                            deleteSelected()
-                        },
-                        AlertHelper.negativeButton()
-                    )
-                )
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+//    @Deprecated("Deprecated in Java")
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        return when (item.itemId) {
+//            R.id.menu_delete -> {
+//                AlertHelper.show(
+//                    requireContext(), R.string.confirm_remove_media, null, buttons = listOf(
+//                        AlertHelper.positiveButton(R.string.remove) { _, _ ->
+//                            deleteSelected()
+//                        },
+//                        AlertHelper.negativeButton()
+//                    )
+//                )
+//                true
+//            }
+//
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
 
     override fun onResume() {
         super.onResume()
@@ -160,52 +134,45 @@ class MainMediaFragment : Fragment() {
         refresh()
     }
 
-    private fun getSelectedFolder(): Folder? {
-        return Folder.current
-    }
-
     private fun refreshCurrentFolderCount() {
-        val folder = getSelectedFolder()
-
-        if (folder != null) {
+        Folder.current?.let { folder ->
             mBinding.currentFolder.currentFolderCount.text = NumberFormat.getInstance().format(
                 folder.collections.map { it.size }
                     .reduceOrNull { acc, count -> acc + count } ?: 0)
             mBinding.currentFolder.currentFolderCount.show()
-
 //            mBinding.uploadEditButton.toggle(project.isUploading)
-        } else {
+        } ?: {
             mBinding.currentFolder.currentFolderCount.cloak()
 //            mBinding.uploadEditButton.hide()
         }
     }
 
-    fun updateItem(collectionId: Long, mediaId: Long, progress: Long) {
-        mAdapters[collectionId]?.apply {
-            updateItem(mediaId, progress)
-            if (progress == -1L) {
-                updateHeader(collectionId, media)
-            }
-        }
-    }
-
-    private fun updateHeader(collectionId: Long, media: ArrayList<Media>) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            Collection.get(collectionId)?.let { collection ->
-                mCollections[collectionId] = collection
-                withContext(Dispatchers.Main) {
-                    mSection[collectionId]?.setHeader(collection, media)
-                }
-            }
-        }
-    }
+//    fun updateItem(collectionId: Long, mediaId: Long, progress: Long) {
+//        mAdapters[collectionId]?.apply {
+//            updateItem(mediaId, progress)
+//            if (progress == -1L) {
+//                updateHeader(collectionId, media)
+//            }
+//        }
+//    }
+//
+//    private fun updateHeader(collectionId: Long, media: ArrayList<Media>) {
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            Collection.get(collectionId)?.let { collection ->
+//                mCollections[collectionId] = collection
+//                withContext(Dispatchers.Main) {
+//                    mSection[collectionId]?.setHeader(collection, media)
+//                }
+//            }
+//        }
+//    }
 
     fun refresh() {
         val folder = Folder.current ?: return
 
         mCollections = Collection.getByFolder(folder.id).associateBy { it.id }.toMutableMap()
 
-        // Remove all sections, which' collections don't exist anymore.
+        // Remove all sections for which collections don't exist anymore.
         val toDelete = mAdapters.keys.filter { id ->
             mCollections.containsKey(id).not()
         }.toMutableList()
@@ -226,7 +193,7 @@ class MainMediaFragment : Fragment() {
                 adapter.updateData(media)
                 holder?.setHeader(collection, media)
             } else if (media.isNotEmpty()) {
-                val view = createMediaList(collection, media)
+                val view = createMediaGroupView(collection, media)
                 mBinding.mediaContainer.mediaContainerLayout.addView(view, 0)
             }
         }
@@ -239,13 +206,7 @@ class MainMediaFragment : Fragment() {
     }
 
     private fun setCurrentFolderState() {
-        val folder = getSelectedFolder()
-
-        if (folder == null) {
-            mBinding.currentFolder.currentBackendButton.visibility = View.GONE
-            mBinding.currentFolder.currentFolderCount.visibility = View.GONE
-            mBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
-        } else {
+        Folder.current?.let { folder ->
             mBinding.currentFolder.currentBackendButton.icon = folder.backend?.getAvatar(requireContext())
             mBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
             mBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
@@ -255,46 +216,47 @@ class MainMediaFragment : Fragment() {
             mBinding.currentFolder.currentBackendButton.setOnClickListener {
                 startActivity(Intent(context, BackendSetupActivity::class.java))
             }
+        } ?: {
+            mBinding.currentFolder.currentBackendButton.visibility = View.GONE
+            mBinding.currentFolder.currentFolderCount.visibility = View.GONE
+            mBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
         }
     }
 
-    private fun deleteSelected() {
-        val toDelete = ArrayList<Long>()
+//    private fun deleteSelected() {
+//        val toDelete = ArrayList<Long>()
+//
+//        mCollections.forEach { (id, collection) ->
+//            if (mAdapters[id]?.deleteSelected() == true) {
+//                val media = collection.media
+//
+//                if (media.isEmpty()) {
+//                    toDelete.add(collection.id)
+//                } else {
+//                    mSection[id]?.setHeader(collection, media)
+//                }
+//            }
+//        }
+//
+//        deleteCollections(toDelete, true)
+//    }
 
-        mCollections.forEach { (id, collection) ->
-            if (mAdapters[id]?.deleteSelected() == true) {
-                val media = collection.media
-
-                if (media.isEmpty()) {
-                    toDelete.add(collection.id)
-                } else {
-                    mSection[id]?.setHeader(collection, media)
-                }
-            }
-        }
-
-        deleteCollections(toDelete, true)
-    }
-
-    private fun createMediaList(collection: Collection, media: List<Media>): View {
+    private fun createMediaGroupView(collection: Collection, media: List<Media>): View {
         val holder = SectionViewHolder(MediaGroupBinding.inflate(layoutInflater))
 
-        val spacing = Math.round(15 * resources.displayMetrics.density)
+//        val spacing = Math.round(5 * resources.displayMetrics.density)
 
-        holder.recyclerView.setHasFixedSize(true)
         holder.recyclerView.layoutManager = GridLayoutManager(activity, COLUMN_COUNT)
-        holder.recyclerView.addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT, spacing, false))
+//        holder.recyclerView.addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT, spacing, false))
 
         holder.setHeader(collection, media)
 
         val mediaAdapter = MediaAdapter(
             requireActivity(),
-            { MediaViewHolder.Box(it) },
+            { MediaViewHolder.SmallBox(it) },
             media,
             holder.recyclerView
-        ) {
-            // (activity as? MainActivity)?.updateAfterDelete(mAdapters.values.firstOrNull { it.selecting } == null)
-        }
+        )
 
         holder.recyclerView.adapter = mediaAdapter
         mAdapters[collection.id] = mediaAdapter
