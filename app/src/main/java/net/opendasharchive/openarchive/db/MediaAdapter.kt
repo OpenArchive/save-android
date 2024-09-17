@@ -38,10 +38,12 @@ class MediaAdapter(
 
     private var mActivity = WeakReference(activity)
 
+    object UPDATE_STATE_PAYLOAD
+
     var deleteMode = false
         set(value) {
             field = value
-            notifyDataSetChanged()
+            notifyItemRangeChanged(0, itemCount, UPDATE_STATE_PAYLOAD)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
@@ -140,6 +142,29 @@ class MediaAdapter(
 
     override fun getItemCount(): Int = media.size
 
+    override fun onBindViewHolder(holder: MediaViewHolder, position: Int, payloads: List<Any>) {
+        if (payloads.isEmpty()) {
+            // Full update
+            onBindViewHolder(holder, position)
+        } else {
+            // Partial update
+            val payload = payloads[0]
+
+            if (payload == UPDATE_STATE_PAYLOAD) {
+                // Update only the necessary state
+                // holder.updateState(media[position])
+
+                holder.deleteIndicator?.visibility = if (deleteMode) View.VISIBLE else View.GONE
+
+                if (deleteMode) {
+                    startStaggeredAnimation(holder, position)
+                } else {
+                    holder.mediaView?.clearAnimation()
+                }
+            }
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
         holder.bind(media[position], selecting, doImageFade)
@@ -180,9 +205,10 @@ class MediaAdapter(
     }
 
     private fun startStaggeredAnimation(holder: MediaViewHolder, position: Int) {
+        Timber.d("Starting wiggle")
         val delay = (0L..125L).random()
-        holder.image.clearAnimation()
-        holder.image.postDelayed({ holder.mediaView?.startAnimation(holder.wiggleAnimation) }, delay)
+        holder.mediaView?.clearAnimation()
+        holder.mediaView?.postDelayed({ holder.mediaView?.startAnimation(holder.wiggleAnimation) }, delay)
     }
 
     fun updateItem(mediaId: Long, progress: Long): Boolean {

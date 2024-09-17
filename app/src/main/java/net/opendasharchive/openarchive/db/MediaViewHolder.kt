@@ -12,11 +12,13 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.bumptech.glide.Glide
+import coil.ImageLoader
+import coil.decode.VideoFrameDecoder
+import coil.load
+import coil.request.videoFrameMillis
 import com.github.derlio.waveform.SimpleWaveformView
 import com.github.derlio.waveform.soundfile.SoundFile
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -24,7 +26,6 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.RvMediaBoxSmallBinding
 import net.opendasharchive.openarchive.databinding.RvMediaRowSmallBinding
-import net.opendasharchive.openarchive.fragments.VideoRequestHandler
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import timber.log.Timber
@@ -161,9 +162,15 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
     val wiggleAnimation: Animation = AnimationUtils.loadAnimation(itemView.context, R.anim.wiggle)
 
-    private val mPicasso = Picasso.Builder(mContext)
-        .addRequestHandler(VideoRequestHandler(mContext))
+    private val imageLoader = ImageLoader.Builder(mContext)
+        .components {
+            add(VideoFrameDecoder.Factory())
+        }
         .build()
+
+    fun updateState(media: Media) {
+        Timber.d("Updaitng state")
+    }
 
     @SuppressLint("SetTextI18n")
     fun bind(media: Media? = null, batchMode: Boolean = false, doImageFade: Boolean = true) {
@@ -314,15 +321,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     }
 
     private fun handleImageMediaType(media: Media) {
-        //            val progress = CircularProgressDrawable(mContext)
-//            progress.strokeWidth = 5f
-//            progress.centerRadius = 30f
-//            progress.start()
-
-        Glide.with(mContext)
-            .load(media.fileUri)
-            .fitCenter()
-            .into(image)
+        image.load(media.fileUri, imageLoader)
 
         image.show()
         waveform.hide()
@@ -337,10 +336,9 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     }
 
     private fun handleVideoMediaType(media: Media) {
-        mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + media.originalFilePath)
-            .fit()
-            .centerCrop()
-            .into(image)
+        image.load(media.originalFilePath, imageLoader) {
+            videoFrameMillis(0)
+        }
 
         image.show()
         waveform.hide()
@@ -349,7 +347,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
     private fun handleError(media: Media) {
         Timber.d("Media has error")
-        //sbTitle.append(mContext.getString(R.string.error))
+        // sbTitle.append(mContext.getString(R.string.error))
 
         overlayContainer?.show()
         progress?.hide()

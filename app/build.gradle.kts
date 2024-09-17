@@ -171,11 +171,13 @@ dependencies {
     implementation("com.github.guardianproject:sardine-android:89f7eae512")
 
     implementation("com.google.android.material:material:1.12.0")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+//    implementation("com.github.bumptech.glide:glide:4.16.0")
+//    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("com.github.derlio:audio-waveform:v1.0.1")
     implementation("com.github.esafirm:android-image-picker:3.0.0")
-    implementation("com.squareup.picasso:picasso:2.5.2")
+//    implementation("com.squareup.picasso:picasso:2.5.2")
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("io.coil-kt:coil-video:2.7.0")
 
     implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
     implementation("com.github.abdularis:circularimageview:1.4")

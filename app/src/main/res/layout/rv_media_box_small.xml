@@ -94,7 +94,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
-                android:layout_margin="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginStart="4dp"
                 android:contentDescription="@string/is_video"
                 android:src="@drawable/ic_videocam_black_24dp"
                 app:tint="@color/colorMediaOverlayIcon" />
