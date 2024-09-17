@@ -177,16 +177,17 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         itemView.tag = media?.id
 
         if (batchMode && media?.selected == true) {
-            itemView.setBackgroundResource(R.color.c23_teal)
-//            selectedIndicator?.show()
+            val border = ContextCompat.getDrawable(mContext, R.drawable.media_outline)
+            mediaView?.setForeground(border)
         }
         else {
             itemView.setBackgroundResource(R.color.transparent)
-//            selectedIndicator?.hide()
         }
 
+        mediaView?.setClipToOutline(false)
+
         image.alpha = if (media?.status == Media.Status.Uploaded || !doImageFade) 1f else 0.75f
-        image.setClipToOutline(true)
+        // image.setClipToOutline(true)
 
         if (media?.mimeType?.startsWith("image") == true) {
             handleImageMediaType(media)
@@ -323,14 +324,12 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     private fun handleImageMediaType(media: Media) {
         image.load(media.fileUri, imageLoader)
 
-        image.show()
         waveform.hide()
         videoIndicator?.hide()
     }
 
     private fun handleUnknownMediaType() {
         image.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_thumbnail))
-        image.show()
         waveform.hide()
         videoIndicator?.hide()
     }
@@ -340,7 +339,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             videoFrameMillis(0)
         }
 
-        image.show()
         waveform.hide()
         videoIndicator?.show()
     }
