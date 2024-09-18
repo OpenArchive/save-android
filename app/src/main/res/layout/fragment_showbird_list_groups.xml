@@ -23,14 +23,13 @@
         android:layout_marginTop="15dp"
         android:alpha="0.75"
         android:gravity="center"
-        android:text="Please choose which folder you want to use."
+        android:text="Please choose which group you want to join."
         android:textSize="20sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="20dp" />
+        android:layout_marginTop="20dp" />
 
 </LinearLayout>

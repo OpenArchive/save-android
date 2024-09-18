@@ -30,6 +30,9 @@
         <action
             android:id="@+id/navigate_to_internet_archive_screen"
             app:destination="@id/internet_archive_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_screen"
+            app:destination="@id/snowbird_screen" />
     </fragment>
     <fragment
         android:id="@+id/connect_new_backend_screen"
@@ -99,6 +102,14 @@
     <fragment
         android:id="@+id/snowbird_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFragment"
+        android:label="Snowbird">
+        <action
+            android:id="@+id/navigate_to_snowbird_group_selection_screen"
+            app:destination="@id/snowbird_group_selection_screen" />
+    </fragment>
+    <fragment
+        android:id="@+id/snowbird_group_selection_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupsFragment"
         android:label="Snowbird"/>
     <fragment
         android:id="@+id/internet_archive_screen"

@@ -1,11 +1,13 @@
 package net.opendasharchive.openarchive
 
 import android.content.Context
+import android.content.Intent
 import androidx.multidex.MultiDex
 import com.orm.SugarApp
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.core.di.coreModule
 import net.opendasharchive.openarchive.core.di.featuresModule
+import net.opendasharchive.openarchive.services.snowbird.SnowbirdService
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
@@ -44,8 +46,8 @@ class SaveApp : SugarApp() {
 
         Prefs.load(this)
 
-//        val intent = Intent(this, SnowbirdService::class.java)
-//        startForegroundService(intent)
+        val intent = Intent(this, SnowbirdService::class.java)
+        startForegroundService(intent)
 
         if (Prefs.useTor) initNetCipher()
 

@@ -23,6 +23,8 @@ class SnowbirdService : Service() {
     companion object {
         private const val NOTIFICATION_ID = 2600
         private const val NOTIFICATION_CHANNEL_ID = "SnowbirdServerChannel"
+        lateinit var DEFAULT_SOCKET_PATH: String
+            private set
     }
 
     private var serverJob: Job? = null
@@ -31,12 +33,12 @@ class SnowbirdService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+        DEFAULT_SOCKET_PATH = File(filesDir, "rust_server.sock").absolutePath
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val socketPath = File(filesDir, "rust_server.sock").absolutePath
         startForeground(NOTIFICATION_ID, createNotification("Snowbird Server is running"))
-        startServer(socketPath)
+        startServer(DEFAULT_SOCKET_PATH)
         return START_STICKY
     }
 

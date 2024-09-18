@@ -213,7 +213,7 @@
     <string name="proofmode">ProofMode</string>
     <string name="no_webbrowser_found_error">No application can handle this request. Please install a webbrowser.</string>
 
-    <string name="intro_header_share" translatable="false">SHARE</string>
+    <string name="intro_header_share" translatable="false">SECURE</string>
     <string name="intro_header_archive" translatable="false">ARCHIVE</string>
     <string name="intro_header_verify" translatable="false">VERIFY</string>
     <string name="intro_header_encrypt" translatable="false">ENCRYPT</string>

@@ -129,7 +129,7 @@ dependencies {
     implementation("org.aviran.cookiebar2:cookiebar2:1.1.5")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.10")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -294,6 +294,8 @@ dependencies {
     implementation("com.mixpanel.android:mixpanel-android:7.5.2")
 
     implementation("androidx.webkit:webkit:1.11.0")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Tests
     testImplementation("junit:junit:4.13.2")

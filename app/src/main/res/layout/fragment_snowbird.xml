@@ -71,15 +71,34 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <include
+            layout="@layout/layout_divider"
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/server_text_input"/>
+
         <com.google.android.material.button.MaterialButton
             style="@style/OAMaterialSignInButtonStyle"
-            android:id="@+id/ok_button"
+            android:id="@+id/find_groups_button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
-            android:enabled="false"
-            android:text="Next"
-            app:layout_constraintTop_toBottomOf="@id/server_text_input" />
+            android:text="Find Groups"
+            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            style="@style/OAMaterialSignInButtonStyle"-->
+<!--            android:id="@+id/ok_button"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:enabled="false"-->
+<!--            android:text="Next"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/group_search_button" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

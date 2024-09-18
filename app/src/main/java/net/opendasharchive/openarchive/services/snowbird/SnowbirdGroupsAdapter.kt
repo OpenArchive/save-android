@@ -2,10 +2,13 @@ package net.opendasharchive.openarchive.services.snowbird
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
+import net.opendasharchive.openarchive.util.extensions.scaled
 import java.lang.ref.WeakReference
 
 interface SnowbirdGroupsAdapterListener {
@@ -23,13 +26,12 @@ class SnowbirdGroupsAdapter(listener: SnowbirdGroupsAdapterListener?)
                 return
             }
 
-//            val context = binding.button.context
+            val context = binding.button.context
 
-//            val color = ContextCompat.getColor(context, R.color.colorPrimary)
-//            val icon = ContextCompat.getDrawable(context, R.drawable.baseline_folder_24)?.tint(color)
+            binding.button.setLeftIcon(ContextCompat.getDrawable(context, R.drawable.snowbird)?.scaled(40, context))
+            binding.button.setBackgroundResource(R.drawable.button_outlined_ripple)
 
-//            binding.button.icon = icon
-//            binding.button.text = folder.description
+            binding.button.setTitle(group.name)
 
             binding.button.setOnClickListener {
                 listener?.get()?.groupSelected(group)

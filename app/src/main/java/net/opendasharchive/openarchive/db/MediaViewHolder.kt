@@ -184,7 +184,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             itemView.setBackgroundResource(R.color.transparent)
         }
 
-        mediaView?.setClipToOutline(false)
+        mediaView?.setClipToOutline(true)
 
         image.alpha = if (media?.status == Media.Status.Uploaded || !doImageFade) 1f else 0.75f
         // image.setClipToOutline(true)

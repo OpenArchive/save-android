@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.folders.FolderViewModel
 import net.opendasharchive.openarchive.util.extensions.tint
 import net.opendasharchive.openarchive.util.extensions.toggle
 
@@ -23,7 +22,6 @@ class BackendSelectionFragment : Fragment() {
     private lateinit var viewBinding: FragmentBackendSelectionBinding
     private lateinit var recyclerView: RecyclerView
     private val backendViewModel: BackendViewModel by activityViewModels()
-    private val folderViewModel: FolderViewModel by activityViewModels()
     private val viewModel: BackendSelectionViewModel by viewModels()
     private val adapter = BackendSelectionAdapter { item ->
         useBackend(item.backend)
@@ -33,10 +31,6 @@ class BackendSelectionFragment : Fragment() {
         viewBinding = FragmentBackendSelectionBinding.inflate(inflater)
 
         createBackendList()
-
-//        viewBinding.connectNewMediaServerButton.setOnClickListener {
-//            findNavController().navigate(BackendSelectionFragmentDirections.navigateToConnectNewBackendScreen())
-//        }
 
         return viewBinding.root
     }
@@ -75,6 +69,7 @@ class BackendSelectionFragment : Fragment() {
                 Backend.Type.WEBDAV -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToPrivateServerScreen())
                 Backend.Type.INTERNET_ARCHIVE -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToInternetArchiveScreen(backend, true))
                 Backend.Type.GDRIVE -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToGdriveScreen())
+                Backend.Type.SNOWBIRD ->findNavController().navigate(BackendSelectionFragmentDirections.navigateToSnowbirdScreen())
                 else -> Unit
             }
         }

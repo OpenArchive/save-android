@@ -9,8 +9,11 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentShowbirdListGroupsBinding
 import net.opendasharchive.openarchive.services.CommonServiceFragment
+import net.opendasharchive.openarchive.util.SpacingItemDecoration
+import net.opendasharchive.openarchive.util.Utility
 
 class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterListener {
 
@@ -21,27 +24,14 @@ class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterLis
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentShowbirdListGroupsBinding.inflate(inflater)
 
-        createViewModel()
-
         return viewBinding.root
     }
 
-//    override fun onBackPressed() {
-//        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-//
-//        builder
-//            .setTitle("Just a second")
-//            .setMessage("If you cancel you'll lose what you've configured so far. Go ahead?")
-//            .setPositiveButton("Yes") { dialog, which ->
-//                setFragmentResult(RESP_CANCEL, bundleOf())
-//            }
-//            .setNegativeButton("No") { dialog, which ->
-//                // Nop
-//            }
-//
-//        val dialog: AlertDialog = builder.create()
-//        dialog.show()
-//    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        createViewModel()
+    }
 
     private fun createSnowbirdBackend(group: SnowbirdGroup) {
 //        arguments?.getString("uri")?.also { uri ->
@@ -64,6 +54,9 @@ class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterLis
 
     private fun createViewModel() {
         adapter = SnowbirdGroupsAdapter(this)
+
+        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.list_item_spacing)
+        viewBinding.groupList.addItemDecoration(SpacingItemDecoration(spacingInPixels))
 
         viewBinding.groupList.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.groupList.adapter = adapter
@@ -88,20 +81,17 @@ class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterLis
     }
 
     private fun showSuccess() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-
-        builder
-            .setTitle("Woo!")
-            .setMessage("New backend was successfully created.")
-            .setPositiveButton("Ok") { dialog, which ->
-                setFragmentResult(RESP_CREATED, bundleOf())
-            }
-
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
+        Utility.showMaterialMessage(
+            requireContext(),
+            "Woo!",
+            "New backend was successfully created."
+        ) {
+            setFragmentResult(RESP_CREATED, bundleOf())
+        }
     }
 
     override fun groupSelected(group: SnowbirdGroup) {
-        createSnowbirdBackend(group)
+        // createSnowbirdBackend(group)
+        showSuccess()
     }
 }

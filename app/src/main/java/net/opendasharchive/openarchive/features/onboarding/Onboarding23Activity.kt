@@ -16,7 +16,7 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 
 class Onboarding23Activity : BaseActivity() {
 
-    private lateinit var mBinding: ActivityOnboarding23Binding
+    private lateinit var viewBinding: ActivityOnboarding23Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +27,10 @@ class Onboarding23Activity : BaseActivity() {
         )
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
 
-        mBinding = ActivityOnboarding23Binding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        viewBinding = ActivityOnboarding23Binding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
-        mBinding.getStarted.setOnClickListener {
+        viewBinding.getStarted.setOnClickListener {
             startActivity(
                 Intent(
                     this,
@@ -39,20 +39,36 @@ class Onboarding23Activity : BaseActivity() {
             )
         }
 
-        for (textView in arrayOf(
-            mBinding.titleBlock.shareText,
-            mBinding.titleBlock.archiveText,
-            mBinding.titleBlock.verifyText,
-            mBinding.titleBlock.encryptText
-        )) {
-            textView.text = colorizeFirstLetter(textView.text, R.color.colorPrimary)
+        val textViews = listOf(
+            viewBinding.titleBlock.word1,
+            viewBinding.titleBlock.word2,
+            viewBinding.titleBlock.word3,
+            viewBinding.titleBlock.word4)
+
+        // Wait for layout to be drawn
+//        viewBinding.titleBlock.word1.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//                viewBinding.titleBlock.word1.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//
+//                // Find the smallest text size among all TextViews
+//                val minTextSize = textViews.minOf { it.textSize }.coerceAtMost(10f)
+//
+//                Timber.d("min text size = $minTextSize")
+//
+//                // Set all TextViews to use this size
+//                textViews.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_PX, minTextSize) }
+//            }
+//        })
+        
+        textViews.forEach { textView ->
+            textView.text = colorizeFirstLetter(textView.text, R.color.c23_teal)
         }
     }
 
     override fun onResume() {
         super.onResume()
 
-        val oa = ObjectAnimator.ofFloat(mBinding.arrow, "translationX", 0F, 25F, 0F)
+        val oa = ObjectAnimator.ofFloat(viewBinding.arrow, "translationX", 0F, 25F, 0F)
         oa.interpolator = BounceInterpolator()
         oa.startDelay = 3000
         oa.duration = 2000

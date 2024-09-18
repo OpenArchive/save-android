@@ -80,7 +80,7 @@ data class Backend(
             Backend(Backend.Type.INTERNET_ARCHIVE),
             Backend(Backend.Type.WEBDAV),
             Backend(Backend.Type.GDRIVE),
-//            Backend(Backend.Type.SNOWBIRD),
+            Backend(Backend.Type.SNOWBIRD),
         )
 
         fun getAll(): List<Backend> {
