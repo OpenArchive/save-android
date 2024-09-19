@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/action_add"
-        android:icon="@drawable/outline_create_new_folder_24"
+        android:icon="@drawable/ic_add"
         android:iconTint="@color/transparent_white"
         android:title="ADD FOLDER"
         app:showAsAction="always" />

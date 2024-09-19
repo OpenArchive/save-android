@@ -2,6 +2,9 @@ package net.opendasharchive.openarchive.features.main
 
 import android.net.LocalSocket
 import android.net.LocalSocketAddress
+import com.google.gson.Gson
+import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -18,7 +21,7 @@ sealed class ApiResponse<out T> {
 class UnixSocketClient(val socketPath: String) {
     val json = Json { ignoreUnknownKeys = true }
 
-    suspend inline fun <reified T> sendRequest(endpoint: String, method: String = "GET", body: Jsonable? = null): ApiResponse<T> = withContext(Dispatchers.IO) {
+    suspend inline fun <reified T> sendRequest(endpoint: String, method: String = "GET", body: Jsonable? = null): ApiResponse<List<T>> = withContext(Dispatchers.IO) {
         try {
             LocalSocket().use { socket ->
                 socket.connect(LocalSocketAddress(socketPath, LocalSocketAddress.Namespace.FILESYSTEM))
@@ -70,7 +73,18 @@ class UnixSocketClient(val socketPath: String) {
         }
     }
 
-    inline fun <reified T> parseResponse(responseBody: String): T {
-        return json.decodeFromString(responseBody)
+    // Allows us to get responses of the form { "foo": [ "bar1", "bar2", ... , "bar3"] }
+    //
+    inline fun <reified T> parseResponse(json: String): List<T> {
+        val gson = Gson()
+        val jsonElement = JsonParser.parseString(json)
+        val jsonObject = jsonElement.asJsonObject
+
+        val entry = jsonObject.entrySet().first()
+        val jsonArray = entry.value.asJsonArray
+
+        val listType = TypeToken.getParameterized(List::class.java, T::class.java).type
+
+        return gson.fromJson(jsonArray, listType)
     }
 }

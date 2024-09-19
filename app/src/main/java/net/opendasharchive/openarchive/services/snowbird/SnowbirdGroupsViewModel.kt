@@ -22,11 +22,15 @@ class SnowbirdGroupsViewModel : ViewModel() {
     private val _groups = MutableLiveData<List<SnowbirdGroup>>()
     val groups: LiveData<List<SnowbirdGroup>> = _groups
 
+    val isLoading = MutableLiveData(false)
+
     val client = UnixSocketClient(SnowbirdService.DEFAULT_SOCKET_PATH)
     val api = SnowbirdAPI(client)
 
     init {
         // _groups.value = MOCK_GROUPS
+
+        isLoading.value = true
 
         CoroutineScope(Dispatchers.IO).launch {
             when (val response = api.getGroups()) {
@@ -36,9 +40,11 @@ class SnowbirdGroupsViewModel : ViewModel() {
                     _groups.postValue(data)
                 }
                 is ApiResponse.Error -> {
-                    Timber.d("Error: ${response.code} - ${response.message}")
+                    Timber.d("Error: ${response.message}")
                 }
             }
+
+            isLoading.postValue(false)
         }
     }
 

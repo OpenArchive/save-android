@@ -75,45 +75,9 @@ class MainMediaFragment : Fragment() {
 //        }
 //    }
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setHasOptionsMenu(true)
-//    }
-
-//    override fun onStart() {
-//        super.onStart()
-//        BroadcastManager.register(requireContext(), mMessageReceiver)
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        BroadcastManager.unregister(requireContext(), mMessageReceiver)
-//    }
-
-//    @Deprecated("Deprecated in Java")
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return when (item.itemId) {
-//            R.id.menu_delete -> {
-//                AlertHelper.show(
-//                    requireContext(), R.string.confirm_remove_media, null, buttons = listOf(
-//                        AlertHelper.positiveButton(R.string.remove) { _, _ ->
-//                            deleteSelected()
-//                        },
-//                        AlertHelper.negativeButton()
-//                    )
-//                )
-//                true
-//            }
-//
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
-
     override fun onResume() {
         super.onResume()
 
-        setCurrentFolderState()
-        refreshCurrentFolderCount()
         refresh()
     }
 
@@ -168,6 +132,9 @@ class MainMediaFragment : Fragment() {
 //    }
 
     fun refresh() {
+        setCurrentFolderState()
+        refreshCurrentFolderCount()
+
         val folder = Folder.current ?: return
 
         mCollections = Collection.getByFolder(folder.id).associateBy { it.id }.toMutableMap()
@@ -201,8 +168,6 @@ class MainMediaFragment : Fragment() {
         // DO NOT delete the collection here, this could lead to a race condition
         // while adding images.
         deleteCollections(toDelete, false)
-
-        setCurrentFolderState()
     }
 
     private fun setCurrentFolderState() {
@@ -244,10 +209,7 @@ class MainMediaFragment : Fragment() {
     private fun createMediaGroupView(collection: Collection, media: List<Media>): View {
         val holder = SectionViewHolder(MediaGroupBinding.inflate(layoutInflater))
 
-//        val spacing = Math.round(5 * resources.displayMetrics.density)
-
         holder.recyclerView.layoutManager = GridLayoutManager(activity, COLUMN_COUNT)
-//        holder.recyclerView.addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT, spacing, false))
 
         holder.setHeader(collection, media)
 

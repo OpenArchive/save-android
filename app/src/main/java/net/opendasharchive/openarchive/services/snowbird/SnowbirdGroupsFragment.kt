@@ -2,18 +2,24 @@ package net.opendasharchive.openarchive.services.snowbird
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentShowbirdListGroupsBinding
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
+import net.opendasharchive.openarchive.util.extensions.toggle
 
 class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterListener {
 
@@ -30,7 +36,35 @@ class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        createMenu()
+
         createViewModel()
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            viewBinding.progressBar.toggle(it)
+        }
+    }
+
+    private fun createMenu() {
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_browse_folder, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_add -> {
+                        addGroup()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun addGroup() {
+
     }
 
     private fun createSnowbirdBackend(group: SnowbirdGroup) {
