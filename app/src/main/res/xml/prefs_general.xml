@@ -74,7 +74,7 @@
             app:allowDividerAbove="true"
             app:allowDividerBelow="false"
             app:defaultValue="false"
-            app:enabled="true"
+            app:enabled="false"
             app:iconSpaceReserved="false"
             app:key="use_tor"
             app:singleLineTitle="false"
