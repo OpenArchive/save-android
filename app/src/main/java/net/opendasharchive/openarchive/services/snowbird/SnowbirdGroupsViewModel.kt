@@ -11,13 +11,6 @@ import net.opendasharchive.openarchive.features.main.UnixSocketClient
 import timber.log.Timber
 
 class SnowbirdGroupsViewModel : ViewModel() {
-    companion object {
-        private val MOCK_GROUPS = listOf(
-            SnowbirdGroup("Veilid Group 1"),
-            SnowbirdGroup("Veilid Group 2"),
-            SnowbirdGroup("Veilid Group 3")
-        )
-    }
 
     private val _groups = MutableLiveData<List<SnowbirdGroup>>()
     val groups: LiveData<List<SnowbirdGroup>> = _groups
@@ -28,13 +21,11 @@ class SnowbirdGroupsViewModel : ViewModel() {
     val api = SnowbirdAPI(client)
 
     init {
-        // _groups.value = MOCK_GROUPS
-
         isLoading.value = true
 
         CoroutineScope(Dispatchers.IO).launch {
             when (val response = api.getGroups()) {
-                is ApiResponse.Success -> {
+                is ApiResponse.ListResponse -> {
                     val data = response.data
                     Timber.d("Received data: $data")
                     _groups.postValue(data)
@@ -42,6 +33,7 @@ class SnowbirdGroupsViewModel : ViewModel() {
                 is ApiResponse.Error -> {
                     Timber.d("Error: ${response.message}")
                 }
+                else -> Unit
             }
 
             isLoading.postValue(false)

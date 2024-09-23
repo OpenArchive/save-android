@@ -9,7 +9,8 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"/>
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -23,9 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
-            android:layout_marginTop="24dp"
             android:text="@string/skip"
-            android:textColor="@color/colorBackground" />
+            android:textColor="@color/colorBackground"
+            android:layout_marginTop="?attr/actionBarSize"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
@@ -43,7 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="125">
+        android:weightSum="125"
+        android:layout_marginTop="?attr/actionBarSize">
 
         <View
             android:layout_width="wrap_content"

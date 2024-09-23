@@ -33,7 +33,11 @@ class SnowbirdService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        DEFAULT_SOCKET_PATH = File(filesDir, "rust_server.sock").absolutePath
+        val socketFile = File(filesDir, "rust_server.sock")
+//        if (socketFile.delete()) {
+//            Timber.d("Deleted Snowbird socket")
+//        }
+        DEFAULT_SOCKET_PATH = socketFile.absolutePath
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -80,6 +84,7 @@ class SnowbirdService : Service() {
 
     private fun startServer(socketPath: String) {
         serverJob = serviceScope.launch {
+            Timber.d("Starting Snowbird Service")
             val result = SnowbirdBridge.startServer(socketPath)
             Timber.d("Snowbird Service: $result")
         }

@@ -152,12 +152,14 @@
             android:name=".features.onboarding.Onboarding23Activity"
             android:exported="false"
             android:noHistory="true"
-            android:taskAffinity="" />
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.Onboarding" />
         <activity
             android:name=".features.onboarding.Onboarding23InstructionsActivity"
             android:exported="false"
             android:noHistory="true"
-            android:taskAffinity="" />
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.Onboarding" />
         <activity
             android:name=".features.folders.CreateNewFolderFragment"
             android:label="@string/new_folder"

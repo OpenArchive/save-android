@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.main.CameraCaptureActivity
@@ -29,10 +28,6 @@ import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
 abstract class BaseActivity: AppCompatActivity() {
-
-    companion object {
-        const val EXTRA_DATA_BACKEND = "space"
-    }
 
     private lateinit var mMediaPickerLauncher: ImagePickerLauncher
     private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
@@ -66,8 +61,6 @@ abstract class BaseActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.colorBottomNavbar)
-
         val launchers = Picker.register(this, { Folder.current }, { media ->
             Timber.d("media = $media")
 
@@ -89,7 +82,10 @@ abstract class BaseActivity: AppCompatActivity() {
 
         // updating this in onResume (previously was in onCreate) to make sure setting changes get
         // applied instantly instead after the next app restart
-        updateScreenshotPrevention()
+        //
+        // Commenting out since we are not currently support this feature.
+        //
+//        updateScreenshotPrevention()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -98,12 +94,16 @@ abstract class BaseActivity: AppCompatActivity() {
         return true
     }
 
-    val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
-        handleSelectedImages(uris)
+    private val getMultipleContents = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris: List<Uri> ->
+        handleSelectedFiles(uris)
     }
 
-    val legacyPickMultipleMedia = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
-        handleSelectedImages(uris)
+    private val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
+        handleSelectedFiles(uris)
+    }
+
+    private val legacyPickMultipleMedia = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        handleSelectedFiles(uris)
     }
 
     private val requestPermissionLauncher =
@@ -131,7 +131,7 @@ abstract class BaseActivity: AppCompatActivity() {
         }
     }
 
-    fun handleSelectedImages(uris: List<Uri>) {
+    private fun handleSelectedFiles(uris: List<Uri>) {
         if (uris.isNotEmpty()) {
             for (uri in uris) {
                 val mimeType = contentResolver.getType(uri)
@@ -149,7 +149,11 @@ abstract class BaseActivity: AppCompatActivity() {
         }
     }
 
-    fun launchImagePicker() {
+    private fun openFilePicker() {
+        getMultipleContents.launch("*/*")
+    }
+
+    private fun launchImagePicker() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
         } else {
@@ -165,7 +169,7 @@ abstract class BaseActivity: AppCompatActivity() {
         legacyPickMultipleMedia.launch("image/*")
     }
 
-    fun processIntentResult(result: Intent?) {
+    private fun processIntentResult(result: Intent?) {
         Timber.d("Got camera results")
 
         result?.let { intent ->
@@ -177,12 +181,12 @@ abstract class BaseActivity: AppCompatActivity() {
             }
 
             returnedUris?.let { uris ->
-                handleSelectedImages(uris)
+                handleSelectedFiles(uris)
             }
         }
     }
 
-    fun requestCameraPermission() {
+    private fun requestCameraPermission() {
         when {
             ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
                 cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
@@ -208,6 +212,7 @@ abstract class BaseActivity: AppCompatActivity() {
             when (source) {
                 OABottomSheetDialogFragment.MediaSource.Camera -> requestCameraPermission()
                 OABottomSheetDialogFragment.MediaSource.Images -> launchImagePicker()
+                OABottomSheetDialogFragment.MediaSource.Storage -> openFilePicker()
             }
         }
 
@@ -235,18 +240,4 @@ abstract class BaseActivity: AppCompatActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
     }
-
-//    fun alertUserOfError(e: Error) {
-//        val builder: AlertDialog.Builder = AlertDialog.Builder(baseContext)
-//
-//        builder
-//            .setTitle("Oops")
-//            .setMessage(e.localizedMessage)
-//            .setPositiveButton("OK") { dialog, which ->
-//            }
-//
-//        val dialog: AlertDialog = builder.create()
-//
-//        dialog.show()
-//    }
 }

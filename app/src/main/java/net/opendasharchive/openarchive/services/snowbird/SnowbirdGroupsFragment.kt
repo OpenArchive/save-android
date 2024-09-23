@@ -20,6 +20,7 @@ import net.opendasharchive.openarchive.services.CommonServiceFragment
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.extensions.toggle
+import timber.log.Timber
 
 class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterListener {
 
@@ -64,7 +65,23 @@ class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterLis
     }
 
     private fun addGroup() {
+//        val client = UnixSocketClient(SnowbirdService.DEFAULT_SOCKET_PATH)
+//        val api = SnowbirdAPI(client)
 
+        Timber.d("Creating new group...")
+
+//        CoroutineScope(Dispatchers.IO).launch {
+//            when (val response = api.createGroup()) {
+//                is ApiResponse.SingleResponse -> {
+//                    val data = response.data
+//                    Timber.d("Received data: $data")
+//                }
+//                is ApiResponse.Error -> {
+//                    Timber.d("Error: ${response.message}")
+//                }
+//                else -> Unit
+//            }
+//        }
     }
 
     private fun createSnowbirdBackend(group: SnowbirdGroup) {

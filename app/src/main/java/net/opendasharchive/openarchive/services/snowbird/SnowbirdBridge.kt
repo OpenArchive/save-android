@@ -8,5 +8,6 @@ class SnowbirdBridge {
 
         @JvmStatic
         external fun startServer(socketPath: String): String
+        external fun stopServer(handle: Long)
     }
 }

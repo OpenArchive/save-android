@@ -13,15 +13,39 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
 
+enum class HttpMethod(val value: String) {
+    GET("GET"),
+    POST("POST"),
+    PUT("PUT"),
+    DELETE("DELETE"),
+    PATCH("PATCH"),
+    HEAD("HEAD"),
+    OPTIONS("OPTIONS"),
+    TRACE("TRACE");
+
+    override fun toString(): String {
+        return value
+    }
+
+    companion object {
+        fun fromString(method: String): HttpMethod? {
+            return values().find { it.value.equals(method, ignoreCase = true) }
+        }
+    }
+}
+
 sealed class ApiResponse<out T> {
-    data class Success<T>(val data: T) : ApiResponse<T>()
+    data class SingleResponse<T>(val data: T) : ApiResponse<T>()
+    data class ListResponse<T>(val data: List<T>) : ApiResponse<T>()
     data class Error(val code: Int, val message: String) : ApiResponse<Nothing>()
 }
 
 class UnixSocketClient(val socketPath: String) {
     val json = Json { ignoreUnknownKeys = true }
 
-    suspend inline fun <reified T> sendRequest(endpoint: String, method: String = "GET", body: Jsonable? = null): ApiResponse<List<T>> = withContext(Dispatchers.IO) {
+    inline fun <reified T> Gson.fromJson(json: String): T = fromJson(json, object : TypeToken<T>() {}.type)
+
+    suspend inline fun <reified T : Any> sendRequest(endpoint: String, method: HttpMethod = HttpMethod.GET, body: Jsonable? = null): ApiResponse<T> = withContext(Dispatchers.IO) {
         try {
             LocalSocket().use { socket ->
                 socket.connect(LocalSocketAddress(socketPath, LocalSocketAddress.Namespace.FILESYSTEM))
@@ -62,8 +86,17 @@ class UnixSocketClient(val socketPath: String) {
                 val responseBody = input.readText()
 
                 if (statusCode.toInt() in 200..299) {
-                    val data = parseResponse<T>(responseBody)
-                    ApiResponse.Success(data)
+                    when (method) {
+                        HttpMethod.GET -> {
+                            val listData = parseListResponse<T>(responseBody)
+                            ApiResponse.ListResponse(listData)
+                        }
+                        HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH -> {
+                            val singleData = parseSingleResponse<T>(responseBody)
+                            ApiResponse.SingleResponse(singleData)
+                        }
+                        else -> throw IllegalArgumentException("Unsupported HTTP method")
+                    }
                 } else {
                     ApiResponse.Error(statusCode.toInt(), responseBody)
                 }
@@ -73,9 +106,15 @@ class UnixSocketClient(val socketPath: String) {
         }
     }
 
-    // Allows us to get responses of the form { "foo": [ "bar1", "bar2", ... , "bar3"] }
+    inline fun <reified T> parseSingleResponse(json: String): T {
+        val gson = Gson()
+
+        return gson.fromJson<T>(json)
+    }
+
+    // Allows us to process responses of the form { "foo": [ "bar1", "bar2", ... , "bar3"] }
     //
-    inline fun <reified T> parseResponse(json: String): List<T> {
+    inline fun <reified T> parseListResponse(json: String): List<T> {
         val gson = Gson()
         val jsonElement = JsonParser.parseString(json)
         val jsonObject = jsonElement.asJsonObject

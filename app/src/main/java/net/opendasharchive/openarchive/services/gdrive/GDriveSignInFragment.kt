@@ -34,7 +34,6 @@ import net.opendasharchive.openarchive.features.backends.BackendViewModel
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Utility
-import net.opendasharchive.openarchive.util.extensions.toggle
 import timber.log.Timber
 
 class GDriveSignInFragment : CommonServiceFragment() {
@@ -133,13 +132,16 @@ class GDriveSignInFragment : CommonServiceFragment() {
             if (GDriveConduit.permissionsGranted(requireContext())) {
                 saveNewBackend(backend)
 
-                binding.progressBar.toggle(true)
+                // Removing progress bar as per
+                // https://github.com/orgs/OpenArchive/projects/4/views/1?pane=issue&itemId=80015421
+                //
+//                binding.progressBar.toggle(true)
 
                 CoroutineScope(Dispatchers.IO).launch {
                     syncGDrive(requireContext(), backend)
 
                     MainScope().launch {
-                        binding.progressBar.toggle(false)
+//                        binding.progressBar.toggle(false)
 
                         Utility.showMaterialMessage(
                             requireContext(),

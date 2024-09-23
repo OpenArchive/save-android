@@ -213,10 +213,10 @@
     <string name="proofmode">ProofMode</string>
     <string name="no_webbrowser_found_error">No application can handle this request. Please install a webbrowser.</string>
 
-    <string name="intro_header_share" translatable="false">SECURE</string>
-    <string name="intro_header_archive" translatable="false">ARCHIVE</string>
-    <string name="intro_header_verify" translatable="false">VERIFY</string>
-    <string name="intro_header_encrypt" translatable="false">ENCRYPT</string>
+    <string name="intro_header_share" translatable="false">Secure</string>
+    <string name="intro_header_archive" translatable="false">Archive</string>
+    <string name="intro_header_verify" translatable="false">Verify</string>
+    <string name="intro_header_encrypt" translatable="false">Encrypt</string>
     <string name="intro_text_share">
         Upload verified media to your chosen server. Add a Creative Commons license to communicate
         your intentions for future use.
@@ -274,9 +274,8 @@
     <string name="edit_media">Edit Media</string>
     <string name="uploading_is_paused">Uploading is paused</string>
     <string name="add_media_using">Add Media using:</string>
-    <string name="photo_gallery">Photos and Videos</string>
+    <string name="photo_gallery">Camera Roll</string>
     <string name="files">Files</string>
-    <string name="health_checks">Health Checks</string>
     <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Help improve the app by running health checks when uploads fail.</string>
     <string name="health_checks_help_us_understand_why_uploads_fail">Health checks help us understand why uploads fail.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">Contribute your data to be part of the solution.</string>
