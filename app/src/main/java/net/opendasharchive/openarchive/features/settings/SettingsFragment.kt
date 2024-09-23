@@ -44,6 +44,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        findPreference<Preference>(Prefs.MEDIA_UPLOAD_POLICY)?.setOnPreferenceChangeListener { _, newValue ->
+            Prefs.mediaUploadPolicy = newValue as String
+            true
+        }
+
         findPreference<Preference>(Prefs.PRIVACY_POLICY)?.setOnPreferenceClickListener {
             val intent = WebViewActivity.newIntent(requireContext(), "https://open-archive.org/privacy")
             startActivity(intent)

@@ -42,7 +42,7 @@
                 android:id="@+id/waveform"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:indicatorColor="#aa0000"
                 app:waveformColor="#999999" />
 

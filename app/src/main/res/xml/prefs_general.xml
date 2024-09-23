@@ -40,6 +40,18 @@
             app:singleLineTitle="true"
             app:summary="%s"
             app:title="Media Compression" />
+
+        <ListPreference
+            app:allowDividerAbove="true"
+            app:allowDividerBelow="false"
+            app:defaultValue="upload_media_automatically"
+            app:entries="@array/prefs_new_media_upload_options_labels"
+            app:entryValues="@array/prefs_new_media_upload_options_values"
+            app:iconSpaceReserved="false"
+            app:key="media_upload_policy"
+            app:singleLineTitle="true"
+            app:summary="%s"
+            app:title="Media Upload Policy" />
     </PreferenceCategory>
 
     <PreferenceCategory

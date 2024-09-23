@@ -115,17 +115,24 @@ abstract class BaseActivity: AppCompatActivity() {
             }
         }
 
+    // Media types are split out in case we ever need custom
+    // handling by media type.
+    //
+    private fun handleAudio(uri: Uri) {
+        handleMedia(uri)
+    }
+
     private fun handleImage(uri: Uri) {
-        Picker.import(this@BaseActivity, Folder.current, uri)?.let { media ->
-            media.status = Media.Status.Local
-            media.selected = false
-            media.save()
-        }
+        handleMedia(uri)
     }
 
     private fun handleVideo(uri: Uri) {
+        handleMedia(uri)
+    }
+
+    private fun handleMedia(uri: Uri) {
         Picker.import(this@BaseActivity, Folder.current, uri)?.let { media ->
-            media.status = Media.Status.Local
+            media.status = if (Prefs.mediaUploadPolicy == "upload_media_automatically") Media.Status.New else Media.Status.Local
             media.selected = false
             media.save()
         }
@@ -138,6 +145,7 @@ abstract class BaseActivity: AppCompatActivity() {
                 when {
                     mimeType?.startsWith("image/") == true -> handleImage(uri)
                     mimeType?.startsWith("video/") == true -> handleVideo(uri)
+                    mimeType?.startsWith("audio/") == true -> handleAudio(uri)
                     else -> {
                         Timber.d("Unknown type picked: $mimeType")
                     }

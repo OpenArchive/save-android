@@ -6,6 +6,7 @@ import com.orm.SugarApp
 import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.core.di.coreModule
 import net.opendasharchive.openarchive.core.di.featuresModule
+import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
@@ -46,6 +47,8 @@ class SaveApp : SugarApp() {
 
 //        val intent = Intent(this, SnowbirdService::class.java)
 //        startForegroundService(intent)
+
+        UploadService.startUploadService(this)
 
         if (Prefs.useTor) initNetCipher()
 

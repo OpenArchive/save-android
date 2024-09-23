@@ -18,4 +18,12 @@
         <item>@string/prefs_theme_light</item>
         <item>@string/prefs_theme_dark</item>
     </string-array>
+    <string-array name="prefs_new_media_upload_options_labels">
+        <item>Automatic</item>
+        <item>Manual</item>
+    </string-array>
+    <string-array name="prefs_new_media_upload_options_values">
+        <item>upload_media_automatically</item>
+        <item>upload_media_manually</item>
+    </string-array>
 </resources>
