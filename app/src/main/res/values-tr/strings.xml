@@ -258,9 +258,8 @@
     <string name="edit_media">Ortamı düzenle</string>
     <string name="uploading_is_paused">Yükleme duraklatıldı</string>
     <string name="add_media_using">Şununla ortam ekleyin:</string>
-    <string name="photo_gallery">Fotoğraflar ve görüntüler</string>
+    <string name="photo_gallery">Fotoğraflar</string>
     <string name="files">Dosyalar</string>
-    <string name="health_checks">Sağlık denetimleri</string>
     <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Yüklemeler başarısız olduğunda sağlık denetimlerinin yapılmasına izin vererek uygulamanın geliştirilmesine yardımcı olun. </string>
     <string name="health_checks_help_us_understand_why_uploads_fail">Sağlık denetimleri yüklemelerin neden başarısız olduğunu anlamamızı sağlar.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">Çözümün bir parçası olmak için verilerinizle katkıda bulunun.</string>
