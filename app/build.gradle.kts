@@ -114,15 +114,14 @@ android {
 }
 
 dependencies {
-    implementation("androidx.navigation:navigation-compose:2.8.0")
-
     val cameraxVersion = "1.3.4"
     implementation("androidx.camera:camera-core:${cameraxVersion}")
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
     implementation("androidx.camera:camera-view:${cameraxVersion}")
 
-    val navigationVersion = "2.8.0"
+    val navigationVersion = "2.8.1"
+    implementation("androidx.navigation:navigation-compose:$navigationVersion")
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
@@ -138,7 +137,7 @@ dependencies {
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
-    val lifecycleVersion = "2.8.5"
+    val lifecycleVersion = "2.8.6"
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
@@ -151,7 +150,7 @@ dependencies {
     implementation("androidx.work:work-testing:2.9.1")
     implementation("androidx.compose.material3:material3:1.3.0")
 
-    val composeVersion = "1.7.1"
+    val composeVersion = "1.7.2"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
@@ -171,13 +170,13 @@ dependencies {
     implementation("com.github.guardianproject:sardine-android:89f7eae512")
 
     implementation("com.google.android.material:material:1.12.0")
-//    implementation("com.github.bumptech.glide:glide:4.16.0")
-//    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("com.github.derlio:audio-waveform:v1.0.1")
     implementation("com.github.esafirm:android-image-picker:3.0.0")
-//    implementation("com.squareup.picasso:picasso:2.5.2")
-    implementation("io.coil-kt:coil-compose:2.7.0")
-    implementation("io.coil-kt:coil-video:2.7.0")
+
+    // Coil (image processing)
+    val coilVersion = "2.7.0"
+    implementation("io.coil-kt:coil-compose:$coilVersion")
+    implementation("io.coil-kt:coil-video:$coilVersion")
 
     implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
     implementation("com.github.abdularis:circularimageview:1.4")
@@ -272,20 +271,20 @@ dependencies {
     // Optional - Included automatically by material, only add when you need
     // the icons but not the material library (e.g. when using Material3 or a
     // custom design system based on Foundation)
-    implementation("androidx.compose.material:material-icons-core")
+    // implementation("androidx.compose.material:material-icons-core")
     // Optional - Add full set of material icons
-    implementation("androidx.compose.material:material-icons-extended")
+    // implementation("androidx.compose.material:material-icons-extended")
     // Optional - Add window size utils
-    implementation("androidx.compose.material3:material3-window-size-class")
+    // implementation("androidx.compose.material3:material3-window-size-class")
 
     // Optional - Integration with activities
     implementation("androidx.activity:activity-compose:1.9.2")
     // Optional - Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
     // Optional - Integration with LiveData
     implementation("androidx.compose.runtime:runtime-livedata")
     // Optional - Integration with RxJava
-    implementation("androidx.compose.runtime:runtime-rxjava2")
+    // implementation("androidx.compose.runtime:runtime-rxjava2")
 
     // A more customization popup menu
     implementation("com.github.skydoves:powermenu:2.2.4")
@@ -293,7 +292,7 @@ dependencies {
     // Mixpanel analytics
     implementation("com.mixpanel.android:mixpanel-android:7.5.2")
 
-    implementation("androidx.webkit:webkit:1.11.0")
+    implementation("androidx.webkit:webkit:1.12.0")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
 
