@@ -110,16 +110,10 @@
         <item name="android:background">@color/transparent</item>
     </style>
 
-<!--    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">-->
-<!--        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>-->
-<!--        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>-->
-<!--        <item name="android:textColor">@color/colorPrimary</item>-->
-<!--        <item name="android:textSize">14sp</item>-->
-<!--    </style>-->
-
     <style name="MaterialAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/NeutralButtonStyle</item>
         <item name="materialAlertDialogTitleTextStyle">@style/CustomMaterialAlertDialog.Title.Text</item>
         <item name="materialAlertDialogBodyTextStyle">@style/CustomMaterialAlertDialog.Body.Text</item>
         <item name="android:backgroundDimAmount">0.75</item>
@@ -139,6 +133,11 @@
     <style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/c23_grey</item>
         <item name="android:layout_marginEnd">5dp</item>
+    </style>
+
+    <style name="NeutralButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/c23_medium_grey</item>
+        <item name="android:layout_marginStart">12dp</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
@@ -239,6 +238,7 @@
         <item name="android:text">@string/action_settings</item>
         <item name="android:textColor">@color/colorOnBackgroundTonedDown</item>
         <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/ripple_background</item>
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="icon">@drawable/ic_settings</item>

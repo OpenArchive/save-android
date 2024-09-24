@@ -55,11 +55,11 @@ data class Folder(
             return findById(Folder::class.java, folderId)
         }
 
-        fun getLocalFoldersForBackend(backend: Backend): List<Folder> {
+        fun getLocalFoldersForBackend(backend: Backend?): List<Folder> {
             // It's possible that this Folder's backend hasn't been
             // created yet.
             //
-            if (backend.id == null) {
+            if (backend == null || backend.id == null) {
                 return listOf()
             }
 

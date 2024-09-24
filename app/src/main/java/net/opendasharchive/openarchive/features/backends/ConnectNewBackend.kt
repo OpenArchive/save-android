@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentConnectNewBackendBinding
 import net.opendasharchive.openarchive.db.Backend
@@ -51,7 +53,9 @@ class ConnectNewBackend : Fragment() {
     }
 
     private fun showAuthScreenFor(backend: Backend) {
-        backendViewModel.updateBackend { backend }
+        viewLifecycleOwner.lifecycleScope.launch {
+            backendViewModel.upsertBackend(backend)
+        }
 
         val nextScreen = when (backend.type) {
             Backend.Type.GDRIVE.id -> ConnectNewBackendDirections.navigateToGdriveScreen()

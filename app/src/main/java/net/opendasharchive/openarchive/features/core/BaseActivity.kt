@@ -132,7 +132,7 @@ abstract class BaseActivity: AppCompatActivity() {
 
     private fun handleMedia(uri: Uri) {
         Picker.import(this@BaseActivity, Folder.current, uri)?.let { media ->
-            media.status = if (Prefs.mediaUploadPolicy == "upload_media_automatically") Media.Status.New else Media.Status.Local
+            media.status = if (Prefs.mediaUploadPolicy == "upload_media_automatically") Media.Status.Queued else Media.Status.Local
             media.selected = false
             media.save()
         }

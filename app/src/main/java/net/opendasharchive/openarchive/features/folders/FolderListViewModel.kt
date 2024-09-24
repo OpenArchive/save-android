@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Folder
 
-class FolderListViewModel(backend: Backend) : ViewModel() {
+class FolderListViewModel(backend: Backend?) : ViewModel() {
     private val _folders = MutableLiveData<List<Folder>>()
     val folders: LiveData<List<Folder>> = _folders
 

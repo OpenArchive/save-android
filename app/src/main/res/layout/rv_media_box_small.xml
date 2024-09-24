@@ -43,8 +43,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="visible"
+                android:background="@color/colorOnBackgroundTonedDown"
                 app:indicatorColor="#aa0000"
-                app:waveformColor="#999999" />
+                app:waveformColor="@color/transparent_white" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progress"
@@ -67,16 +68,16 @@
                 android:src="@drawable/ic_error"
                 app:tint="@color/colorDanger" />
 
-            <TextView
-                android:id="@+id/progress_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="100%"
-                android:textSize="12sp"
-                android:visibility="visible"
-                android:textColor="@color/colorPrimary"
-                tools:ignore="HardcodedText" />
+<!--            <TextView-->
+<!--                android:id="@+id/progress_text"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:text="100%"-->
+<!--                android:textSize="12sp"-->
+<!--                android:visibility="visible"-->
+<!--                android:textColor="@color/colorPrimary"-->
+<!--                tools:ignore="HardcodedText" />-->
 
             <ImageView
                 android:id="@+id/video_indicator"

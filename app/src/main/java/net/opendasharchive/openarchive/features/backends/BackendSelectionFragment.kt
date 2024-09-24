@@ -8,9 +8,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
@@ -58,9 +60,9 @@ class BackendSelectionFragment : Fragment() {
 //        }
 
     private fun useBackend(backend: Backend) {
-//        viewBinding.progressBar.toggle(true)
-
-        backendViewModel.updateBackend { backend }
+        viewLifecycleOwner.lifecycleScope.launch {
+            backendViewModel.upsertBackend(backend)
+        }
 
         if (backend.exists()) {
             findNavController().navigate(BackendSelectionFragmentDirections.navigateToCreateNewFolderScreen())

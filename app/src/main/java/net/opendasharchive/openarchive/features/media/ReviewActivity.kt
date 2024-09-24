@@ -9,9 +9,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
-import coil.ImageLoader
-import coil.decode.VideoFrameDecoder
 import coil.load
 import coil.request.videoFrameMillis
 import com.github.derlio.waveform.SimpleWaveformView
@@ -61,11 +58,11 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
     private val mMedia
         get() = mStore.getOrNull(mIndex)
 
-    val imageLoader = ImageLoader.Builder(this)
-        .components {
-            add(VideoFrameDecoder.Factory())
-        }
-        .build()
+//    val imageLoader = ImageLoader.Builder(this)
+//        .components {
+//            add(VideoFrameDecoder.Factory())
+//        }
+//        .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -172,14 +169,14 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
 
     override fun onClick(view: View?) {
         when (view) {
-            mBinding.waveform, mBinding.image -> {
-                if (mMedia?.mimeType?.startsWith("image") == true) {
-                    Toast.makeText(this, "This required Fresco", Toast.LENGTH_LONG).show()
+//            mBinding.waveform, mBinding.image -> {
+//                if (mMedia?.mimeType?.startsWith("image") == true) {
+//                    Toast.makeText(this, "This required Fresco", Toast.LENGTH_LONG).show()
 //                    ImageViewer.Builder(this, listOf(mMedia?.fileUri))
 //                        .setStartPosition(0)
 //                        .show()
-                }
-            }
+//                }
+//            }
             mBinding.btFlag -> {
                 showFirstTimeFlag()
 
@@ -314,23 +311,11 @@ class ReviewActivity : BaseActivity(), View.OnClickListener {
 
         if (media?.mimeType?.startsWith("image") == true) {
             imageView.load(media.fileUri)
-
-//            Glide.with(this)
-//                .load(media.fileUri)
-//                .into(imageView)
         }
         else if (media?.mimeType?.startsWith("video") == true) {
             imageView.load(media.originalFilePath) {
                 videoFrameMillis(1000)  // extracts the frame at 1 second of the video
             }
-
-//            Picasso.Builder(this)
-//                .addRequestHandler(VideoRequestHandler(this))
-//                .build()
-//                .load(VideoRequestHandler.SCHEME_VIDEO + ":" + media.originalFilePath)
-//                ?.fit()
-//                ?.centerCrop()
-//                ?.into(imageView)
         }
         else if (media?.mimeType?.startsWith("audio") == true) {
             imageView.setImageResource(R.drawable.audio_waveform)

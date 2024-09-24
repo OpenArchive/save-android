@@ -34,9 +34,6 @@ class SnowbirdService : Service() {
         super.onCreate()
         createNotificationChannel()
         val socketFile = File(filesDir, "rust_server.sock")
-//        if (socketFile.delete()) {
-//            Timber.d("Deleted Snowbird socket")
-//        }
         DEFAULT_SOCKET_PATH = socketFile.absolutePath
     }
 

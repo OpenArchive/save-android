@@ -23,10 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:textSize="22sp"
-        tools:text="Title"
+        app:layout_constraintBottom_toBottomOf="@id/leftIcon"
         app:layout_constraintStart_toEndOf="@+id/leftIcon"
         app:layout_constraintTop_toTopOf="@id/leftIcon"
-        app:layout_constraintBottom_toBottomOf="@id/leftIcon"/>
+        tools:text="Title" />
 
     <View
         android:layout_width="0dp"

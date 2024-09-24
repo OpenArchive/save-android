@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.RvMediaBoxSmallBinding
 import net.opendasharchive.openarchive.databinding.RvMediaRowSmallBinding
+import net.opendasharchive.openarchive.extensions.uriToPath
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
 import timber.log.Timber
@@ -52,8 +53,8 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val progress: CircularProgressIndicator
             get() = (binding as RvMediaBoxSmallBinding).progress
 
-        override val progressText: TextView
-            get() = (binding as RvMediaBoxSmallBinding).progressText
+//        override val progressText: TextView
+//            get() = (binding as RvMediaBoxSmallBinding).progressText
 
         override val error: ImageView
             get() = (binding as RvMediaBoxSmallBinding).error
@@ -76,7 +77,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val flagIndicator: ImageView?
             get() = null
 
-        override val deleteIndicator: View?
+        override val deleteIndicator: View
             get() = (binding as RvMediaBoxSmallBinding).deleteIndicator
 
         override val handle: ImageView?
@@ -104,8 +105,8 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val progress: CircularProgressIndicator
             get() = (binding as RvMediaRowSmallBinding).progress
 
-        override val progressText: TextView
-            get() = (binding as RvMediaRowSmallBinding).progressText
+//        override val progressText: TextView
+//            get() = (binding as RvMediaRowSmallBinding).progressText
 
         override val error: ImageView
             get() = (binding as RvMediaRowSmallBinding).error
@@ -146,7 +147,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     abstract val videoIndicator: ImageView?
     abstract val overlayContainer: View?
     abstract val progress: CircularProgressIndicator?
-    abstract val progressText: TextView?
+//    abstract val progressText: TextView?
     abstract val error: ImageView?
     abstract val title: TextView?
     abstract val fileInfo: TextView?
@@ -299,7 +300,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             CoroutineScope(Dispatchers.IO).launch {
                 @Suppress("NAME_SHADOWING")
                 val soundFile = try {
-                    SoundFile.create(media.originalFilePath) {
+                    SoundFile.create(media.originalFilePath.uriToPath()) {
                         return@create true
                     }
                 }
@@ -349,10 +350,11 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
         overlayContainer?.show()
         progress?.hide()
-        progressText?.hide()
+//        progressText?.hide()
         error?.show()
 
         if (media.statusMessage.isNotBlank()) {
+            Timber.d("Media error: ${media.statusMessage}")
             fileInfo?.text = media.statusMessage
             fileInfo?.show()
         }
@@ -362,7 +364,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media is local")
         overlayContainer?.hide()
         progress?.hide()
-        progressText?.hide()
+//        progressText?.hide()
         error?.hide()
     }
 
@@ -370,7 +372,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media is queued")
         overlayContainer?.show()
         progress?.show()
-        progressText?.hide()
+//        progressText?.hide()
         error?.hide()
     }
 
@@ -378,7 +380,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media is uploaded")
         overlayContainer?.hide()
         progress?.hide()
-        progressText?.hide()
+//        progressText?.hide()
         error?.hide()
     }
 
@@ -391,7 +393,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
         overlayContainer?.show()
         progress?.show()
-        progressText?.show()
+//        progressText?.show()
 
         // Make sure to keep spinning until the upload has made some noteworthy progress.
         if (progressValue > 2) {
@@ -400,7 +402,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         else {
             progress?.isIndeterminate = true
         }
-        progressText?.text = "${progressValue}%"
+//        progressText?.text = "${progressValue}%"
 
         error?.hide()
     }
@@ -410,7 +412,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media status is unknown")
         overlayContainer?.hide()
         progress?.hide()
-        progressText?.hide()
+//        progressText?.hide()
         error?.hide()
     }
 }

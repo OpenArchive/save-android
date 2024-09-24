@@ -12,7 +12,9 @@ import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.witness.proofmode.ProofMode
 import timber.log.Timber
+import java.io.File
 
 class SaveApp : SugarApp() {
 
@@ -53,6 +55,8 @@ class SaveApp : SugarApp() {
         if (Prefs.useTor) initNetCipher()
 
         Theme.set(Prefs.theme)
+
+        ProofMode.setProofFileSystem(File(filesDir, "proofmode"))
 
         Timber.d("Starting app $packageName ")
     }

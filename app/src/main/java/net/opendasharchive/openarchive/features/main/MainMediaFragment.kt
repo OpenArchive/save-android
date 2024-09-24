@@ -46,35 +46,6 @@ class MainMediaFragment : Fragment() {
 
     private lateinit var mBinding: FragmentMainMediaBinding
 
-//    private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-//        private val handler = Handler(Looper.getMainLooper())
-//        override fun onReceive(context: Context, intent: Intent) {
-//            Timber.d("Got a broadcast!")
-//
-//            val action = BroadcastManager.getAction(intent) ?: return
-//
-//            when (action) {
-//                BroadcastManager.Action.Add -> {
-//                    handler.post {
-//                        refresh()
-//                    }
-//                }
-//
-//                BroadcastManager.Action.Change -> {
-//                    handler.post {
-//                        updateItem(action.collectionId, action.mediaId, action.progress)
-//                    }
-//                }
-//
-//                BroadcastManager.Action.Delete -> {
-//                    handler.post {
-//                        refresh()
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     override fun onResume() {
         super.onResume()
 
@@ -181,7 +152,7 @@ class MainMediaFragment : Fragment() {
             mBinding.currentFolder.currentBackendButton.setOnClickListener {
                 startActivity(Intent(context, BackendSetupActivity::class.java))
             }
-        } ?: {
+        } ?: run {
             mBinding.currentFolder.currentBackendButton.visibility = View.GONE
             mBinding.currentFolder.currentFolderCount.visibility = View.GONE
             mBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)

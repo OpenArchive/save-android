@@ -28,10 +28,10 @@ class OABottomSheetDialogFragment : BottomSheetDialogFragment() {
             dismiss()
         }
 
-        view.findViewById<Button>(R.id.add_images_button).setOnClickListener {
-            onMediaSourceSelected?.invoke(MediaSource.Images)
-            dismiss()
-        }
+//        view.findViewById<Button>(R.id.add_images_button).setOnClickListener {
+//            onMediaSourceSelected?.invoke(MediaSource.Images)
+//            dismiss()
+//        }
 
         view.findViewById<Button>(R.id.add_camera_button).setOnClickListener {
             onMediaSourceSelected?.invoke(MediaSource.Camera)

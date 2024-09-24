@@ -72,7 +72,7 @@ abstract class Conduit(
             }
 
             return ProofMode.getProofFileSystem().listFiles() ?: emptyArray()
-            // return ProofMode.getProofDir(mContext, hash).listFiles() ?: emptyArray()
+//            return ProofMode.getProofDir(mContext, hash).listFiles() ?: emptyArray()
         } catch (exception: FileNotFoundException) {
             Timber.e(exception)
 

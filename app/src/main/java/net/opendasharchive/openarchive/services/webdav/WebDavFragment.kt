@@ -108,7 +108,7 @@ class WebDavFragment : Fragment() {
 
         newFolderNavigationViewModel.observeNavigation(viewLifecycleOwner) { action ->
             if (action == NewFolderNavigationAction.UserAuthenticated) {
-                backendViewModel.updateBackend { backend }
+                backendViewModel.upsertBackend(backend)
                 findNavController().navigate(WebDavFragmentDirections.navigateToBackendMetadataScreen())
             }
         }

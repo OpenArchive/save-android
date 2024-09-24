@@ -49,7 +49,7 @@ class CreateNewFolderFragment : Fragment() {
         binding.createFolderButton.text = "Create"
         setFolderNameListeners()
 
-        if (backendViewModel.backend.value.license == null) {
+        if (backendViewModel.backend.value?.license == null) {
             CcSelector.init(binding.cc, license = "https://creativecommons.org/licenses/by-sa/4.0")
         }
         else {
@@ -147,11 +147,12 @@ class CreateNewFolderFragment : Fragment() {
     }
 
     private fun folderWithNameExists(name: String): Boolean {
-        val backend = backendViewModel.backend.value
+        backendViewModel.backend.value?.let { backend ->
+            val exists = Folder.getLocalFoldersForBackend(backend).firstOrNull { it.name == name }
+            return (exists != null)
+        }
 
-        val exists = Folder.getLocalFoldersForBackend(backend).firstOrNull { it.name == name }
-
-        return (exists != null)
+        return false
     }
 
     private fun signalSuccess() {

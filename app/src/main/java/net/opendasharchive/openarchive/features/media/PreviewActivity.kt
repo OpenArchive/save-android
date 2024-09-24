@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityPreviewBinding
@@ -21,6 +22,7 @@ import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.extensions.hide
 import net.opendasharchive.openarchive.util.extensions.show
+import net.opendasharchive.openarchive.util.extensions.tint
 import net.opendasharchive.openarchive.util.extensions.toggle
 
 
@@ -163,9 +165,11 @@ class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Lis
         } else {
             var dontShowAgain = false
 
+            val icon = ContextCompat.getDrawable(this, R.drawable.baseline_cloud_upload_black_48)?.tint(resources.getColor(R.color.white))
+
             val d = AlertDialog.Builder(ContextThemeWrapper(this, R.style.MaterialAlertDialogTheme))
                 .setTitle(R.string.once_uploaded_you_will_not_be_able_to_edit_media)
-                .setIcon(R.drawable.baseline_cloud_upload_black_48)
+                .setIcon(icon)
                 .setPositiveButton(
                     R.string.got_it
                 ) { _: DialogInterface, _: Int ->

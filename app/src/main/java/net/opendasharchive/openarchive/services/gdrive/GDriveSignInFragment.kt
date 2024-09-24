@@ -14,6 +14,7 @@ import androidx.core.os.bundleOf
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -99,7 +100,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
             }
 
             Activity.RESULT_CANCELED -> {
-                Timber.d("Sign in failed")
+                Timber.d("Sign in canceled")
                 Toast.makeText(requireContext(), "Sign in canceled", Toast.LENGTH_LONG).show()
                 setFragmentResult(RESP_CANCEL, bundleOf())
             }
@@ -132,17 +133,10 @@ class GDriveSignInFragment : CommonServiceFragment() {
             if (GDriveConduit.permissionsGranted(requireContext())) {
                 saveNewBackend(backend)
 
-                // Removing progress bar as per
-                // https://github.com/orgs/OpenArchive/projects/4/views/1?pane=issue&itemId=80015421
-                //
-//                binding.progressBar.toggle(true)
-
                 CoroutineScope(Dispatchers.IO).launch {
                     syncGDrive(requireContext(), backend)
 
                     MainScope().launch {
-//                        binding.progressBar.toggle(false)
-
                         Utility.showMaterialMessage(
                             requireContext(),
                             title = "Success!",
@@ -159,8 +153,10 @@ class GDriveSignInFragment : CommonServiceFragment() {
     }
 
     private fun saveNewBackend(backend: Backend) {
-        backend.save()
-        backendViewModel.updateBackend { backend }
+        viewLifecycleOwner.lifecycleScope.launch {
+            backendViewModel.saveNewBackend(backend)
+        }
+
         Analytics.log(Analytics.NEW_BACKEND_CONNECTED, mutableMapOf("type" to backend.name))
     }
 
