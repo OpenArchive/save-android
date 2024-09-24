@@ -1,4 +1,3 @@
-import java.io.FileOutputStream
 import java.util.Properties
 
 plugins {
@@ -12,36 +11,38 @@ plugins {
     id("kotlin-parcelize")
 }
 
-android {
-    val patch: String
-    val major: String
-    val minor: String
-    val newVersionCode: String
+apply(from = rootProject.file("app/version.gradle.kts"))
 
+android {
+//    val patch: String
+//    val major: String
+//    val minor: String
+//    val newVersionCode: String
+//
     val localPropsFile = file("../local.properties")
     val localProps = Properties()
     if (!localPropsFile.canRead()) {
         throw GradleException("Could not read local.properties!")
     }
     localProps.load(localPropsFile.inputStream())
-
-    val versionPropsFile = file("version.properties")
-    val versionProps = Properties()
-    if (!versionPropsFile.canRead()) {
-        throw GradleException("Could not read version.properties!")
-    }
-    versionProps.load(versionPropsFile.inputStream())
-
-    patch = versionProps["PATCH"] as String? ?: ""
-    major = versionProps["MAJOR"] as String? ?: ""
-    minor = versionProps["MINOR"] as String? ?: ""
-    newVersionCode = versionProps["VERSION_CODE"] as String? ?: "0"
-
-    versionProps["VERSION_CODE"] = (newVersionCode.toInt() + 1).toString()
-
-    versionProps.store(FileOutputStream(versionPropsFile), null)
-
-    val newVersionName = "${major}.${minor}.${patch}.${newVersionCode}"
+//
+//    val versionPropsFile = file("version.properties")
+//    val versionProps = Properties()
+//    if (!versionPropsFile.canRead()) {
+//        throw GradleException("Could not read version.properties!")
+//    }
+//    versionProps.load(versionPropsFile.inputStream())
+//
+//    patch = versionProps["PATCH"] as String? ?: ""
+//    major = versionProps["MAJOR"] as String? ?: ""
+//    minor = versionProps["MINOR"] as String? ?: ""
+//    newVersionCode = versionProps["VERSION_CODE"] as String? ?: "0"
+//
+//    versionProps["VERSION_CODE"] = (newVersionCode.toInt() + 1).toString()
+//
+//    versionProps.store(FileOutputStream(versionPropsFile), null)
+//
+//    val newVersionName = "${major}.${minor}.${patch}.${newVersionCode}"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -53,13 +54,16 @@ android {
 
     compileSdk = 34
 
+    base {
+        archivesName.set("save-${project.version}")
+    }
+
     defaultConfig {
         applicationId = "net.opendasharchive.openarchive"
         minSdk = 28
         targetSdk = 34
-        versionCode = newVersionCode.toInt()
-        versionName = newVersionName
-        project.setProperty("archivesBaseName", "save-$versionName")
+        versionCode = project.extra["versionCode"] as Int
+        versionName = project.version as String
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resValue("string", "mixpanel_key", localProps.getProperty("mixpanel.key") ?: "")
