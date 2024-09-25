@@ -346,11 +346,8 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
     private fun handleError(media: Media) {
         Timber.d("Media has error")
-        // sbTitle.append(mContext.getString(R.string.error))
-
         overlayContainer?.show()
         progress?.hide()
-//        progressText?.hide()
         error?.show()
 
         if (media.statusMessage.isNotBlank()) {
@@ -364,7 +361,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media is local")
         overlayContainer?.hide()
         progress?.hide()
-//        progressText?.hide()
         error?.hide()
     }
 
@@ -372,7 +368,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media is queued")
         overlayContainer?.show()
         progress?.show()
-//        progressText?.hide()
         error?.hide()
     }
 
@@ -380,7 +375,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media is uploaded")
         overlayContainer?.hide()
         progress?.hide()
-//        progressText?.hide()
         error?.hide()
     }
 

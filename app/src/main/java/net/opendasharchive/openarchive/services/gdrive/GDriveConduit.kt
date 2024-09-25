@@ -203,7 +203,10 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
 
         try {
             val folder = createFolders(mDrive, destinationPath)
-            uploadMetadata(folder, destinationFileName)
+            if (Prefs.useProofMode) {
+                Timber.d("Uploading Proofmode metadata")
+                uploadMetadata(folder, destinationFileName)
+            }
             if (mCancelled) throw Exception("Cancelled")
             uploadFile(mMedia.file, folder, destinationFileName)
         } catch (e: Exception) {
@@ -262,6 +265,7 @@ class GDriveConduit(media: Media, context: Context) : Conduit(media, context) {
                 }
             }
             val response = request.execute()
+            Timber.d("response = $response")
         } catch (e: Exception) {
             Timber.e("gdrive upload of '$targetFileName' failed", e)
         }

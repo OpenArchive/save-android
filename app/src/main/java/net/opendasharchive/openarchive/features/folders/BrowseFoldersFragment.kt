@@ -23,6 +23,7 @@ import com.skydoves.powermenu.PowerMenuItem
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBrowseFoldersBinding
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.Utility.showMaterialPrompt
 import net.opendasharchive.openarchive.util.extensions.toggle
@@ -137,7 +138,8 @@ class BrowseFoldersFragment : Fragment() {
             },
             onHeaderLongPress = { backend, view ->
                 Timber.d("long press on header!")
-                showHeaderContextMenu(view) { affirm ->
+                showHeaderContextMenu(view) { _ ->
+                    Analytics.log(Analytics.BACKEND_DISCONNECTED, mapOf("type" to backend.name))
                     backend.delete()
                 }
             }
@@ -159,8 +161,8 @@ class BrowseFoldersFragment : Fragment() {
     }
 
     private fun showItemContextMenu(anchorView: View) {
-//        Toast.makeText(requireContext(), "Context menu coming soon", Toast.LENGTH_LONG).show()
-//
+        Toast.makeText(requireContext(), "Context menu coming soon", Toast.LENGTH_LONG).show()
+
 //        val menuItems = listOf(
 //            CustomPopupMenuDialog.MenuItem(R.drawable.ic_description, "Edit"),
 //            CustomPopupMenuDialog.MenuItem(R.drawable.ic_error, "Share"),

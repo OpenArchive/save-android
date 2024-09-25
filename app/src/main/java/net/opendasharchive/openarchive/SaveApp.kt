@@ -9,12 +9,11 @@ import net.opendasharchive.openarchive.core.di.featuresModule
 import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.Theme
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.witness.proofmode.ProofMode
 import timber.log.Timber
-import java.io.File
 
 class SaveApp : SugarApp() {
 
@@ -50,13 +49,16 @@ class SaveApp : SugarApp() {
 //        val intent = Intent(this, SnowbirdService::class.java)
 //        startForegroundService(intent)
 
-        UploadService.startUploadService(this)
+        ProofModeHelper.init(this) {
+            // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
+            UploadService.startUploadService(this)
+        }
 
         if (Prefs.useTor) initNetCipher()
 
         Theme.set(Prefs.theme)
 
-        ProofMode.setProofFileSystem(File(filesDir, "proofmode"))
+//        ProofMode.setProofFileSystem(File(filesDir, "proofmode"))
 
         Timber.d("Starting app $packageName ")
     }

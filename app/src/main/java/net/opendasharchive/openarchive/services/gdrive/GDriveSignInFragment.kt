@@ -157,7 +157,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
             backendViewModel.saveNewBackend(backend)
         }
 
-        Analytics.log(Analytics.NEW_BACKEND_CONNECTED, mutableMapOf("type" to backend.name))
+        Analytics.log(Analytics.BACKEND_CONNECTED, mapOf("type" to backend.name))
     }
 
     private fun syncGDrive(context: Context, backend: Backend): Int {

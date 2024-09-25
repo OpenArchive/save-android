@@ -188,7 +188,8 @@ dependencies {
     implementation("info.guardianproject.netcipher:netcipher:2.2.0-alpha")
 
     //from here: https://github.com/guardianproject/proofmode
-    implementation("org.proofmode:android-libproofmode:1.0.29") {
+    // implementation("org.proofmode:android-libproofmode:1.0.29") {
+    implementation("org.proofmode:android-libproofmode:1.0.26") {
 
         isTransitive = false
 
@@ -204,7 +205,7 @@ dependencies {
         exclude(group = "com.squareup.okio", module = "okio")
     }
 
-    implementation("com.google.guava:guava:32.0.1-jre")
+    implementation("com.google.guava:guava:32.1.2-jre")
     implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 
     implementation("org.bouncycastle:bcpkix-jdk15to18:1.72")
