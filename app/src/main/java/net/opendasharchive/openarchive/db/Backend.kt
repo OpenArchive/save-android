@@ -7,7 +7,6 @@ import android.os.Parcelable
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.amulyakhare.textdrawable.TextDrawable
 import com.github.abdularis.civ.AvatarImageView
 import com.orm.SugarRecord
 import kotlinx.parcelize.Parcelize
@@ -204,7 +203,7 @@ data class Backend(
 
             Type.SNOWBIRD -> ContextCompat.getDrawable(context, R.drawable.snowbird)
 
-            else -> TextDrawable.builder().buildRound(initial, color)
+            else -> null
         }
     }
 

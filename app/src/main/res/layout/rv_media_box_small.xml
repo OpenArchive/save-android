@@ -42,8 +42,8 @@
                 android:id="@+id/waveform"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible"
                 android:background="@color/colorOnBackgroundTonedDown"
+                android:visibility="invisible"
                 app:indicatorColor="#aa0000"
                 app:waveformColor="@color/transparent_white" />
 
@@ -54,7 +54,7 @@
                 android:layout_gravity="center"
                 android:indeterminate="true"
                 android:indeterminateBehavior="cycle"
-                android:max="100"
+                android:visibility="invisible"
                 app:indicatorColor="@color/colorPrimary"
                 app:indicatorSize="48dp"
                 app:trackThickness="3dp" />
@@ -65,6 +65,7 @@
                 android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/error"
+                android:visibility="invisible"
                 android:src="@drawable/ic_error"
                 app:tint="@color/colorDanger" />
 
@@ -88,6 +89,7 @@
                 android:layout_marginStart="4dp"
                 android:contentDescription="@string/is_video"
                 android:src="@drawable/ic_videocam_black_24dp"
+                android:visibility="invisible"
                 app:tint="@color/colorMediaOverlayIcon" />
 
             <View

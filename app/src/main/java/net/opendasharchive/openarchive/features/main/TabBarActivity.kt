@@ -8,14 +8,17 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.work.WorkManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
@@ -24,6 +27,10 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
+import net.opendasharchive.openarchive.upload.MediaUploadManager
+import net.opendasharchive.openarchive.upload.MediaUploadRepository
+import net.opendasharchive.openarchive.upload.MediaUploadViewModel
+import net.opendasharchive.openarchive.upload.MediaUploadViewModelFactory
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
 import org.aviran.cookiebar2.CookieBar
@@ -45,6 +52,10 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
     private lateinit var connectivityManager: ConnectivityManager
     private var wifiIssueIndicator: MenuItem? = null
     private var visibleScreen = Screen.MEDIA
+
+    private val mediaUploadiewModel: MediaUploadViewModel by viewModels {
+        MediaUploadViewModelFactory(MediaUploadRepository(WorkManager.getInstance(applicationContext)))
+    }
 
     private val newFolderResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -94,6 +105,9 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
             .registerReceiver(onWifiStatusChanged, IntentFilter(Prefs.UPLOAD_WIFI_ONLY))
 
         wifiIssueIndicator?.setVisible(false)
+
+        val mediaUri = Uri.parse("file:///data/user/0/net.opendasharchive.openarchive.debug/cache/20240924_165908.riot3.jpg")
+        MediaUploadManager.scheduleMediaUpload(mediaUri)
     }
 
     override fun onResume() {

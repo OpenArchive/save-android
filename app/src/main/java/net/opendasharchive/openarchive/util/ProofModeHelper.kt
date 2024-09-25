@@ -19,6 +19,8 @@ object ProofModeHelper {
         // Disable ProofMode GPS data tracking by default.
         if (Prefs.proofModeLocation) Prefs.proofModeLocation = false
 
+        finishInit(context, completed)
+
 //        val encryptedPassphrase = Prefs.proofModeEncryptedPassphrase
 //
 //        if (encryptedPassphrase?.isNotEmpty() == true) {

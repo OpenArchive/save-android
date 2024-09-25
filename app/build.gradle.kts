@@ -1,48 +1,25 @@
 import java.util.Properties
 
 plugins {
-    id("kotlin-android")
     id("com.android.application")
     id("com.google.devtools.ksp")
-    id("org.jetbrains.kotlin.android")
-    id("androidx.navigation.safeargs.kotlin")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.10"
-    kotlin("plugin.serialization") version "1.8.10"
+    id("kotlin-android")
     id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.10"
+    id("androidx.navigation.safeargs.kotlin")
+    kotlin("plugin.serialization") version "1.8.10"
 }
 
 apply(from = rootProject.file("app/version.gradle.kts"))
 
 android {
-//    val patch: String
-//    val major: String
-//    val minor: String
-//    val newVersionCode: String
-//
     val localPropsFile = file("../local.properties")
     val localProps = Properties()
     if (!localPropsFile.canRead()) {
         throw GradleException("Could not read local.properties!")
     }
     localProps.load(localPropsFile.inputStream())
-//
-//    val versionPropsFile = file("version.properties")
-//    val versionProps = Properties()
-//    if (!versionPropsFile.canRead()) {
-//        throw GradleException("Could not read version.properties!")
-//    }
-//    versionProps.load(versionPropsFile.inputStream())
-//
-//    patch = versionProps["PATCH"] as String? ?: ""
-//    major = versionProps["MAJOR"] as String? ?: ""
-//    minor = versionProps["MINOR"] as String? ?: ""
-//    newVersionCode = versionProps["VERSION_CODE"] as String? ?: "0"
-//
-//    versionProps["VERSION_CODE"] = (newVersionCode.toInt() + 1).toString()
-//
-//    versionProps.store(FileOutputStream(versionPropsFile), null)
-//
-//    val newVersionName = "${major}.${minor}.${patch}.${newVersionCode}"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -147,12 +124,14 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
 
+    val workManagerVersion = "2.9.1"
+    implementation("androidx.work:work-runtime:$workManagerVersion")
+    implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
+    implementation("androidx.work:work-testing:$workManagerVersion")
+
+    implementation("androidx.compose.material3:material3:1.3.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.multidex:multidex:2.0.1")
-    implementation("androidx.work:work-runtime:2.9.1")
-    implementation("androidx.work:work-runtime-ktx:2.9.1")
-    implementation("androidx.work:work-testing:2.9.1")
-    implementation("androidx.compose.material3:material3:1.3.0")
 
     val composeVersion = "1.7.2"
     implementation("androidx.compose.ui:ui:$composeVersion")
@@ -182,7 +161,6 @@ dependencies {
     implementation("io.coil-kt:coil-compose:$coilVersion")
     implementation("io.coil-kt:coil-video:$coilVersion")
 
-    implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
     implementation("com.github.abdularis:circularimageview:1.4")
 
     implementation("info.guardianproject.netcipher:netcipher:2.2.0-alpha")
@@ -224,7 +202,7 @@ dependencies {
     implementation("com.google.apis:google-api-services-drive:v3-rev136-1.25.0")
 
     // Tor
-    implementation("info.guardianproject:tor-android:0.4.7.14")
+    implementation("info.guardianproject:tor-android:0.4.8.11")
     implementation("info.guardianproject:jtorctl:0.4.5.7")
 
     // New Play libraries

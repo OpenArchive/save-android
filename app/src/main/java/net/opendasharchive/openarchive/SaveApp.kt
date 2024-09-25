@@ -3,10 +3,9 @@ package net.opendasharchive.openarchive
 import android.content.Context
 import androidx.multidex.MultiDex
 import com.orm.SugarApp
-import info.guardianproject.netcipher.proxy.OrbotHelper
 import net.opendasharchive.openarchive.core.di.coreModule
 import net.opendasharchive.openarchive.core.di.featuresModule
-import net.opendasharchive.openarchive.upload.UploadService
+import net.opendasharchive.openarchive.upload.MediaUploadManager
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.ProofModeHelper
@@ -34,14 +33,6 @@ class SaveApp : SugarApp() {
             Timber.plant(Timber.DebugTree())
         }
 
-//        val config = ImagePipelineConfig.newBuilder(this)
-//            .setProgressiveJpegConfig(SimpleProgressiveJpegConfig())
-//            .setResizeAndRotateEnabledForNetwork(true)
-//            .setDownsampleEnabled(true)
-//            .build()
-
-//        Fresco.initialize(this, config)
-
         Analytics.init(this)
 
         Prefs.load(this)
@@ -51,26 +42,12 @@ class SaveApp : SugarApp() {
 
         ProofModeHelper.init(this) {
             // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
-            UploadService.startUploadService(this)
+            // UploadService.startUploadService(this)
+            MediaUploadManager.initialize(this)
         }
-
-        if (Prefs.useTor) initNetCipher()
 
         Theme.set(Prefs.theme)
 
-//        ProofMode.setProofFileSystem(File(filesDir, "proofmode"))
-
         Timber.d("Starting app $packageName ")
-    }
-
-    private fun initNetCipher() {
-        Timber.d( "Initializing NetCipher client")
-        val oh = OrbotHelper.get(this)
-
-        if (BuildConfig.DEBUG) {
-            oh.skipOrbotValidation()
-        }
-
-//        oh.init()
     }
 }

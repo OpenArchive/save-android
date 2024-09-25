@@ -86,7 +86,7 @@
             app:allowDividerAbove="true"
             app:allowDividerBelow="false"
             app:defaultValue="false"
-            app:enabled="false"
+            app:enabled="true"
             app:iconSpaceReserved="false"
             app:key="use_tor"
             app:singleLineTitle="false"

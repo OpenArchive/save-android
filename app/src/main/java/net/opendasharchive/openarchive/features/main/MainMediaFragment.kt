@@ -6,21 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.work.WorkManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
-import net.opendasharchive.openarchive.databinding.MediaGroupBinding
-import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Folder
-import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.MediaAdapter
-import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
+import net.opendasharchive.openarchive.features.main.ui.GridSectionAdapter
+import net.opendasharchive.openarchive.features.main.ui.GridSectionLayoutDecoration
+import net.opendasharchive.openarchive.features.main.ui.GridSectionViewModel
+import net.opendasharchive.openarchive.features.main.ui.SectionedGridLayoutManager
+import net.opendasharchive.openarchive.upload.MediaUploadRepository
+import net.opendasharchive.openarchive.upload.MediaUploadViewModel
+import net.opendasharchive.openarchive.upload.MediaUploadViewModelFactory
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
 import java.text.NumberFormat
-import kotlin.collections.set
 
 class MainMediaFragment : Fragment() {
 
@@ -39,12 +42,17 @@ class MainMediaFragment : Fragment() {
         }
     }
 
-    private var mAdapters = HashMap<Long, MediaAdapter>()
-    private var mSection = HashMap<Long, SectionViewHolder>()
-    private var mFolderId = -1L
-    private var mCollections = mutableMapOf<Long, Collection>()
+//    private var mAdapters = HashMap<Long, MediaAdapter>()
+//    private var mSection = HashMap<Long, SectionViewHolder>()
+//    private var mFolderId = -1L
+//    private var mCollections = mutableMapOf<Long, Collection>()
 
-    private lateinit var mBinding: FragmentMainMediaBinding
+    private val mediaUploadViewModel: MediaUploadViewModel by activityViewModels() {
+        MediaUploadViewModelFactory(MediaUploadRepository(WorkManager.getInstance(requireContext())))
+    }
+    private val gridSectionViewModel: GridSectionViewModel by viewModels()
+    private lateinit var adapter: GridSectionAdapter
+    private lateinit var viewBinding: FragmentMainMediaBinding
 
     override fun onResume() {
         super.onResume()
@@ -57,105 +65,104 @@ class MainMediaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mFolderId = arguments?.getLong(ARG_FOLDER_ID, -1) ?: -1
+//        mFolderId = arguments?.getLong(ARG_FOLDER_ID, -1) ?: -1
 
-        mBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
+        viewBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
 
-        return mBinding.root
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adapter = GridSectionAdapter()
+
+        val layoutManager = SectionedGridLayoutManager(requireContext(), 4, adapter)
+        viewBinding.recyclerView.layoutManager = layoutManager
+        viewBinding.recyclerView.adapter = adapter
+        val headerBottomMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_header_bottom_margin)
+        val gridTopMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_item_top_margin)
+        viewBinding.recyclerView.addItemDecoration(GridSectionLayoutDecoration(headerBottomMargin, gridTopMargin))
+
+        gridSectionViewModel.items.observe(viewLifecycleOwner) { gridSectionItems ->
+            adapter.setItems(gridSectionItems)
+        }
+        gridSectionViewModel.loadItems()
+
+        mediaUploadViewModel.uploadItems.observe(viewLifecycleOwner) { mediaUploadItems ->
+            // "refresh" the recycler view
+        }
+
         refresh()
     }
 
     private fun refreshCurrentFolderCount() {
         Folder.current?.let { folder ->
-            mBinding.currentFolder.currentFolderCount.text = NumberFormat.getInstance().format(
+            viewBinding.currentFolder.currentFolderCount.text = NumberFormat.getInstance().format(
                 folder.collections.map { it.size }
                     .reduceOrNull { acc, count -> acc + count } ?: 0)
-            mBinding.currentFolder.currentFolderCount.show()
-//            mBinding.uploadEditButton.toggle(project.isUploading)
+            viewBinding.currentFolder.currentFolderCount.show()
+//            viewBinding.uploadEditButton.toggle(project.isUploading)
         } ?: {
-            mBinding.currentFolder.currentFolderCount.cloak()
-//            mBinding.uploadEditButton.hide()
+            viewBinding.currentFolder.currentFolderCount.cloak()
+//            viewBinding.uploadEditButton.hide()
         }
     }
-
-//    fun updateItem(collectionId: Long, mediaId: Long, progress: Long) {
-//        mAdapters[collectionId]?.apply {
-//            updateItem(mediaId, progress)
-//            if (progress == -1L) {
-//                updateHeader(collectionId, media)
-//            }
-//        }
-//    }
-//
-//    private fun updateHeader(collectionId: Long, media: ArrayList<Media>) {
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            Collection.get(collectionId)?.let { collection ->
-//                mCollections[collectionId] = collection
-//                withContext(Dispatchers.Main) {
-//                    mSection[collectionId]?.setHeader(collection, media)
-//                }
-//            }
-//        }
-//    }
 
     fun refresh() {
         setCurrentFolderState()
         refreshCurrentFolderCount()
 
-        val folder = Folder.current ?: return
-
-        mCollections = Collection.getByFolder(folder.id).associateBy { it.id }.toMutableMap()
-
-        // Remove all sections for which collections don't exist anymore.
-        val toDelete = mAdapters.keys.filter { id ->
-            mCollections.containsKey(id).not()
-        }.toMutableList()
-
-        mCollections.forEach { (id, collection) ->
-            val media = collection.media
-
-            // Also remove all empty collections.
-            if (media.isEmpty()) {
-                toDelete.add(id)
-                return@forEach
-            }
-
-            val adapter = mAdapters[id]
-            val holder = mSection[id]
-
-            if (adapter != null) {
-                adapter.updateData(media)
-                holder?.setHeader(collection, media)
-            } else if (media.isNotEmpty()) {
-                val view = createMediaGroupView(collection, media)
-                mBinding.mediaContainer.mediaContainerLayout.addView(view, 0)
-            }
-        }
+//        val folder = Folder.current ?: return
+//
+//        mCollections = Collection.getByFolder(folder.id).associateBy { it.id }.toMutableMap()
+//
+//        // Remove all sections for which collections don't exist anymore.
+//        val toDelete = mAdapters.keys.filter { id ->
+//            mCollections.containsKey(id).not()
+//        }.toMutableList()
+//
+//        mCollections.forEach { (id, collection) ->
+//            val media = collection.media
+//
+//            // Also remove all empty collections.
+//            if (media.isEmpty()) {
+//                toDelete.add(id)
+//                return@forEach
+//            }
+//
+//            val adapter = mAdapters[id]
+//            val holder = mSection[id]
+//
+//            if (adapter != null) {
+//                adapter.updateData(media)
+//                holder?.setHeader(collection, media)
+//            } else if (media.isNotEmpty()) {
+//                val view = createMediaGroupView(collection, media)
+//                viewBinding.mediaContainer.mediaContainerLayout.addView(view, 0)
+//            }
+//        }
 
         // DO NOT delete the collection here, this could lead to a race condition
         // while adding images.
-        deleteCollections(toDelete, false)
+//        deleteCollections(toDelete, false)
     }
 
     private fun setCurrentFolderState() {
         Folder.current?.let { folder ->
-            mBinding.currentFolder.currentBackendButton.icon = folder.backend?.getAvatar(requireContext())
-            mBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
-            mBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
-            mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())
-            mBinding.currentFolder.currentBackendButton.text = getString(R.string.current_folder_label, folder.backend?.friendlyName, folder.name)
+            viewBinding.currentFolder.currentBackendButton.icon = folder.backend?.getAvatar(requireContext())
+            viewBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
+            viewBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
+            viewBinding.addMediaHint.addMediaHint.toggle(false)
+            viewBinding.currentFolder.currentBackendButton.text = getString(R.string.current_folder_label, folder.backend?.friendlyName, folder.name)
 
-            mBinding.currentFolder.currentBackendButton.setOnClickListener {
+            viewBinding.currentFolder.currentBackendButton.setOnClickListener {
                 startActivity(Intent(context, BackendSetupActivity::class.java))
             }
         } ?: run {
-            mBinding.currentFolder.currentBackendButton.visibility = View.GONE
-            mBinding.currentFolder.currentFolderCount.visibility = View.GONE
-            mBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
+            viewBinding.currentFolder.currentBackendButton.visibility = View.GONE
+            viewBinding.currentFolder.currentFolderCount.visibility = View.GONE
+            viewBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
         }
     }
 
@@ -177,40 +184,40 @@ class MainMediaFragment : Fragment() {
 //        deleteCollections(toDelete, true)
 //    }
 
-    private fun createMediaGroupView(collection: Collection, media: List<Media>): View {
-        val holder = SectionViewHolder(MediaGroupBinding.inflate(layoutInflater))
+//    private fun createMediaGroupView(collection: Collection, media: List<Media>): View {
+//        val holder = SectionViewHolder(MediaGroupBinding.inflate(layoutInflater))
+//
+//        holder.recyclerView.layoutManager = GridLayoutManager(activity, COLUMN_COUNT)
+//
+//        holder.setHeader(collection, media)
+//
+//        val mediaAdapter = MediaAdapter(
+//            requireActivity(),
+//            { MediaViewHolder.SmallBox(it) },
+//            media,
+//            holder.recyclerView
+//        )
+//
+//        holder.recyclerView.adapter = mediaAdapter
+//        mAdapters[collection.id] = mediaAdapter
+//        mSection[collection.id] = holder
+//
+//        return holder.root
+//    }
 
-        holder.recyclerView.layoutManager = GridLayoutManager(activity, COLUMN_COUNT)
-
-        holder.setHeader(collection, media)
-
-        val mediaAdapter = MediaAdapter(
-            requireActivity(),
-            { MediaViewHolder.SmallBox(it) },
-            media,
-            holder.recyclerView
-        )
-
-        holder.recyclerView.adapter = mediaAdapter
-        mAdapters[collection.id] = mediaAdapter
-        mSection[collection.id] = holder
-
-        return holder.root
-    }
-
-    private fun deleteCollections(collectionIds: List<Long>, cleanup: Boolean) {
-        collectionIds.forEach { collectionId ->
-            mAdapters.remove(collectionId)
-
-            val holder = mSection.remove(collectionId)
-            (holder?.root?.parent as? ViewGroup)?.removeView(holder.root)
-
-            mCollections[collectionId]?.let {
-                mCollections.remove(collectionId)
-                if (cleanup) {
-                    it.delete()
-                }
-            }
-        }
-    }
+//    private fun deleteCollections(collectionIds: List<Long>, cleanup: Boolean) {
+//        collectionIds.forEach { collectionId ->
+//            mAdapters.remove(collectionId)
+//
+//            val holder = mSection.remove(collectionId)
+//            (holder?.root?.parent as? ViewGroup)?.removeView(holder.root)
+//
+//            mCollections[collectionId]?.let {
+//                mCollections.remove(collectionId)
+//                if (cleanup) {
+//                    it.delete()
+//                }
+//            }
+//        }
+//    }
 }
