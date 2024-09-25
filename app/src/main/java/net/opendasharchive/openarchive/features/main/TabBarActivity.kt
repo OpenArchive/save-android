@@ -1,13 +1,6 @@
 package net.opendasharchive.openarchive.features.main
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -16,11 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.commit
-import androidx.lifecycle.lifecycleScope
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.work.WorkManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityTabBarBinding
 import net.opendasharchive.openarchive.db.Folder
@@ -31,7 +20,7 @@ import net.opendasharchive.openarchive.upload.MediaUploadManager
 import net.opendasharchive.openarchive.upload.MediaUploadRepository
 import net.opendasharchive.openarchive.upload.MediaUploadViewModel
 import net.opendasharchive.openarchive.upload.MediaUploadViewModelFactory
-import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.NetworkConnectivityViewModel
 import net.opendasharchive.openarchive.util.Utility
 import org.aviran.cookiebar2.CookieBar
 import timber.log.Timber
@@ -48,14 +37,14 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
     }
 
     private lateinit var binding: ActivityTabBarBinding
-    private lateinit var networkRequest: NetworkRequest
-    private lateinit var connectivityManager: ConnectivityManager
     private var wifiIssueIndicator: MenuItem? = null
     private var visibleScreen = Screen.MEDIA
 
     private val mediaUploadiewModel: MediaUploadViewModel by viewModels {
         MediaUploadViewModelFactory(MediaUploadRepository(WorkManager.getInstance(applicationContext)))
     }
+
+    private val networkConnectivityViewModel: NetworkConnectivityViewModel by viewModels()
 
     private val newFolderResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -100,11 +89,9 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
             }
         }
 
-        LocalBroadcastManager
-            .getInstance(this)
-            .registerReceiver(onWifiStatusChanged, IntentFilter(Prefs.UPLOAD_WIFI_ONLY))
-
-        wifiIssueIndicator?.setVisible(false)
+        networkConnectivityViewModel.networkStatusLiveData.observe(this) { gotWifi ->
+            Timber.d("Got wifi? $gotWifi")
+        }
 
         val mediaUri = Uri.parse("file:///data/user/0/net.opendasharchive.openarchive.debug/cache/20240924_165908.riot3.jpg")
         MediaUploadManager.scheduleMediaUpload(mediaUri)
@@ -121,7 +108,7 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
         wifiIssueIndicator = menu.findItem(R.id.menu_no_wifi)
 
-        setWifiIndicator(Prefs.uploadWifiOnly)
+//        setWifiIndicator(Prefs.uploadWifiOnly)
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -153,18 +140,18 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         outState.putInt("VISIBLE_SCREEN", visibleScreen.value)
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        networkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .build()
-
-        connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-        connectivityManager.requestNetwork(networkRequest, networkCallback)
-    }
+//    override fun onStart() {
+//        super.onStart()
+//
+//        networkRequest = NetworkRequest.Builder()
+//            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+//            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+//            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+//            .build()
+//
+//        connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+//        connectivityManager.requestNetwork(networkRequest, networkCallback)
+//    }
 
     private fun showWifiStatusDialog() {
         CookieBar.build(this@TabBarActivity)
@@ -210,49 +197,49 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         }
     }
 
-    private fun setWifiIndicator(uploadOnWifiOnly: Boolean) {
-        if (uploadOnWifiOnly) {
-            val network = connectivityManager.activeNetwork
-
-            if (network != null) {
-                val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return
-                val hasWifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-
-                Timber.d("Is Wifi available? $hasWifi")
-
-                lifecycleScope.launch(Dispatchers.Main) {
-                    if (hasWifi) {
-                        wifiIssueIndicator?.setVisible(false)
-                    } else if (Prefs.uploadWifiOnly) {
-                        wifiIssueIndicator?.setVisible(true)
-                    }
-                }
-            } else {
-                wifiIssueIndicator?.setVisible(true)
-            }
-        } else {
-            wifiIssueIndicator?.setVisible(false)
-        }
-    }
+//    private fun setWifiIndicator(uploadOnWifiOnly: Boolean) {
+//        if (uploadOnWifiOnly) {
+//            val network = connectivityManager.activeNetwork
+//
+//            if (network != null) {
+//                val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return
+//                val hasWifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+//
+//                Timber.d("Is Wifi available? $hasWifi")
+//
+//                lifecycleScope.launch(Dispatchers.Main) {
+//                    if (hasWifi) {
+//                        wifiIssueIndicator?.setVisible(false)
+//                    } else if (Prefs.uploadWifiOnly) {
+//                        wifiIssueIndicator?.setVisible(true)
+//                    }
+//                }
+//            } else {
+//                wifiIssueIndicator?.setVisible(true)
+//            }
+//        } else {
+//            wifiIssueIndicator?.setVisible(false)
+//        }
+//    }
 
 //    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
 //        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
 //    }
 
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
-            Timber.d("networkCallback: wifi changed $networkCapabilities")
-            super.onCapabilitiesChanged(network, networkCapabilities)
-            setWifiIndicator(Prefs.uploadWifiOnly)
-        }
-    }
+//    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+//        override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+//            Timber.d("networkCallback: wifi changed $networkCapabilities")
+//            super.onCapabilitiesChanged(network, networkCapabilities)
+//            setWifiIndicator(Prefs.uploadWifiOnly)
+//        }
+//    }
 
-    private val onWifiStatusChanged: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == Prefs.UPLOAD_WIFI_ONLY) {
-                Timber.d("onReceive: wifi changed")
-                setWifiIndicator(Prefs.uploadWifiOnly)
-            }
-        }
-    }
+//    private val onWifiStatusChanged: BroadcastReceiver = object : BroadcastReceiver() {
+//        override fun onReceive(context: Context, intent: Intent) {
+//            if (intent.action == Prefs.UPLOAD_WIFI_ONLY) {
+//                Timber.d("onReceive: wifi changed")
+//                setWifiIndicator(Prefs.uploadWifiOnly)
+//            }
+//        }
+//    }
 }
