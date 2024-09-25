@@ -17,4 +17,5 @@
     <dimen name="section_header_bottom_padding">5dp</dimen>
     <dimen name="grid_layout_header_bottom_margin">0dp</dimen>
     <dimen name="grid_layout_item_top_margin">0dp</dimen>
+    <dimen name="grid_layout_section_spacing">30dp</dimen>
 </resources>

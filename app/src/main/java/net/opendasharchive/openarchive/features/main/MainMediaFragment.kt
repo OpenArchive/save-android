@@ -80,9 +80,10 @@ class MainMediaFragment : Fragment() {
         val layoutManager = SectionedGridLayoutManager(requireContext(), 4, adapter)
         viewBinding.recyclerView.layoutManager = layoutManager
         viewBinding.recyclerView.adapter = adapter
+        val sectionSpacing = resources.getDimensionPixelSize(R.dimen.grid_layout_section_spacing)
         val headerBottomMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_header_bottom_margin)
-        val gridTopMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_item_top_margin)
-        viewBinding.recyclerView.addItemDecoration(GridSectionLayoutDecoration(headerBottomMargin, gridTopMargin))
+        val itemTopMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_item_top_margin)
+        viewBinding.recyclerView.addItemDecoration(GridSectionLayoutDecoration(sectionSpacing, headerBottomMargin, itemTopMargin))
 
         gridSectionViewModel.items.observe(viewLifecycleOwner) { gridSectionItems ->
             adapter.setItems(gridSectionItems)

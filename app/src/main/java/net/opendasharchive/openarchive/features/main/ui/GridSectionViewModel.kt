@@ -5,39 +5,30 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.extensions.isYesterday
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class GridSectionViewModel : ViewModel() {
     private val _items = MutableLiveData<List<GridSectionItem>>()
     val items: LiveData<List<GridSectionItem>> = _items
 
+    private val dateTimeFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    private val timeFormatter = SimpleDateFormat("h:mm a", Locale.getDefault())
+
     fun loadItems() {
-//        val newItems = listOf(
-//            GridSectionItem.Header("Section 1"),
-//            GridSectionItem.Image("https://placedog.net/400x200"),
-//            GridSectionItem.Image("https://placedog.net/400x400"),
-//            GridSectionItem.Image("https://placedog.net/400x400"),
-//            GridSectionItem.Header("Section 2"),
-//            GridSectionItem.Image("https://placedog.net/200x200"),
-//            GridSectionItem.Image("https://placedog.net/100x100"),
-//            GridSectionItem.Image("https://placedog.net/600x600")
-//        )
-//        _items.value = newItems
-
-        reload()
-    }
-
-    private fun reload() {
         val folder = Folder.current ?: return
 
-        var items = mutableListOf<GridSectionItem>()
+        val items = mutableListOf<GridSectionItem>()
 
         val collections = Collection.getByFolder(folder.id).associateBy { it.id }.toMutableMap()
 
         Timber.d("collections = $collections")
 
         collections.forEach { (id, collection) ->
-            items.add(GridSectionItem.Header("Section 1"))
+            items.add(GridSectionItem.Header(formatDate(collection.uploadDate)))
 
             val media = collection.media
 
@@ -47,5 +38,21 @@ class GridSectionViewModel : ViewModel() {
         }
 
         _items.value = items
+    }
+
+    private fun formatDate(date: Date?): String {
+        if (date == null) {
+            return "Uploading..."
+        }
+
+        if (date.isYesterday()) {
+            return "Today at " + timeFormatter.format(date)
+        }
+
+        if (date.isYesterday()) {
+            return "Yesterday at " + timeFormatter.format(date)
+        }
+
+        return dateTimeFormatter.format(date)
     }
 }
