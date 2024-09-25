@@ -40,7 +40,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>(Prefs.UPLOAD_WIFI_ONLY)?.setOnPreferenceChangeListener { _, newValue ->
             val intent = Intent(Prefs.UPLOAD_WIFI_ONLY).apply{putExtra("value", newValue as Boolean)}
-            LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent)
+            // Replace with shared ViewModel + LiveData
+            // LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent)
             true
         }
 
