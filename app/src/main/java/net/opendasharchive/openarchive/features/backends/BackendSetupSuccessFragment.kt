@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.features.backends
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSetupSuccessBinding
 import net.opendasharchive.openarchive.features.folders.FolderViewModel
+import net.opendasharchive.openarchive.features.main.TabBarActivity
 import timber.log.Timber
 
 class BackendSetupSuccessFragment : Fragment() {
@@ -30,7 +30,8 @@ class BackendSetupSuccessFragment : Fragment() {
 
         mBinding.btAuthenticate.setOnClickListener { _ ->
             // findNavController().popBackStack(R.id.browse_folders_screen, false)
-            clearBackStackAndNavigate(findNavController(), R.id.browse_folders_screen)
+            // clearBackStackAndNavigate(findNavController(), R.id.browse_folders_screen)
+            navigateBackToMain()
         }
 
         return mBinding.root
@@ -44,6 +45,13 @@ class BackendSetupSuccessFragment : Fragment() {
 
     private fun getBackendName(): String {
         return folderViewModel.folder.value.backend?.friendlyName ?: "an unknown server"
+    }
+
+    fun navigateBackToMain() {
+        val intent = Intent(activity, TabBarActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun clearBackStackAndNavigate(navController: NavController, newDestinationId: Int) {

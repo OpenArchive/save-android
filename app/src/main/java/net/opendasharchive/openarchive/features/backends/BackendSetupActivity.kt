@@ -8,7 +8,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 
 
@@ -46,11 +45,11 @@ class BackendSetupActivity : BaseActivity() {
 
         setupActionBarWithNavController(navController)
 
-        showTheCorrectFragment()
+//        showTheCorrectFragment()
     }
 
-    private fun showTheCorrectFragment() {
-        navGraph.setStartDestination(if (Backend.getAll().isEmpty()) R.id.connect_new_backend_screen else R.id.browse_folders_screen)
-        navController.graph = navGraph
-    }
+//    private fun showTheCorrectFragment() {
+//        navGraph.setStartDestination(if (Backend.getAll().isEmpty()) R.id.connect_new_backend_screen else R.id.browse_folders_screen)
+//        navController.graph = navGraph
+//    }
 }
