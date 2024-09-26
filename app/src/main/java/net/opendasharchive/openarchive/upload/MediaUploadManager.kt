@@ -2,10 +2,9 @@ package net.opendasharchive.openarchive.upload
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import androidx.work.BackoffPolicy
+import androidx.work.Configuration
 import androidx.work.Constraints
-import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -14,7 +13,6 @@ import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.workDataOf
 import net.opendasharchive.openarchive.db.Media
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 object WorkTags {
@@ -26,6 +24,12 @@ object MediaUploadManager {
 
     fun initialize(context: Context) {
         applicationContext = context.applicationContext
+
+        val config = Configuration.Builder()
+            .setMaxSchedulerLimit(1)
+            .build()
+
+        WorkManager.initialize(context, config)
     }
 
     fun scheduleUpload(media: Media) {
@@ -54,20 +58,6 @@ object MediaUploadManager {
                 ExistingWorkPolicy.REPLACE,
                 uploadWorkRequest
             )
-    }
-
-    fun getWorkInfo(workName: String): LiveData<WorkInfo> {
-        return WorkManager.getInstance(applicationContext)
-            .getWorkInfosForUniqueWorkLiveData(workName)
-            .map { workInfoList ->
-                workInfoList.firstOrNull() ?: WorkInfo(
-                    id = UUID.randomUUID(),
-                    state = WorkInfo.State.CANCELLED,
-                    outputData = Data.EMPTY,
-                    tags = emptySet(),
-                    runAttemptCount = 0
-                )
-            }
     }
 
     fun observeUploads(): LiveData<List<WorkInfo>> {
