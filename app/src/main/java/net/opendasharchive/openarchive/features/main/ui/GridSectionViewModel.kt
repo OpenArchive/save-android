@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.db.ICollectionRepository
@@ -38,29 +37,7 @@ class GridSectionViewModel(
 
     fun addNewMedia(media: Media) {
         viewModelScope.launch {
-            _items.update { currentItems ->
-                val newThumbnail = GridSectionItem.Thumbnail(media)
-                val secondHeaderIndex = findSecondHeaderIndex(currentItems)
-
-                if (secondHeaderIndex == -1) {
-                    // If there's no second header, add to the end of the list
-                    currentItems + newThumbnail
-                } else {
-                    // Insert the new thumbnail just before the second header
-                    currentItems.toMutableList().apply {
-                        add(secondHeaderIndex, newThumbnail)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun findSecondHeaderIndex(items: List<GridSectionItem>): Int {
-        val firstHeaderIndex = items.indexOfFirst { it is GridSectionItem.Header }
-        if (firstHeaderIndex == -1) return -1 // No headers found
-
-        return items.drop(firstHeaderIndex + 1).indexOfFirst { it is GridSectionItem.Header }.let { secondIndex ->
-            if (secondIndex == -1) -1 else firstHeaderIndex + 1 + secondIndex
+            loadItems()
         }
     }
 
