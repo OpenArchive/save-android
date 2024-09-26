@@ -159,7 +159,7 @@ class MediaAdapter(
                 if (canDeleteMediaAt(position)) {
                     startStaggeredAnimation(holder)
                 } else {
-                    holder.mediaView?.clearAnimation()
+//                    holder.mediaView?.clearAnimation()
                 }
             }
         }
@@ -221,8 +221,8 @@ class MediaAdapter(
     private fun startStaggeredAnimation(holder: MediaViewHolder) {
         Timber.d("Starting wiggle")
         val delay = (0L..125L).random()
-        holder.mediaView?.clearAnimation()
-        holder.mediaView?.postDelayed({ holder.mediaView?.startAnimation(holder.wiggleAnimation) }, delay)
+//        holder.mediaView?.clearAnimation()
+//        holder.mediaView?.postDelayed({ holder.mediaView?.startAnimation(holder.wiggleAnimation) }, delay)
     }
 
     fun updateItem(mediaId: Long, progress: Long): Boolean {

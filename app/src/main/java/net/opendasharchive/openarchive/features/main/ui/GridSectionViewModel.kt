@@ -3,17 +3,24 @@ package net.opendasharchive.openarchive.features.main.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.extensions.isYesterday
+import net.opendasharchive.openarchive.extensions.toggle
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+
 class GridSectionViewModel : ViewModel() {
     private val _items = MutableLiveData<List<GridSectionItem>>()
     val items: LiveData<List<GridSectionItem>> = _items
+
+    private val _selectedItems = MutableStateFlow<Set<Int>>(emptySet())
+    val selectedItems: StateFlow<Set<Int>> = _selectedItems
 
     private val dateTimeFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     private val timeFormatter = SimpleDateFormat("h:mm a", Locale.getDefault())
@@ -27,13 +34,13 @@ class GridSectionViewModel : ViewModel() {
 
         Timber.d("collections = $collections")
 
-        collections.forEach { (id, collection) ->
+        collections.forEach { (_, collection) ->
             items.add(GridSectionItem.Header(formatDate(collection.uploadDate)))
 
-            val media = collection.media
+            val allMedia = collection.media
 
-            media.forEach { mediaItem ->
-                items.add(GridSectionItem.Image(mediaItem.originalFilePath))
+            allMedia.forEach { media ->
+                items.add(GridSectionItem.Thumbnail(media))
             }
         }
 
@@ -54,5 +61,11 @@ class GridSectionViewModel : ViewModel() {
         }
 
         return dateTimeFormatter.format(date)
+    }
+
+    fun toggleItemSelection(position: Int) {
+        _selectedItems.value = _selectedItems.value.toMutableSet().apply {
+            toggle(position)
+        }
     }
 }

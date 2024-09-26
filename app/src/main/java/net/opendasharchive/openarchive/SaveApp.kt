@@ -53,9 +53,9 @@ class SaveApp : SugarApp() {
             MediaUploadManager.initialize(this)
         }
 
-        if (Prefs.useTor) {
-            startTor()
-        }
+//        if (Prefs.useTor) {
+//            startTor()
+//        }
 
         Theme.set(Prefs.theme)
 

@@ -10,6 +10,7 @@
     <dimen name="border_width">1dp</dimen>
     <dimen name="bottom_nav_height">80dp</dimen>
     <dimen name="bottom_nav_padding">100dp</dimen>
+    <dimen name="smallCornerRadius">4dp</dimen>
     <dimen name="cornerRadius">8dp</dimen>
     <dimen name="save_primary_button_height">60dp</dimen>
     <dimen name="save_content_top_margin">10dp</dimen>

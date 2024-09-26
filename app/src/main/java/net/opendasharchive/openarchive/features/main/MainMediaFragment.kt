@@ -23,6 +23,7 @@ import net.opendasharchive.openarchive.upload.MediaUploadViewModelFactory
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
+import timber.log.Timber
 import java.text.NumberFormat
 
 class MainMediaFragment : Fragment() {
@@ -75,11 +76,14 @@ class MainMediaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = GridSectionAdapter()
+        adapter = GridSectionAdapter(gridSectionViewModel.selectedItems) { position, isSelected ->
+            Timber.d("Cleeek !")
+        }
 
         val layoutManager = SectionedGridLayoutManager(requireContext(), 4, adapter)
         viewBinding.recyclerView.layoutManager = layoutManager
         viewBinding.recyclerView.adapter = adapter
+
         val sectionSpacing = resources.getDimensionPixelSize(R.dimen.grid_layout_section_spacing)
         val headerBottomMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_header_bottom_margin)
         val itemTopMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_item_top_margin)

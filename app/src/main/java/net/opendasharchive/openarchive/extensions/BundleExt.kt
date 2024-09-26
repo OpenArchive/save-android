@@ -23,9 +23,3 @@ fun Bundle?.getBackend(type: Backend.Type): Pair<Backend, Boolean> {
         Backend.getById(mBackendId)?.let { Pair(it, false) } ?: Pair(Backend(type), true)
     }
 }
-
-//fun Bundle.getBackendType(): Backend.Type? {
-//    return this.getLong(BackendSetupFragment.BACKEND_RESULT_BUNDLE_TYPE_KEY).let { rawType ->
-//        Backend.Type(raw = rawType)
-//    }
-//}

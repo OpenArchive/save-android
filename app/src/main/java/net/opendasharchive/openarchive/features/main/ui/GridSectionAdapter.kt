@@ -4,28 +4,49 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.LayoutGridSectionHeaderBinding
-import net.opendasharchive.openarchive.databinding.RvMediaBoxSmallBinding
+import net.opendasharchive.openarchive.db.Media
 import timber.log.Timber
+
+typealias OnMediaItemClickListener = (GridSectionItem.Thumbnail) -> Unit
 
 sealed class GridSectionItem {
     data class Header(val title: String) : GridSectionItem()
-    data class Image(val imageUrl: String) : GridSectionItem()
+    data class Thumbnail(val media: Media) : GridSectionItem()
 }
 
-class GridSectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class GridSectionAdapter(
+    private val selectedItemsFlow: StateFlow<Set<Int>>,
+    private val onItemSelectionChanged: (Int, Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     private val items = mutableListOf<GridSectionItem>()
+    private var selectedItems: Set<Int> = emptySet()
+
+    init {
+        CoroutineScope(Dispatchers.Main).launch {
+            selectedItemsFlow.collect { newSelectedItems ->
+                val oldSelectedItems = selectedItems
+                selectedItems = newSelectedItems
+                (oldSelectedItems + newSelectedItems).forEach { position ->
+                    notifyItemChanged(position)
+                }
+            }
+        }
+    }
 
     companion object {
         const val VIEW_TYPE_HEADER = 0
-        const val VIEW_TYPE_IMAGE = 1
+        const val VIEW_TYPE_THUMBNAIL = 1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder.from(parent)
-            VIEW_TYPE_IMAGE -> ImageViewHolder.from(parent)
+            VIEW_TYPE_THUMBNAIL -> ThumbnailViewHolder.from(parent)
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -33,7 +54,13 @@ class GridSectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = items[position]) {
             is GridSectionItem.Header -> (holder as HeaderViewHolder).bind(item)
-            is GridSectionItem.Image -> (holder as ImageViewHolder).bind(item)
+            is GridSectionItem.Thumbnail -> {
+                val thumbnailViewHolder = holder as ThumbnailViewHolder
+                thumbnailViewHolder.bind(item, position in selectedItems)
+                thumbnailViewHolder.setOnSelectionChangedListener { isSelected ->
+                    onItemSelectionChanged(position, isSelected)
+                }
+            }
         }
     }
 
@@ -42,7 +69,7 @@ class GridSectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
             is GridSectionItem.Header -> VIEW_TYPE_HEADER
-            is GridSectionItem.Image -> VIEW_TYPE_IMAGE
+            is GridSectionItem.Thumbnail -> VIEW_TYPE_THUMBNAIL
         }
     }
 
@@ -63,27 +90,27 @@ class GridSectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
         fun bind(header: GridSectionItem.Header) {
-//            binding.root.setBackgroundResource(R.color.c23_teal_40)
             binding.timestamp.text = header.title
             binding.count.text = "3"
         }
     }
 
-    class ImageViewHolder(private val binding: RvMediaBoxSmallBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ThumbnailViewHolder(private val thumbnailView: MediaThumbnailView) : RecyclerView.ViewHolder(thumbnailView) {
         companion object {
-            fun from(parent: ViewGroup): ImageViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = RvMediaBoxSmallBinding.inflate(layoutInflater, parent, false)
-                return ImageViewHolder(binding)
+            fun from(parent: ViewGroup): ThumbnailViewHolder {
+                val thumbnail = MediaThumbnailView(parent.context)
+                return ThumbnailViewHolder(thumbnail)
             }
         }
 
-        fun bind(gridItem: GridSectionItem.Image) {
-            Timber.d("Loading image ${gridItem.imageUrl}")
-            binding.image.load(gridItem.imageUrl) {
-                crossfade(true)
-                crossfade(250)
-            }
+        fun bind(gridItem: GridSectionItem.Thumbnail, isSelected: Boolean) {
+            Timber.d("Loading image ${gridItem.media.originalFilePath}")
+            thumbnailView.loadImage(gridItem.media.originalFilePath)
+            thumbnailView.isItemSelected = isSelected
+        }
+
+        fun setOnSelectionChangedListener(listener: (Boolean) -> Unit) {
+            thumbnailView.setOnSelectionChangedListener(listener)
         }
     }
 }

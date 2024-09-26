@@ -82,9 +82,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
         override val handle: ImageView?
             get() = null
-
-        override val mediaView: View
-            get() = (binding as RvMediaBoxSmallBinding).mediaView
     }
 
     class SmallRow(parent: ViewGroup): MediaViewHolder(
@@ -134,8 +131,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
         override val handle: ImageView
             get() = (binding as RvMediaRowSmallBinding).handle
-
-        override val mediaView: View? = null
     }
 
     companion object {
@@ -157,7 +152,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     abstract val flagIndicator: ImageView?
     abstract val deleteIndicator: View?
     abstract val handle: ImageView?
-    abstract val mediaView: View?
 
     private val mContext = itemView.context
 
@@ -178,14 +172,11 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         itemView.tag = media?.id
 
         if (batchMode && media?.selected == true) {
-            val border = ContextCompat.getDrawable(mContext, R.drawable.media_outline)
-            mediaView?.setForeground(border)
+            val border = ContextCompat.getDrawable(mContext, R.drawable.media_selected)
         }
         else {
             itemView.setBackgroundResource(R.color.transparent)
         }
-
-        mediaView?.setClipToOutline(true)
 
         image.alpha = if (media?.status == Media.Status.Uploaded || !doImageFade) 1f else 0.75f
         // image.setClipToOutline(true)
