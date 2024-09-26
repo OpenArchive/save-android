@@ -1,8 +1,9 @@
 package net.opendasharchive.openarchive.features.main.ui
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,11 +20,26 @@ sealed class GridSectionItem {
     data class Thumbnail(val media: Media) : GridSectionItem()
 }
 
+class GridItemDiffCallback : DiffUtil.ItemCallback<GridSectionItem>() {
+    override fun areItemsTheSame(oldItem: GridSectionItem, newItem: GridSectionItem): Boolean {
+        return when {
+            oldItem is GridSectionItem.Header && newItem is GridSectionItem.Header ->
+                oldItem.title == newItem.title
+            oldItem is GridSectionItem.Thumbnail && newItem is GridSectionItem.Thumbnail ->
+                oldItem.media.id == newItem.media.id
+            else -> false
+        }
+    }
+
+    override fun areContentsTheSame(oldItem: GridSectionItem, newItem: GridSectionItem): Boolean {
+        return oldItem == newItem
+    }
+}
+
 class GridSectionAdapter(
     private val selectedItemsFlow: StateFlow<Set<Int>>,
-    private val onItemSelectionChanged: (Int, Boolean) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val onItemSelectionChanged: (Int, Boolean) -> Unit) : ListAdapter<GridSectionItem, RecyclerView.ViewHolder>(GridItemDiffCallback()) {
 
-    private val items = mutableListOf<GridSectionItem>()
     private var selectedItems: Set<Int> = emptySet()
 
     init {
@@ -52,7 +68,7 @@ class GridSectionAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = items[position]) {
+        when (val item = getItem(position)) {
             is GridSectionItem.Header -> (holder as HeaderViewHolder).bind(item)
             is GridSectionItem.Thumbnail -> {
                 val thumbnailViewHolder = holder as ThumbnailViewHolder
@@ -64,20 +80,29 @@ class GridSectionAdapter(
         }
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount() = currentList.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (items[position]) {
+        return when (getItem(position)) {
             is GridSectionItem.Header -> VIEW_TYPE_HEADER
             is GridSectionItem.Thumbnail -> VIEW_TYPE_THUMBNAIL
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun setItems(newItems: List<GridSectionItem>) {
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
+    override fun submitList(list: List<GridSectionItem>?) {
+        val oldList = currentList
+
+        if (list == null || list == oldList) {
+            // If the new list is null or the same instance as the current list, don't update
+            return
+        }
+
+        if (list.size == oldList.size && list.containsAll(oldList)) {
+            // If the lists have the same size and elements, don't update
+            return
+        }
+
+        super.submitList(list)
     }
 
     class HeaderViewHolder(private val binding: LayoutGridSectionHeaderBinding) : RecyclerView.ViewHolder(binding.root) {

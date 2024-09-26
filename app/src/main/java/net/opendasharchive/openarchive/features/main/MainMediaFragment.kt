@@ -6,11 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.WorkInfo
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.db.MediaViewModel
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.main.ui.GridSectionAdapter
 import net.opendasharchive.openarchive.features.main.ui.GridSectionLayoutDecoration
@@ -49,8 +53,9 @@ class MainMediaFragment : Fragment() {
 //    private val mediaUploadViewModel: MediaUploadViewModel by activityViewModels() {
 //        MediaUploadViewModelFactory(MediaUploadRepository(MediaUploadManager))
 //    }
+    private val mediaViewModel: MediaViewModel by viewModel()
     private val mediaUploadViewModel: MediaUploadViewModel by viewModel()
-    private val gridSectionViewModel: GridSectionViewModel by viewModels()
+    private val gridSectionViewModel: GridSectionViewModel by viewModel()
     private lateinit var adapter: GridSectionAdapter
     private lateinit var viewBinding: FragmentMainMediaBinding
 
@@ -58,6 +63,14 @@ class MainMediaFragment : Fragment() {
         super.onResume()
 
         refresh()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (savedInstanceState == null) {
+            gridSectionViewModel.loadItems()
+        }
     }
 
     override fun onCreateView(
@@ -75,24 +88,8 @@ class MainMediaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = GridSectionAdapter(gridSectionViewModel.selectedItems) { position, isSelected ->
-            Timber.d("Cleeek !")
-        }
-
-        val layoutManager = SectionedGridLayoutManager(requireContext(), 4, adapter)
-        viewBinding.recyclerView.layoutManager = layoutManager
-        viewBinding.recyclerView.adapter = adapter
-
-        val sectionSpacing = resources.getDimensionPixelSize(R.dimen.grid_layout_section_spacing)
-        val headerBottomMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_header_bottom_margin)
-        val itemTopMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_item_top_margin)
-        viewBinding.recyclerView.addItemDecoration(GridSectionLayoutDecoration(sectionSpacing, headerBottomMargin, itemTopMargin))
-
-        gridSectionViewModel.items.observe(viewLifecycleOwner) { gridSectionItems ->
-            Timber.d("grid view model changed: $gridSectionItems")
-            adapter.setItems(gridSectionItems)
-        }
-        gridSectionViewModel.loadItems()
+        setupRecyclerView()
+        observeViewModels()
 
         mediaUploadViewModel.uploadItems.observe(viewLifecycleOwner) { mediaUploadItems ->
             Timber.d("media upload status changed: $mediaUploadItems")
@@ -111,6 +108,40 @@ class MainMediaFragment : Fragment() {
         }
 
         refresh()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = GridSectionAdapter(gridSectionViewModel.selectedItems) { position, isSelected ->
+            Timber.d("Cleeek !")
+        }
+
+        val layoutManager = SectionedGridLayoutManager(requireContext(), 4, adapter)
+        viewBinding.recyclerView.layoutManager = layoutManager
+        viewBinding.recyclerView.adapter = adapter
+
+        val sectionSpacing = resources.getDimensionPixelSize(R.dimen.grid_layout_section_spacing)
+        val headerBottomMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_header_bottom_margin)
+        val itemTopMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_item_top_margin)
+        viewBinding.recyclerView.addItemDecoration(GridSectionLayoutDecoration(sectionSpacing, headerBottomMargin, itemTopMargin))
+    }
+
+    private fun observeViewModels() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    gridSectionViewModel.items.collect { gridSectionItems ->
+                        Timber.d("grid view model changed: ${gridSectionItems.size}")
+                        adapter.submitList(gridSectionItems)
+                    }
+                }
+                launch {
+                    mediaViewModel.saveFlow.collect { savedMedia ->
+                        Timber.d("Media saved: $savedMedia")
+                        gridSectionViewModel.addNewMedia(savedMedia)
+                    }
+                }
+            }
+        }
     }
 
     private fun refreshCurrentFolderCount() {
