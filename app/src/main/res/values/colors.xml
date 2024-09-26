@@ -101,6 +101,7 @@
     <color name="colorBackendButton">@color/white</color>
     <color name="colorBackendButtonInactive">@color/c24_cream_70</color>
     <color name="colorBackendButtonBorder">@color/c23_grey</color>
+    <color name="colorSkipButton">@color/c24_cream_95</color>
 
     <!--
 

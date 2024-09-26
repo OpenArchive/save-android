@@ -30,4 +30,5 @@
     <color name="colorBackendButtonBorder">@color/c23_teal</color>
     <color name="colorRipple">#33e3e3e4</color>
     <color name="bottomSheetBackground">@color/eigengrau</color>
+    <color name="colorSkipButton">@color/c23_teal</color>
 </resources>
