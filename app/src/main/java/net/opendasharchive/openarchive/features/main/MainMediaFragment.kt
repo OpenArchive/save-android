@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.work.WorkManager
+import androidx.work.WorkInfo
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
 import net.opendasharchive.openarchive.db.Folder
@@ -17,12 +16,11 @@ import net.opendasharchive.openarchive.features.main.ui.GridSectionAdapter
 import net.opendasharchive.openarchive.features.main.ui.GridSectionLayoutDecoration
 import net.opendasharchive.openarchive.features.main.ui.GridSectionViewModel
 import net.opendasharchive.openarchive.features.main.ui.SectionedGridLayoutManager
-import net.opendasharchive.openarchive.upload.MediaUploadRepository
 import net.opendasharchive.openarchive.upload.MediaUploadViewModel
-import net.opendasharchive.openarchive.upload.MediaUploadViewModelFactory
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.text.NumberFormat
 
@@ -48,9 +46,10 @@ class MainMediaFragment : Fragment() {
 //    private var mFolderId = -1L
 //    private var mCollections = mutableMapOf<Long, Collection>()
 
-    private val mediaUploadViewModel: MediaUploadViewModel by activityViewModels() {
-        MediaUploadViewModelFactory(MediaUploadRepository(WorkManager.getInstance(requireContext())))
-    }
+//    private val mediaUploadViewModel: MediaUploadViewModel by activityViewModels() {
+//        MediaUploadViewModelFactory(MediaUploadRepository(MediaUploadManager))
+//    }
+    private val mediaUploadViewModel: MediaUploadViewModel by viewModel()
     private val gridSectionViewModel: GridSectionViewModel by viewModels()
     private lateinit var adapter: GridSectionAdapter
     private lateinit var viewBinding: FragmentMainMediaBinding
@@ -90,12 +89,25 @@ class MainMediaFragment : Fragment() {
         viewBinding.recyclerView.addItemDecoration(GridSectionLayoutDecoration(sectionSpacing, headerBottomMargin, itemTopMargin))
 
         gridSectionViewModel.items.observe(viewLifecycleOwner) { gridSectionItems ->
+            Timber.d("grid view model changed: $gridSectionItems")
             adapter.setItems(gridSectionItems)
         }
         gridSectionViewModel.loadItems()
 
         mediaUploadViewModel.uploadItems.observe(viewLifecycleOwner) { mediaUploadItems ->
-            // "refresh" the recycler view
+            Timber.d("media upload status changed: $mediaUploadItems")
+
+            mediaUploadItems.forEach { mediaItem ->
+                when (mediaItem.workInfo?.state) {
+                    WorkInfo.State.ENQUEUED -> Timber.d("queued")
+                    WorkInfo.State.RUNNING -> Timber.d("running")
+                    WorkInfo.State.SUCCEEDED -> Timber.d("succeeded")
+                    WorkInfo.State.FAILED -> Timber.d("failed")
+                    WorkInfo.State.BLOCKED -> Timber.d("blocked")
+                    WorkInfo.State.CANCELLED -> Timber.d("cancelled")
+                    null -> Unit
+                }
+            }
         }
 
         refresh()

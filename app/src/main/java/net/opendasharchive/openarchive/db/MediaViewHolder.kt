@@ -48,16 +48,16 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             get() = (binding as RvMediaBoxSmallBinding).videoIndicator
 
         override val overlayContainer: View
-            get() = (binding as RvMediaBoxSmallBinding).overlayContainer
+            get() = (binding as RvMediaBoxSmallBinding).overlay
 
         override val progress: CircularProgressIndicator
-            get() = (binding as RvMediaBoxSmallBinding).progress
+            get() = (binding as RvMediaBoxSmallBinding).circularProgressIndicator
 
 //        override val progressText: TextView
 //            get() = (binding as RvMediaBoxSmallBinding).progressText
 
         override val error: ImageView
-            get() = (binding as RvMediaBoxSmallBinding).error
+            get() = (binding as RvMediaBoxSmallBinding).errorIndicator
 
         override val title: TextView?
             get() = null //(binding as RvMediaBoxSmallBinding).title
@@ -163,10 +163,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         }
         .build()
 
-    fun updateState(media: Media) {
-        Timber.d("Updaitng state")
-    }
-
     @SuppressLint("SetTextI18n")
     fun bind(media: Media? = null, batchMode: Boolean = false, doImageFade: Boolean = true) {
         itemView.tag = media?.id
@@ -179,7 +175,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         }
 
         image.alpha = if (media?.status == Media.Status.Uploaded || !doImageFade) 1f else 0.75f
-        // image.setClipToOutline(true)
 
         if (media?.mimeType?.startsWith("image") == true) {
             handleImageMediaType(media)

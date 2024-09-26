@@ -31,6 +31,8 @@ class SaveApp : SugarApp() {
     override fun onCreate() {
         super.onCreate()
 
+        MediaUploadManager.initialize(this)
+
         startKoin {
             androidContext(this@SaveApp)
             modules(coreModule, featuresModule)

@@ -1,10 +1,12 @@
 package net.opendasharchive.openarchive.upload
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
+import kotlinx.coroutines.launch
+import net.opendasharchive.openarchive.db.Media
 
 class MediaUploadViewModel(private val repository: MediaUploadRepository) : ViewModel() {
     private val _uploadItems = MediatorLiveData<List<MediaUploadItem>>()
@@ -32,7 +34,9 @@ class MediaUploadViewModel(private val repository: MediaUploadRepository) : View
         _uploadItems.value = updatedList
     }
 
-    fun addNewUpload(fileUri: Uri) {
-        repository.scheduleUpload(fileUri)
+    fun scheduleUpload(media: Media) {
+        viewModelScope.launch {
+            repository.scheduleUpload(media)
+        }
     }
 }

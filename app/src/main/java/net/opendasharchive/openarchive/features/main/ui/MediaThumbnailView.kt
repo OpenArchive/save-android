@@ -50,17 +50,6 @@ class MediaThumbnailView @JvmOverloads constructor(
             }
         }
 
-    fun setOnSelectionChangedListener(listener: (Boolean) -> Unit) {
-        onSelectionChangedListener = listener
-    }
-
-    fun loadImage(url: String) {
-        thumbnailView.load(url) {
-            crossfade(true)
-            crossfade(250)
-        }
-    }
-
     private fun updateBorder() {
         if (isItemSelected) {
             thumbnailBorder.background = selectedBackground
@@ -87,6 +76,17 @@ class MediaThumbnailView @JvmOverloads constructor(
                 }
             })
             start()
+        }
+    }
+
+    fun setOnSelectionChangedListener(listener: (Boolean) -> Unit) {
+        onSelectionChangedListener = listener
+    }
+
+    fun loadImage(url: String) {
+        thumbnailView.load(url) {
+            crossfade(true)
+            crossfade(250)
         }
     }
 

@@ -1,7 +1,6 @@
 package net.opendasharchive.openarchive.features.main
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,20 +8,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.commit
-import androidx.work.WorkManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityTabBarBinding
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
-import net.opendasharchive.openarchive.upload.MediaUploadManager
-import net.opendasharchive.openarchive.upload.MediaUploadRepository
 import net.opendasharchive.openarchive.upload.MediaUploadViewModel
-import net.opendasharchive.openarchive.upload.MediaUploadViewModelFactory
 import net.opendasharchive.openarchive.util.NetworkConnectivityViewModel
 import net.opendasharchive.openarchive.util.Utility
 import org.aviran.cookiebar2.CookieBar
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
@@ -40,10 +36,7 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
     private var wifiIssueIndicator: MenuItem? = null
     private var visibleScreen = Screen.MEDIA
 
-    private val mediaUploadiewModel: MediaUploadViewModel by viewModels {
-        MediaUploadViewModelFactory(MediaUploadRepository(WorkManager.getInstance(applicationContext)))
-    }
-
+    private val mediaUploadViewModel: MediaUploadViewModel by viewModel()
     private val networkConnectivityViewModel: NetworkConnectivityViewModel by viewModels()
 
     private val newFolderResultLauncher =
@@ -93,8 +86,8 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
             Timber.d("Got wifi? $gotWifi")
         }
 
-        val mediaUri = Uri.parse("file:///data/user/0/net.opendasharchive.openarchive.debug/cache/20240924_165908.riot3.jpg")
-        MediaUploadManager.scheduleMediaUpload(mediaUri)
+//        val mediaUri = Uri.parse("file:///data/user/0/net.opendasharchive.openarchive.debug/cache/20240924_165908.riot3.jpg")
+//        MediaUploadManager.scheduleMediaUpload(mediaUri)
     }
 
     override fun onResume() {

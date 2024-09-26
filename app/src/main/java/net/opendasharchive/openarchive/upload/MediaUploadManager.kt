@@ -1,12 +1,10 @@
 package net.opendasharchive.openarchive.upload
 
 import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
-import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
@@ -14,55 +12,15 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
-import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import timber.log.Timber
+import net.opendasharchive.openarchive.db.Media
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-class MediaUploadWorker(
-    context: Context,
-    workerParams: WorkerParameters
-) : CoroutineWorker(context, workerParams) {
-
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        val mediaUri = inputData.getString(KEY_MEDIA_URI)
-            ?: return@withContext Result.failure()
-
-        val uploadResult = uploadMedia(Uri.parse(mediaUri))
-
-        if (uploadResult) {
-            Result.success()
-        } else {
-            Result.retry()
-        }
-    }
-
-    private suspend fun uploadMedia(mediaUri: Uri): Boolean {
-        Timber.d("Starting upload")
-
-        return try {
-            // Simulating network delay
-            withContext(Dispatchers.IO) {
-                Thread.sleep(2000)
-            }
-
-            Timber.d("Upload successful")
-
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    companion object {
-        const val KEY_MEDIA_URI = "KEY_MEDIA_URI"
-    }
+object WorkTags {
+    const val MEDIA_UPLOAD = "media_upload"
 }
 
-// Singleton MediaUploadManager
 object MediaUploadManager {
     private lateinit var applicationContext: Context
 
@@ -70,13 +28,13 @@ object MediaUploadManager {
         applicationContext = context.applicationContext
     }
 
-    fun scheduleMediaUpload(mediaUri: Uri) {
+    fun scheduleUpload(media: Media) {
         if (!::applicationContext.isInitialized) {
             throw IllegalStateException("MediaUploadManager is not initialized. Call initialize() first.")
         }
 
         val uploadWorkRequest = OneTimeWorkRequestBuilder<MediaUploadWorker>()
-            .setInputData(workDataOf(MediaUploadWorker.KEY_MEDIA_URI to mediaUri.toString()))
+            .setInputData(workDataOf(MediaUploadWorker.KEY_MEDIA_ID to media.id))
             .setConstraints(
                 Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -87,16 +45,16 @@ object MediaUploadManager {
                 WorkRequest.DEFAULT_BACKOFF_DELAY_MILLIS,
                 TimeUnit.MILLISECONDS
             )
+            .addTag(WorkTags.MEDIA_UPLOAD)
             .build()
 
         WorkManager.getInstance(applicationContext)
             .enqueueUniqueWork(
-                "media_upload_${System.currentTimeMillis()}",
+                "${WorkTags.MEDIA_UPLOAD}_${System.currentTimeMillis()}",
                 ExistingWorkPolicy.REPLACE,
                 uploadWorkRequest
             )
     }
-
 
     fun getWorkInfo(workName: String): LiveData<WorkInfo> {
         return WorkManager.getInstance(applicationContext)
@@ -112,8 +70,8 @@ object MediaUploadManager {
             }
     }
 
-    fun observeAllUploads(): LiveData<List<WorkInfo>> {
+    fun observeUploads(): LiveData<List<WorkInfo>> {
         val workManager = WorkManager.getInstance(applicationContext)
-        return workManager.getWorkInfosByTagLiveData("media_upload")
+        return workManager.getWorkInfosByTagLiveData(WorkTags.MEDIA_UPLOAD)
     }
 }

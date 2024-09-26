@@ -23,14 +23,17 @@ import net.opendasharchive.openarchive.features.main.ui.OABottomSheetDialogFragm
 import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.Picker.pickMedia
 import net.opendasharchive.openarchive.upload.BroadcastManager.Action
+import net.opendasharchive.openarchive.upload.MediaUploadViewModel
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 abstract class BaseActivity: AppCompatActivity() {
 
     private lateinit var mMediaPickerLauncher: ImagePickerLauncher
     private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
+    private val mediaUploadViewModel: MediaUploadViewModel by viewModel()
 
     private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
@@ -135,6 +138,8 @@ abstract class BaseActivity: AppCompatActivity() {
             media.status = if (Prefs.mediaUploadPolicy == "upload_media_automatically") Media.Status.Queued else Media.Status.Local
             media.selected = false
             media.save()
+
+            mediaUploadViewModel.scheduleUpload(media)
         }
     }
 

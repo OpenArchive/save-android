@@ -22,7 +22,7 @@ class GridSectionViewModel : ViewModel() {
     private val _selectedItems = MutableStateFlow<Set<Int>>(emptySet())
     val selectedItems: StateFlow<Set<Int>> = _selectedItems
 
-    private val dateTimeFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    private val dateTimeFormatter = SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.getDefault())
     private val timeFormatter = SimpleDateFormat("h:mm a", Locale.getDefault())
 
     fun loadItems() {
@@ -35,7 +35,9 @@ class GridSectionViewModel : ViewModel() {
         Timber.d("collections = $collections")
 
         collections.forEach { (_, collection) ->
-            items.add(GridSectionItem.Header(formatDate(collection.uploadDate)))
+            items.add(GridSectionItem.Header(
+                formatDate(collection.uploadDate),
+                collection.media.size))
 
             val allMedia = collection.media
 

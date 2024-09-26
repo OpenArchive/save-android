@@ -15,7 +15,7 @@ import timber.log.Timber
 typealias OnMediaItemClickListener = (GridSectionItem.Thumbnail) -> Unit
 
 sealed class GridSectionItem {
-    data class Header(val title: String) : GridSectionItem()
+    data class Header(val title: String, val numItems: Int) : GridSectionItem()
     data class Thumbnail(val media: Media) : GridSectionItem()
 }
 
@@ -91,7 +91,7 @@ class GridSectionAdapter(
 
         fun bind(header: GridSectionItem.Header) {
             binding.timestamp.text = header.title
-            binding.count.text = "3"
+            binding.count.text = header.numItems.toString()
         }
     }
 

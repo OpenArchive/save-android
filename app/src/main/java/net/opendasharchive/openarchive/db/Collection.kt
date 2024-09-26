@@ -1,7 +1,7 @@
 package net.opendasharchive.openarchive.db
 
 import com.orm.SugarRecord
-import java.util.*
+import java.util.Date
 
 data class Collection(
     var folderId: Long? = null,
@@ -13,7 +13,7 @@ data class Collection(
 
         fun getByFolder(folderId: Long): List<Collection> {
             return find(Collection::class.java, "folder_id = ?", arrayOf(folderId.toString()),
-                null, "id ASC", null)
+                null, "UPLOAD_DATE ASC", null)
         }
 
         fun get(collectionId: Long?): Collection? {
