@@ -18,13 +18,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.MediaViewModel
+import net.opendasharchive.openarchive.db.MediaActionsViewModel
 import net.opendasharchive.openarchive.features.main.CameraCaptureActivity
 import net.opendasharchive.openarchive.features.main.ui.OABottomSheetDialogFragment
 import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.Picker.pickMedia
 import net.opendasharchive.openarchive.upload.BroadcastManager.Action
-import net.opendasharchive.openarchive.upload.MediaUploadViewModel
+import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Utility
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,8 +34,8 @@ abstract class BaseActivity: AppCompatActivity() {
 
     private lateinit var mMediaPickerLauncher: ImagePickerLauncher
     private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
-    private val mediaViewModel: MediaViewModel by viewModel()
-    private val mediaUploadViewModel: MediaUploadViewModel by viewModel()
+    private val mediaActionsViewModel: MediaActionsViewModel by viewModel()
+    private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
 
     private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
@@ -140,7 +140,7 @@ abstract class BaseActivity: AppCompatActivity() {
             media.status = if (Prefs.mediaUploadPolicy == "upload_media_automatically") Media.Status.Queued else Media.Status.Local
             media.selected = false
 
-            mediaViewModel.saveMedia(media)
+            mediaActionsViewModel.saveMedia(media)
 //            mediaUploadViewModel.scheduleUpload(media)
         }
     }

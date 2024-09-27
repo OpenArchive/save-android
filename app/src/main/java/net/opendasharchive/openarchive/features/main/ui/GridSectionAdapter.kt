@@ -10,9 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.LayoutGridSectionHeaderBinding
+import net.opendasharchive.openarchive.features.main.ui.GridSectionAdapter.Companion.UPDATE_GRID_CONTENT_PAYLOAD
+import net.opendasharchive.openarchive.features.main.ui.GridSectionAdapter.Companion.UPDATE_GRID_STATE_PAYLOAD
 import net.opendasharchive.openarchive.upload.MediaWithState
-
-typealias OnMediaItemClickListener = (GridSectionItem.Thumbnail) -> Unit
 
 sealed class GridSectionItem {
     data class Header(val title: String, val numItems: Int) : GridSectionItem()
@@ -22,16 +22,26 @@ sealed class GridSectionItem {
 class GridItemDiffCallback : DiffUtil.ItemCallback<GridSectionItem>() {
     override fun areItemsTheSame(oldItem: GridSectionItem, newItem: GridSectionItem): Boolean {
         return when {
-            oldItem is GridSectionItem.Header && newItem is GridSectionItem.Header ->
-                oldItem.title == newItem.title
-            oldItem is GridSectionItem.Thumbnail && newItem is GridSectionItem.Thumbnail ->
-                oldItem.mediaWithState.media.id == newItem.mediaWithState.media.id
+            oldItem is GridSectionItem.Header && newItem is GridSectionItem.Header -> oldItem.title == newItem.title
+            oldItem is GridSectionItem.Thumbnail && newItem is GridSectionItem.Thumbnail -> oldItem.mediaWithState.media.id == newItem.mediaWithState.media.id
             else -> false
         }
     }
 
     override fun areContentsTheSame(oldItem: GridSectionItem, newItem: GridSectionItem): Boolean {
         return oldItem == newItem
+    }
+
+    override fun getChangePayload(oldItem: GridSectionItem, newItem: GridSectionItem): Any? {
+        if (oldItem is GridSectionItem.Thumbnail && newItem is GridSectionItem.Thumbnail) {
+            if (oldItem.mediaWithState.state != newItem.mediaWithState.state) {
+                return UPDATE_GRID_STATE_PAYLOAD
+            }
+            if (oldItem.mediaWithState.media.title != newItem.mediaWithState.media.title) {
+                return UPDATE_GRID_CONTENT_PAYLOAD
+            }
+        }
+        return null
     }
 }
 
@@ -56,6 +66,8 @@ class GridSectionAdapter(
     companion object {
         const val VIEW_TYPE_HEADER = 0
         const val VIEW_TYPE_THUMBNAIL = 1
+        const val UPDATE_GRID_STATE_PAYLOAD = "UPDATE_STATE"
+        const val UPDATE_GRID_CONTENT_PAYLOAD = "UPDATE_CONTENT"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -65,6 +77,27 @@ class GridSectionAdapter(
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
+
+//    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+//        if (payloads.isEmpty()) {
+//            onBindViewHolder(holder, position)
+//        } else {
+//            val item = getItem(position)
+//            when (holder) {
+//                is MediaViewHolder -> {
+//                    if (item is GridSectionItem.Thumbnail) {
+//                        for (payload in payloads) {
+//                            when (payload) {
+//                                UPDATE_STATE_PAYLOAD -> holder.updateState(item)
+//                                UPDATE_CONTENT_PAYLOAD -> holder.updateContent(item)
+//                            }
+//                        }
+//                    }
+//                }
+//                // Handle other ViewHolder types if necessary
+//            }
+//        }
+//    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {

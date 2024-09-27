@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 
 class MediaUploadViewModelFactory(private val repository: MediaUploadRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MediaUploadViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(MediaUploadStatusViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MediaUploadViewModel(repository) as T
+            return MediaUploadStatusViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

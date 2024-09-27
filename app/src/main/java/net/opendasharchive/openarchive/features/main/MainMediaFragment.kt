@@ -14,13 +14,13 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
 import net.opendasharchive.openarchive.db.Folder
-import net.opendasharchive.openarchive.db.MediaViewModel
+import net.opendasharchive.openarchive.db.MediaActionsViewModel
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.main.ui.GridSectionAdapter
 import net.opendasharchive.openarchive.features.main.ui.GridSectionLayoutDecoration
-import net.opendasharchive.openarchive.features.main.ui.GridSectionViewModel
+import net.opendasharchive.openarchive.features.main.ui.MediaGridViewModel
 import net.opendasharchive.openarchive.features.main.ui.SectionedGridLayoutManager
-import net.opendasharchive.openarchive.upload.MediaUploadViewModel
+import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.extensions.cloak
 import net.opendasharchive.openarchive.util.extensions.show
 import net.opendasharchive.openarchive.util.extensions.toggle
@@ -53,9 +53,10 @@ class MainMediaFragment : Fragment() {
 //    private val mediaUploadViewModel: MediaUploadViewModel by activityViewModels() {
 //        MediaUploadViewModelFactory(MediaUploadRepository(MediaUploadManager))
 //    }
-    private val mediaViewModel: MediaViewModel by viewModel()
-    private val mediaUploadViewModel: MediaUploadViewModel by viewModel()
-    private val gridSectionViewModel: GridSectionViewModel by viewModel()
+    private val mediaActionsViewModel: MediaActionsViewModel by viewModel()
+    private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
+    private val mediaGridViewModel: MediaGridViewModel by viewModel()
+//    private val gridSectionItemsViewModel: GridSectionViewModel by viewModel()
     private lateinit var adapter: GridSectionAdapter
     private lateinit var viewBinding: FragmentMainMediaBinding
 
@@ -69,7 +70,7 @@ class MainMediaFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            gridSectionViewModel.loadItems()
+            mediaGridViewModel.loadItems()
         }
     }
 
@@ -90,12 +91,11 @@ class MainMediaFragment : Fragment() {
 
         setupRecyclerView()
         observeViewModels()
-
         refresh()
     }
 
     private fun setupRecyclerView() {
-        adapter = GridSectionAdapter(gridSectionViewModel.selectedItems) { position, isSelected ->
+        adapter = GridSectionAdapter(mediaGridViewModel.selectedItems) { position, isSelected ->
             Timber.d("Cleeek !")
         }
 
@@ -110,28 +110,45 @@ class MainMediaFragment : Fragment() {
     }
 
     private fun observeViewModels() {
+        // Note that this might look like we're chaining things together here,
+        // this does not represent any kind of logic chain. Each launch provides
+        // its own functionality.
+        //
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    gridSectionViewModel.items.collect { gridSectionItems ->
+                    // When new media is selected and is then saved, add it
+                    // to our media grid and schedule it to be uploaded.
+                    //
+                    mediaActionsViewModel.saveFlow.collect { savedMedia ->
+                        Timber.d("Media saved to DB: $savedMedia")
+                        mediaGridViewModel.addNewMedia(savedMedia)
+                        mediaUploadStatusViewModel.scheduleUpload(savedMedia)
+                    }
+                }
+
+                launch {
+                    // Provides the entire media catalog.
+                    //
+                    mediaGridViewModel.items.collect { gridSectionItems ->
                         Timber.d("grid view model changed: ${gridSectionItems.size}")
                         adapter.submitList(gridSectionItems)
                     }
                 }
-                launch {
-                    mediaViewModel.saveFlow.collect { savedMedia ->
-                        Timber.d("Media saved: $savedMedia")
-                        gridSectionViewModel.addNewMedia(savedMedia)
-                        mediaUploadViewModel.scheduleUpload(savedMedia)
-                    }
-                }
-                launch {
-                    mediaUploadViewModel.combinedMediaData.collect { mediaData ->
-                        Timber.d("Media upload status changed: $mediaData")
 
-                        mediaData.forEach { mediaDatum ->
-                            when (mediaDatum.state) {
-                                WorkInfo.State.ENQUEUED -> Timber.d("queued")
+                launch {
+                    // As in-flight media status changes, we observe those changes
+                    // and then handle it. This should *not* change the number of
+                    // items in the media grid - it will only change how the
+                    // media thumbnails look (plus other side-effects that
+                    // aren't important here).
+                    //
+                    mediaUploadStatusViewModel.combinedMediaStatus.collect { items ->
+                        Timber.d("Media upload status changed: $items")
+
+                        items.forEach { item ->
+                            when (item.state) {
+                                WorkInfo.State.ENQUEUED -> Timber.d("enqueued")
                                 WorkInfo.State.RUNNING -> Timber.d("running")
                                 WorkInfo.State.SUCCEEDED -> Timber.d("succeeded")
                                 WorkInfo.State.FAILED -> Timber.d("failed")
@@ -140,6 +157,18 @@ class MainMediaFragment : Fragment() {
                                 null -> Unit
                             }
                         }
+                    }
+                }
+
+                launch { // Only needed to tap the upstream Combine.
+                    mediaUploadStatusViewModel.mediaStates.collect {
+                        // Timber.d("states = $it")
+                    }
+                }
+
+                launch { // Only needed to tap the upstream Combine.
+                    mediaUploadStatusViewModel.mediaItems.collect {
+                        // Timber.d("items = $it")
                     }
                 }
             }

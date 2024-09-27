@@ -14,7 +14,7 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
-import net.opendasharchive.openarchive.upload.MediaUploadViewModel
+import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.NetworkConnectivityViewModel
 import net.opendasharchive.openarchive.util.Utility
 import org.aviran.cookiebar2.CookieBar
@@ -36,7 +36,7 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
     private var wifiIssueIndicator: MenuItem? = null
     private var visibleScreen = Screen.MEDIA
 
-    private val mediaUploadViewModel: MediaUploadViewModel by viewModel()
+    private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
     private val networkConnectivityViewModel: NetworkConnectivityViewModel by viewModels()
 
     private val newFolderResultLauncher =

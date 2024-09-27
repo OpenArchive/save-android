@@ -151,9 +151,6 @@ class MediaAdapter(
             val payload = payloads[0]
 
             if (payload == UPDATE_STATE_PAYLOAD) {
-                // Update only the necessary state
-                // holder.updateState(media[position])
-
                 holder.deleteIndicator?.visibility = if (canDeleteMediaAt(position)) View.VISIBLE else View.GONE
 
                 if (canDeleteMediaAt(position)) {

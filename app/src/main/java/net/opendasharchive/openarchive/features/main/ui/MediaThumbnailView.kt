@@ -14,8 +14,12 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.work.WorkInfo
 import coil.load
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.util.extensions.cloak
+import net.opendasharchive.openarchive.util.extensions.show
+import timber.log.Timber
 
 class MediaThumbnailView @JvmOverloads constructor(
     context: Context,
@@ -25,6 +29,7 @@ class MediaThumbnailView @JvmOverloads constructor(
 
     private var thumbnailBorder: View
     private var thumbnailView: ShapeableImageView
+    private var circularProgressIndicator: CircularProgressIndicator
 
     private val selectedBackground by lazy {
         AppCompatResources.getDrawable(context, R.drawable.media_selected)
@@ -37,6 +42,7 @@ class MediaThumbnailView @JvmOverloads constructor(
 
         thumbnailView = findViewById(R.id.image)
         thumbnailBorder = findViewById(R.id.image_border)
+        circularProgressIndicator = findViewById(R.id.circular_progress_indicator)
 
         setOnClickListener {
             isItemSelected = !isItemSelected
@@ -93,10 +99,25 @@ class MediaThumbnailView @JvmOverloads constructor(
     }
 
     fun setMedia(media: Media) {
+//        Timber.d("media id = ${media.id}")
         loadImage(media.originalFilePath)
     }
 
     fun setUploadState(state: WorkInfo.State?) {
+        Timber.d("state = $state")
 
+        when (state) {
+            WorkInfo.State.RUNNING -> circularProgressIndicator.show(true)
+            WorkInfo.State.SUCCEEDED -> clearAllIndicators()
+            WorkInfo.State.FAILED -> clearAllIndicators()
+            WorkInfo.State.ENQUEUED -> Unit
+            WorkInfo.State.BLOCKED -> Unit
+            WorkInfo.State.CANCELLED -> clearAllIndicators()
+            null -> Unit
+        }
+    }
+
+    private fun clearAllIndicators() {
+        circularProgressIndicator.cloak(true)
     }
 }

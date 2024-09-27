@@ -22,21 +22,21 @@ data class MediaWithState(val media: Media, val state: WorkInfo.State?)
 //    val progress: Int
 //)
 
-class MediaUploadViewModel(private val repository: MediaUploadRepository) : ViewModel() {
+class MediaUploadStatusViewModel(private val repository: MediaUploadRepository) : ViewModel() {
     private val _mediaStates = MutableStateFlow<Map<String, WorkInfo.State>>(emptyMap())
     val mediaStates: StateFlow<Map<String, WorkInfo.State>> = _mediaStates.asStateFlow()
 
     private val _mediaItems = MutableStateFlow<List<Media>>(emptyList())
     val mediaItems: StateFlow<List<Media>> = _mediaItems.asStateFlow()
 
-//    private val _uploadItems = MutableStateFlow<List<MediaUploadItem>>(emptyList())
-//    val uploadItems: StateFlow<List<MediaUploadItem>> = _uploadItems.asStateFlow()
-
-    val combinedMediaData: StateFlow<List<MediaWithState>> = combine(mediaItems, mediaStates) { items, states ->
+    val combinedMediaStatus: StateFlow<List<MediaWithState>> = combine(mediaItems, mediaStates) { items, states ->
         items.map { media ->
-            MediaWithState(media, states[media.id.toString()] ?: WorkInfo.State.ENQUEUED)
+            MediaWithState(media, states[media.id.toString()] ?: WorkInfo.State.SUCCEEDED)
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+//    private val _sectionedItems = MutableStateFlow<List<GridSectionItem>>(emptyList())
+//    val sectionedItems: StateFlow<List<GridSectionItem>> = _sectionedItems.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -48,7 +48,6 @@ class MediaUploadViewModel(private val repository: MediaUploadRepository) : View
                     mediaId?.let { it to workInfo.state }
                 }.toMap()
                 _mediaStates.update { it + newStates }
-                // updateUploadItems(workInfoList)
             }
         }
 
@@ -58,19 +57,6 @@ class MediaUploadViewModel(private val repository: MediaUploadRepository) : View
             }
         }
     }
-
-//    private fun updateUploadItems(workInfoList: List<WorkInfo>) {
-//        val newUploadItems = workInfoList.mapNotNull { workInfo ->
-//            val mediaId = workInfo.tags.find { it.startsWith(MEDIA_ID_PREFIX) }?.removePrefix(MEDIA_ID_PREFIX) ?: return@mapNotNull null
-//            MediaUploadItem(
-//                fileName = workInfo.,
-//                mediaId = mediaId,
-//                state = workInfo.state,
-//                progress = workInfo.progress.getInt("progress", 0)
-//            )
-//        }
-//        _uploadItems.value = newUploadItems
-//    }
 
     fun scheduleUpload(media: Media) {
         viewModelScope.launch {
