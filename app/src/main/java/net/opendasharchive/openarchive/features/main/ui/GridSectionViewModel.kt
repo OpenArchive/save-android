@@ -13,6 +13,7 @@ import net.opendasharchive.openarchive.db.IFolderRepository
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.extensions.isYesterday
 import net.opendasharchive.openarchive.extensions.toggle
+import net.opendasharchive.openarchive.upload.MediaWithState
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -56,7 +57,7 @@ class GridSectionViewModel(
                                     formatDate(collection.uploadDate),
                                     collection.media.size
                                 ))
-                                addAll(collection.media.map { GridSectionItem.Thumbnail(it) })
+                                addAll(collection.media.map { GridSectionItem.Thumbnail(MediaWithState(it, null)) })
                             }
                         }
                 }

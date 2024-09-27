@@ -11,9 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.work.WorkInfo
 import coil.load
 import com.google.android.material.imageview.ShapeableImageView
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.db.Media
 
 class MediaThumbnailView @JvmOverloads constructor(
     context: Context,
@@ -90,11 +92,11 @@ class MediaThumbnailView @JvmOverloads constructor(
         }
     }
 
-//    private fun updateBorder() {
-//        if (isItemSelected) {
-//            thumbnailView.foreground = AppCompatResources.getDrawable(context, R.drawable.media_outline)
-//        } else {
-//            thumbnailView.foreground = null
-//        }
-//    }
+    fun setMedia(media: Media) {
+        loadImage(media.originalFilePath)
+    }
+
+    fun setUploadState(state: WorkInfo.State?) {
+
+    }
 }

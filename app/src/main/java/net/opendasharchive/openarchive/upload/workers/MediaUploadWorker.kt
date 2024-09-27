@@ -1,4 +1,4 @@
-package net.opendasharchive.openarchive.upload
+package net.opendasharchive.openarchive.upload.workers
 
 import android.content.Context
 import androidx.work.CoroutineWorker

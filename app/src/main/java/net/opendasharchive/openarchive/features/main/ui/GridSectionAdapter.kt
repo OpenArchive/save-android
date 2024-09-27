@@ -10,14 +10,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.LayoutGridSectionHeaderBinding
-import net.opendasharchive.openarchive.db.Media
-import timber.log.Timber
+import net.opendasharchive.openarchive.upload.MediaWithState
 
 typealias OnMediaItemClickListener = (GridSectionItem.Thumbnail) -> Unit
 
 sealed class GridSectionItem {
     data class Header(val title: String, val numItems: Int) : GridSectionItem()
-    data class Thumbnail(val media: Media) : GridSectionItem()
+    data class Thumbnail(val mediaWithState: MediaWithState) : GridSectionItem()
 }
 
 class GridItemDiffCallback : DiffUtil.ItemCallback<GridSectionItem>() {
@@ -26,7 +25,7 @@ class GridItemDiffCallback : DiffUtil.ItemCallback<GridSectionItem>() {
             oldItem is GridSectionItem.Header && newItem is GridSectionItem.Header ->
                 oldItem.title == newItem.title
             oldItem is GridSectionItem.Thumbnail && newItem is GridSectionItem.Thumbnail ->
-                oldItem.media.id == newItem.media.id
+                oldItem.mediaWithState.media.id == newItem.mediaWithState.media.id
             else -> false
         }
     }
@@ -72,7 +71,7 @@ class GridSectionAdapter(
             is GridSectionItem.Header -> (holder as HeaderViewHolder).bind(item)
             is GridSectionItem.Thumbnail -> {
                 val thumbnailViewHolder = holder as ThumbnailViewHolder
-                thumbnailViewHolder.bind(item, position in selectedItems)
+                thumbnailViewHolder.bind(item.mediaWithState)
                 thumbnailViewHolder.setOnSelectionChangedListener { isSelected ->
                     onItemSelectionChanged(position, isSelected)
                 }
@@ -128,10 +127,9 @@ class GridSectionAdapter(
             }
         }
 
-        fun bind(gridItem: GridSectionItem.Thumbnail, isSelected: Boolean) {
-            Timber.d("Loading image ${gridItem.media.originalFilePath}")
-            thumbnailView.loadImage(gridItem.media.originalFilePath)
-            thumbnailView.isItemSelected = isSelected
+        fun bind(mediaWithState: MediaWithState) {
+            thumbnailView.setMedia(mediaWithState.media)
+            thumbnailView.setUploadState(mediaWithState.state)
         }
 
         fun setOnSelectionChangedListener(listener: (Boolean) -> Unit) {

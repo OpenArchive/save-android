@@ -91,22 +91,6 @@ class MainMediaFragment : Fragment() {
         setupRecyclerView()
         observeViewModels()
 
-        mediaUploadViewModel.uploadItems.observe(viewLifecycleOwner) { mediaUploadItems ->
-            Timber.d("media upload status changed: $mediaUploadItems")
-
-            mediaUploadItems.forEach { mediaItem ->
-                when (mediaItem.workInfo?.state) {
-                    WorkInfo.State.ENQUEUED -> Timber.d("queued")
-                    WorkInfo.State.RUNNING -> Timber.d("running")
-                    WorkInfo.State.SUCCEEDED -> Timber.d("succeeded")
-                    WorkInfo.State.FAILED -> Timber.d("failed")
-                    WorkInfo.State.BLOCKED -> Timber.d("blocked")
-                    WorkInfo.State.CANCELLED -> Timber.d("cancelled")
-                    null -> Unit
-                }
-            }
-        }
-
         refresh()
     }
 
@@ -138,6 +122,24 @@ class MainMediaFragment : Fragment() {
                     mediaViewModel.saveFlow.collect { savedMedia ->
                         Timber.d("Media saved: $savedMedia")
                         gridSectionViewModel.addNewMedia(savedMedia)
+                        mediaUploadViewModel.scheduleUpload(savedMedia)
+                    }
+                }
+                launch {
+                    mediaUploadViewModel.combinedMediaData.collect { mediaData ->
+                        Timber.d("Media upload status changed: $mediaData")
+
+                        mediaData.forEach { mediaDatum ->
+                            when (mediaDatum.state) {
+                                WorkInfo.State.ENQUEUED -> Timber.d("queued")
+                                WorkInfo.State.RUNNING -> Timber.d("running")
+                                WorkInfo.State.SUCCEEDED -> Timber.d("succeeded")
+                                WorkInfo.State.FAILED -> Timber.d("failed")
+                                WorkInfo.State.BLOCKED -> Timber.d("blocked")
+                                WorkInfo.State.CANCELLED -> Timber.d("cancelled")
+                                null -> Unit
+                            }
+                        }
                     }
                 }
             }
