@@ -235,19 +235,13 @@
     <string name="add_media_using">Şununla ortam ekleyin:</string>
     <string name="photo_gallery">Fotoğraf galerisi</string>
     <string name="files">Dosyalar</string>
-    <string name="health_checks">Sağlık denetimleri</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Yüklemeler başarısız olduğunda sağlık denetimlerinin yapılmasına izin vererek uygulamanın geliştirilmesine yardımcı olun. </string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">Sağlık denetimleri yüklemelerin neden başarısız olduğunu anlamamızı sağlar.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">Çözümün bir parçası olmak için verilerinizle katkıda bulunun.</string>
     <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">İzninizi alarak, yükleme sırasında bir sorun çıktığında sağlık denetimi yapacağız.</string>
-    <string name="health_checks_capture">Sağlık denetimleri yapılıyor</string>
     <string name="error_description">– Hata açıklaması</string>
     <string name="size_and_type_of_media">– Ortam boyutu ve türü</string>
     <string name="number_of_retries">– Yinelenme sayısı</string>
     <string name="network_type">– Ağ türü</string>
     <string name="locale">– Yerel</string>
-    <string name="allow_health_checks">Sağlık denetimleri yapılabilsin</string>
-    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">Bu seçenek açıldığında, uygulamanın sağlık denetimi verileri güvenli bir şekilde %s ekibine gönderilir. </string>
     <string name="no_thanks">Hayır, teşekkürler</string>
     <string name="undo">Geri al</string>
 

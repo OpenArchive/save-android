@@ -1,12 +1,16 @@
 package net.opendasharchive.openarchive.features.main
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityTabBarBinding
@@ -38,6 +42,16 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
     private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
     private val networkConnectivityViewModel: NetworkConnectivityViewModel by viewModels()
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Timber.d("Able to post notifications")
+        } else {
+            Timber.d("Need to explain")
+        }
+    }
 
     private val newFolderResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -85,6 +99,8 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         networkConnectivityViewModel.networkStatusLiveData.observe(this) { gotWifi ->
             Timber.d("Got wifi? $gotWifi")
         }
+
+        checkNotificationPermissions()
 
 //        val mediaUri = Uri.parse("file:///data/user/0/net.opendasharchive.openarchive.debug/cache/20240924_165908.riot3.jpg")
 //        MediaUploadManager.scheduleMediaUpload(mediaUri)
@@ -165,6 +181,31 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         } else {
             binding.bottomBar.myMediaButton.setIconResource(R.drawable.outline_perm_media_24)
             binding.bottomBar.settingsButton.setIconResource(R.drawable.ic_settings_filled)
+        }
+    }
+
+    private fun checkNotificationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    Timber.d("We ok")
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                    showNotificationPermissionRationale()
+                }
+                else -> {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
+    }
+
+    private fun showNotificationPermissionRationale() {
+        Utility.showMaterialWarning(this, "Accept!") {
+            Timber.d("thing")
         }
     }
 

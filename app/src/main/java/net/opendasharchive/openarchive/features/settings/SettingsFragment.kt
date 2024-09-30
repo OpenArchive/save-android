@@ -1,8 +1,8 @@
 package net.opendasharchive.openarchive.features.settings
 
+import TorViewModel
 import android.content.Intent
 import android.os.Bundle
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -12,8 +12,11 @@ import net.opendasharchive.openarchive.features.main.WebViewActivity
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import net.opendasharchive.openarchive.util.extensions.getVersionName
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    private val torViewModel: TorViewModel by viewModel()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.prefs_general, rootKey)
@@ -29,7 +32,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>(Prefs.USE_TOR)?.setOnPreferenceChangeListener { _, newValue ->
-            val activity = activity ?: return@setOnPreferenceChangeListener true
+            torViewModel.updateTorServiceState()
             true
         }
 

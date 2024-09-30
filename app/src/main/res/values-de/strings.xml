@@ -139,13 +139,8 @@
     <string name="uploading_is_paused">Hochladen pausiert</string>
     <string name="photo_gallery">Fotogallerie</string>
     <string name="files">Dateien</string>
-    <string name="health_checks">Gesundheitscheck</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Hilf mit, die App durch Gesundheitschecks besser zu machen, wenn das Hochladen fehlschlägt.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">Gesundheitschecks helfen uns zu verstehen, warum das Hochladen manchmal fehlschlägt.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">Spende Deine Daten um Teil der Lösung zu werden.</string>
     <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">Mit Deiner Erlaubnis lassen wir jedes Mal einen Check laufen, wenn ein Fehler beim Hochladen auftritt.</string>
-    <string name="health_checks_capture">Gesundheitschecks erfassen</string>
-    <string name="allow_health_checks">Erlaube Gesundheitschecks?</string>
     <string name="no_thanks">Nein danke</string>
     <string name="undo">Zurück</string>
 

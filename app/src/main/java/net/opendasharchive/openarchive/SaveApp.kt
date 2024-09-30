@@ -1,11 +1,9 @@
 package net.opendasharchive.openarchive
 
-import android.content.ComponentName
+import TorViewModel
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
-import android.os.IBinder
-import android.widget.Toast
 import androidx.multidex.MultiDex
 import com.orm.SugarApp
 import net.opendasharchive.openarchive.core.di.coreModule
@@ -17,11 +15,13 @@ import net.opendasharchive.openarchive.util.ProofModeHelper
 import net.opendasharchive.openarchive.util.Theme
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.torproject.jni.TorService
-import org.torproject.jni.TorService.LocalBinder
 import timber.log.Timber
+import org.koin.java.KoinJavaComponent.get as getKoin
 
 class SaveApp : SugarApp() {
+
+    lateinit var torViewModel: TorViewModel
+        private set
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
@@ -55,33 +55,49 @@ class SaveApp : SugarApp() {
             MediaUploadManager.initialize(this)
         }
 
-//        if (Prefs.useTor) {
-//            startTor()
-//        }
+        initializeTorViewModel()
+
+        createNotificationChannel()
 
         Theme.set(Prefs.theme)
 
         Timber.d("Starting app $packageName ")
     }
 
-    private fun startTor() {
-        bindService(Intent(this, TorService::class.java), object : ServiceConnection {
-            override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                val torService = (service as LocalBinder).service
+    private fun initializeTorViewModel() {
+        val torViewModel: TorViewModel = getKoin(TorViewModel::class.java)
+        torViewModel.startTor()
+    }
 
-                while (torService.torControlConnection == null) {
-                    try {
-                        Thread.sleep(500)
-                    } catch (e: InterruptedException) {
-                        e.printStackTrace()
-                    }
-                }
+    private fun createNotificationChannel() {
+        val name = "Tor Service"
+        val descriptionText = "Keeps the Tor service running"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(TOR_SERVICE_CHANNEL, name, importance).apply {
+            description = descriptionText
+        }
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
 
-                Toast.makeText(this@SaveApp, "Got Tor control connection", Toast.LENGTH_LONG).show()
-            }
+    private fun createSnowbirdNotificationChannel() {
+        val name = "Snowbird Service"
+        val descriptionText = "Keeps the Snowbird server running"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(SNOWBIRD_SERVICE_CHANNEL, name, importance).apply {
+            description = descriptionText
+        }
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
 
-            override fun onServiceDisconnected(name: ComponentName) {
-            }
-        }, BIND_AUTO_CREATE)
+    companion object {
+        const val SNOWBIRD_SERVICE_ID = 2601
+        const val SNOWBIRD_SERVICE_CHANNEL = "snowbird_service_channel"
+
+        const val TOR_SERVICE_ID = 2602
+        const val TOR_SERVICE_CHANNEL = "tor_service_channel"
     }
 }

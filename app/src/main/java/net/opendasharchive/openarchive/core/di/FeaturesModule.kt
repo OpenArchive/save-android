@@ -1,12 +1,13 @@
 package net.opendasharchive.openarchive.core.di
 
+import TorViewModel
 import net.opendasharchive.openarchive.db.CollectionRepository
 import net.opendasharchive.openarchive.db.FolderRepository
 import net.opendasharchive.openarchive.db.ICollectionRepository
 import net.opendasharchive.openarchive.db.IFolderRepository
 import net.opendasharchive.openarchive.db.IMediaRepository
-import net.opendasharchive.openarchive.db.MediaRepository
 import net.opendasharchive.openarchive.db.MediaActionsViewModel
+import net.opendasharchive.openarchive.db.MediaRepository
 import net.opendasharchive.openarchive.features.internetarchive.internetArchiveModule
 import net.opendasharchive.openarchive.features.main.ui.MediaGridViewModel
 import net.opendasharchive.openarchive.upload.MediaUploadManager
@@ -21,6 +22,7 @@ val featuresModule = module {
     single<IFolderRepository> { FolderRepository() }
     single<ICollectionRepository> { CollectionRepository() }
     single<IMediaRepository> { MediaRepository() }
+    viewModel { TorViewModel(get()) }
     viewModel { MediaGridViewModel(get(), get()) }
     viewModel { MediaActionsViewModel(get()) }
     viewModel { MediaUploadStatusViewModel(get()) }

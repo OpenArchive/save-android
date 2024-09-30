@@ -85,13 +85,8 @@
     <string name="retry">Ressayer</string>
 
     <string name="files">Fichiers</string>
-    <string name="health_checks">Bilans de santé</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Aidez à améliorer l’appli en effectuant des bilans de santé quand les téléversements ne réussissent pas.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">Les bilans de santé nous permettent de comprendre pourquoi les téléversements ne réussissent pas.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">Partagez vos données pour faire partie de la solution.</string>
     <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">Si vous l’autorisez, nous effectuerons un bilan de santé chaque fois que vous rencontrerez un problème de téléchargement.</string>
-    <string name="health_checks_capture">Capture de bilans de santé</string>
-    <string name="allow_health_checks">Permettre les bilans de santé ?</string>
     <string name="no_thanks">Non merci</string>
     <string name="undo">Annuler</string>
 

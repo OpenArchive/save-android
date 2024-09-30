@@ -27,8 +27,8 @@ tasks.register("increaseVersionCode") {
 
 tasks.register("increaseVersionName") {
     doLast {
-        val (major, minor, patch, code) = versionProps.getProperty("versionName", "1.0.0.0").split('.').map { it.toInt() }
-        val newVersionName = "$major.$minor.$patch.${code + 1}"
+        val (major, minor, patch) = versionProps.getProperty("versionName", "1.0.0.0").split('.').map { it.toInt() }
+        val newVersionName = "$major.$minor.$patch.${versionCode}"
         versionProps.setProperty("versionName", newVersionName)
         versionProps.store(versionPropsFile.outputStream(), null)
     }

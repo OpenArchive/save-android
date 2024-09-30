@@ -235,19 +235,13 @@
     <string name="add_media_using">إضافة الوسائط باستخدام :</string>
     <string name="photo_gallery">معرض الصور</string>
     <string name="files">الملفات</string>
-    <string name="health_checks">التحقق من سلامة</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">ساعد في تحسين التطبيق من خلال إجراء التحقق من السلامة عند فشل عمليات التحميل.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">يساعدنا التحقق من السلامة في فهم أسباب فشل عمليات التحميل.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">ساهم ببياناتك لتكون جزءًا من الحل.</string>
     <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">بعد الحصول على إذنك، سنجري تحقُّقا في كل مرة تواجه فيها خطأ أثناء التحميل.</string>
-    <string name="health_checks_capture">يلتقط التحقق من السلامة</string>
     <string name="error_description">– وصف الخطأ</string>
     <string name="size_and_type_of_media">– حجم ونوع الوسائط</string>
     <string name="number_of_retries">– عدد مرات إعادة المحاولة</string>
     <string name="network_type">– نوع الشبكة</string>
     <string name="locale">– التوطين</string>
-    <string name="allow_health_checks">السماح بالتحقق من السلامة؟</string>
-    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">من خلال السماح بالتحقق من السلامة، فأنت تعطي للتطبيق الإذن بإرسال بيانات التحقق من السلامة بشكل آمن إلى فريق عمل %s.</string>
     <string name="no_thanks">لا شكراً</string>
     <string name="undo">تراجَع</string>
 

@@ -234,19 +234,13 @@ sus intenciones para uso futuro.</string>
     <string name="add_media_using">Agrega medios usando:</string>
     <string name="photo_gallery">Galería de Fotos</string>
     <string name="files">Archivos</string>
-    <string name="health_checks">Controles de Salud</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Ayuda a mejorar la app ejecutando controles de salud cuando fallan las cargas.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">Los controles de salud nos ayudan a comprender por qué fallan las cargas.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">Aporta tus datos para ser parte de la solución.</string>
     <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">Con tu permiso, realizaremos una verificación cada vez que encuentres un error durante la carga.</string>
-    <string name="health_checks_capture">Los controles de salud capturan</string>
     <string name="error_description">-- Descripción del error</string>
     <string name="size_and_type_of_media">-- Tipo y tamaño de medios</string>
     <string name="number_of_retries">-- Número de reintentos</string>
     <string name="network_type">-- Tipo de red</string>
     <string name="locale">-- Ubicación</string>
-    <string name="allow_health_checks">¿Permitir controles de salud?</string>
-    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">Al permitir los controles de salud, otorgas permiso a la app para enviar de forma segura datos de control de salud al %s del equipo.</string>
     <string name="no_thanks">No gracias</string>
     <string name="undo">Deshacer</string>
 

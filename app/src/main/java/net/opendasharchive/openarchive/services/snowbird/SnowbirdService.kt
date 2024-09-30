@@ -1,11 +1,8 @@
 package net.opendasharchive.openarchive.services.snowbird
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -14,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.features.main.TabBarActivity
 import timber.log.Timber
 import java.io.File
@@ -22,7 +20,6 @@ class SnowbirdService : Service() {
 
     companion object {
         private const val NOTIFICATION_ID = 2600
-        private const val NOTIFICATION_CHANNEL_ID = "SnowbirdServerChannel"
         lateinit var DEFAULT_SOCKET_PATH: String
             private set
     }
@@ -32,7 +29,6 @@ class SnowbirdService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannel()
         val socketFile = File(filesDir, "rust_server.sock")
         DEFAULT_SOCKET_PATH = socketFile.absolutePath
     }
@@ -52,18 +48,6 @@ class SnowbirdService : Service() {
         return null
     }
 
-    private fun createNotificationChannel() {
-        val name = "Snowbird Service"
-        val descriptionText = "Keeps the Snowbird server running"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance).apply {
-            description = descriptionText
-        }
-        val notificationManager: NotificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-    }
-
     private fun createNotification(contentText: String): Notification {
         val pendingIntent: PendingIntent =
             Intent(this, TabBarActivity::class.java).let { notificationIntent ->
@@ -71,8 +55,8 @@ class SnowbirdService : Service() {
                     PendingIntent.FLAG_IMMUTABLE)
             }
 
-        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Rust Server")
+        return NotificationCompat.Builder(this, SaveApp.SNOWBIRD_SERVICE_CHANNEL)
+            .setContentTitle("Snowbird Service")
             .setContentText(contentText)
             .setSmallIcon(R.drawable.snowbird)
             .setContentIntent(pendingIntent)

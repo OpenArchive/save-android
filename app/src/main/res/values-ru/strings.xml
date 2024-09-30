@@ -84,13 +84,8 @@
     <string name="retry">Повторить</string>
 
     <string name="files">Файлы</string>
-    <string name="health_checks">Проверка работоспособности</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Помогите улучшить приложение, запустив проверки работоспособности при сбое загрузки.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">Проверки работоспособности помогают нам понять, почему загрузка не удалась.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">Внесите свои данные, чтобы стать частью решения.</string>
     <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">С вашего разрешения мы будем проводить проверку каждый раз, когда вы сталкиваетесь с ошибкой при загрузке.</string>
-    <string name="health_checks_capture">Проверка работоспособности покрывает</string>
-    <string name="allow_health_checks">Разрешить проверку работоспособности?</string>
     <string name="no_thanks">Нет, спасибо</string>
     <string name="undo">Отменить</string>
 

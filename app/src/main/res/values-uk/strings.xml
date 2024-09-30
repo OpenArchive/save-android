@@ -231,19 +231,13 @@
     <string name="add_media_using">Додати медіафайл з:</string>
     <string name="photo_gallery">Галерея</string>
     <string name="files">Файли</string>
-    <string name="health_checks">Перевірки стану</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Допоможіть покращити застосунок, запустивши перевірку його стану, якщо вивантаження зазнає збою.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">Перевірка стану застосунку допомагає нам зрозуміти, чому вивантаження не вдається.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">Надайте дані застосунку, щоб допомогти розібратись.</string>
     <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">З вашого дозволу ми запускатимемо перевірку щоразу, коли ви зіткнетеся з помилкою під час вивантаження.</string>
-    <string name="health_checks_capture">Перевірка стану включатиме</string>
     <string name="error_description">– Опис помилки</string>
     <string name="size_and_type_of_media">– Розмір і тип медіафайла</string>
     <string name="number_of_retries">– Кількість спроб</string>
     <string name="network_type">– Тип мережі</string>
     <string name="locale">– Локаль</string>
-    <string name="allow_health_checks">Дозволити перевірки стану?</string>
-    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">Дозволяючи перевірку стану, ви надаєте застосунку право безпечно надсилати дані про перевірку стану команді %s.</string>
     <string name="no_thanks">Ні, дякую</string>
     <string name="undo">Скасувати</string>
 
