@@ -66,7 +66,7 @@ class SaveApp : SugarApp() {
 
     private fun initializeTorViewModel() {
         val torViewModel: TorViewModel = getKoin(TorViewModel::class.java)
-        torViewModel.startTor()
+        torViewModel.updateTorServiceState()
     }
 
     private fun createNotificationChannel() {

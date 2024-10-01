@@ -32,6 +32,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>(Prefs.USE_TOR)?.setOnPreferenceChangeListener { _, newValue ->
+            Prefs.useTor = (newValue as Boolean)
             torViewModel.updateTorServiceState()
             true
         }

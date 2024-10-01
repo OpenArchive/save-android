@@ -12,6 +12,9 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.SaveApp
 import net.opendasharchive.openarchive.features.main.TabBarActivity
@@ -19,17 +22,32 @@ import org.torproject.jni.TorService
 import timber.log.Timber
 
 class TorForegroundService : TorService() {
+    private val _torStatus = MutableStateFlow<TorStatus>(TorStatus.DISCONNECTED)
+    val torStatus: StateFlow<TorStatus> = _torStatus.asStateFlow()
+
     inner class TorServiceBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Timber.d("intent = $intent")
             when (intent.action) {
-                ACTION_ERROR -> { Timber.d("error") }
+                ACTION_ERROR -> {
+                    val errorText = intent.getStringExtra(Intent.EXTRA_TEXT)
+                    Timber.d("error = $errorText")
+                    _torStatus.value = TorStatus.ERROR
+                }
                 ACTION_STATUS -> {
                     val status = intent.getStringExtra(EXTRA_STATUS)
                     Timber.d("Tor status = $status")
 
                     if (status == STATUS_ON) {
                         updateNotification("Connected")
+                        _torStatus.value = TorStatus.CONNECTED
+                    } else if (status == STATUS_OFF || status == STATUS_STOPPING) {
+                        // It might be the case the OFF precedes STOPPING, so let's
+                        // bundle it up together here.
+                        //
+                        if (torStatus.value != TorStatus.DISCONNECTED) {
+                            _torStatus.value = TorStatus.DISCONNECTED
+                        }
                     }
                 }
                 else -> Timber.d("Got rogue action: ${intent.action}")
