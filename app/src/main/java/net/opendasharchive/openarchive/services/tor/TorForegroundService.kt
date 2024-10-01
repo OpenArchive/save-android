@@ -72,7 +72,7 @@ class TorForegroundService : TorService() {
         return NotificationCompat.Builder(this, SaveApp.TOR_SERVICE_CHANNEL)
             .setContentTitle("Tor Service")
             .setContentText(text)
-            .setSmallIcon(R.drawable.ic_app_notify)
+            .setSmallIcon(R.drawable.ic_tor)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
