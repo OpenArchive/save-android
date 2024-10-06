@@ -12,12 +12,16 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityTabBarBinding
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
+import net.opendasharchive.openarchive.services.snowbird.SnowbirdBridge
+import net.opendasharchive.openarchive.services.snowbird.SnowbirdViewModel
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.NetworkConnectivityViewModel
 import net.opendasharchive.openarchive.util.Utility
@@ -42,6 +46,7 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
     private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
     private val networkConnectivityViewModel: NetworkConnectivityViewModel by viewModels()
+    private val snowbirdViewModel: SnowbirdViewModel by viewModel()
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -101,6 +106,21 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         }
 
         checkNotificationPermissions()
+
+        SnowbirdBridge.getInstance().initialize()
+
+//        val intent = Intent(this, SnowbirdService::class.java)
+//        startForegroundService(intent)
+
+        lifecycleScope.launch {
+            snowbirdViewModel.status.collect {
+                Timber.d("Snowbird status = $it")
+            }
+        }
+
+//        snowbirdViewModel.groups.observe(this) { groups ->
+//            Timber.d("groups = $groups")
+//        }
 
 //        val mediaUri = Uri.parse("file:///data/user/0/net.opendasharchive.openarchive.debug/cache/20240924_165908.riot3.jpg")
 //        MediaUploadManager.scheduleMediaUpload(mediaUri)
@@ -191,7 +211,7 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
                     this,
                     Manifest.permission.POST_NOTIFICATIONS
                 ) == PackageManager.PERMISSION_GRANTED -> {
-                    Timber.d("We ok")
+                    Timber.d("We have notifications permissions")
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
                     showNotificationPermissionRationale()

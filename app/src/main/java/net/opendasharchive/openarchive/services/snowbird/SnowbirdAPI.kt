@@ -6,11 +6,20 @@ import net.opendasharchive.openarchive.features.main.UnixSocketClient
 
 class SnowbirdAPI(private var client: UnixSocketClient) {
 
-    suspend fun getGroups(): ApiResponse<SnowbirdGroup> {
-        return client.sendRequest<SnowbirdGroup>("/api/groups")
+    companion object {
+        private const val BASE_PATH = "/api"
+        private const val GROUPS_PATH = "$BASE_PATH/groups"
     }
 
-    suspend fun createGroup(): ApiResponse<SnowbirdGroup> {
-        return client.sendRequest<SnowbirdGroup>("/api/groups", HttpMethod.POST)
+    suspend fun getGroups(): ApiResponse<SnowbirdGroup> {
+        return client.sendRequest<SnowbirdGroup>(GROUPS_PATH, HttpMethod.GET)
+    }
+
+    suspend fun getGroup(groupId: String): ApiResponse<SnowbirdGroup> {
+        return client.sendRequest<SnowbirdGroup>("$GROUPS_PATH/$groupId", HttpMethod.GET)
+    }
+
+    suspend fun createGroup(group: SnowbirdGroup): ApiResponse<SnowbirdGroup> {
+        return client.sendRequest<SnowbirdGroup>(GROUPS_PATH, HttpMethod.POST, group)
     }
 }

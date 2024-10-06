@@ -22,7 +22,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
-enum class BackendResult() {
+enum class BackendResult {
     Cancelled, Created, Deleted
 }
 
@@ -79,7 +79,7 @@ data class Backend(
             Backend(Backend.Type.INTERNET_ARCHIVE),
             Backend(Backend.Type.WEBDAV),
             Backend(Backend.Type.GDRIVE),
-//            Backend(Backend.Type.SNOWBIRD),
+            Backend(Backend.Type.SNOWBIRD),
         )
 
         fun getAll(): List<Backend> {

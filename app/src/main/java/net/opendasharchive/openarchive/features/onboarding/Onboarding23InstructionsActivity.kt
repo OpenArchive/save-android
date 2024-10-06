@@ -69,11 +69,6 @@ class Onboarding23InstructionsActivity : BaseActivity() {
                 super.onPageSelected(position)
                 if (isLastPage()) {
                     mBinding.skipButton.visibility = View.INVISIBLE
-//                    mBinding.fab.setImageDrawable(
-//                        ContextCompat.getDrawable(
-//                            mBinding.fab.context, com.esafirm.imagepicker.R.drawable.ef_ic_done_white,
-//                        )
-//                    )
                 } else {
                     mBinding.skipButton.visibility = View.VISIBLE
                     val icon = ContextCompat.getDrawable(

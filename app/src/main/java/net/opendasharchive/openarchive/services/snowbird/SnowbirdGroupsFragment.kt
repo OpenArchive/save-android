@@ -2,34 +2,29 @@ package net.opendasharchive.openarchive.services.snowbird
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.FragmentShowbirdListGroupsBinding
+import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListGroupsBinding
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
-import net.opendasharchive.openarchive.util.extensions.toggle
-import timber.log.Timber
 
 class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterListener {
 
-    private lateinit var viewBinding: FragmentShowbirdListGroupsBinding
-    private val viewModel: SnowbirdGroupsViewModel by viewModels()
+    private lateinit var viewBinding: FragmentSnowbirdListGroupsBinding
+    private val viewModel: SnowbirdViewModel by viewModels()
     private lateinit var adapter: SnowbirdGroupsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewBinding = FragmentShowbirdListGroupsBinding.inflate(inflater)
+        viewBinding = FragmentSnowbirdListGroupsBinding.inflate(inflater)
 
         return viewBinding.root
     }
@@ -37,52 +32,32 @@ class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        createMenu()
+//        createMenu()
 
         createViewModel()
 
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            viewBinding.progressBar.toggle(it)
-        }
-    }
-
-    private fun createMenu() {
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_browse_folder, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.action_add -> {
-                        addGroup()
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
-    private fun addGroup() {
-//        val client = UnixSocketClient(SnowbirdService.DEFAULT_SOCKET_PATH)
-//        val api = SnowbirdAPI(client)
-
-        Timber.d("Creating new group...")
-
-//        CoroutineScope(Dispatchers.IO).launch {
-//            when (val response = api.createGroup()) {
-//                is ApiResponse.SingleResponse -> {
-//                    val data = response.data
-//                    Timber.d("Received data: $data")
-//                }
-//                is ApiResponse.Error -> {
-//                    Timber.d("Error: ${response.message}")
-//                }
-//                else -> Unit
-//            }
+//        viewModel.isLoading.observe(viewLifecycleOwner) {
+//            viewBinding.progressBar.toggle(it)
 //        }
     }
+
+//    private fun createMenu() {
+//        requireActivity().addMenuProvider(object : MenuProvider {
+//            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+//                menuInflater.inflate(R.menu.menu_snowbird, menu)
+//            }
+//
+//            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+//                return when (menuItem.itemId) {
+//                    R.id.action_add -> {
+//                        addGroup()
+//                        true
+//                    }
+//                    else -> false
+//                }
+//            }
+//        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+//    }
 
     private fun createSnowbirdBackend(group: SnowbirdGroup) {
 //        arguments?.getString("uri")?.also { uri ->
@@ -112,8 +87,10 @@ class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterLis
         viewBinding.groupList.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.groupList.adapter = adapter
 
-        viewModel.groups.observe(viewLifecycleOwner) { groups ->
-            adapter.submitList(groups)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.groups.collect { groups ->
+                adapter.submitList(groups)
+            }
         }
     }
 

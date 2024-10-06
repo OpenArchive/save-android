@@ -3,11 +3,17 @@ package net.opendasharchive.openarchive.services.snowbird
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.zxing.integration.android.IntentIntegrator
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdBinding
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
 import net.opendasharchive.openarchive.services.webdav.ReadyToAuthTextWatcher
@@ -32,13 +38,33 @@ class SnowbirdFragment : Fragment() {
 
         setupTextListener()
 
-        viewBinding.findGroupsButton.setOnClickListener {
+        viewBinding.createGroupButton.setOnClickListener {
             val uri = viewBinding.serverUri.text.toString()
 
-            pushSnowbirdGroupSelectionFragment(uri)
+            navigateToCreateGroupScreen()
         }
 
         viewBinding.serverUri.requestFocus()
+
+        createMenu()
+    }
+
+    private fun createMenu() {
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_browse_folder, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_add -> {
+                        navigateToCreateGroupScreen()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun enableIfReady() {
@@ -47,7 +73,11 @@ class SnowbirdFragment : Fragment() {
 //        viewBinding.okButton.isEnabled = isComplete
     }
 
-    private fun pushSnowbirdGroupSelectionFragment(uri: String) {
+    private fun navigateToCreateGroupScreen() {
+        findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdCreateGroupScreen())
+    }
+
+    private fun navigateToListGroupsScreen(uri: String) {
         findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupSelectionScreen())
     }
 

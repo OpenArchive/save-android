@@ -43,10 +43,10 @@ class BackendSelectionFragment : Fragment() {
         val color = ContextCompat.getColor(requireContext(), R.color.c23_teal)
         val leftIcon = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_info_24)?.tint(color)
 
-        viewBinding.screenTitle.leftIcon.setImageDrawable(leftIcon)
+//        viewBinding.screenTitle.leftIcon.setImageDrawable(leftIcon)
 //        viewBinding.screenTitle.title.setTextColor(ContextCompat.getColor(requireContext(), R.color.c23_teal))
-        viewBinding.screenTitle.title.text = getString(R.string.select_where_to_store_your_media)
-        viewBinding.screenTitle.title.maxLines = 2
+//        viewBinding.screenTitle.title.text = getString(R.string.select_where_to_store_your_media)
+//        viewBinding.screenTitle.title.maxLines = 2
     }
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,

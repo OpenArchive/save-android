@@ -1,16 +1,14 @@
+package net.opendasharchive.openarchive.services.tor
 
 import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.StateFlow
-import net.opendasharchive.openarchive.services.tor.TorForegroundService
-import net.opendasharchive.openarchive.services.tor.TorRepository
-import net.opendasharchive.openarchive.services.tor.TorStatus
 import net.opendasharchive.openarchive.util.Prefs
 
 class TorViewModel(
     application: Application,
-    private val torRepository: TorRepository
+    private val torRepository: ITorRepository
 ) : AndroidViewModel(application) {
 
     val torStatus: StateFlow<TorStatus> = torRepository.torStatus

@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.features.settings
 
-import TorViewModel
 import android.content.Intent
 import android.os.Bundle
 import androidx.preference.ListPreference
@@ -9,14 +8,16 @@ import androidx.preference.PreferenceFragmentCompat
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.main.WebViewActivity
+import net.opendasharchive.openarchive.services.tor.TorViewModel
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
 import net.opendasharchive.openarchive.util.extensions.getVersionName
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    private val torViewModel: TorViewModel by viewModel()
+    val torViewModel: TorViewModel by viewModel { parametersOf(requireActivity().application) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.prefs_general, rootKey)

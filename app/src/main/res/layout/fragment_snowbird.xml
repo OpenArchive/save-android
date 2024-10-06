@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusedByDefault="false"
-                android:hint="@string/enter_url"
+                android:hint="Enter Group URL"
                 android:inputType="textUri"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -83,11 +83,11 @@
 
         <com.google.android.material.button.MaterialButton
             style="@style/OAMaterialSignInButtonStyle"
-            android:id="@+id/find_groups_button"
+            android:id="@+id/create_group_button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
-            android:text="Find Groups"
+            android:text="Create Group"
             app:layout_constraintTop_toBottomOf="@id/divider" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

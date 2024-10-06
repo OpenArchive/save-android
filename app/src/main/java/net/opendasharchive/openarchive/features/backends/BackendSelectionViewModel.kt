@@ -35,9 +35,14 @@ class BackendSelectionViewModel : ViewModel() {
     private fun loadGroupedBackends() {
         viewModelScope.launch {
             try {
-                val backends = mapOf(
-                    "Already Connected" to Backend.getAll().toList(),
+                val backends = mutableListOf(
                     "Create New Connection" to Backend.ALL_BACKENDS)
+
+                val connectedBackends = Backend.getAll().toList()
+
+                if (connectedBackends.isNotEmpty()) {
+                    backends.add(0, "Already Connected" to Backend.getAll().toList())
+                }
                 _backends.value = processBackends(backends)
             } catch (e: Exception) {
                 // Handle error
@@ -45,7 +50,7 @@ class BackendSelectionViewModel : ViewModel() {
         }
     }
 
-    private fun processBackends(group: Map<String, List<Backend>>): GroupedBackends {
+    private fun processBackends(group: List<Pair<String, List<Backend>>>): GroupedBackends {
         val headers = mutableListOf<GroupedBackend.Header>()
         val itemsMap = mutableMapOf<GroupedBackend.Header, MutableList<GroupedBackend.Item>>()
 

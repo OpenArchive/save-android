@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
     implementation("androidx.camera:camera-view:${cameraxVersion}")
 
-    val navigationVersion = "2.8.1"
+    val navigationVersion = "2.8.2"
     implementation("androidx.navigation:navigation-compose:$navigationVersion")
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
@@ -133,7 +133,7 @@ dependencies {
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.multidex:multidex:2.0.1")
 
-    val composeVersion = "1.7.2"
+    val composeVersion = "1.7.3"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
@@ -275,9 +275,11 @@ dependencies {
     // Mixpanel analytics
     implementation("com.mixpanel.android:mixpanel-android:7.5.2")
 
-    implementation("androidx.webkit:webkit:1.12.0")
+    implementation("androidx.webkit:webkit:1.12.1")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    implementation(kotlin("reflect"))
 
     // Tests
     testImplementation("junit:junit:4.13.2")

@@ -11,6 +11,54 @@ platform :android do
     gradle(task: "increaseVersionName")
   end
 
+  desc "Submit a new Internal Build"
+  lane :internal do
+	app_root = File.expand_path('..', FastlaneCore::FastlaneFolder.path)
+    UI.message("Build Started 🚀")
+    increment_version
+    gradle(
+	  task: "bundle",
+      build_type: "Release",
+      print_command_output: true,
+      properties: {
+        "android.injected.signing.store.file" => File.join(app_root, ENV["FASTLANE_KEYSTORE_FILE"]),
+        "android.injected.signing.store.password" => ENV["FASTLANE_KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["FASTLANE_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["FASTLANE_KEY_PASSWORD"],
+      })
+    UI.message("Uploading To Internal track")
+    # upload_to_play_store(
+    #   track: "internal",
+    #   skip_upload_images: true,
+    #   skip_upload_changelogs: true,
+    #   skip_upload_screenshots: true,
+    #   skip_upload_apk: true,
+    #   json_key: ENV["FASTLANE_JSON_KEY_FILE"])
+  end
+
+  desc "Submit a new Alpha Build"
+  lane :alpha do
+    UI.message("Build Started 🚀")
+    increment_version
+    gradle(task: "clean assembleRelease")
+    UI.message("Uploading To Alpha track")
+    upload_to_play_store(track: "alpha")
+  end
+
+  desc "Submit a new Beta Build"
+  lane :beta do
+    UI.message("Build Started 🚀")
+    increment_version
+    gradle(task: "assembleRelease")
+    UI.message("Uploading To Beta track")
+    upload_to_play_store(
+		track: "beta",
+		skip_upload_images: true,
+		skip_upload_changelogs: true,
+		skip_upload_screenshots: true,
+		json_key: ENV["FASTLANE_JSON_KEY_FILE"])
+  end
+
   desc "Create a release build for manual deployment"
   lane :release do
     fetch_and_increment_build_number
@@ -24,61 +72,16 @@ platform :android do
         "android.injected.signing.key.password" => ENV["FASTLANE_KEY_PASSWORD"],
       }
     )
-    send_progress_message("Copying APK to current folder")
+    UI.message("Copying APK to current folder")
     copy_artifacts(
       artifacts: [lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]],
       target_path: ENV["PWD"]
     )
   end
 
-  desc "Submit a new Internal Build"
-  lane :internal do
-    send_progress_message("Build Started")
-    # versions = google_play_track_version_codes(track: "internal")
-    # version_code = versions[0]
-    gradle(
-	  task: "bundle",
-      build_type: "release",
-      print_command_output: false,
-      properties: {
-        "android.injected.signing.store.file" => ENV["FASTLANE_KEYSTORE_FILE"],
-        "android.injected.signing.key.alias" => ENV["FASTLANE_KEY_ALIAS"],
-      })
-    send_progress_message("Uploading To Internal track")
-    upload_to_play_store(
-        track: "internal",
-        skip_upload_images: true,
-        skip_upload_changelogs: true,
-        skip_upload_screenshots: true,
-        skip_upload_apk: true,
-        json_key: ENV["FASTLANE_JSON_KEY_FILE"])
-  end
-
-  desc "Submit a new Alpha Build"
-  lane :alpha do
-    send_progress_message("Build Started")
-    gradle(task: "clean assembleRelease")
-    send_progress_message("Uploading To Alpha track")
-    upload_to_play_store(track: "alpha")
-  end
-
-  desc "Submit a new Beta Build"
-  lane :beta do
-    send_progress_message("Build Started 🚀")
-    increment_version
-    gradle(task: "assembleRelease")
-    send_progress_message("Uploading To Beta track")
-    upload_to_play_store(
-		track: "beta",
-		skip_upload_images: true,
-		skip_upload_changelogs: true,
-		skip_upload_screenshots: true,
-		json_key: ENV["FASTLANE_JSON_KEY_FILE"])
-  end
-
   desc "Deploy a new version to the Google Play"
   lane :deploy do
-    send_progress_message("Build Started 🚀")
+    UI.message("Build Started 🚀")
     increment_version
     gradle(task: "clean assembleRelease")
     upload_to_play_store
@@ -86,10 +89,6 @@ platform :android do
 end
 
 def send_message(message)
-  puts message
-end
-
-def send_progress_message(message)
   puts message
 end
 

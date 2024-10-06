@@ -34,8 +34,7 @@
                 android:textFontWeight="900"
                 android:textSize="28sp"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText"
-                tools:targetApi="p" />
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/summary"

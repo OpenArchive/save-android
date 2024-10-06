@@ -31,7 +31,7 @@ class SnowbirdGroupsAdapter(listener: SnowbirdGroupsAdapterListener?)
             binding.button.setLeftIcon(ContextCompat.getDrawable(context, R.drawable.snowbird)?.scaled(40, context))
             binding.button.setBackgroundResource(R.drawable.button_outlined_ripple)
 
-            binding.button.setTitle(group.name)
+            binding.button.setTitle(group.key)
 
             binding.button.setOnClickListener {
                 listener?.get()?.groupSelected(group)
@@ -46,7 +46,7 @@ class SnowbirdGroupsAdapter(listener: SnowbirdGroupsAdapterListener?)
             }
 
             override fun areContentsTheSame(oldItem: SnowbirdGroup, newItem: SnowbirdGroup): Boolean {
-                return oldItem.name == newItem.name
+                return oldItem.key == newItem.key
             }
         }
     }

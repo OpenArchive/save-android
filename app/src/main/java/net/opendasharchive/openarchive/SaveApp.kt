@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive
 
-import TorViewModel
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -8,6 +7,8 @@ import androidx.multidex.MultiDex
 import com.orm.SugarApp
 import net.opendasharchive.openarchive.core.di.coreModule
 import net.opendasharchive.openarchive.core.di.featuresModule
+import net.opendasharchive.openarchive.extensions.getViewModel
+import net.opendasharchive.openarchive.services.tor.TorViewModel
 import net.opendasharchive.openarchive.upload.MediaUploadManager
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Prefs
@@ -16,7 +17,6 @@ import net.opendasharchive.openarchive.util.Theme
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
-import org.koin.java.KoinJavaComponent.get as getKoin
 
 class SaveApp : SugarApp() {
 
@@ -46,9 +46,6 @@ class SaveApp : SugarApp() {
 
         Prefs.load(this)
 
-//        val intent = Intent(this, SnowbirdService::class.java)
-//        startForegroundService(intent)
-
         ProofModeHelper.init(this) {
             // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
             // UploadService.startUploadService(this)
@@ -58,6 +55,7 @@ class SaveApp : SugarApp() {
         initializeTorViewModel()
 
         createNotificationChannel()
+        createSnowbirdNotificationChannel()
 
         Theme.set(Prefs.theme)
 
@@ -65,7 +63,7 @@ class SaveApp : SugarApp() {
     }
 
     private fun initializeTorViewModel() {
-        val torViewModel: TorViewModel = getKoin(TorViewModel::class.java)
+        val torViewModel: TorViewModel = getViewModel(this)
         torViewModel.updateTorServiceState()
     }
 
