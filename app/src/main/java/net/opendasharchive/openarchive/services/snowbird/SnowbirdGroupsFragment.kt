@@ -59,25 +59,6 @@ class SnowbirdGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterLis
 //        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 //    }
 
-    private fun createSnowbirdBackend(group: SnowbirdGroup) {
-//        arguments?.getString("uri")?.also { uri ->
-//            val backend = Backend(type = Backend.Type.VEILID)
-//            backend.host = uri
-//            backend.save()
-//
-//            folder.backendId = backend.id
-//            folder.save()
-//
-//            Backend.current = backend
-//
-//            setFragmentResult(RESP_CREATED, bundleOf())
-//
-//            // showSuccess()
-//        } ?: {
-//            showError()
-//        }
-    }
-
     private fun createViewModel() {
         adapter = SnowbirdGroupsAdapter(this)
 

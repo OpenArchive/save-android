@@ -3,7 +3,7 @@ package net.opendasharchive.openarchive.services.snowbird
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class ApiError {
+sealed class ApiError: SerializableMarker {
     @Serializable
     data class HttpError(val code: Int, val message: String) : ApiError()
 

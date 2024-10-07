@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.util.extensions.tint
 import net.opendasharchive.openarchive.util.extensions.toggle
 
 class BackendSelectionFragment : Fragment() {
@@ -40,13 +40,14 @@ class BackendSelectionFragment : Fragment() {
 
         viewBinding.progressBar.toggle(false)
 
-        val color = ContextCompat.getColor(requireContext(), R.color.c23_teal)
-        val leftIcon = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_info_24)?.tint(color)
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
 
-//        viewBinding.screenTitle.leftIcon.setImageDrawable(leftIcon)
-//        viewBinding.screenTitle.title.setTextColor(ContextCompat.getColor(requireContext(), R.color.c23_teal))
-//        viewBinding.screenTitle.title.text = getString(R.string.select_where_to_store_your_media)
-//        viewBinding.screenTitle.title.maxLines = 2
+        val color = ContextCompat.getColor(requireContext(), R.color.c23_teal)
     }
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,

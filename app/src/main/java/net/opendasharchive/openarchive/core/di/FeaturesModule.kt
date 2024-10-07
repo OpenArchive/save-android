@@ -9,7 +9,9 @@ import net.opendasharchive.openarchive.db.IMediaRepository
 import net.opendasharchive.openarchive.db.MediaActionsViewModel
 import net.opendasharchive.openarchive.db.MediaRepository
 import net.opendasharchive.openarchive.features.internetarchive.internetArchiveModule
+import net.opendasharchive.openarchive.features.main.UnixSocketClient
 import net.opendasharchive.openarchive.features.main.ui.MediaGridViewModel
+import net.opendasharchive.openarchive.services.snowbird.SnowbirdAPI
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdViewModel
 import net.opendasharchive.openarchive.services.tor.ITorRepository
 import net.opendasharchive.openarchive.services.tor.TorForegroundService
@@ -23,6 +25,8 @@ import org.koin.dsl.module
 
 val featuresModule = module {
     includes(internetArchiveModule)
+    single { SnowbirdAPI(get()) }
+    single { UnixSocketClient() }
     single { TorForegroundService() }
     single { MediaUploadRepository(MediaUploadManager) }
     single<IFolderRepository> { FolderRepository() }
@@ -33,5 +37,5 @@ val featuresModule = module {
     viewModel { MediaGridViewModel(get(), get()) }
     viewModel { MediaActionsViewModel(get()) }
     viewModel { MediaUploadStatusViewModel(get()) }
-    viewModel { SnowbirdViewModel() }
+    viewModel { SnowbirdViewModel(get()) }
 }

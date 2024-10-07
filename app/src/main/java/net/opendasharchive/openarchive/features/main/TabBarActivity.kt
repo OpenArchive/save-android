@@ -3,6 +3,7 @@ package net.opendasharchive.openarchive.features.main
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -12,7 +13,11 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityTabBarBinding
@@ -47,6 +52,8 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
     private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
     private val networkConnectivityViewModel: NetworkConnectivityViewModel by viewModels()
     private val snowbirdViewModel: SnowbirdViewModel by viewModel()
+
+    private val _uriStateFlow = MutableStateFlow<Uri?>(null)
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -118,6 +125,16 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
             }
         }
 
+        handleIntent(intent)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                _uriStateFlow.collect { uri ->
+                    uri?.let { processUri(it) }
+                }
+            }
+        }
+
 //        snowbirdViewModel.groups.observe(this) { groups ->
 //            Timber.d("groups = $groups")
 //        }
@@ -140,6 +157,11 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 //        setWifiIndicator(Prefs.uploadWifiOnly)
 
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -181,6 +203,21 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 //        connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
 //        connectivityManager.requestNetwork(networkRequest, networkCallback)
 //    }
+
+    private fun handleIntent(intent: Intent?) {
+        if (intent?.action == Intent.ACTION_VIEW) {
+            val uri = intent.data
+            if (uri?.scheme == "save-veilid") {
+                _uriStateFlow.update { uri }
+            }
+        }
+    }
+
+    private fun processUri(uri: Uri) {
+        val path = uri.path
+        val queryParams = uri.queryParameterNames.associateWith { uri.getQueryParameter(it) }
+        Timber.d("Got path = $path and params = $queryParams")
+    }
 
     private fun showWifiStatusDialog() {
         CookieBar.build(this@TabBarActivity)

@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.features.main.ApiResponse
-import net.opendasharchive.openarchive.features.main.UnixSocketClient
+import timber.log.Timber
 
-class SnowbirdViewModel : ViewModel() {
+class SnowbirdViewModel(val api: SnowbirdAPI) : ViewModel() {
 
     val status: StateFlow<SnowbirdServiceStatus> = SnowbirdBridge.getInstance().status
         .stateIn(
@@ -29,8 +29,8 @@ class SnowbirdViewModel : ViewModel() {
     private val _error = MutableStateFlow<ApiError?>(null)
     val error: StateFlow<ApiError?> = _error.asStateFlow()
 
-    val client = UnixSocketClient(SnowbirdService.DEFAULT_SOCKET_PATH)
-    val api = SnowbirdAPI(client)
+    private val _processing = MutableStateFlow(false)
+    val processing: StateFlow<Boolean> = _processing.asStateFlow()
 
     fun fetchGroup(groupId: String) {
         viewModelScope.launch {
@@ -52,16 +52,24 @@ class SnowbirdViewModel : ViewModel() {
         }
     }
 
-    fun createGroup(group: SnowbirdGroup) {
+    fun createGroup(groupName: String) {
         viewModelScope.launch {
-            when (val response = api.createGroup(group)) {
+            _processing.value = true
+
+            when (val response = api.createGroup(groupName)) {
                 is ApiResponse.SingleResponse -> {
+                    Timber.d("response = $response")
                     _group.value = response.data
                     _groups.value += response.data
                 }
-                is ApiResponse.ErrorResponse -> _error.value = response.error
+                is ApiResponse.ErrorResponse -> {
+                    Timber.d("response = $response")
+                    _error.value = response.error
+                }
                 else -> _error.value = ApiError.UnexpectedError("Unexpected response type")
             }
+
+            _processing.value = false
         }
     }
 }

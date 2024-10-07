@@ -1,27 +1,44 @@
 package net.opendasharchive.openarchive.services.snowbird
 
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.zxing.integration.android.IntentIntegrator
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdBinding
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
-import net.opendasharchive.openarchive.services.webdav.ReadyToAuthTextWatcher
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 
 class SnowbirdFragment : Fragment() {
 
     private lateinit var viewBinding: FragmentSnowbirdBinding
+    private val snowbirdViewModel: SnowbirdViewModel by viewModel()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            snowbirdViewModel.error.collect { error ->
+                error?.let {
+                    Toast.makeText(requireContext(), it.friendlyMessage, Toast.LENGTH_SHORT).show()
+                    Timber.d("Error = $it")
+                }
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentSnowbirdBinding.inflate(inflater)
@@ -32,21 +49,26 @@ class SnowbirdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.serverTextInput.setEndIconOnClickListener {
-            startQRScanner()
+//        viewBinding.serverTextInput.setEndIconOnClickListener {
+//            startQRScanner()
+//        }
+
+//        setupTextListener()
+
+        viewBinding.joinGroupButton.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                startQRScanner()
+                // snowbirdViewModel.fetchGroup("dfdf")
+            }
         }
 
-        setupTextListener()
-
         viewBinding.createGroupButton.setOnClickListener {
-            val uri = viewBinding.serverUri.text.toString()
-
             navigateToCreateGroupScreen()
         }
 
-        viewBinding.serverUri.requestFocus()
+//        viewBinding.serverUri.requestFocus()
 
-        createMenu()
+//        createMenu()
     }
 
     private fun createMenu() {
@@ -67,11 +89,9 @@ class SnowbirdFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun enableIfReady() {
-        val isComplete = !viewBinding.serverUri.text.isNullOrEmpty()
-
-//        viewBinding.okButton.isEnabled = isComplete
-    }
+//    private fun enableIfReady() {
+//        val isComplete = !viewBinding.serverUri.text.isNullOrEmpty()
+//    }
 
     private fun navigateToCreateGroupScreen() {
         findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdCreateGroupScreen())
@@ -81,13 +101,13 @@ class SnowbirdFragment : Fragment() {
         findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupSelectionScreen())
     }
 
-    private fun setupTextListener() {
-        viewBinding.serverUri.addTextChangedListener(object : ReadyToAuthTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                enableIfReady()
-            }
-        })
-    }
+//    private fun setupTextListener() {
+//        viewBinding.serverUri.addTextChangedListener(object : ReadyToAuthTextWatcher() {
+//            override fun afterTextChanged(s: Editable?) {
+//                enableIfReady()
+//            }
+//        })
+//    }
 
     private fun startQRScanner() {
         val integrator = IntentIntegrator(requireActivity())
