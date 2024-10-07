@@ -26,6 +26,7 @@ import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdBridge
+import net.opendasharchive.openarchive.services.snowbird.SnowbirdService
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdViewModel
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.NetworkConnectivityViewModel
@@ -116,8 +117,8 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
         SnowbirdBridge.getInstance().initialize()
 
-//        val intent = Intent(this, SnowbirdService::class.java)
-//        startForegroundService(intent)
+        val intent = Intent(this, SnowbirdService::class.java)
+        startForegroundService(intent)
 
         lifecycleScope.launch {
             snowbirdViewModel.status.collect {

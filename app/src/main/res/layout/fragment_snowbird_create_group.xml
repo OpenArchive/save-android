@@ -78,11 +78,4 @@
             app:layout_constraintTop_toBottomOf="@id/group_name_textfield_container" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center" />
 </FrameLayout>

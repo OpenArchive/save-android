@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdBinding
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
+import net.opendasharchive.openarchive.util.Utility
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -26,6 +28,21 @@ class SnowbirdFragment : Fragment() {
 
     private lateinit var viewBinding: FragmentSnowbirdBinding
     private val snowbirdViewModel: SnowbirdViewModel by viewModel()
+
+    private val qrCodeLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val scanResult = IntentIntegrator.parseActivityResult(result.resultCode, result.data)
+        if (scanResult != null) {
+            if (scanResult.contents == null) {
+                Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
+            } else {
+                val scannedData = scanResult.contents
+                // Toast.makeText(requireContext(), "Scanned: $scannedData", Toast.LENGTH_LONG).show()
+                processScannedData(scannedData)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,32 +134,24 @@ class SnowbirdFragment : Fragment() {
         integrator.setBeepEnabled(false)
         integrator.setBarcodeImageEnabled(true)
         integrator.setCaptureActivity(QRScannerActivity::class.java)
-        integrator.initiateScan()
+
+        val scanningIntent = integrator.createScanIntent()
+
+        qrCodeLauncher.launch(scanningIntent)
     }
 
-//    @Deprecated("")
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        val result: IntentResult? = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-//
-//        if (result != null) {
-//            if (result.contents == null) {
-//                Timber.d("Cancelled")
-//            } else {
-//                val scannedUrl = result.contents
-//
-//                viewBinding.serverUri.setText(scannedUrl)
-////                viewBinding.okButton.isEnabled = true
-//
-//                if (isValidUrl(scannedUrl)) {
-//                    Timber.d("Scanned URL: $scannedUrl")
-//                } else {
-//                    Timber.d("Invalid URL in QR Code: $scannedUrl")
-//                }
-//            }
-//        } else {
-//            super.onActivityResult(requestCode, resultCode, data)
-//        }
-//    }
+    private fun processScannedData(data: String) {
+        Utility.showMaterialPrompt(
+            requireContext(),
+            title = "Join Group?",
+            message = "Would you like to join the group named \"asdf\" (4e2e7793)?",
+            positiveButtonText = "Yes",
+            negativeButtonText = "No") { affirm ->
+            if (affirm) {
+                findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupOverviewScreen())
+            }
+        }
+    }
 
     private fun isValidUrl(url: String): Boolean {
         return android.util.Patterns.WEB_URL.matcher(url).matches()

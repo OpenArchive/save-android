@@ -9,3 +9,7 @@ data class SnowbirdGroup(
     val key: String? = null,
     val name: String? = null,
 ) : SugarRecord(), SerializableMarker
+
+fun SnowbirdGroup.shortHash(): String {
+    return "hash"
+}

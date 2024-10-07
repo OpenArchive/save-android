@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdCreateGroupBinding
 import net.opendasharchive.openarchive.services.CommonServiceFragment
+import net.opendasharchive.openarchive.util.FullScreenOverlayManager
 import net.opendasharchive.openarchive.util.Utility
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -36,19 +38,25 @@ class SnowbirdCreateGroupFragment : CommonServiceFragment() {
         }
 
         lifecycleScope.launch {
-            snowbirdViewModel.group.collect { group ->
-                group?.let {
-                    Timber.d("Dismissing keyboard")
-                    showConfirmation()
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                snowbirdViewModel.group.collect { group ->
+                    group?.let {
+                        Timber.d("Dismissing keyboard")
+                        showConfirmation(group)
+                    }
                 }
             }
         }
 
         lifecycleScope.launch {
-            snowbirdViewModel.processing.collect {
-                Timber.d("Processing? $it")
-                MainScope().launch {
-                    viewBinding.progressBar.visibility = if (it) View.VISIBLE else View.INVISIBLE
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                snowbirdViewModel.isProcessing.collect { isProcessing ->
+                    Timber.d("is processing? $isProcessing")
+                    if (isProcessing) {
+                        FullScreenOverlayManager.show(this@SnowbirdCreateGroupFragment)
+                    } else {
+                        FullScreenOverlayManager.hide()
+                    }
                 }
             }
         }
@@ -59,7 +67,7 @@ class SnowbirdCreateGroupFragment : CommonServiceFragment() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun showConfirmation() {
+    private fun showConfirmation(group: SnowbirdGroup) {
         Utility.showMaterialPrompt(
             requireContext(),
             title = "Snowbird Group Created",
@@ -67,7 +75,10 @@ class SnowbirdCreateGroupFragment : CommonServiceFragment() {
             positiveButtonText = "Yes",
             negativeButtonText = "No") { affirm ->
             if (affirm) {
-                findNavController().navigate(SnowbirdCreateGroupFragmentDirections.navigateToShareScreen())
+                when (val groupId = group.key) {
+                    null -> Timber.d("Wait, what?")
+                    else -> findNavController().navigate(SnowbirdCreateGroupFragmentDirections.navigateToShareScreen(groupId))
+                }
             }
         }
     }

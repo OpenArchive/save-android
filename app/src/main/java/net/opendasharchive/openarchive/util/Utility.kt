@@ -29,6 +29,20 @@ import java.util.Locale
 
 object Utility {
 
+    fun buildUri(
+        scheme: String,
+        host: String? = null,
+        path: String? = null,
+        queryParams: Map<String, String?> = emptyMap()
+    ): Uri = Uri.Builder().apply {
+        scheme(scheme)
+        authority(host)
+        path?.let { path(it) }
+        queryParams.forEach { (key, value) ->
+            value?.let { appendQueryParameter(key, it) }
+        }
+    }.build()
+
     fun getMimeType(context: Context, uri: Uri?): String? {
         val cR = context.contentResolver
         return cR.getType(uri!!)
@@ -104,10 +118,12 @@ object Utility {
             MaterialAlertDialogBuilder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(positiveButtonText) { _, _ ->
+                .setPositiveButton(positiveButtonText) { dialog, _ ->
+                    dialog.dismiss()
                     completion.invoke(true)
                 }
-                .setNegativeButton(negativeButtonText) { _, _ ->
+                .setNegativeButton(negativeButtonText) { dialog, _ ->
+                    dialog.dismiss()
                     completion.invoke(false)
                 }
                 .show()

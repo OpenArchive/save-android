@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/qr_code"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="256dp"
+        android:layout_height="256dp"
         android:src="@drawable/qr_code"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

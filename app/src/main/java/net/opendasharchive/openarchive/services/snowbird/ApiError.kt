@@ -26,6 +26,9 @@ sealed class ApiError: SerializableMarker {
     data object ResourceNotFound : ApiError()
 
     @Serializable
+    data object TimedOut : ApiError()
+
+    @Serializable
     data object None : ApiError()
 
     val friendlyMessage: String
@@ -37,6 +40,7 @@ sealed class ApiError: SerializableMarker {
             is UnexpectedError -> "An unexpected error occurred: $message"
             Unauthorized -> "Unauthorized: Please log in and try again"
             ResourceNotFound -> "The requested resource was not found"
+            TimedOut -> "The request timed out"
             None -> "No error"
         }
 }
