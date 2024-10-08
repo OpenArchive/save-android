@@ -41,7 +41,12 @@ class SnowbirdCreateGroupFragment : CommonServiceFragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 snowbirdViewModel.group.collect { group ->
                     group?.let {
-                        Timber.d("Dismissing keyboard")
+                        val newGroup = SugarySnowbirdGroup(
+                            foo = group.name,
+                            bar = group.key
+                        )
+                        newGroup.save()
+
                         showConfirmation(group)
                     }
                 }

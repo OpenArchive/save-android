@@ -5,11 +5,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SnowbirdGroup(
-    val groupId: String? = null,
-    val key: String? = null,
-    val name: String? = null,
+    var groupId: String = "",
+    var key: String = "",
+    var name: String = "",
 ) : SugarRecord(), SerializableMarker
 
+data class SugarySnowbirdGroup(
+    var foo: String = "",
+    var bar: String = "",
+) : SugarRecord()
+
 fun SnowbirdGroup.shortHash(): String {
-    return "hash"
+    return key.take(10)
 }

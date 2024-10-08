@@ -30,7 +30,6 @@ class SnowbirdGroupsAdapter(listener: SnowbirdGroupsAdapterListener?)
 
             binding.button.setLeftIcon(ContextCompat.getDrawable(context, R.drawable.snowbird)?.scaled(40, context))
             binding.button.setBackgroundResource(R.drawable.button_outlined_ripple)
-
             binding.button.setTitle(group.key)
 
             binding.button.setOnClickListener {

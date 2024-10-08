@@ -2,27 +2,20 @@ package net.opendasharchive.openarchive.services.snowbird
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.coroutines.launch
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdBinding
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
 import net.opendasharchive.openarchive.util.Utility
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-
 
 class SnowbirdFragment : Fragment() {
 
@@ -74,36 +67,15 @@ class SnowbirdFragment : Fragment() {
 
         viewBinding.joinGroupButton.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                startQRScanner()
+                // startQRScanner()
                 // snowbirdViewModel.fetchGroup("dfdf")
+                findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupSelectionScreen())
             }
         }
 
         viewBinding.createGroupButton.setOnClickListener {
             navigateToCreateGroupScreen()
         }
-
-//        viewBinding.serverUri.requestFocus()
-
-//        createMenu()
-    }
-
-    private fun createMenu() {
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_browse_folder, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.action_add -> {
-                        navigateToCreateGroupScreen()
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
 //    private fun enableIfReady() {

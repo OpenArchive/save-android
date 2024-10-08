@@ -137,9 +137,25 @@
             app:popUpToInclusive="false"/>
     </fragment>
     <fragment
+        android:id="@+id/snowbird_list_documents_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdListDocumentsFragment"
+        android:label="Shared Documents"/>
+    <fragment
+        android:id="@+id/snowbird_list_users_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdListUsersFragment"
+        android:label="Group Users">
+        <action
+            android:id="@+id/navigate_to_snowbird_list_documents_screen"
+            app:destination="@id/snowbird_list_documents_screen" />
+    </fragment>
+    <fragment
         android:id="@+id/snowbird_group_selection_screen"
-        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupsFragment"
-        android:label="Snowbird"/>
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdListGroupsFragment"
+        android:label="Snowbird Groups">
+        <action
+            android:id="@+id/navigate_to_snowbird_list_users_screen"
+            app:destination="@id/snowbird_list_users_screen" />
+    </fragment>
     <fragment
         android:id="@+id/internet_archive_screen"
         android:name="net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveFragment"
