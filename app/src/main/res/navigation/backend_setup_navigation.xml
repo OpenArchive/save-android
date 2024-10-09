@@ -142,7 +142,7 @@
         android:label="Shared Documents"/>
     <fragment
         android:id="@+id/snowbird_list_users_screen"
-        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdListUsersFragment"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdListReposFragment"
         android:label="Group Users">
         <action
             android:id="@+id/navigate_to_snowbird_list_documents_screen"

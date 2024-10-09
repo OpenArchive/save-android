@@ -190,7 +190,7 @@
             android:value="openarchive.db" />
         <meta-data
             android:name="VERSION"
-            android:value="37" />
+            android:value="38" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

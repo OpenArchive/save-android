@@ -20,9 +20,6 @@ import timber.log.Timber
 
 class SaveApp : SugarApp() {
 
-    lateinit var torViewModel: TorViewModel
-        private set
-
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         MultiDex.install(this)
@@ -54,7 +51,7 @@ class SaveApp : SugarApp() {
 
         initializeTorViewModel()
 
-        createNotificationChannel()
+        createTorNotificationChannel()
         createSnowbirdNotificationChannel()
 
         Theme.set(Prefs.theme)
@@ -67,7 +64,7 @@ class SaveApp : SugarApp() {
         torViewModel.updateTorServiceState()
     }
 
-    private fun createNotificationChannel() {
+    private fun createTorNotificationChannel() {
         val name = "Tor Service"
         val descriptionText = "Keeps the Tor service running"
         val importance = NotificationManager.IMPORTANCE_DEFAULT

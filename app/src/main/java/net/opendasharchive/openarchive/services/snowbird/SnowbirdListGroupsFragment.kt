@@ -7,20 +7,25 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListGroupsBinding
+import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.services.CommonServiceFragment
+import net.opendasharchive.openarchive.util.FullScreenOverlayManager
 import net.opendasharchive.openarchive.util.Utility
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class SnowbirdListGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapterListener {
 
     private val snowbirdViewModel: SnowbirdViewModel by viewModel()
     private lateinit var viewBinding: FragmentSnowbirdListGroupsBinding
-    private lateinit var adapter: MockGroupAdapter
+    private lateinit var adapter: SnowbirdGroupsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentSnowbirdListGroupsBinding.inflate(inflater)
@@ -59,7 +64,7 @@ class SnowbirdListGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapte
 //    }
 
     private fun createViewModel() {
-        adapter = MockGroupAdapter {
+        adapter = SnowbirdGroupsAdapter {
             findNavController().navigate(SnowbirdListGroupsFragmentDirections.navigateToSnowbirdListUsersScreen())
         }
 
@@ -78,6 +83,21 @@ class SnowbirdListGroupsFragment : CommonServiceFragment(), SnowbirdGroupsAdapte
                 adapter.submitList(groups)
             }
         }
+
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                snowbirdViewModel.isProcessing.collect { isProcessing ->
+                    Timber.d("is processing? $isProcessing")
+                    if (isProcessing) {
+                        FullScreenOverlayManager.show(this@SnowbirdListGroupsFragment)
+                    } else {
+                        FullScreenOverlayManager.hide()
+                    }
+                }
+            }
+        }
+
+        snowbirdViewModel.fetchGroups()
     }
 
     private fun showError() {

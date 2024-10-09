@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
+import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.util.extensions.scaled
 import java.lang.ref.WeakReference
 
@@ -15,13 +16,13 @@ interface SnowbirdGroupsAdapterListener {
     fun groupSelected(group: SnowbirdGroup)
 }
 
-class SnowbirdGroupsAdapter(listener: SnowbirdGroupsAdapterListener?)
+class SnowbirdGroupsAdapter(listener: (() -> Unit)? = null)
     : ListAdapter<SnowbirdGroup, SnowbirdGroupsAdapter.ViewHolder>(DIFF_CALLBACK), SnowbirdGroupsAdapterListener {
 
-    class ViewHolder(private val binding: OneLineRowBinding) :
+    inner class ViewHolder(private val binding: OneLineRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(listener: WeakReference<SnowbirdGroupsAdapterListener>?, group: SnowbirdGroup?) {
+        fun bind(group: SnowbirdGroup?) {
             if (group == null) {
                 return
             }
@@ -33,7 +34,7 @@ class SnowbirdGroupsAdapter(listener: SnowbirdGroupsAdapterListener?)
             binding.button.setTitle(group.key)
 
             binding.button.setOnClickListener {
-                listener?.get()?.groupSelected(group)
+                mListener.get()?.invoke()
             }
         }
     }
@@ -64,10 +65,10 @@ class SnowbirdGroupsAdapter(listener: SnowbirdGroupsAdapterListener?)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val group = getItem(position)
-        holder.bind(WeakReference(this), group)
+        holder.bind(group)
     }
 
     override fun groupSelected(group: SnowbirdGroup) {
-        mListener.get()?.groupSelected(group)
+        // mListener.get()?.groupSelected(group)
     }
 }

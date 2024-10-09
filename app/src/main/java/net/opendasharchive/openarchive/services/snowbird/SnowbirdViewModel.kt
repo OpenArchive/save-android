@@ -9,9 +9,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import net.opendasharchive.openarchive.db.ApiError
+import net.opendasharchive.openarchive.db.SnowbirdAPI
+import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.features.main.ApiResponse
 import net.opendasharchive.openarchive.util.BaseViewModel
 import net.opendasharchive.openarchive.util.trackProcessingWithTimeout
+import timber.log.Timber
 import java.util.UUID
 
 data class MockDataItem(
@@ -46,8 +50,8 @@ object MockData {
 
     val foo = listOf(
         MockDataItem(
-            title = "Dust Bowl Archives Digitization",
-            description = "Digitize and catalog historic photographs and documents from the Dust Bowl era."
+            title = "Myanmar Cultural Heritage",
+            description =  "Document and digitally preserve Myanmar's diverse cultural heritage."
         ),
         MockDataItem(
             title = "Whistleblower Interview Series",
@@ -220,8 +224,8 @@ class SnowbirdViewModel(val api: SnowbirdAPI) : BaseViewModel() {
     private val _group = MutableStateFlow<SnowbirdGroup?>(null)
     val group: StateFlow<SnowbirdGroup?> = _group.asStateFlow()
 
-    private val _groups = MutableStateFlow(MockData.groups)
-    val groups: StateFlow<List<MockDataItem>> = _groups.asStateFlow()
+    private val _groups = MutableStateFlow<List<SnowbirdGroup>>(emptyList())
+    val groups: StateFlow<List<SnowbirdGroup>> = _groups.asStateFlow()
 
     private val _repos = MutableStateFlow(MockData.repos)
     val repos: StateFlow<List<MockDataItem>> = _repos.asStateFlow()
@@ -234,6 +238,13 @@ class SnowbirdViewModel(val api: SnowbirdAPI) : BaseViewModel() {
 
     private val _error = MutableStateFlow<ApiError?>(null)
     val error: StateFlow<ApiError?> = _error.asStateFlow()
+
+    var currentError: ApiError?
+        get() = _error.value
+        set(value) {
+            _error.value = value
+            Timber.d("Error set to $value")
+        }
 
     fun uploadDocument(delaySeconds: Int = 5) {
         viewModelScope.launch {
@@ -276,62 +287,48 @@ class SnowbirdViewModel(val api: SnowbirdAPI) : BaseViewModel() {
     }
 
     fun fetchGroups() {
-//        viewModelScope.launch {
-//            try {
-//                processingTracker.trackProcessingWithTimeout(10_000, "fetch_groups") {
-//                    when (val response = api.fetchGroups()) {
-//                        is ApiResponse.ListResponse -> _groups.value = response.data
-//                        is ApiResponse.ErrorResponse -> _error.value = response.error
-//                        else -> _error.value = ApiError.UnexpectedError("Unexpected response type")
-//                    }
-//                }
-//            } catch (e: TimeoutCancellationException) {
-//                _error.value = ApiError.TimedOut
-//            }
-//        }
-    }
-
-    fun fetchUsers(groupId: String) {
-//        viewModelScope.launch {
-//            try {
-//                processingTracker.trackProcessingWithTimeout(10_000, "fetch_users") {
-//                    when (val response = api.fetchUsers(groupId)) {
-//                        is ApiResponse.ListResponse -> _users.value = response.data
-//                        is ApiResponse.ErrorResponse -> _error.value = response.error
-//                        else -> _error.value = ApiError.UnexpectedError("Unexpected response type")
-//                    }
-//                }
-//            } catch (e: TimeoutCancellationException) {
-//                _error.value = ApiError.TimedOut
-//            }
-//        }
+        viewModelScope.launch {
+            try {
+                processingTracker.trackProcessingWithTimeout(10_000, "fetch_groups") {
+                    val response = api.fetchGroups()
+                    Timber.d("response = $response")
+                    when (response) {
+                        is ApiResponse.ListResponse -> _groups.value = response.data
+                        is ApiResponse.ErrorResponse -> currentError = response.error
+                        else -> currentError = ApiError.UnexpectedError("Unexpected response type")
+                    }
+                }
+            } catch (e: TimeoutCancellationException) {
+                _error.value = ApiError.TimedOut
+            }
+        }
     }
 
     fun createGroup(groupName: String) {
-//        viewModelScope.launch {
-//            try {
-//                processingTracker.trackProcessingWithTimeout(10_000, "create_group") {
-//                    when (val response = api.createGroup(groupName)) {
-//                        is ApiResponse.SingleResponse -> {
-//                            Timber.d("response = $response")
-//                            _group.value = response.data
-//                            _groups.value += response.data
-//                        }
-//
-//                        is ApiResponse.ErrorResponse -> {
-//                            Timber.d("response = $response")
-//                            _error.value = response.error
-//                        }
-//
-//                        else -> {
-//                            Timber.d("error response = $response")
-//                            _error.value = ApiError.UnexpectedError("Unexpected response type")
-//                        }
-//                    }
-//                }
-//            } catch (e: TimeoutCancellationException) {
-//                _error.value = ApiError.TimedOut
-//            }
-//        }
+        viewModelScope.launch {
+            try {
+                processingTracker.trackProcessingWithTimeout(10_000, "create_group") {
+                    when (val response = api.createGroup(groupName)) {
+                        is ApiResponse.SingleResponse -> {
+                            Timber.d("response = $response")
+                            _group.value = response.data
+                            _groups.value += response.data
+                        }
+
+                        is ApiResponse.ErrorResponse -> {
+                            Timber.d("response = $response")
+                            _error.value = response.error
+                        }
+
+                        else -> {
+                            Timber.d("error response = $response")
+                            _error.value = ApiError.UnexpectedError("Unexpected response type")
+                        }
+                    }
+                }
+            } catch (e: TimeoutCancellationException) {
+                _error.value = ApiError.TimedOut
+            }
+        }
     }
 }

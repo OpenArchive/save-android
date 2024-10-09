@@ -79,7 +79,7 @@ class SnowbirdService : Service() {
         return NotificationCompat.Builder(this, SaveApp.SNOWBIRD_SERVICE_CHANNEL)
             .setContentTitle("Snowbird Service")
             .setContentText(text)
-            .setSmallIcon(R.drawable.baseline_scatter_plot_24)
+            .setSmallIcon(R.drawable.ic_app_notify)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()

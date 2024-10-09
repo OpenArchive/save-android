@@ -27,12 +27,8 @@ class SnowbirdFragment : Fragment() {
     ) { result ->
         val scanResult = IntentIntegrator.parseActivityResult(result.resultCode, result.data)
         if (scanResult != null) {
-            if (scanResult.contents == null) {
-                Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
-            } else {
-                val scannedData = scanResult.contents
-                // Toast.makeText(requireContext(), "Scanned: $scannedData", Toast.LENGTH_LONG).show()
-                processScannedData(scannedData)
+            if (scanResult.contents != null) {
+                processScannedData(scanResult.contents)
             }
         }
     }
@@ -67,27 +63,17 @@ class SnowbirdFragment : Fragment() {
 
         viewBinding.joinGroupButton.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                // startQRScanner()
-                // snowbirdViewModel.fetchGroup("dfdf")
-                findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupSelectionScreen())
+                startQRScanner()
             }
         }
 
-        viewBinding.createGroupButton.setOnClickListener {
-            navigateToCreateGroupScreen()
+        viewBinding.listGroupsButton.setOnClickListener {
+            findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupSelectionScreen())
         }
-    }
 
-//    private fun enableIfReady() {
-//        val isComplete = !viewBinding.serverUri.text.isNullOrEmpty()
-//    }
-
-    private fun navigateToCreateGroupScreen() {
-        findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdCreateGroupScreen())
-    }
-
-    private fun navigateToListGroupsScreen(uri: String) {
-        findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupSelectionScreen())
+        viewBinding.createGroupButton.setOnClickListener {
+            findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdCreateGroupScreen())
+        }
     }
 
 //    private fun setupTextListener() {

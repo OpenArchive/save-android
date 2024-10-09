@@ -77,27 +77,36 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="40dp"
-            android:text="Join Group"
+            android:text="join group"
             app:layout_constraintTop_toBottomOf="@id/header_container" />
 
-        <include
-            layout="@layout/layout_divider"
-            android:id="@+id/divider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/join_group_button"/>
+        <com.google.android.material.button.MaterialButton
+            style="@style/OAMaterialSignInButtonStyle"
+            android:id="@+id/list_groups_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:text="List Groups"
+            app:layout_constraintTop_toBottomOf="@id/join_group_button" />
+
+<!--        <include-->
+<!--            layout="@layout/layout_divider"-->
+<!--            android:id="@+id/divider"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/join_group_button"/>-->
 
         <com.google.android.material.button.MaterialButton
             style="@style/OAMaterialSignInButtonStyle"
             android:id="@+id/create_group_button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:text="Create Group"
-            app:layout_constraintTop_toBottomOf="@id/divider" />
+            app:layout_constraintTop_toBottomOf="@id/list_groups_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

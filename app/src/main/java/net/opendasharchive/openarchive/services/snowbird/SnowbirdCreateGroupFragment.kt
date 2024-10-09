@@ -12,6 +12,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdCreateGroupBinding
+import net.opendasharchive.openarchive.db.SnowbirdGroup
+import net.opendasharchive.openarchive.db.SugarySnowbirdGroup
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import net.opendasharchive.openarchive.util.FullScreenOverlayManager
 import net.opendasharchive.openarchive.util.Utility
@@ -46,7 +48,6 @@ class SnowbirdCreateGroupFragment : CommonServiceFragment() {
                             bar = group.key
                         )
                         newGroup.save()
-
                         showConfirmation(group)
                     }
                 }
@@ -80,10 +81,9 @@ class SnowbirdCreateGroupFragment : CommonServiceFragment() {
             positiveButtonText = "Yes",
             negativeButtonText = "No") { affirm ->
             if (affirm) {
-                when (val groupId = group.key) {
-                    null -> Timber.d("Wait, what?")
-                    else -> findNavController().navigate(SnowbirdCreateGroupFragmentDirections.navigateToShareScreen(groupId))
-                }
+                findNavController().navigate(SnowbirdCreateGroupFragmentDirections.navigateToShareScreen(group.key))
+            } else {
+                parentFragmentManager.popBackStack()
             }
         }
     }

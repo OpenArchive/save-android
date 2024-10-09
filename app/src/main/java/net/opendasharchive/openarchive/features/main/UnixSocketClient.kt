@@ -6,8 +6,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import net.opendasharchive.openarchive.services.snowbird.ApiError
-import net.opendasharchive.openarchive.services.snowbird.SerializableMarker
+import net.opendasharchive.openarchive.db.ApiError
+import net.opendasharchive.openarchive.db.SerializableMarker
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
@@ -33,6 +34,16 @@ enum class HttpMethod(val value: String) {
     }
 }
 
+data class NetworkResponse(
+    val responseCode: Int,
+    val responseBody: String
+)
+
+sealed class ClientResponse<out T> {
+    data class SuccessResponse<T>(val data: T) : ClientResponse<T>()
+    data class ErrorResponse(val error: ApiError) : ClientResponse<Nothing>()
+}
+
 sealed class ApiResponse<out T> {
     data class SingleResponse<T>(val data: T) : ApiResponse<T>()
     data class ListResponse<T>(val data: List<T>) : ApiResponse<T>()
@@ -45,11 +56,6 @@ data class ClientRequest(
     val body: SerializableMarker? = null
 )
 
-data class ClientResponse(
-    val responseCode: Int,
-    val responseBody: String
-)
-
 class UnixSocketClient() {
     val socketPath = "/data/user/0/net.opendasharchive.openarchive.debug/files/rust_server.sock"
     val json = Json { ignoreUnknownKeys = true }
@@ -58,18 +64,18 @@ class UnixSocketClient() {
         endpoint: String,
         method: HttpMethod,
         body: REQUEST
-    ): ApiResponse<RESPONSE> = sendRequestInternal(endpoint, method, body)
+    ): ClientResponse<RESPONSE> = sendRequestInternal(endpoint, method, body)
 
     suspend inline fun <reified RESPONSE: SerializableMarker> sendRequest(
         endpoint: String,
         method: HttpMethod
-    ): ApiResponse<RESPONSE> = sendRequestInternal(endpoint, method, null)
+    ): ClientResponse<RESPONSE> = sendRequestInternal(endpoint, method, null)
 
     suspend inline fun <reified REQUEST: SerializableMarker, reified RESPONSE: SerializableMarker> sendRequestInternal(
         endpoint: String,
         method: HttpMethod,
         body: REQUEST?
-    ): ApiResponse<RESPONSE> = withContext(Dispatchers.IO) {
+    ): ClientResponse<RESPONSE> = withContext(Dispatchers.IO) {
 
         try {
             LocalSocket().use { socket ->
@@ -78,34 +84,38 @@ class UnixSocketClient() {
 
                 val (responseCode, responseBody) = getResponse(socket, request)
 
+                Timber.d("resposne body = $responseBody")
+
                 when (responseCode) {
-                    in 200..299 -> parseSuccessResponse<RESPONSE>(responseBody, method)
-                    401 -> ApiResponse.ErrorResponse(ApiError.Unauthorized)
-                    404 -> ApiResponse.ErrorResponse(ApiError.ResourceNotFound)
-                    in 400..499 -> ApiResponse.ErrorResponse(ApiError.ClientError("Client error: $responseCode"))
-                    in 500..599 -> ApiResponse.ErrorResponse(ApiError.ServerError("Server error: $responseCode"))
-                    else -> ApiResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected status code: $responseCode"))
+                    in 200..299 -> parseSuccessResponse<RESPONSE>(responseBody)
+                    in 400..499 -> ClientResponse.ErrorResponse(ApiError.ClientError("Client error: $responseCode"))
+                    in 500..599 -> ClientResponse.ErrorResponse(ApiError.ServerError("Server error: $responseCode"))
+                    else -> ClientResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected status code: $responseCode"))
                 }
             }
         } catch (e: Exception) {
-            ApiResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected error: ${e.localizedMessage}"))
+            ClientResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected error: ${e.localizedMessage}"))
         }
     }
 
-    inline fun <reified RESPONSE> parseSuccessResponse(responseBody: String, method: HttpMethod): ApiResponse<RESPONSE> {
-        return when {
-            method == HttpMethod.GET && responseBody.startsWith("[") -> {
-                val listData = json.decodeFromString<List<RESPONSE>>(responseBody)
-                ApiResponse.ListResponse(listData)
-            }
-            else -> {
-                val singleData = json.decodeFromString<RESPONSE>(responseBody)
-                ApiResponse.SingleResponse(singleData)
-            }
-        }
+    inline fun <reified RESPONSE> parseSuccessResponse(responseBody: String): ClientResponse<RESPONSE> {
+        val obj = json.decodeFromString<RESPONSE>(responseBody)
+        return ClientResponse.SuccessResponse(obj)
+
+//        return when {
+//            method == HttpMethod.GET && obj.isListLike() -> {
+//                Timber.d("list = $responseBody")
+//                ApiResponse.ListResponse(listData)
+//            }
+//            else -> {
+//                val singleData = json.decodeFromString<RESPONSE>(responseBody)
+//                Timber.d("single = $responseBody")
+//                ApiResponse.SingleResponse(singleData)
+//            }
+//        }
     }
 
-    fun getResponse(socket: LocalSocket, request: ClientRequest): ClientResponse {
+    fun getResponse(socket: LocalSocket, request: ClientRequest): NetworkResponse {
         val output = PrintWriter(socket.outputStream.bufferedWriter())
         val input = BufferedReader(InputStreamReader(socket.inputStream))
 
@@ -135,6 +145,6 @@ class UnixSocketClient() {
             headers[key] = value
         }
 
-        return ClientResponse(statusCode.toInt(), input.readText())
+        return NetworkResponse(statusCode.toInt(), input.readText())
     }
 }
