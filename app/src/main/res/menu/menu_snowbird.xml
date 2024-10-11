@@ -7,6 +7,6 @@
         android:id="@+id/action_add"
         android:icon="@drawable/ic_add"
         android:iconTint="@color/transparent_white"
-        android:title="ADD GROUP"
+        android:title="ADD"
         app:showAsAction="always" />
 </menu>

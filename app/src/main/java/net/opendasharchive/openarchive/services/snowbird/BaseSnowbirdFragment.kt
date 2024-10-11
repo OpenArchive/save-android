@@ -7,6 +7,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 open class BaseSnowbirdFragment : Fragment() {
     val snowbirdGroupViewModel: SnowbirdGroupViewModel by viewModel()
     val snowbirdRepoViewModel: SnowbirdRepoViewModel by viewModel()
+    val snowbirdMediaViewModel: SnowbirdMediaViewModel by viewModel()
 
     fun handleProcessingStatus(isProcessing: Boolean) {
         if (isProcessing) {

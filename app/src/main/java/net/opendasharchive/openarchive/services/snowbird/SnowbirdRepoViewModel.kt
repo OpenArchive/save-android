@@ -12,7 +12,6 @@ import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.util.BaseViewModel
 import net.opendasharchive.openarchive.util.trackProcessingWithTimeout
-import timber.log.Timber
 
 class SnowbirdRepoViewModel(private val repository: ISnowbirdRepoRepository) : BaseViewModel() {
 
@@ -23,25 +22,20 @@ class SnowbirdRepoViewModel(private val repository: ISnowbirdRepoRepository) : B
             initialValue = SnowbirdServiceStatus.BackendInitializing
         )
 
+    data class RepoState(val repos: List<SnowbirdRepo>, val updateCount: Int = 0)
+
+    private val _repoState = MutableStateFlow(RepoState(emptyList()))
+    val repoState: StateFlow<RepoState> = _repoState
+
     private val _repos = MutableStateFlow<List<SnowbirdRepo>>(emptyList())
     val repos: StateFlow<List<SnowbirdRepo>> = _repos.asStateFlow()
 
-    private val _error = MutableStateFlow<SnowbirdError?>(null)
-    val error: StateFlow<SnowbirdError?> = _error.asStateFlow()
-
-    var currentError: SnowbirdError?
-        get() = _error.value
-        set(value) {
-            _error.value = value
-            Timber.d("Error set to $value")
-        }
-
-    fun fetchRepos(groupId: String) {
+    fun fetchRepos(groupId: String, forceRefresh: Boolean = false) {
         viewModelScope.launch {
             try {
                 processingTracker.trackProcessingWithTimeout(10_000, "fetch_repos") {
-                    when (val result = repository.fetchRepos(groupId)) {
-                        is SnowbirdResult.Success -> _repos.value = result.value
+                    when (val result = repository.fetchRepos(groupId, forceRefresh)) {
+                        is SnowbirdResult.Success -> _repoState.value = RepoState(result.value, _repoState.value.updateCount + 1)
                         is SnowbirdResult.Failure -> currentError = result.error
                     }
                 }

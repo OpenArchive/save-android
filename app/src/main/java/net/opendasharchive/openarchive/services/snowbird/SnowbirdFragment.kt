@@ -18,7 +18,7 @@ import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
 class SnowbirdFragment : BaseSnowbirdFragment() {
-
+    private val CANNED_URI = "save+dweb::?dht=82fd345d484393a96b6e0c5d5e17a85a61c9184cc5a3311ab069d6efa0bf1410&enc=6fa27396fe298f92c91013ac54d8f316c2d45dc3bed0edec73078040aa10feed&pk=f4b404d294817cf11ea7f8ef7231626e03b74f6fafe3271b53918608afa82d12&sk=5482a8f490081be684fbadb8bde7f0a99bab8acdcf1ec094826f0f18e327e399"
     private lateinit var viewBinding: FragmentSnowbirdBinding
     private var canNavigate = false
     private val qrCodeLauncher = registerForActivityResult(
@@ -43,7 +43,8 @@ class SnowbirdFragment : BaseSnowbirdFragment() {
 
         viewBinding.joinGroupButton.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
-                startQRScanner()
+                // startQRScanner()
+                processScannedData(CANNED_URI)
             }
         }
 
@@ -66,6 +67,10 @@ class SnowbirdFragment : BaseSnowbirdFragment() {
 
         viewLifecycleOwner.collectLifecycleFlow(snowbirdGroupViewModel.error) {
             handleError(it)
+        }
+
+        viewLifecycleOwner.collectLifecycleFlow(snowbirdGroupViewModel.isProcessing) { isProcessing ->
+            handleProcessingStatus(isProcessing)
         }
     }
 
@@ -90,9 +95,7 @@ class SnowbirdFragment : BaseSnowbirdFragment() {
         qrCodeLauncher.launch(scanningIntent)
     }
 
-    private fun processScannedData(data: String) {
-        // TODO: Call backend, get group info, and display that in subsequent prompt dialog.
-        //
+    private fun processScannedData(uri: String) {
         Utility.showMaterialPrompt(
             requireContext(),
             title = "Join Group?",
@@ -100,7 +103,7 @@ class SnowbirdFragment : BaseSnowbirdFragment() {
             positiveButtonText = "Yes",
             negativeButtonText = "No") { affirm ->
             if (affirm) {
-                findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupOverviewScreen())
+                snowbirdGroupViewModel.joinGroup(uri)
             }
         }
     }

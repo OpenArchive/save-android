@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SnowbirdGroupList(
     var groups: List<SnowbirdGroup>
-) : SugarRecord(), SerializableMarker
+) : SerializableMarker
 
 @Serializable
 data class SnowbirdGroup(
@@ -16,6 +16,17 @@ data class SnowbirdGroup(
     companion object {
         fun getAll(): List<SnowbirdGroup> {
             return findAll(SnowbirdGroup::class.java).asSequence().toList()
+        }
+
+        fun get(key: String): SnowbirdGroup? {
+            val whereClause = "key = ?"
+            val whereArgs = mutableListOf(key)
+
+            return find(
+                SnowbirdGroup::class.java, whereClause, whereArgs.toTypedArray(),
+                null,
+                null,
+                null).firstOrNull()
         }
     }
 }

@@ -76,6 +76,7 @@ class UnixSocketClient() {
         method: HttpMethod,
         body: REQUEST?
     ): ClientResponse<RESPONSE> = withContext(Dispatchers.IO) {
+        Timber.d("Endpoint = $endpoint")
 
         try {
             LocalSocket().use { socket ->

@@ -137,9 +137,23 @@
             app:popUpToInclusive="false"/>
     </fragment>
     <fragment
+        android:id="@+id/snowbird_list_files_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdMediaListFragment"
+        android:label="Your Media">
+        <argument
+            android:name="repoId"
+            app:argType="string" />
+    </fragment>
+    <fragment
         android:id="@+id/snowbird_list_repos_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdRepoListFragment"
-        android:label="Group Users">
+        android:label="Your Repositories">
+        <argument
+            android:name="groupId"
+            app:argType="string" />
+        <action
+            android:id="@+id/navigate_to_snowbird_list_files_screen"
+            app:destination="@id/snowbird_list_files_screen" />
     </fragment>
     <fragment
         android:id="@+id/snowbird_group_selection_screen"

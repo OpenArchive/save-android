@@ -32,7 +32,9 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewBinding.createGroupButton.setOnClickListener {
-            snowbirdGroupViewModel.createGroup(viewBinding.groupNameTextfield.text.toString())
+            snowbirdGroupViewModel.createGroup(
+                viewBinding.groupNameTextfield.text.toString(),
+                viewBinding.repoNameTextfield.text.toString())
             dismissKeyboard(it)
         }
 

@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.SnowbirdRepo
+import net.opendasharchive.openarchive.db.shortHash
 import net.opendasharchive.openarchive.util.extensions.scaled
 import java.lang.ref.WeakReference
 
-class SnowbirdRepoListAdapter(listener: (() -> Unit)? = null)
+class SnowbirdRepoListAdapter(listener: ((String) -> Unit)? = null)
     : ListAdapter<SnowbirdRepo, SnowbirdRepoListAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     inner class ViewHolder(private val binding: OneLineRowBinding) :
@@ -27,10 +28,11 @@ class SnowbirdRepoListAdapter(listener: (() -> Unit)? = null)
 
             binding.button.setLeftIcon(ContextCompat.getDrawable(context, R.drawable.snowbird)?.scaled(40, context))
             binding.button.setBackgroundResource(R.drawable.button_outlined_ripple)
-            binding.button.setTitle(repo.key)
+            binding.button.setTitle(repo.name)
+            binding.button.setSubTitle(repo.shortHash())
 
             binding.button.setOnClickListener {
-                mListener.get()?.invoke()
+                mListener.get()?.invoke(repo.key)
             }
         }
     }

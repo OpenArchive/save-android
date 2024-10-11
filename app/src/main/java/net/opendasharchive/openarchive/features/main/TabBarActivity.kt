@@ -128,8 +128,12 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
             }
         }
 
-//        snowbirdViewModel.groups.observe(this) { groups ->
-//            Timber.d("groups = $groups")
+//        SnowbirdGroup.get(key = "Wzps6O5iixsc_Vuzar6Uv-fqF_L6tlXpECFlWnl4SgA")?.let { group ->
+//            SnowbirdRepo(
+//                "abc123",
+//                "My Mocked Up Repo",
+//                snowbirdGroup = group
+//            ).save()
 //        }
 
 //        val mediaUri = Uri.parse("file:///data/user/0/net.opendasharchive.openarchive.debug/cache/20240924_165908.riot3.jpg")

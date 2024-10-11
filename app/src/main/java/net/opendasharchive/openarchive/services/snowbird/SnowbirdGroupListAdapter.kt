@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.SnowbirdGroup
+import net.opendasharchive.openarchive.db.shortHash
 import net.opendasharchive.openarchive.util.extensions.scaled
 import java.lang.ref.WeakReference
 
@@ -16,7 +17,7 @@ interface SnowbirdGroupsAdapterListener {
     fun groupSelected(group: SnowbirdGroup)
 }
 
-class SnowbirdGroupsAdapter(listener: (() -> Unit)? = null)
+class SnowbirdGroupsAdapter(listener: ((String) -> Unit)? = null)
     : ListAdapter<SnowbirdGroup, SnowbirdGroupsAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     inner class ViewHolder(private val binding: OneLineRowBinding) :
@@ -32,9 +33,10 @@ class SnowbirdGroupsAdapter(listener: (() -> Unit)? = null)
             binding.button.setLeftIcon(ContextCompat.getDrawable(context, R.drawable.snowbird)?.scaled(40, context))
             binding.button.setBackgroundResource(R.drawable.button_outlined_ripple)
             binding.button.setTitle(group.name ?: "No name provided")
+            binding.button.setSubTitle(group.shortHash())
 
             binding.button.setOnClickListener {
-                mListener.get()?.invoke()
+                mListener.get()?.invoke(group.key)
             }
         }
     }

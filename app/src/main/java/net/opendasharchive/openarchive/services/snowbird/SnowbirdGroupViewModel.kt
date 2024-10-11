@@ -12,7 +12,6 @@ import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.util.BaseViewModel
 import net.opendasharchive.openarchive.util.trackProcessingWithTimeout
-import timber.log.Timber
 
 class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) : BaseViewModel() {
 
@@ -33,16 +32,6 @@ class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) :
 
     private val _groups = MutableStateFlow<List<SnowbirdGroup>>(emptyList())
     val groups: StateFlow<List<SnowbirdGroup>> = _groups.asStateFlow()
-
-    private val _error = MutableStateFlow<SnowbirdError?>(null)
-    val error: StateFlow<SnowbirdError?> = _error.asStateFlow()
-
-    var currentError: SnowbirdError?
-        get() = _error.value
-        set(value) {
-            _error.value = value
-            Timber.d("Error set to $value")
-        }
 
     fun fetchGroup(groupId: String) {
         viewModelScope.launch {
@@ -76,11 +65,28 @@ class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) :
         }
     }
 
-    fun createGroup(groupName: String) {
+    fun joinGroup(uriString: String) {
+        viewModelScope.launch {
+            try {
+                processingTracker.trackProcessingWithTimeout(10_000, "join_group") {
+//                    delay(2000)
+                    currentError = SnowbirdError.GeneralError("Function not yet implemented.")
+//                    when (val result = repository.joinGroup(uriString)) {
+//                        is SnowbirdResult.Success -> _group.value = result.value
+//                        is SnowbirdResult.Failure -> currentError = result.error
+//                    }
+                }
+            } catch (e: TimeoutCancellationException) {
+                _error.value = SnowbirdError.TimedOut
+            }
+        }
+    }
+
+    fun createGroup(groupName: String, repoName: String) {
         viewModelScope.launch {
             try {
                 processingTracker.trackProcessingWithTimeout(10_000, "create_group") {
-                    when (val result = repository.createGroup(groupName)) {
+                    when (val result = repository.createGroup(groupName, repoName)) {
                         is SnowbirdResult.Success -> {
                             _groups.value += result.value
                             _group.value = result.value

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListGroupsBinding
@@ -16,7 +17,6 @@ import net.opendasharchive.openarchive.extensions.collectLifecycleFlow
 import net.opendasharchive.openarchive.services.CommonServiceFragment.Companion.RESP_CREATED
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
-import timber.log.Timber
 
 class SnowbirdGroupListFragment : BaseSnowbirdFragment(), SnowbirdGroupsAdapterListener {
 
@@ -50,9 +50,8 @@ class SnowbirdGroupListFragment : BaseSnowbirdFragment(), SnowbirdGroupsAdapterL
     }
 
     private fun setupViewModel() {
-        adapter = SnowbirdGroupsAdapter {
-            Timber.d("Click!")
-            // findNavController().navigate(SnowbirdGroupListFragmentDirections.navigateToSnowbirdListReposScreen())
+        adapter = SnowbirdGroupsAdapter { groupId ->
+             findNavController().navigate(SnowbirdGroupListFragmentDirections.navigateToSnowbirdListReposScreen(groupId))
         }
 
         val spacingInPixels = resources.getDimensionPixelSize(R.dimen.list_item_spacing)
