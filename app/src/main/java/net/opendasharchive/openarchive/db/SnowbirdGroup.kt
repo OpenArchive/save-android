@@ -10,14 +10,15 @@ data class SnowbirdGroupList(
 
 @Serializable
 data class SnowbirdGroup(
-    var key: String,
-    var name: String?
-) : SugarRecord(), SerializableMarker
-
-data class SugarySnowbirdGroup(
-    var foo: String?,
-    var bar: String?
-) : SugarRecord()
+    var key: String = "",
+    var name: String? = null
+) : SugarRecord(), SerializableMarker {
+    companion object {
+        fun getAll(): List<SnowbirdGroup> {
+            return findAll(SnowbirdGroup::class.java).asSequence().toList()
+        }
+    }
+}
 
 fun SnowbirdGroup.shortHash(): String {
     return key.take(10)

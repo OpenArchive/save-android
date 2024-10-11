@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdShareGroupBinding
 import net.opendasharchive.openarchive.extensions.asQRCode
 import net.opendasharchive.openarchive.extensions.toSnowbirdUri
-import net.opendasharchive.openarchive.services.CommonServiceFragment
 
-class SnowbirdShareFragment: CommonServiceFragment() {
+class SnowbirdShareFragment: BaseSnowbirdFragment() {
     private lateinit var viewBinding: FragmentSnowbirdShareGroupBinding
     private lateinit var groupId: String
 

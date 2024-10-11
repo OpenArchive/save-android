@@ -46,30 +46,14 @@
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            style="@style/OATextInputLayoutStyle"-->
-<!--            android:id="@+id/server_text_input"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="30dp"-->
-<!--            app:endIconDrawable="@drawable/padded_qr_button"-->
-<!--            app:endIconMode="custom"-->
-<!--            app:endIconTint="@color/c23_teal"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/header_container">-->
-
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:id="@+id/server_uri"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:focusedByDefault="false"-->
-<!--                android:hint="Enter Group Key"-->
-<!--                android:inputType="textUri"-->
-<!--                android:maxLines="1"-->
-<!--                android:singleLine="true" />-->
-
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
+        <com.google.android.material.button.MaterialButton
+            style="@style/OAMaterialSignInButtonStyle"
+            android:id="@+id/my_groups_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:text="My Groups"
+            app:layout_constraintTop_toBottomOf="@id/header_container" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/OAMaterialSignInButtonStyle"
@@ -78,16 +62,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="40dp"
             android:text="join group"
-            app:layout_constraintTop_toBottomOf="@id/header_container" />
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/OAMaterialSignInButtonStyle"
-            android:id="@+id/list_groups_button"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="40dp"
-            android:text="List Groups"
-            app:layout_constraintTop_toBottomOf="@id/join_group_button" />
+            app:layout_constraintTop_toBottomOf="@id/my_groups_button" />
 
 <!--        <include-->
 <!--            layout="@layout/layout_divider"-->
@@ -106,7 +81,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="40dp"
             android:text="Create Group"
-            app:layout_constraintTop_toBottomOf="@id/list_groups_button" />
+            app:layout_constraintTop_toBottomOf="@id/join_group_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

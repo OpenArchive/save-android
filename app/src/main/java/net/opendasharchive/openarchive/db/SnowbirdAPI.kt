@@ -17,8 +17,7 @@ class SnowbirdAPI(private var client: UnixSocketClient) {
     companion object {
         private const val BASE_PATH = "/api"
         private const val GROUPS_PATH = "$BASE_PATH/groups"
-        private const val REPOS_PATH = "$BASE_PATH/repos"
-        private const val USERS_PATH = "$BASE_PATH/users"
+        private const val REPOS_PATH = "$BASE_PATH/groups/%s/repos"
     }
 
     suspend fun fetchGroups(): ApiResponse<SnowbirdGroup> {
@@ -38,6 +37,13 @@ class SnowbirdAPI(private var client: UnixSocketClient) {
     suspend fun createGroup(groupName: String): ApiResponse<SnowbirdGroup> {
         return when (val response = client.sendRequest<RequestName, SnowbirdGroup>(GROUPS_PATH, HttpMethod.POST, RequestName(groupName))) {
             is ClientResponse.SuccessResponse -> ApiResponse.SingleResponse(response.data)
+            is ClientResponse.ErrorResponse -> ApiResponse.ErrorResponse(response.error)
+        }
+    }
+
+    suspend fun fetchRepos(groupId: String): ApiResponse<SnowbirdRepo> {
+        return when (val response = client.sendRequest<SnowbirdRepoList>(REPOS_PATH.format(groupId), HttpMethod.GET)) {
+            is ClientResponse.SuccessResponse -> ApiResponse.ListResponse(response.data.repos)
             is ClientResponse.ErrorResponse -> ApiResponse.ErrorResponse(response.error)
         }
     }

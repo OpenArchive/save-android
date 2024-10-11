@@ -6,22 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdBinding
+import net.opendasharchive.openarchive.db.SnowbirdError
+import net.opendasharchive.openarchive.extensions.collectLifecycleFlow
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
 import net.opendasharchive.openarchive.util.Utility
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class SnowbirdFragment : Fragment() {
+class SnowbirdFragment : BaseSnowbirdFragment() {
 
     private lateinit var viewBinding: FragmentSnowbirdBinding
-    private val snowbirdViewModel: SnowbirdViewModel by viewModel()
-
+    private var canNavigate = false
     private val qrCodeLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -29,19 +28,6 @@ class SnowbirdFragment : Fragment() {
         if (scanResult != null) {
             if (scanResult.contents != null) {
                 processScannedData(scanResult.contents)
-            }
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        lifecycleScope.launch {
-            snowbirdViewModel.error.collect { error ->
-                error?.let {
-                    Toast.makeText(requireContext(), it.friendlyMessage, Toast.LENGTH_SHORT).show()
-                    Timber.d("Error = $it")
-                }
             }
         }
     }
@@ -55,34 +41,40 @@ class SnowbirdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        viewBinding.serverTextInput.setEndIconOnClickListener {
-//            startQRScanner()
-//        }
-
-//        setupTextListener()
-
         viewBinding.joinGroupButton.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 startQRScanner()
             }
         }
 
-        viewBinding.listGroupsButton.setOnClickListener {
+        viewBinding.myGroupsButton.setOnClickListener {
             findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupSelectionScreen())
+//            snowbirdGroupViewModel.fetchGroups()
+//            canNavigate = true
         }
 
         viewBinding.createGroupButton.setOnClickListener {
             findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdCreateGroupScreen())
         }
+
+        viewLifecycleOwner.collectLifecycleFlow(snowbirdGroupViewModel.groups) { groups ->
+            if (canNavigate) {
+                canNavigate = false
+                findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupSelectionScreen())
+            }
+        }
+
+        viewLifecycleOwner.collectLifecycleFlow(snowbirdGroupViewModel.error) {
+            handleError(it)
+        }
     }
 
-//    private fun setupTextListener() {
-//        viewBinding.serverUri.addTextChangedListener(object : ReadyToAuthTextWatcher() {
-//            override fun afterTextChanged(s: Editable?) {
-//                enableIfReady()
-//            }
-//        })
-//    }
+    private fun handleError(error: SnowbirdError?) {
+        error?.let {
+            Toast.makeText(requireContext(), it.friendlyMessage, Toast.LENGTH_SHORT).show()
+            Timber.d("Error = $it")
+        }
+    }
 
     private fun startQRScanner() {
         val integrator = IntentIntegrator(requireActivity())
@@ -99,6 +91,8 @@ class SnowbirdFragment : Fragment() {
     }
 
     private fun processScannedData(data: String) {
+        // TODO: Call backend, get group info, and display that in subsequent prompt dialog.
+        //
         Utility.showMaterialPrompt(
             requireContext(),
             title = "Join Group?",

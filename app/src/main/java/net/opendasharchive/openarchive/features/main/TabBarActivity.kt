@@ -27,7 +27,6 @@ import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdBridge
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdService
-import net.opendasharchive.openarchive.services.snowbird.SnowbirdViewModel
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.NetworkConnectivityViewModel
 import net.opendasharchive.openarchive.util.Utility
@@ -52,7 +51,6 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
     private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
     private val networkConnectivityViewModel: NetworkConnectivityViewModel by viewModels()
-    private val snowbirdViewModel: SnowbirdViewModel by viewModel()
 
     private val _uriStateFlow = MutableStateFlow<Uri?>(null)
 
@@ -119,12 +117,6 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
         val intent = Intent(this, SnowbirdService::class.java)
         startForegroundService(intent)
-
-        lifecycleScope.launch {
-            snowbirdViewModel.status.collect {
-                Timber.d("Snowbird status = $it")
-            }
-        }
 
         handleIntent(intent)
 

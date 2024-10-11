@@ -87,9 +87,6 @@ data class Folder(
     val isCurrent
         get() = (id == current?.id)
 
-    val isUploading
-        get() = collections.any { it.isUploading }
-
     val collections: List<Collection>
         get() = find(Collection::class.java, "folder_id = ?", id.toString())
 

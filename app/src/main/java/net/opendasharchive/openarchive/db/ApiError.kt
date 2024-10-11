@@ -37,7 +37,7 @@ sealed class ApiError: SerializableMarker {
             is NetworkError -> "Network Error: $message"
             is ServerError -> "Server Error: $message"
             is ClientError -> message
-            is UnexpectedError -> "An unexpected error occurred: $message"
+            is UnexpectedError -> message
             Unauthorized -> "Unauthorized: Please log in and try again"
             ResourceNotFound -> "The requested resource was not found"
             TimedOut -> "The request timed out"
