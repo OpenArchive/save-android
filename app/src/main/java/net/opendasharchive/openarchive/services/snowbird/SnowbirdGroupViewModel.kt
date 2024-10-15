@@ -33,11 +33,11 @@ class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) :
     private val _groups = MutableStateFlow<List<SnowbirdGroup>>(emptyList())
     val groups: StateFlow<List<SnowbirdGroup>> = _groups.asStateFlow()
 
-    fun fetchGroup(groupId: String) {
+    fun fetchGroup(groupKey: String) {
         viewModelScope.launch {
             try {
                 processingTracker.trackProcessingWithTimeout(10_000, "fetch_group") {
-                    when (val result = repository.fetchGroup(groupId)) {
+                    when (val result = repository.fetchGroup(groupKey)) {
                         is SnowbirdResult.Success -> _group.value = result.value
                         is SnowbirdResult.Failure -> currentError = result.error
                     }
@@ -60,7 +60,7 @@ class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) :
                     }
                 }
             } catch (e: TimeoutCancellationException) {
-                _error.value = SnowbirdError.TimedOut
+                currentError = SnowbirdError.TimedOut
             }
         }
     }
@@ -77,16 +77,16 @@ class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) :
 //                    }
                 }
             } catch (e: TimeoutCancellationException) {
-                _error.value = SnowbirdError.TimedOut
+                currentError = SnowbirdError.TimedOut
             }
         }
     }
 
-    fun createGroup(groupName: String, repoName: String) {
+    fun createGroup(groupName: String) {
         viewModelScope.launch {
             try {
                 processingTracker.trackProcessingWithTimeout(10_000, "create_group") {
-                    when (val result = repository.createGroup(groupName, repoName)) {
+                    when (val result = repository.createGroup(groupName)) {
                         is SnowbirdResult.Success -> {
                             _groups.value += result.value
                             _group.value = result.value
@@ -95,7 +95,7 @@ class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) :
                     }
                 }
             } catch (e: TimeoutCancellationException) {
-                _error.value = SnowbirdError.TimedOut
+                currentError = SnowbirdError.TimedOut
             }
         }
     }

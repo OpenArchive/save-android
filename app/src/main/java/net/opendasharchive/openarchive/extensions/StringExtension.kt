@@ -8,6 +8,8 @@ import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import net.opendasharchive.openarchive.util.Utility
 import java.net.URI
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 /**
  * Generates a QR code bitmap from a given string.
@@ -44,3 +46,4 @@ fun String.uriToPath(): String {
     return uri.path
 }
 
+fun String.urlEncode(): String = URLEncoder.encode(this, StandardCharsets.UTF_8.toString())

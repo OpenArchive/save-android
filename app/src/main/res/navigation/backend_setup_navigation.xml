@@ -147,9 +147,9 @@
     <fragment
         android:id="@+id/snowbird_list_repos_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdRepoListFragment"
-        android:label="Your Repositories">
+        android:label="Group Repositories">
         <argument
-            android:name="groupId"
+            android:name="groupKey"
             app:argType="string" />
         <action
             android:id="@+id/navigate_to_snowbird_list_files_screen"

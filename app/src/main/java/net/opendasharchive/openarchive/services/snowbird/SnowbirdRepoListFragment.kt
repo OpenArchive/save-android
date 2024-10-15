@@ -5,26 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListReposBinding
 import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.extensions.collectLifecycleFlow
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
+import timber.log.Timber
 
 class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
 
     private lateinit var viewBinding: FragmentSnowbirdListReposBinding
     private lateinit var adapter: SnowbirdRepoListAdapter
-    private lateinit var groupId: String
+    private lateinit var groupKey: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            groupId = it.getString("groupId", "")
+            groupKey = it.getString("groupKey", "")
         }
     }
 
@@ -43,6 +46,7 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
 
     private fun setupViewModel() {
         adapter = SnowbirdRepoListAdapter { repoId ->
+            Timber.d("Click!!")
             findNavController().navigate(SnowbirdRepoListFragmentDirections.navigateToSnowbirdListFilesScreen(repoId))
         }
 
@@ -71,7 +75,9 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
             viewBinding.swipeRefreshLayout.isRefreshing = false
         }
 
-        snowbirdRepoViewModel.fetchRepos(groupId, forceRefresh = false)
+        lifecycleScope.launch {
+            snowbirdRepoViewModel.fetchRepos(groupKey, forceRefresh = false)
+        }
     }
 
     private fun handleRepoUpdate(repoState: SnowbirdRepoViewModel.RepoState) {
@@ -92,7 +98,9 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
 
     private fun setupSwipeRefresh() {
         viewBinding.swipeRefreshLayout.setOnRefreshListener {
-            snowbirdRepoViewModel.fetchRepos(groupId, forceRefresh = true)
+            lifecycleScope.launch {
+                snowbirdRepoViewModel.fetchRepos(groupKey, forceRefresh = true)
+            }
         }
 
         viewBinding.swipeRefreshLayout.setColorSchemeResources(

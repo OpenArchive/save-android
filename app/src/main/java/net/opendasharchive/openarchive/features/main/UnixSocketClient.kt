@@ -10,85 +10,71 @@ import net.opendasharchive.openarchive.db.ApiError
 import net.opendasharchive.openarchive.db.SerializableMarker
 import timber.log.Timber
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
-import java.io.PrintWriter
 
 enum class HttpMethod(val value: String) {
-    GET("GET"),
-    POST("POST"),
-    PUT("PUT"),
-    DELETE("DELETE"),
-    PATCH("PATCH"),
-    HEAD("HEAD"),
-    OPTIONS("OPTIONS"),
-    TRACE("TRACE");
+    GET("GET"), POST("POST"), PUT("PUT"), DELETE("DELETE"), PATCH("PATCH"),
+    HEAD("HEAD"), OPTIONS("OPTIONS"), TRACE("TRACE");
 
-    override fun toString(): String {
-        return value
-    }
+    override fun toString() = value
 
     companion object {
-        fun fromString(method: String): HttpMethod? {
-            return entries.find { it.value.equals(method, ignoreCase = true) }
-        }
+        fun fromString(method: String) = entries.find { it.value.equals(method, ignoreCase = true) }
     }
 }
-
-data class NetworkResponse(
-    val responseCode: Int,
-    val responseBody: String
-)
 
 sealed class ClientResponse<out T> {
     data class SuccessResponse<T>(val data: T) : ClientResponse<T>()
     data class ErrorResponse(val error: ApiError) : ClientResponse<Nothing>()
 }
 
-sealed class ApiResponse<out T> {
-    data class SingleResponse<T>(val data: T) : ApiResponse<T>()
-    data class ListResponse<T>(val data: List<T>) : ApiResponse<T>()
-    data class ErrorResponse(val error: ApiError) : ApiResponse<Nothing>()
-}
-
-data class ClientRequest(
-    val endpoint: String,
-    val method: HttpMethod,
-    val body: SerializableMarker? = null
-)
-
-class UnixSocketClient() {
-    val socketPath = "/data/user/0/net.opendasharchive.openarchive.debug/files/rust_server.sock"
+class UnixSocketClient(private val socketPath: String = "/data/user/0/net.opendasharchive.openarchive.debug/files/rust_server.sock") {
     val json = Json { ignoreUnknownKeys = true }
 
-    suspend inline fun <reified REQUEST: SerializableMarker, reified RESPONSE: SerializableMarker> sendRequest(
+    suspend inline fun <reified REQUEST : SerializableMarker, reified RESPONSE : SerializableMarker> sendRequest(
         endpoint: String,
         method: HttpMethod,
-        body: REQUEST
-    ): ClientResponse<RESPONSE> = sendRequestInternal(endpoint, method, body)
-
-    suspend inline fun <reified RESPONSE: SerializableMarker> sendRequest(
-        endpoint: String,
-        method: HttpMethod
-    ): ClientResponse<RESPONSE> = sendRequestInternal(endpoint, method, null)
-
-    suspend inline fun <reified REQUEST: SerializableMarker, reified RESPONSE: SerializableMarker> sendRequestInternal(
-        endpoint: String,
-        method: HttpMethod,
-        body: REQUEST?
+        body: REQUEST? = null
     ): ClientResponse<RESPONSE> = withContext(Dispatchers.IO) {
-        Timber.d("Endpoint = $endpoint")
+        Timber.d("$method $endpoint")
+        sendRequestInternal(endpoint, method, body, { json.encodeToString(it) }, { json.decodeFromString<RESPONSE>(it) })
+    }
 
-        try {
+    suspend inline fun <reified RESPONSE : Any> sendBinaryRequest(
+        endpoint: String,
+        method: HttpMethod,
+        inputStream: InputStream
+    ): ClientResponse<RESPONSE> = withContext(Dispatchers.IO) {
+        Timber.d("$method $endpoint")
+        sendBinaryRequestInternal(
+            endpoint,
+            method,
+            inputStream,
+            { json.decodeFromString<RESPONSE>(it) }
+        )
+    }
+
+    fun <REQUEST : SerializableMarker, RESPONSE : Any> sendRequestInternal(
+        endpoint: String,
+        method: HttpMethod,
+        body: REQUEST?,
+        serialize: (REQUEST) -> String,
+        deserialize: (String) -> RESPONSE
+    ): ClientResponse<RESPONSE> {
+        return try {
             LocalSocket().use { socket ->
                 socket.connect(LocalSocketAddress(socketPath, LocalSocketAddress.Namespace.FILESYSTEM))
-                val request = ClientRequest(endpoint, method, body)
 
-                val (responseCode, responseBody) = getResponse(socket, request)
+                val (responseCode, _, responseBody) = when (body) {
+                    is InputStream -> sendBinaryRequestAndGetResponse(socket, endpoint, method, body)
+                    else -> sendJsonRequestAndGetResponse(socket, endpoint, method, body, serialize)
+                }
 
-                Timber.d("resposne body = $responseBody")
+                Timber.d("response body = $responseBody")
 
                 when (responseCode) {
-                    in 200..299 -> parseSuccessResponse<RESPONSE>(responseBody)
+                    in 200..299 -> parseSuccessResponse(responseBody, deserialize)
                     in 400..499 -> ClientResponse.ErrorResponse(ApiError.ClientError("Client error: $responseCode"))
                     in 500..599 -> ClientResponse.ErrorResponse(ApiError.ServerError("Server error: $responseCode"))
                     else -> ClientResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected status code: $responseCode"))
@@ -99,53 +85,102 @@ class UnixSocketClient() {
         }
     }
 
-    inline fun <reified RESPONSE> parseSuccessResponse(responseBody: String): ClientResponse<RESPONSE> {
-        val obj = json.decodeFromString<RESPONSE>(responseBody)
-        return ClientResponse.SuccessResponse(obj)
+    fun <RESPONSE : Any> sendBinaryRequestInternal(
+        endpoint: String,
+        method: HttpMethod,
+        inputStream: InputStream,
+        deserialize: (String) -> RESPONSE
+    ): ClientResponse<RESPONSE> {
+        return try {
+            LocalSocket().use { socket ->
+                socket.connect(LocalSocketAddress(socketPath, LocalSocketAddress.Namespace.FILESYSTEM))
 
-//        return when {
-//            method == HttpMethod.GET && obj.isListLike() -> {
-//                Timber.d("list = $responseBody")
-//                ApiResponse.ListResponse(listData)
-//            }
-//            else -> {
-//                val singleData = json.decodeFromString<RESPONSE>(responseBody)
-//                Timber.d("single = $responseBody")
-//                ApiResponse.SingleResponse(singleData)
-//            }
-//        }
+                val (responseCode, _, responseBody) = sendBinaryRequestAndGetResponse(socket, endpoint, method, inputStream)
+
+                Timber.d("response body = $responseBody")
+
+                when (responseCode) {
+                    in 200..299 -> parseSuccessResponse(responseBody, deserialize)
+                    in 400..499 -> ClientResponse.ErrorResponse(ApiError.ClientError("Client error: $responseCode"))
+                    in 500..599 -> ClientResponse.ErrorResponse(ApiError.ServerError("Server error: $responseCode"))
+                    else -> ClientResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected status code: $responseCode"))
+                }
+            }
+        } catch (e: Exception) {
+            ClientResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected error: ${e.localizedMessage}"))
+        }
     }
 
-    fun getResponse(socket: LocalSocket, request: ClientRequest): NetworkResponse {
-        val output = PrintWriter(socket.outputStream.bufferedWriter())
-        val input = BufferedReader(InputStreamReader(socket.inputStream))
+    private fun <REQUEST : SerializableMarker> sendJsonRequestAndGetResponse(
+        socket: LocalSocket,
+        endpoint: String,
+        method: HttpMethod,
+        body: REQUEST?,
+        serialize: (REQUEST) -> String
+    ): Triple<Int, Map<String, String>, String> {
+        val output = socket.outputStream
+        val jsonBody = body?.let { serialize(it) } ?: ""
 
-        // Send request
-        output.apply {
-            println("${request.method} ${request.endpoint} HTTP/1.1")
-            println("Content-Type: application/json")
-            request.body?.let {
-                val content = json.encodeToString(it)
-                println("Content-Length: ${content.length}")
-                println()
-                println(content)
-            }
-            println()
-            flush()
+        val requestHeaders = buildString {
+            append("$method $endpoint HTTP/1.1\r\n")
+            append("Content-Type: application/json\r\n")
+            append("Content-Length: ${jsonBody.length}\r\n")
+            append("\r\n")
         }
 
-        // Read response
-        val statusLine = input.readLine()
+        output.write(requestHeaders.toByteArray())
+        output.write(jsonBody.toByteArray())
+        output.flush()
+
+        return readResponse(socket.inputStream)
+    }
+
+    private fun sendBinaryRequestAndGetResponse(
+        socket: LocalSocket,
+        endpoint: String,
+        method: HttpMethod,
+        inputStream: InputStream
+    ): Triple<Int, Map<String, String>, String> {
+        val output = socket.outputStream
+
+        val requestHeaders = buildString {
+            append("$method $endpoint HTTP/1.1\r\n")
+            append("Content-Type: application/octet-stream\r\n")
+            append("Content-Length: ${inputStream.available()}\r\n")
+            append("\r\n")
+        }
+
+        output.write(requestHeaders.toByteArray())
+        inputStream.copyTo(output)
+        output.flush()
+
+        return readResponse(socket.inputStream)
+    }
+
+    private fun readResponse(inputStream: InputStream): Triple<Int, Map<String, String>, String> {
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        val statusLine = reader.readLine()
         val (_, statusCode, _) = statusLine.split(" ", limit = 3)
+
         val headers = mutableMapOf<String, String>()
         var line: String?
-        // Read headers
-        while (input.readLine().also { line = it } != null) {
+        while (reader.readLine().also { line = it } != null) {
             if (line.isNullOrBlank()) break
             val (key, value) = line!!.split(": ", limit = 2)
             headers[key] = value
         }
 
-        return NetworkResponse(statusCode.toInt(), input.readText())
+        val responseBody = reader.readText()
+        return Triple(statusCode.toInt(), headers, responseBody)
+    }
+
+    internal fun <T> parseSuccessResponse(responseBody: String, deserialize: (String) -> T): ClientResponse<T> {
+        return try {
+            val obj = deserialize(responseBody)
+            ClientResponse.SuccessResponse(obj)
+        } catch (e: Exception) {
+            Timber.e("error = $e")
+            ClientResponse.ErrorResponse(ApiError.UnexpectedError(e.localizedMessage ?: "Unknown error"))
+        }
     }
 }

@@ -11,7 +11,8 @@ data class SnowbirdGroupList(
 @Serializable
 data class SnowbirdGroup(
     var key: String = "",
-    var name: String? = null
+    var name: String? = null,
+    var uri: String? = null
 ) : SugarRecord(), SerializableMarker {
     companion object {
         fun getAll(): List<SnowbirdGroup> {

@@ -44,7 +44,8 @@ class SnowbirdFragment : BaseSnowbirdFragment() {
         viewBinding.joinGroupButton.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
                 // startQRScanner()
-                processScannedData(CANNED_URI)
+                // processScannedData(CANNED_URI)
+                snowbirdGroupViewModel.fetchGroup("uloQH0mbWeZaJzF5ZySfOaGAmqb3cEnI1EoU8FDDXyw")
             }
         }
 

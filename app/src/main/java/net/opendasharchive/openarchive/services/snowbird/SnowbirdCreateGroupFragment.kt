@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdCreateGroupBinding
 import net.opendasharchive.openarchive.db.SnowbirdGroup
+import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.extensions.collectLifecycleFlow
 import net.opendasharchive.openarchive.util.FullScreenOverlayManager
 import net.opendasharchive.openarchive.util.Utility
@@ -32,14 +33,16 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewBinding.createGroupButton.setOnClickListener {
-            snowbirdGroupViewModel.createGroup(
-                viewBinding.groupNameTextfield.text.toString(),
-                viewBinding.repoNameTextfield.text.toString())
+            snowbirdGroupViewModel.createGroup(viewBinding.groupNameTextfield.text.toString())
             dismissKeyboard(it)
         }
 
         viewLifecycleOwner.collectLifecycleFlow(snowbirdGroupViewModel.group) { group ->
             group?.let { handleGroupCreated(it) }
+        }
+
+        viewLifecycleOwner.collectLifecycleFlow(snowbirdRepoViewModel.repo) { repo ->
+            repo?.let { handleRepoCreated(it) }
         }
 
         lifecycleScope.launch {
@@ -61,12 +64,22 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun handleGroupCreated(group: SnowbirdGroup) {
+    private suspend fun handleGroupCreated(group: SnowbirdGroup) {
         group.save()
-        showConfirmation(group)
+        snowbirdRepoViewModel.createRepo(
+            group.key,
+            viewBinding.repoNameTextfield.text.toString())
     }
 
-    private fun showConfirmation(group: SnowbirdGroup) {
+    private fun handleRepoCreated(repo: SnowbirdRepo) {
+        repo.snowbirdGroup = snowbirdGroupViewModel.group.value
+        repo.save()
+        showConfirmation(repo)
+    }
+
+    private fun showConfirmation(repo: SnowbirdRepo?) {
+        val group = repo?.snowbirdGroup ?: return
+
         Utility.showMaterialPrompt(
             requireContext(),
             title = "Snowbird Group Created",

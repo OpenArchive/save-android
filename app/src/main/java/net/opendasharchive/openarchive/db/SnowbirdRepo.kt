@@ -18,6 +18,19 @@ data class SnowbirdRepo(
         fun getAll(): List<SnowbirdRepo> {
             return findAll(SnowbirdRepo::class.java).asSequence().toList()
         }
+
+        fun getAllFor(group: SnowbirdGroup?): List<SnowbirdRepo> {
+            if (group == null) return emptyList()
+
+            val whereClause = "snowbird_group = ?"
+            val whereArgs = mutableListOf(group.id.toString())
+
+            return find(
+                SnowbirdRepo::class.java, whereClause, whereArgs.toTypedArray(),
+                null,
+                null,
+                null)
+        }
     }
 }
 
