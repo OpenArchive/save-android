@@ -2,66 +2,45 @@ package net.opendasharchive.openarchive.services.snowbird
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.OneLineRowBinding
-import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.util.extensions.scaled
-import java.lang.ref.WeakReference
+import net.opendasharchive.openarchive.databinding.LayoutSnowbirdMediaItemBinding
+import net.opendasharchive.openarchive.db.SnowbirdMediaItem
 
-class SnowbirdMediaListAdapter(listener: ((Long) -> Unit)? = null)
-    : ListAdapter<Media, SnowbirdMediaListAdapter.ViewHolder>(DIFF_CALLBACK) {
+class SnowbirdMediaViewHolder(val binding: LayoutSnowbirdMediaItemBinding) : RecyclerView.ViewHolder(binding.root)
 
-    inner class ViewHolder(private val binding: OneLineRowBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+class SnowbirdMediaListAdapter(listener: ((String) -> Unit)? = null) : ListAdapter<SnowbirdMediaItem, SnowbirdMediaViewHolder>(SnowbirdMediaDiffCallback()) {
 
-        fun bind(media: Media?) {
-            if (media == null) {
-                return
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SnowbirdMediaViewHolder {
+        val binding = LayoutSnowbirdMediaItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return SnowbirdMediaViewHolder(binding)
+    }
 
-            val context = binding.button.context
+    override fun onBindViewHolder(holder: SnowbirdMediaViewHolder, position: Int) {
+        val item = getItem(position)
 
-            binding.button.setLeftIcon(ContextCompat.getDrawable(context, R.drawable.snowbird)?.scaled(40, context))
-            binding.button.setBackgroundResource(R.drawable.button_outlined_ripple)
-            binding.button.setTitle(media.title)
-            binding.button.setSubTitle(media.description)
+        with (holder.binding) {
+//            imageView.layoutParams.height = (imageView.width / item.aspectRatio).toInt()
+//            imageView.requestLayout()
 
-            binding.button.setOnClickListener {
-                mListener.get()?.invoke(media.id)
+            imageView.load(item.uri) {
+                crossfade(true)
+                placeholder(R.drawable.ic_delete)
+                error(R.drawable.ic_error)
             }
         }
     }
+}
 
-    companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Media>() {
-            override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean {
-                return oldItem.fileUri == newItem.fileUri
-            }
-        }
+class SnowbirdMediaDiffCallback : DiffUtil.ItemCallback<SnowbirdMediaItem>() {
+    override fun areItemsTheSame(oldItem: SnowbirdMediaItem, newItem: SnowbirdMediaItem): Boolean {
+        return oldItem.uri == newItem.uri
     }
 
-    private val mListener = WeakReference(listener)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            OneLineRowBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
-    }
-
-    override fun onBindViewHolder(holder: SnowbirdMediaListAdapter.ViewHolder, position: Int) {
-        val repo = getItem(position)
-        holder.bind(repo)
+    override fun areContentsTheSame(oldItem: SnowbirdMediaItem, newItem: SnowbirdMediaItem): Boolean {
+        return oldItem == newItem
     }
 }

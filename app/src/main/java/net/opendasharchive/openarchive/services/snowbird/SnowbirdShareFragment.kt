@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdShareGroupBinding
+import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.extensions.asQRCode
-import net.opendasharchive.openarchive.extensions.toSnowbirdUri
 
 class SnowbirdShareFragment: BaseSnowbirdFragment() {
     private lateinit var viewBinding: FragmentSnowbirdShareGroupBinding
@@ -29,7 +29,9 @@ class SnowbirdShareFragment: BaseSnowbirdFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val qrCode = groupId.toSnowbirdUri().toString().asQRCode(size = 256)
-        viewBinding.qrCode.setImageBitmap(qrCode)
+        SnowbirdGroup.get(groupId)?.let { group ->
+            val qrCode = group.uri?.asQRCode(size = 256)
+            viewBinding.qrCode.setImageBitmap(qrCode)
+        }
     }
 }

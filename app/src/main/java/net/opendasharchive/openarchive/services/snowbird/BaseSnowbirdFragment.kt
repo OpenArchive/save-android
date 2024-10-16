@@ -1,16 +1,32 @@
 package net.opendasharchive.openarchive.services.snowbird
 
+import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.util.FullScreenOverlayManager
+import net.opendasharchive.openarchive.util.Utility
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class BaseSnowbirdFragment : Fragment() {
     val snowbirdGroupViewModel: SnowbirdGroupViewModel by viewModel()
     val snowbirdRepoViewModel: SnowbirdRepoViewModel by viewModel()
-    val snowbirdMediaViewModel: SnowbirdMediaViewModel by viewModel()
 
-    fun handleProcessingStatus(isProcessing: Boolean) {
-        if (isProcessing) {
+    open fun dismissKeyboard(view: View) {
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    open fun handleError(error: SnowbirdError) {
+        Utility.showMaterialWarning(
+            requireContext(),
+            error.friendlyMessage
+        )
+    }
+
+    open fun handleLoadingStatus(isLoading: Boolean) {
+        if (isLoading) {
             FullScreenOverlayManager.show(this@BaseSnowbirdFragment)
         } else {
             FullScreenOverlayManager.hide()

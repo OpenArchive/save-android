@@ -8,48 +8,36 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.esafirm.imagepicker.features.ImagePickerLauncher
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListReposBinding
-import net.opendasharchive.openarchive.db.SnowbirdError
-import net.opendasharchive.openarchive.extensions.collectLifecycleFlow
-import net.opendasharchive.openarchive.features.media.Picker.pickMedia
-import net.opendasharchive.openarchive.util.SpacingItemDecoration
+import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListMediaBinding
+import net.opendasharchive.openarchive.db.SnowbirdMediaItem
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class SnowbirdMediaListFragment : BaseSnowbirdFragment() {
 
-    private lateinit var viewBinding: FragmentSnowbirdListReposBinding
+    private lateinit var viewBinding: FragmentSnowbirdListMediaBinding
+    private val snowbirdMediaViewModel: SnowbirdMediaViewModel by viewModel()
     private lateinit var adapter: SnowbirdMediaListAdapter
-    private lateinit var repoId: String
-    private var mpl: ImagePickerLauncher? = null
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (isGranted) {
-                pickMedia(requireActivity(), mpl!!)
-            } else {
-                Timber.d("External storage permission denied")
-            }
-        }
+    private lateinit var repoKey: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            repoId = it.getString("repoId", "")
+            repoKey = it.getString("repoId", "")
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        viewBinding = FragmentSnowbirdListReposBinding.inflate(inflater)
+        viewBinding = FragmentSnowbirdListMediaBinding.inflate(inflater)
 
         return viewBinding.root
     }
@@ -57,10 +45,10 @@ class SnowbirdMediaListFragment : BaseSnowbirdFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        initializeImagePicker()
         setupSwipeRefresh()
         setupViewModel()
         setupMenu()
+        initializeViewModelObservers()
     }
 
     private fun setupMenu() {
@@ -116,7 +104,6 @@ class SnowbirdMediaListFragment : BaseSnowbirdFragment() {
                 }
             }
         } else {
-            // No images were selected
             Timber.d("No images selected")
         }
     }
@@ -125,46 +112,49 @@ class SnowbirdMediaListFragment : BaseSnowbirdFragment() {
         getMultipleContents.launch("*/*")
     }
 
+    private fun setupRecyclerView() {
+        viewBinding.snowbirdMediaRecyclerView.apply {
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            adapter = adapter
+            setHasFixedSize(true)
+        }
+    }
+
     private fun setupViewModel() {
         adapter = SnowbirdMediaListAdapter { fileId ->
             Timber.d("Cleeeck!")
         }
 
-        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.list_item_spacing)
-        viewBinding.repoList.addItemDecoration(SpacingItemDecoration(spacingInPixels))
+        viewBinding.snowbirdMediaRecyclerView.setEmptyView(R.layout.view_empty_state)
+    }
 
-        viewBinding.repoList.layoutManager = LinearLayoutManager(requireContext())
-        viewBinding.repoList.adapter = adapter
-
-//        viewLifecycleOwner.collectLifecycleFlow(snowbirdRepoViewModel.repos) {
-//            adapter.submitList(it)
-//        }
-
-        viewBinding.repoList.setEmptyView(R.layout.view_empty_state)
-
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdRepoViewModel.error) { error ->
-            error?.let { handle(it) }
-        }
-
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdRepoViewModel.isProcessing) { isProcessing ->
-            handleProcessingStatus(isProcessing)
-            viewBinding.swipeRefreshLayout.isRefreshing = false
-        }
-
-        lifecycleScope.launch {
-            snowbirdRepoViewModel.fetchRepos(repoId, forceRefresh = false)
+    private fun handleMediaStateUpdate(state: SnowbirdMediaViewModel.MediaState) {
+        when (state) {
+            is SnowbirdMediaViewModel.MediaState.Idle -> { /* Initial state */ }
+            is SnowbirdMediaViewModel.MediaState.Loading -> handleLoadingStatus(true)
+            is SnowbirdMediaViewModel.MediaState.Success -> handleMediaUpdate(state.media)
+            is SnowbirdMediaViewModel.MediaState.Error -> handleError(state.error)
+            else -> Unit
         }
     }
 
-    private fun handle(error: SnowbirdError) {
-        viewBinding.swipeRefreshLayout.isRefreshing = false
-        Toast.makeText(requireContext(), error.friendlyMessage, Toast.LENGTH_SHORT).show()
+    private fun handleMediaUpdate(media: List<SnowbirdMediaItem>) {
+        adapter.submitList(media)
+    }
+
+    private fun initializeViewModelObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { snowbirdMediaViewModel.mediaState.collect { state -> handleMediaStateUpdate(state) } }
+                launch { snowbirdMediaViewModel.fetchMedia("123", repoKey, forceRefresh = false) }
+            }
+        }
     }
 
     private fun setupSwipeRefresh() {
         viewBinding.swipeRefreshLayout.setOnRefreshListener {
             lifecycleScope.launch {
-                snowbirdRepoViewModel.fetchRepos(repoId, forceRefresh = true)
+                snowbirdRepoViewModel.fetchRepos(repoKey, forceRefresh = true)
             }
         }
 

@@ -139,7 +139,7 @@
     <fragment
         android:id="@+id/snowbird_list_files_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdMediaListFragment"
-        android:label="Your Media">
+        android:label="My Media">
         <argument
             android:name="repoId"
             app:argType="string" />

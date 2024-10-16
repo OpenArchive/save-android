@@ -108,7 +108,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="save-veilid" />
+                    android:scheme="save+dweb" />
             </intent-filter>
         </activity>
         <activity

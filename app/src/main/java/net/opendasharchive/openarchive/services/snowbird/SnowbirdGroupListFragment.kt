@@ -4,16 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListGroupsBinding
-import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdGroup
-import net.opendasharchive.openarchive.extensions.collectLifecycleFlow
 import net.opendasharchive.openarchive.services.CommonServiceFragment.Companion.RESP_CREATED
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
@@ -62,34 +63,30 @@ class SnowbirdGroupListFragment : BaseSnowbirdFragment(), SnowbirdGroupsAdapterL
 
         viewBinding.groupList.setEmptyView(R.layout.view_empty_state)
 
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdGroupViewModel.error) { error ->
-            error?.let { handle(it) }
-        }
+        initializeViewModelObservers()
+    }
 
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdGroupViewModel.groupState) { groupState ->
-            handleGroupUpdate(groupState)
-        }
-
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdGroupViewModel.isProcessing) { isProcessing ->
-            handleProcessingStatus(isProcessing)
-            viewBinding.swipeRefreshLayout.isRefreshing = false
+    private fun initializeViewModelObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { snowbirdGroupViewModel.isProcessing.collect { isProcessing -> handleLoadingStatus(isProcessing) } }
+                launch { snowbirdGroupViewModel.groupState.collect { state -> handleGroupStateUpdate(state) } }
+            }
         }
     }
 
-    private fun handle(error: SnowbirdError) {
-        viewBinding.swipeRefreshLayout.isRefreshing = false
-        Toast.makeText(requireContext(), error.friendlyMessage, Toast.LENGTH_SHORT).show()
+    private fun handleGroupStateUpdate(state: SnowbirdGroupViewModel.GroupState) {
+        when (state) {
+            is SnowbirdGroupViewModel.GroupState.Idle -> { /* Initial state */ }
+            is SnowbirdGroupViewModel.GroupState.Loading -> handleLoadingStatus(true)
+            is SnowbirdGroupViewModel.GroupState.MultiGroupSuccess -> handleGroupsFetched(state.groups)
+            is SnowbirdGroupViewModel.GroupState.Error -> handleError(state.error)
+            else -> Unit
+        }
     }
 
-    private fun handleGroupUpdate(groupState: SnowbirdGroupViewModel.GroupState) {
-        adapter.submitList(groupState.groups)
-
-        if (groupState.updateCount > 0 && groupState.groups.isEmpty()) {
-            Utility.showMaterialMessage(
-                requireContext(),
-                title = "Info",
-                message = "No new groups found.")
-        }
+    private fun handleGroupsFetched(groups: List<SnowbirdGroup>) {
+        adapter.submitList(groups)
     }
 
     private fun showSuccess() {

@@ -81,7 +81,7 @@ class UnixSocketClient(private val socketPath: String = "/data/user/0/net.openda
                 }
             }
         } catch (e: Exception) {
-            ClientResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected error: ${e.localizedMessage}"))
+            ClientResponse.ErrorResponse(ApiError.UnexpectedError(e.localizedMessage ?: "Unknown error"))
         }
     }
 
@@ -107,7 +107,7 @@ class UnixSocketClient(private val socketPath: String = "/data/user/0/net.openda
                 }
             }
         } catch (e: Exception) {
-            ClientResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected error: ${e.localizedMessage}"))
+            ClientResponse.ErrorResponse(ApiError.UnexpectedError(e.localizedMessage ?: "Unknown error"))
         }
     }
 

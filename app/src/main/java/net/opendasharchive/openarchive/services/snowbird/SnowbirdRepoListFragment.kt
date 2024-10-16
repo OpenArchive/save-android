@@ -4,15 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListReposBinding
 import net.opendasharchive.openarchive.db.SnowbirdError
-import net.opendasharchive.openarchive.extensions.collectLifecycleFlow
+import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
@@ -42,6 +43,27 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
 
         setupSwipeRefresh()
         setupViewModel()
+        initializeViewModelObservers()
+    }
+
+    private fun handleRepoStateUpdate(state: SnowbirdRepoViewModel.RepoState) {
+        handleLoadingStatus(false)
+        when (state) {
+            is SnowbirdRepoViewModel.RepoState.Idle -> { /* Initial state */ }
+            is SnowbirdRepoViewModel.RepoState.Loading -> handleLoadingStatus(true)
+            is SnowbirdRepoViewModel.RepoState.MultiRepoSuccess -> handleRepoUpdate(state.repos)
+            is SnowbirdRepoViewModel.RepoState.Error -> handleError(state.error)
+            else -> Unit
+        }
+    }
+
+    private fun initializeViewModelObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { snowbirdRepoViewModel.repoState.collect { state -> handleRepoStateUpdate(state) } }
+                launch { snowbirdRepoViewModel.fetchRepos(groupKey, forceRefresh = false) }
+            }
+        }
     }
 
     private fun setupViewModel() {
@@ -56,34 +78,13 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
         viewBinding.repoList.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.repoList.adapter = adapter
 
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdRepoViewModel.repos) {
-            adapter.submitList(it)
-        }
-
         viewBinding.repoList.setEmptyView(R.layout.view_empty_state)
-
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdRepoViewModel.error) { error ->
-            error?.let { handle(it) }
-        }
-
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdRepoViewModel.repoState) { repoState ->
-            handleRepoUpdate(repoState)
-        }
-
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdRepoViewModel.isProcessing) { isProcessing ->
-            handleProcessingStatus(isProcessing)
-            viewBinding.swipeRefreshLayout.isRefreshing = false
-        }
-
-        lifecycleScope.launch {
-            snowbirdRepoViewModel.fetchRepos(groupKey, forceRefresh = false)
-        }
     }
 
-    private fun handleRepoUpdate(repoState: SnowbirdRepoViewModel.RepoState) {
-        adapter.submitList(repoState.repos)
+    private fun handleRepoUpdate(repos: List<SnowbirdRepo>) {
+        adapter.submitList(repos)
 
-        if (repoState.updateCount > 1 && repoState.repos.isEmpty()) {
+        if (repos.isEmpty()) {
             Utility.showMaterialMessage(
                 requireContext(),
                 title = "Info",
@@ -91,9 +92,14 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
         }
     }
 
-    private fun handle(error: SnowbirdError) {
+    override fun handleError(error: SnowbirdError) {
+        super.handleError(error)
         viewBinding.swipeRefreshLayout.isRefreshing = false
-        Toast.makeText(requireContext(), error.friendlyMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun handleLoadingStatus(isLoading: Boolean) {
+        super.handleLoadingStatus(isLoading)
+        viewBinding.swipeRefreshLayout.isRefreshing = false
     }
 
     private fun setupSwipeRefresh() {

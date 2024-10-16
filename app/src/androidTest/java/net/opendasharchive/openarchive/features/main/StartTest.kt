@@ -33,12 +33,12 @@ class StartTest {
 
     @Test
     fun testCreateRepo() = runTest {
-        val result = createRepo("blrSIdKPpLPlfJI6M9bTQFjW9BlnwboPzLQ-GPlJsGw", "r1")
+        val result = parseSnowbirdRepoResponse("blrSIdKPpLPlfJI6M9bTQFjW9BlnwboPzLQ-GPlJsGw", "r1")
         assertEquals(ApiResponse.SingleResponse(repo), result)
     }
 
     @Suppress("SameParameterValue")
-    private fun createRepo(groupKey: String, repoName: String): ApiResponse<SnowbirdRepo> {
+    private fun parseSnowbirdRepoResponse(groupKey: String, repoName: String): ApiResponse<SnowbirdRepo> {
         val client = UnixSocketClient()
         val json = Json { ignoreUnknownKeys = true }
         val jsonString = "{ \"key\":\"blrSIdKPpLPlfJI6M9bTQFjW9BlnwboPzLQ-GPlJsGw\", \"name\":\"r1\" }"

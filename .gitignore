@@ -12,9 +12,11 @@ openarchive-release.keystore
 *.class
 
 # Generated files
+app/build/
+app/debug/
+app/release/
 bin/
 gen/
-app/build/
 release/
 spoon-output/
 screenshots/

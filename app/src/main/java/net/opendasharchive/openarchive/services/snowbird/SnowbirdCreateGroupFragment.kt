@@ -1,11 +1,9 @@
 package net.opendasharchive.openarchive.services.snowbird
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -14,10 +12,7 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdCreateGroupBinding
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.db.SnowbirdRepo
-import net.opendasharchive.openarchive.extensions.collectLifecycleFlow
-import net.opendasharchive.openarchive.util.FullScreenOverlayManager
 import net.opendasharchive.openarchive.util.Utility
-import timber.log.Timber
 
 class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
 
@@ -37,44 +32,58 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
             dismissKeyboard(it)
         }
 
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdGroupViewModel.group) { group ->
-            group?.let { handleGroupCreated(it) }
-        }
+        initializeViewModelObservers()
+    }
 
-        viewLifecycleOwner.collectLifecycleFlow(snowbirdRepoViewModel.repo) { repo ->
-            repo?.let { handleRepoCreated(it) }
-        }
-
+    private fun initializeViewModelObservers() {
         lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                snowbirdGroupViewModel.isProcessing.collect { isProcessing ->
-                    Timber.d("is processing? $isProcessing")
-                    if (isProcessing) {
-                        FullScreenOverlayManager.show(this@SnowbirdCreateGroupFragment)
-                    } else {
-                        FullScreenOverlayManager.hide()
-                    }
-                }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { snowbirdGroupViewModel.isProcessing.collect { isProcessing -> handleLoadingStatus(isProcessing) } }
+                launch { snowbirdGroupViewModel.groupState.collect { state -> handleGroupStateUpdate(state) } }
+                launch { snowbirdRepoViewModel.repoState.collect { state -> handleRepoStateUpdate(state) } }
             }
         }
     }
 
-    private fun dismissKeyboard(view: View) {
-        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    private fun handleGroupStateUpdate(state: SnowbirdGroupViewModel.GroupState) {
+        when (state) {
+            is SnowbirdGroupViewModel.GroupState.Idle -> { /* Initial state */ }
+            is SnowbirdGroupViewModel.GroupState.Loading -> handleLoadingStatus(true)
+            is SnowbirdGroupViewModel.GroupState.SingleGroupSuccess -> handleGroupCreated(state.group)
+            is SnowbirdGroupViewModel.GroupState.Error -> handleError(state.error)
+            else -> Unit
+        }
     }
 
-    private suspend fun handleGroupCreated(group: SnowbirdGroup) {
-        group.save()
-        snowbirdRepoViewModel.createRepo(
-            group.key,
-            viewBinding.repoNameTextfield.text.toString())
+    private fun handleRepoStateUpdate(state: SnowbirdRepoViewModel.RepoState) {
+        when (state) {
+            is SnowbirdRepoViewModel.RepoState.Idle -> { /* Initial state */ }
+            is SnowbirdRepoViewModel.RepoState.Loading -> handleLoadingStatus(true)
+            is SnowbirdRepoViewModel.RepoState.SingleRepoSuccess -> handleRepoCreated(state.repo)
+            is SnowbirdRepoViewModel.RepoState.Error -> handleError(state.error)
+            else -> Unit
+        }
     }
 
-    private fun handleRepoCreated(repo: SnowbirdRepo) {
-        repo.snowbirdGroup = snowbirdGroupViewModel.group.value
-        repo.save()
-        showConfirmation(repo)
+    private fun handleGroupCreated(group: SnowbirdGroup?) {
+        group?.let {
+            snowbirdGroupViewModel.setCurrentGroup(group)
+
+            lifecycleScope.launch {
+                group.save()
+                snowbirdRepoViewModel.createRepo(
+                    group.key, viewBinding.repoNameTextfield.text.toString()
+                )
+            }
+        }
+    }
+
+    private fun handleRepoCreated(repo: SnowbirdRepo?) {
+        repo?.let {
+            repo.snowbirdGroup = snowbirdGroupViewModel.currentGroup.value
+            repo.save()
+            showConfirmation(repo)
+        }
     }
 
     private fun showConfirmation(repo: SnowbirdRepo?) {
