@@ -16,5 +16,5 @@
         android:layout_weight="1"
         android:text="Now is the time"
         android:textColor="@color/colorSectionHeader"
-        android:textSize="22sp" />
+        android:textSize="26sp" />
 </LinearLayout>

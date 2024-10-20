@@ -5,13 +5,13 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import net.opendasharchive.openarchive.db.SnowbirdError
+import net.opendasharchive.openarchive.extensions.androidViewModel
 import net.opendasharchive.openarchive.util.FullScreenOverlayManager
 import net.opendasharchive.openarchive.util.Utility
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class BaseSnowbirdFragment : Fragment() {
-    val snowbirdGroupViewModel: SnowbirdGroupViewModel by viewModel()
-    val snowbirdRepoViewModel: SnowbirdRepoViewModel by viewModel()
+    val snowbirdGroupViewModel: SnowbirdGroupViewModel by androidViewModel()
+    val snowbirdRepoViewModel: SnowbirdRepoViewModel by androidViewModel()
 
     open fun dismissKeyboard(view: View) {
         val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

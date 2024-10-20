@@ -46,7 +46,7 @@ class WebViewActivity : BaseActivity() {
         setupWebView()
 
         currentUrl = savedInstanceState?.getString(STATE_URL)
-            ?: intent.getStringExtra(EXTRA_URL) ?: "https://www.placekitten.com"
+            ?: intent.getStringExtra(EXTRA_URL) ?: "https://placehold.co/"
 
         currentUrl?.let { url ->
             loadUrl(url)

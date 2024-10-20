@@ -112,6 +112,17 @@
         <action
             android:id="@+id/navigate_to_snowbird_group_overview_screen"
             app:destination="@id/snowbird_group_overview_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_join_group_screen"
+            app:destination="@id/snowbird_join_group_screen" />
+    </fragment>
+    <fragment
+        android:id="@+id/snowbird_join_group_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdJoinGroupFragment"
+        android:label="Join Group">
+        <argument
+            android:name="uriString"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/snowbird_group_overview_screen"
@@ -123,7 +134,7 @@
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdShareFragment"
         android:label="Share Snowbird Group">
         <argument
-            android:name="groupId"
+            android:name="groupKey"
             app:argType="string" />
     </fragment>
     <fragment
@@ -138,10 +149,13 @@
     </fragment>
     <fragment
         android:id="@+id/snowbird_list_files_screen"
-        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdMediaListFragment"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFileListFragment"
         android:label="My Media">
         <argument
-            android:name="repoId"
+            android:name="groupKey"
+            app:argType="string" />
+        <argument
+            android:name="repoKey"
             app:argType="string" />
     </fragment>
     <fragment
@@ -160,8 +174,14 @@
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupListFragment"
         android:label="My Groups">
         <action
+            android:id="@+id/navigate_to_snowbird_share_screen"
+            app:destination="@id/snowbird_share_screen" />
+        <action
             android:id="@+id/navigate_to_snowbird_list_repos_screen"
             app:destination="@id/snowbird_list_repos_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_create_group_screen"
+            app:destination="@id/snowbird_create_group_screen" />
     </fragment>
     <fragment
         android:id="@+id/internet_archive_screen"

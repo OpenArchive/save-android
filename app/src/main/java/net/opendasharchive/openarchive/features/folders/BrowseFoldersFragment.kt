@@ -26,7 +26,7 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.Utility.showMaterialPrompt
-import net.opendasharchive.openarchive.util.extensions.toggle
+import net.opendasharchive.openarchive.extensions.toggle
 import timber.log.Timber
 
 

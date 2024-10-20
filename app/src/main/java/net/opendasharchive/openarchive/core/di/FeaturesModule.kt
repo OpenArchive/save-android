@@ -12,13 +12,14 @@ import net.opendasharchive.openarchive.features.internetarchive.internetArchiveM
 import net.opendasharchive.openarchive.features.main.UnixSocketClient
 import net.opendasharchive.openarchive.features.main.ui.MediaGridViewModel
 import net.opendasharchive.openarchive.services.snowbird.ISnowbirdAPI
+import net.opendasharchive.openarchive.services.snowbird.ISnowbirdFileRepository
 import net.opendasharchive.openarchive.services.snowbird.ISnowbirdGroupRepository
-import net.opendasharchive.openarchive.services.snowbird.ISnowbirdMediaRepository
 import net.opendasharchive.openarchive.services.snowbird.ISnowbirdRepoRepository
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdAPI
+import net.opendasharchive.openarchive.services.snowbird.SnowbirdFileRepository
+import net.opendasharchive.openarchive.services.snowbird.SnowbirdFileViewModel
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupRepository
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupViewModel
-import net.opendasharchive.openarchive.services.snowbird.SnowbirdMediaRepository
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdRepoRepository
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdRepoViewModel
 import net.opendasharchive.openarchive.services.tor.ITorRepository
@@ -33,21 +34,22 @@ import org.koin.dsl.module
 
 val featuresModule = module {
     includes(internetArchiveModule)
-    single<ISnowbirdAPI> { SnowbirdAPI(get()) }
+    single<ISnowbirdAPI> { SnowbirdAPI(get(), get()) }
     single { UnixSocketClient() }
     single { TorForegroundService() }
     single { MediaUploadRepository(MediaUploadManager) }
     single<IFolderRepository> { FolderRepository() }
     single<ICollectionRepository> { CollectionRepository() }
     single<IMediaRepository> { MediaRepository() }
-    single<ISnowbirdMediaRepository> { SnowbirdMediaRepository(get()) }
+    single<ISnowbirdFileRepository> { SnowbirdFileRepository(get()) }
     single<ISnowbirdGroupRepository> { SnowbirdGroupRepository(get()) }
     single<ISnowbirdRepoRepository> { SnowbirdRepoRepository(get()) }
     single<ITorRepository> { TorRepository(get()) }
-    viewModel { (app: Application) -> TorViewModel(app, get()) }
+    viewModel { (application: Application) -> TorViewModel(application, get()) }
     viewModel { MediaGridViewModel(get(), get()) }
     viewModel { MediaActionsViewModel(get()) }
     viewModel { MediaUploadStatusViewModel(get()) }
-    viewModel { SnowbirdGroupViewModel(get()) }
-    viewModel { SnowbirdRepoViewModel(get()) }
+    viewModel { (application: Application) -> SnowbirdGroupViewModel(application, get()) }
+    viewModel { (application: Application) -> SnowbirdFileViewModel(application, get()) }
+    viewModel { (application: Application) -> SnowbirdRepoViewModel(application, get()) }
 }

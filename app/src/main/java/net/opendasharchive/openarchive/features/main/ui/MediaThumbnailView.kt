@@ -17,8 +17,8 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.util.extensions.cloak
-import net.opendasharchive.openarchive.util.extensions.show
+import net.opendasharchive.openarchive.extensions.cloak
+import net.opendasharchive.openarchive.extensions.show
 import timber.log.Timber
 
 class MediaThumbnailView @JvmOverloads constructor(

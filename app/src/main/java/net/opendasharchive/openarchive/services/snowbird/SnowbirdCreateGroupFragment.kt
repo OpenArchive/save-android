@@ -10,9 +10,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdCreateGroupBinding
+import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.util.Utility
+import timber.log.Timber
 
 class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
 
@@ -38,7 +40,6 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
     private fun initializeViewModelObservers() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch { snowbirdGroupViewModel.isProcessing.collect { isProcessing -> handleLoadingStatus(isProcessing) } }
                 launch { snowbirdGroupViewModel.groupState.collect { state -> handleGroupStateUpdate(state) } }
                 launch { snowbirdRepoViewModel.repoState.collect { state -> handleRepoStateUpdate(state) } }
             }
@@ -46,8 +47,8 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
     }
 
     private fun handleGroupStateUpdate(state: SnowbirdGroupViewModel.GroupState) {
+        Timber.d("group state = $state")
         when (state) {
-            is SnowbirdGroupViewModel.GroupState.Idle -> { /* Initial state */ }
             is SnowbirdGroupViewModel.GroupState.Loading -> handleLoadingStatus(true)
             is SnowbirdGroupViewModel.GroupState.SingleGroupSuccess -> handleGroupCreated(state.group)
             is SnowbirdGroupViewModel.GroupState.Error -> handleError(state.error)
@@ -56,13 +57,18 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
     }
 
     private fun handleRepoStateUpdate(state: SnowbirdRepoViewModel.RepoState) {
+        Timber.d("repo state = $state")
         when (state) {
-            is SnowbirdRepoViewModel.RepoState.Idle -> { /* Initial state */ }
             is SnowbirdRepoViewModel.RepoState.Loading -> handleLoadingStatus(true)
             is SnowbirdRepoViewModel.RepoState.SingleRepoSuccess -> handleRepoCreated(state.repo)
             is SnowbirdRepoViewModel.RepoState.Error -> handleError(state.error)
             else -> Unit
         }
+    }
+
+    override fun handleError(error: SnowbirdError) {
+        handleLoadingStatus(false)
+        super.handleError(error)
     }
 
     private fun handleGroupCreated(group: SnowbirdGroup?) {
@@ -79,15 +85,16 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
     }
 
     private fun handleRepoCreated(repo: SnowbirdRepo?) {
+        handleLoadingStatus(false)
         repo?.let {
-            repo.snowbirdGroup = snowbirdGroupViewModel.currentGroup.value
+            repo.groupKey = snowbirdGroupViewModel.currentGroup.value!!.key
             repo.save()
             showConfirmation(repo)
         }
     }
 
     private fun showConfirmation(repo: SnowbirdRepo?) {
-        val group = repo?.snowbirdGroup ?: return
+        val group = SnowbirdGroup.get(repo!!.groupKey)!!
 
         Utility.showMaterialPrompt(
             requireContext(),

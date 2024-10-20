@@ -20,10 +20,10 @@ import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.extensions.hide
-import net.opendasharchive.openarchive.util.extensions.show
-import net.opendasharchive.openarchive.util.extensions.tint
-import net.opendasharchive.openarchive.util.extensions.toggle
+import net.opendasharchive.openarchive.extensions.hide
+import net.opendasharchive.openarchive.extensions.show
+import net.opendasharchive.openarchive.extensions.tint
+import net.opendasharchive.openarchive.extensions.toggle
 
 
 class PreviewActivity : BaseActivity(), View.OnClickListener, PreviewAdapter.Listener {

@@ -21,9 +21,9 @@ import net.opendasharchive.openarchive.features.main.ui.GridSectionLayoutDecorat
 import net.opendasharchive.openarchive.features.main.ui.MediaGridViewModel
 import net.opendasharchive.openarchive.features.main.ui.SectionedGridLayoutManager
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
-import net.opendasharchive.openarchive.util.extensions.cloak
-import net.opendasharchive.openarchive.util.extensions.show
-import net.opendasharchive.openarchive.util.extensions.toggle
+import net.opendasharchive.openarchive.extensions.cloak
+import net.opendasharchive.openarchive.extensions.show
+import net.opendasharchive.openarchive.extensions.toggle
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.text.NumberFormat

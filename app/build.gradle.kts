@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
     implementation("androidx.camera:camera-view:${cameraxVersion}")
 
-    val navigationVersion = "2.8.2"
+    val navigationVersion = "2.8.3"
     implementation("androidx.navigation:navigation-compose:$navigationVersion")
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
@@ -133,12 +133,12 @@ dependencies {
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.multidex:multidex:2.0.1")
 
-    val composeVersion = "1.7.3"
+    val composeVersion = "1.7.4"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
-    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.activity:activity-compose:1.9.3")
 
     val koinVersion = "3.5.3"
     implementation("io.insert-koin:koin-core:$koinVersion")
@@ -212,8 +212,9 @@ dependencies {
     implementation("com.google.android.play:feature-delivery:2.1.0")
     implementation("com.google.android.play:feature-delivery-ktx:2.1.0")
 
-    implementation("com.google.android.play:review:2.0.1")
-    implementation("com.google.android.play:review-ktx:2.0.1")
+    val playVersion = "2.0.2"
+    implementation("com.google.android.play:review:$playVersion")
+    implementation("com.google.android.play:review-ktx:$playVersion")
 
     implementation("com.google.android.play:app-update:2.1.0")
     implementation("com.google.android.play:app-update-ktx:2.1.0")
@@ -260,7 +261,7 @@ dependencies {
     // implementation("androidx.compose.material3:material3-window-size-class")
 
     // Optional - Integration with activities
-    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.activity:activity-compose:1.9.3")
     // Optional - Integration with ViewModels
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
     // Optional - Integration with LiveData

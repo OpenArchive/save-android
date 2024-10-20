@@ -1,13 +1,13 @@
 package net.opendasharchive.openarchive.util
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
-import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ProgressBar
 import androidx.core.view.isVisible
+import com.google.android.material.button.MaterialButton
+import net.opendasharchive.openarchive.R
 
 class FullScreenDimmingOverlay @JvmOverloads constructor(
     context: Context,
@@ -15,26 +15,27 @@ class FullScreenDimmingOverlay @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    private lateinit var cancelButton: MaterialButton
+
     init {
-        // Set layout parameters to match parent
+        LayoutInflater.from(context).inflate(R.layout.layout_progress_dialog, this, true)
         layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
-        // Set a semi-transparent background
-        setBackgroundColor(Color.parseColor("#C0000000"))
+        cancelButton = findViewById(R.id.cancel_button)
 
-        // Add a centered ProgressBar
-        addView(ProgressBar(context).apply {
-            layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply {
-                gravity = Gravity.CENTER
+        cancelButton.setOnClickListener {
+            Utility.showMaterialPrompt(
+                context,
+                title = "Confirm",
+                message = "Do you want to cancel this?",
+                positiveButtonText = "Yes",
+                negativeButtonText = "No") { affirm ->
+                if (affirm) {
+                    // TODO: Cancel the offending event
+                    hide()
+                }
             }
-        })
-
-        // Initially invisible
-        isVisible = false
-
-        // Intercept touch events
-        isClickable = true
-        isFocusable = true
+        }
     }
 
     fun show() {

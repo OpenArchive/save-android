@@ -12,9 +12,15 @@ data class SnowbirdRepoList(
 data class SnowbirdRepo(
     var key: String = "",
     var name: String? = null,
-    var snowbirdGroup: SnowbirdGroup? = null
+    var groupKey: String = ""
 ) : SugarRecord(), SerializableMarker {
     companion object {
+        fun clear(groupKey: String) {
+            val whereClause = "GROUP_KEY = ?"
+
+            deleteAll(SnowbirdRepo::class.java, whereClause, groupKey)
+        }
+
         fun getAll(): List<SnowbirdRepo> {
             return findAll(SnowbirdRepo::class.java).asSequence().toList()
         }
@@ -22,8 +28,8 @@ data class SnowbirdRepo(
         fun getAllFor(group: SnowbirdGroup?): List<SnowbirdRepo> {
             if (group == null) return emptyList()
 
-            val whereClause = "snowbird_group = ?"
-            val whereArgs = mutableListOf(group.id.toString())
+            val whereClause = "GROUP_KEY = ?"
+            val whereArgs = mutableListOf(group.key)
 
             return find(
                 SnowbirdRepo::class.java, whereClause, whereArgs.toTypedArray(),

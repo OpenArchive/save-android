@@ -76,6 +76,7 @@
     </style>
 
     <style name="OAPreferenceStyle" parent="PreferenceThemeOverlay">
+        <item name="android:textSize">16sp</item>
         <item name="android:listDivider">@drawable/save_list_item_spacing_small</item>
         <item name="android:divider">@drawable/save_list_item_spacing_small</item>
         <item name="android:dividerHeight">1dp</item>

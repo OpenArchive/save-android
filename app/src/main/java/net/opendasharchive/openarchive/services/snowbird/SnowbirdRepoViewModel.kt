@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.services.snowbird
 
+import android.app.Application
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,13 +12,17 @@ import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.util.BaseViewModel
 import net.opendasharchive.openarchive.util.trackProcessingWithTimeout
 
-class SnowbirdRepoViewModel(private val repository: ISnowbirdRepoRepository) : BaseViewModel() {
+class SnowbirdRepoViewModel(
+    application: Application,
+    private val repository: ISnowbirdRepoRepository
+) : BaseViewModel(application) {
 
     sealed class RepoState {
         data object Idle : RepoState()
         data object Loading : RepoState()
         data class SingleRepoSuccess(val repo: SnowbirdRepo) : RepoState()
         data class MultiRepoSuccess(val repos: List<SnowbirdRepo>) : RepoState()
+        data class RepoFetchSuccess(val repos: List<SnowbirdRepo>, val isRefresh: Boolean) : RepoState()
         data class Error(val error: SnowbirdError) : RepoState()
     }
 
@@ -26,6 +31,7 @@ class SnowbirdRepoViewModel(private val repository: ISnowbirdRepoRepository) : B
 
     fun createRepo(groupKey: String, repoName: String) {
         viewModelScope.launch {
+            _repoState.value = RepoState.Loading
             try {
                 val result = processingTracker.trackProcessingWithTimeout(60_000, "create_repo") {
                     repository.createRepo(groupKey, repoName)
@@ -50,7 +56,7 @@ class SnowbirdRepoViewModel(private val repository: ISnowbirdRepoRepository) : B
                 }
 
                 _repoState.value = when (result) {
-                    is SnowbirdResult.Success -> RepoState.MultiRepoSuccess(result.value)
+                    is SnowbirdResult.Success -> RepoState.RepoFetchSuccess(result.value, forceRefresh)
                     is SnowbirdResult.Failure -> RepoState.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {

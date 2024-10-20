@@ -1,9 +1,9 @@
 package net.opendasharchive.openarchive.features.settings
 
 import net.opendasharchive.openarchive.databinding.CcBackendBinding
-import net.opendasharchive.openarchive.util.extensions.openBrowser
-import net.opendasharchive.openarchive.util.extensions.styleAsLink
-import net.opendasharchive.openarchive.util.extensions.toggle
+import net.opendasharchive.openarchive.extensions.openBrowser
+import net.opendasharchive.openarchive.extensions.styleAsLink
+import net.opendasharchive.openarchive.extensions.toggle
 
 object CcSelector {
 

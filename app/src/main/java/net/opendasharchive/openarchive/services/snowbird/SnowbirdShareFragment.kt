@@ -7,16 +7,17 @@ import android.view.ViewGroup
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdShareGroupBinding
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.extensions.asQRCode
+import net.opendasharchive.openarchive.extensions.urlEncode
 
 class SnowbirdShareFragment: BaseSnowbirdFragment() {
     private lateinit var viewBinding: FragmentSnowbirdShareGroupBinding
-    private lateinit var groupId: String
+    private lateinit var groupKey: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            groupId = it.getString("groupId", "")
+            groupKey = it.getString("groupKey", "")
         }
     }
 
@@ -29,8 +30,13 @@ class SnowbirdShareFragment: BaseSnowbirdFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        SnowbirdGroup.get(groupId)?.let { group ->
-            val qrCode = group.uri?.asQRCode(size = 256)
+        val group = SnowbirdGroup.get(groupKey)
+        val groupName = group?.name ?: "Unknown group"
+
+        viewBinding.groupName.text = groupName
+
+        SnowbirdGroup.get(groupKey)?.uri?.let { uriString ->
+            val qrCode = "$uriString&name=${groupName.urlEncode()}".asQRCode(size = 1024)
             viewBinding.qrCode.setImageBitmap(qrCode)
         }
     }

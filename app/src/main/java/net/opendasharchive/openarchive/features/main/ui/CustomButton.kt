@@ -28,8 +28,6 @@ class CustomButton @JvmOverloads constructor(
         titleText = findViewById(R.id.title)
         subTitleText = findViewById(R.id.subTitle)
 
-        // Set the background to a ripple drawable
-//        background = ContextCompat.getDrawable(context, R.drawable.ripple_background)
         isClickable = true
         isFocusable = true
 
@@ -40,8 +38,12 @@ class CustomButton @JvmOverloads constructor(
         leftIcon.setImageDrawable(drawable)
     }
 
-    fun setLeftIcon(iconResId: Int) {
+    fun setLeftResource(iconResId: Int) {
         leftIcon.setImageResource(iconResId)
+    }
+
+    fun setRightResource(iconResId: Int) {
+        rightIcon.setImageResource(iconResId)
     }
 
     fun setRightIcon(drawable: Drawable?) {

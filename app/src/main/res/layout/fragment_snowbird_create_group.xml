@@ -61,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusedByDefault="false"
-                android:hint="Name of your group"
+                android:hint="Your group name"
                 android:inputType="textUri"
                 android:maxLines="1"
                 android:singleLine="true" />

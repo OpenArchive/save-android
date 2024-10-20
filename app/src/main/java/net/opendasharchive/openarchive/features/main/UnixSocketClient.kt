@@ -29,7 +29,7 @@ sealed class ClientResponse<out T> {
     data class ErrorResponse(val error: ApiError) : ClientResponse<Nothing>()
 }
 
-class UnixSocketClient(private val socketPath: String = "/data/user/0/net.opendasharchive.openarchive.debug/files/rust_server.sock") {
+class UnixSocketClient(val socketPath: String = "/data/user/0/net.opendasharchive.openarchive.debug/files/rust_server.sock") {
     val json = Json { ignoreUnknownKeys = true }
 
     suspend inline fun <reified REQUEST : SerializableMarker, reified RESPONSE : SerializableMarker> sendRequest(
@@ -39,20 +39,6 @@ class UnixSocketClient(private val socketPath: String = "/data/user/0/net.openda
     ): ClientResponse<RESPONSE> = withContext(Dispatchers.IO) {
         Timber.d("$method $endpoint")
         sendRequestInternal(endpoint, method, body, { json.encodeToString(it) }, { json.decodeFromString<RESPONSE>(it) })
-    }
-
-    suspend inline fun <reified RESPONSE : Any> sendBinaryRequest(
-        endpoint: String,
-        method: HttpMethod,
-        inputStream: InputStream
-    ): ClientResponse<RESPONSE> = withContext(Dispatchers.IO) {
-        Timber.d("$method $endpoint")
-        sendBinaryRequestInternal(
-            endpoint,
-            method,
-            inputStream,
-            { json.decodeFromString<RESPONSE>(it) }
-        )
     }
 
     fun <REQUEST : SerializableMarker, RESPONSE : Any> sendRequestInternal(
@@ -66,36 +52,7 @@ class UnixSocketClient(private val socketPath: String = "/data/user/0/net.openda
             LocalSocket().use { socket ->
                 socket.connect(LocalSocketAddress(socketPath, LocalSocketAddress.Namespace.FILESYSTEM))
 
-                val (responseCode, _, responseBody) = when (body) {
-                    is InputStream -> sendBinaryRequestAndGetResponse(socket, endpoint, method, body)
-                    else -> sendJsonRequestAndGetResponse(socket, endpoint, method, body, serialize)
-                }
-
-                Timber.d("response body = $responseBody")
-
-                when (responseCode) {
-                    in 200..299 -> parseSuccessResponse(responseBody, deserialize)
-                    in 400..499 -> ClientResponse.ErrorResponse(ApiError.ClientError("Client error: $responseCode"))
-                    in 500..599 -> ClientResponse.ErrorResponse(ApiError.ServerError("Server error: $responseCode"))
-                    else -> ClientResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected status code: $responseCode"))
-                }
-            }
-        } catch (e: Exception) {
-            ClientResponse.ErrorResponse(ApiError.UnexpectedError(e.localizedMessage ?: "Unknown error"))
-        }
-    }
-
-    fun <RESPONSE : Any> sendBinaryRequestInternal(
-        endpoint: String,
-        method: HttpMethod,
-        inputStream: InputStream,
-        deserialize: (String) -> RESPONSE
-    ): ClientResponse<RESPONSE> {
-        return try {
-            LocalSocket().use { socket ->
-                socket.connect(LocalSocketAddress(socketPath, LocalSocketAddress.Namespace.FILESYSTEM))
-
-                val (responseCode, _, responseBody) = sendBinaryRequestAndGetResponse(socket, endpoint, method, inputStream)
+                val (responseCode, _, responseBody) = sendJsonRequestAndGetResponse(socket, endpoint, method, body, serialize)
 
                 Timber.d("response body = $responseBody")
 
@@ -135,29 +92,7 @@ class UnixSocketClient(private val socketPath: String = "/data/user/0/net.openda
         return readResponse(socket.inputStream)
     }
 
-    private fun sendBinaryRequestAndGetResponse(
-        socket: LocalSocket,
-        endpoint: String,
-        method: HttpMethod,
-        inputStream: InputStream
-    ): Triple<Int, Map<String, String>, String> {
-        val output = socket.outputStream
-
-        val requestHeaders = buildString {
-            append("$method $endpoint HTTP/1.1\r\n")
-            append("Content-Type: application/octet-stream\r\n")
-            append("Content-Length: ${inputStream.available()}\r\n")
-            append("\r\n")
-        }
-
-        output.write(requestHeaders.toByteArray())
-        inputStream.copyTo(output)
-        output.flush()
-
-        return readResponse(socket.inputStream)
-    }
-
-    private fun readResponse(inputStream: InputStream): Triple<Int, Map<String, String>, String> {
+    fun readResponse(inputStream: InputStream): Triple<Int, Map<String, String>, String> {
         val reader = BufferedReader(InputStreamReader(inputStream))
         val statusLine = reader.readLine()
         val (_, statusCode, _) = statusLine.split(" ", limit = 3)
@@ -174,7 +109,7 @@ class UnixSocketClient(private val socketPath: String = "/data/user/0/net.openda
         return Triple(statusCode.toInt(), headers, responseBody)
     }
 
-    internal fun <T> parseSuccessResponse(responseBody: String, deserialize: (String) -> T): ClientResponse<T> {
+    fun <T> parseSuccessResponse(responseBody: String, deserialize: (String) -> T): ClientResponse<T> {
         return try {
             val obj = deserialize(responseBody)
             ClientResponse.SuccessResponse(obj)

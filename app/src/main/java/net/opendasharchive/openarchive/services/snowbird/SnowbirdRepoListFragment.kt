@@ -2,8 +2,12 @@ package net.opendasharchive.openarchive.services.snowbird
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -13,6 +17,7 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListReposBinding
 import net.opendasharchive.openarchive.db.SnowbirdError
+import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
@@ -41,6 +46,7 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupMenu()
         setupSwipeRefresh()
         setupViewModel()
         initializeViewModelObservers()
@@ -51,7 +57,7 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
         when (state) {
             is SnowbirdRepoViewModel.RepoState.Idle -> { /* Initial state */ }
             is SnowbirdRepoViewModel.RepoState.Loading -> handleLoadingStatus(true)
-            is SnowbirdRepoViewModel.RepoState.MultiRepoSuccess -> handleRepoUpdate(state.repos)
+            is SnowbirdRepoViewModel.RepoState.RepoFetchSuccess -> handleRepoUpdate(state.repos, state.isRefresh)
             is SnowbirdRepoViewModel.RepoState.Error -> handleError(state.error)
             else -> Unit
         }
@@ -66,10 +72,27 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
         }
     }
 
+    private fun setupMenu() {
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_snowbird, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_add -> {
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
     private fun setupViewModel() {
-        adapter = SnowbirdRepoListAdapter { repoId ->
+        adapter = SnowbirdRepoListAdapter { repoKey ->
             Timber.d("Click!!")
-            findNavController().navigate(SnowbirdRepoListFragmentDirections.navigateToSnowbirdListFilesScreen(repoId))
+            findNavController().navigate(SnowbirdRepoListFragmentDirections.navigateToSnowbirdListFilesScreen(groupKey, repoKey))
         }
 
         val spacingInPixels = resources.getDimensionPixelSize(R.dimen.list_item_spacing)
@@ -81,10 +104,17 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
         viewBinding.repoList.setEmptyView(R.layout.view_empty_state)
     }
 
-    private fun handleRepoUpdate(repos: List<SnowbirdRepo>) {
+    private fun handleRepoUpdate(repos: List<SnowbirdRepo>, isRefresh: Boolean) {
+        if (isRefresh) {
+            Timber.d("Clearing SnowbirdRepos for group $groupKey")
+            SnowbirdRepo.clear(groupKey)
+        }
+
+        saveRepos(repos)
+
         adapter.submitList(repos)
 
-        if (repos.isEmpty()) {
+        if (isRefresh && repos.isEmpty()) {
             Utility.showMaterialMessage(
                 requireContext(),
                 title = "Info",
@@ -100,6 +130,12 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
     override fun handleLoadingStatus(isLoading: Boolean) {
         super.handleLoadingStatus(isLoading)
         viewBinding.swipeRefreshLayout.isRefreshing = false
+    }
+
+    private fun saveRepos(repos: List<SnowbirdRepo>) {
+        repos.forEach { repo ->
+            repo.save()
+        }
     }
 
     private fun setupSwipeRefresh() {

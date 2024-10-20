@@ -10,15 +10,20 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.db.shortHash
-import net.opendasharchive.openarchive.util.extensions.scaled
+import net.opendasharchive.openarchive.extensions.scaled
 import java.lang.ref.WeakReference
 
-interface SnowbirdGroupsAdapterListener {
-    fun groupSelected(group: SnowbirdGroup)
-}
+//interface SnowbirdGroupsAdapterListener {
+//    fun groupSelected(group: SnowbirdGroup)
+//}
 
-class SnowbirdGroupsAdapter(listener: ((String) -> Unit)? = null)
-    : ListAdapter<SnowbirdGroup, SnowbirdGroupsAdapter.ViewHolder>(DIFF_CALLBACK) {
+class SnowbirdGroupsAdapter(
+    onClickListener: ((String) -> Unit)? = null,
+    onLongPressListener: ((String) -> Unit)? = null
+) : ListAdapter<SnowbirdGroup, SnowbirdGroupsAdapter.ViewHolder>(DIFF_CALLBACK) {
+
+    private val onClickCallback = WeakReference(onClickListener)
+    private val onLongPressCallback = WeakReference(onLongPressListener)
 
     inner class ViewHolder(private val binding: OneLineRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -36,7 +41,12 @@ class SnowbirdGroupsAdapter(listener: ((String) -> Unit)? = null)
             binding.button.setSubTitle(group.shortHash())
 
             binding.button.setOnClickListener {
-                mListener.get()?.invoke(group.key)
+                onClickCallback.get()?.invoke(group.key)
+            }
+
+            binding.button.setOnLongClickListener {
+                onLongPressCallback.get()?.invoke(group.key)
+                true
             }
         }
     }
@@ -52,8 +62,6 @@ class SnowbirdGroupsAdapter(listener: ((String) -> Unit)? = null)
             }
         }
     }
-
-    private val mListener = WeakReference(listener)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(

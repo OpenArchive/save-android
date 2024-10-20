@@ -1,5 +1,6 @@
 package net.opendasharchive.openarchive.services.snowbird
 
+import net.opendasharchive.openarchive.db.JoinGroupResponse
 import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 
@@ -7,7 +8,7 @@ interface ISnowbirdGroupRepository {
     suspend fun createGroup(groupName: String): SnowbirdResult<SnowbirdGroup>
     suspend fun fetchGroup(groupKey: String): SnowbirdResult<SnowbirdGroup>
     suspend fun fetchGroups(forceRefresh: Boolean = false): SnowbirdResult<List<SnowbirdGroup>>
-    suspend fun joinGroup(uriString: String): SnowbirdResult<SnowbirdGroup>
+    suspend fun joinGroup(uriString: String): SnowbirdResult<JoinGroupResponse>
 }
 
 class SnowbirdGroupRepository(val api: ISnowbirdAPI) : ISnowbirdGroupRepository {
@@ -41,7 +42,7 @@ class SnowbirdGroupRepository(val api: ISnowbirdAPI) : ISnowbirdGroupRepository 
         }
     }
 
-    override suspend fun joinGroup(uriString: String): SnowbirdResult<SnowbirdGroup> {
+    override suspend fun joinGroup(uriString: String): SnowbirdResult<JoinGroupResponse> {
         return when (val response = api.joinGroup(uriString)) {
             is ApiResponse.SingleResponse -> SnowbirdResult.Success(response.data)
             is ApiResponse.ErrorResponse -> SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))

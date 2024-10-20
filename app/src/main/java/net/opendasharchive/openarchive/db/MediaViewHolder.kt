@@ -27,8 +27,8 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.RvMediaBoxSmallBinding
 import net.opendasharchive.openarchive.databinding.RvMediaRowSmallBinding
 import net.opendasharchive.openarchive.extensions.uriToPath
-import net.opendasharchive.openarchive.util.extensions.hide
-import net.opendasharchive.openarchive.util.extensions.show
+import net.opendasharchive.openarchive.extensions.hide
+import net.opendasharchive.openarchive.extensions.show
 import timber.log.Timber
 import java.io.InputStream
 import kotlin.math.roundToInt

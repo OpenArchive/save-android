@@ -1,23 +1,29 @@
 package net.opendasharchive.openarchive.services.snowbird
 
+import android.app.Application
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import net.opendasharchive.openarchive.db.JoinGroupResponse
 import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.util.BaseViewModel
 import net.opendasharchive.openarchive.util.trackProcessingWithTimeout
 
-class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) : BaseViewModel() {
+class SnowbirdGroupViewModel(
+    application: Application,
+    private val repository: ISnowbirdGroupRepository
+) : BaseViewModel(application) {
 
     sealed class GroupState {
         data object Idle : GroupState()
         data object Loading : GroupState()
+        data class JoinGroupSuccess(val group: JoinGroupResponse) : GroupState()
         data class SingleGroupSuccess(val group: SnowbirdGroup) : GroupState()
-        data class MultiGroupSuccess(val groups: List<SnowbirdGroup>) : GroupState()
+        data class MultiGroupSuccess(val groups: List<SnowbirdGroup>, val isRefresh: Boolean) : GroupState()
         data class Error(val error: SnowbirdError) : GroupState()
     }
 
@@ -33,6 +39,7 @@ class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) :
 
     fun fetchGroup(groupKey: String) {
         viewModelScope.launch {
+            _groupState.value = GroupState.Loading
             try {
                 val result = processingTracker.trackProcessingWithTimeout(30_000, "fetch_group") {
                     repository.fetchGroup(groupKey)
@@ -50,13 +57,14 @@ class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) :
 
     fun fetchGroups(forceRefresh: Boolean = false) {
         viewModelScope.launch {
+            _groupState.value = GroupState.Loading
             try {
                 val result = processingTracker.trackProcessingWithTimeout(30_000, "fetch_groups") {
                     repository.fetchGroups(forceRefresh)
                 }
 
                 _groupState.value = when (result) {
-                    is SnowbirdResult.Success -> GroupState.MultiGroupSuccess(result.value)
+                    is SnowbirdResult.Success -> GroupState.MultiGroupSuccess(result.value, forceRefresh)
                     is SnowbirdResult.Failure -> GroupState.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
@@ -92,7 +100,7 @@ class SnowbirdGroupViewModel(private val repository: ISnowbirdGroupRepository) :
                 }
 
                 _groupState.value = when (result) {
-                    is SnowbirdResult.Success -> GroupState.SingleGroupSuccess(result.value)
+                    is SnowbirdResult.Success -> GroupState.JoinGroupSuccess(result.value)
                     is SnowbirdResult.Failure -> GroupState.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {

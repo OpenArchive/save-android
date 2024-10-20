@@ -11,7 +11,7 @@ import net.opendasharchive.openarchive.features.main.WebViewActivity
 import net.opendasharchive.openarchive.services.tor.TorViewModel
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
-import net.opendasharchive.openarchive.util.extensions.getVersionName
+import net.opendasharchive.openarchive.extensions.getVersionName
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

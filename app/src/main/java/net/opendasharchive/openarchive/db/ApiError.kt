@@ -34,8 +34,8 @@ sealed class ApiError: SerializableMarker {
     val friendlyMessage: String
         get() = when (this) {
             is HttpError -> "HTTP Error $code: $message"
-            is NetworkError -> "Network Error: $message"
-            is ServerError -> "Server Error: $message"
+            is NetworkError -> message
+            is ServerError -> message
             is ClientError -> message
             is UnexpectedError -> message
             Unauthorized -> "Unauthorized: Please log in and try again"

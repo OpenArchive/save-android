@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.util.extensions.toggle
+import net.opendasharchive.openarchive.extensions.toggle
 
 class BackendSelectionFragment : Fragment() {
 

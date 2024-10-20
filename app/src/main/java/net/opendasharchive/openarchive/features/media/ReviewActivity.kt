@@ -19,9 +19,9 @@ import net.opendasharchive.openarchive.db.MediaViewHolder
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.extensions.hide
-import net.opendasharchive.openarchive.util.extensions.show
-import net.opendasharchive.openarchive.util.extensions.toggle
+import net.opendasharchive.openarchive.extensions.hide
+import net.opendasharchive.openarchive.extensions.show
+import net.opendasharchive.openarchive.extensions.toggle
 import java.text.NumberFormat
 import kotlin.math.max
 import kotlin.math.min

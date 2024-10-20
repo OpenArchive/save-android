@@ -19,7 +19,7 @@ import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.services.webdav.ReadyToAuthTextWatcher
 import net.opendasharchive.openarchive.util.Utility.showMaterialPrompt
 import net.opendasharchive.openarchive.util.Utility.showMaterialWarning
-import net.opendasharchive.openarchive.util.extensions.hide
+import net.opendasharchive.openarchive.extensions.hide
 
 class CreateNewFolderFragment : Fragment() {
 

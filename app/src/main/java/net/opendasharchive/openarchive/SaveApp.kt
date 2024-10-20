@@ -3,7 +3,11 @@ package net.opendasharchive.openarchive
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.util.Log
 import androidx.multidex.MultiDex
+import coil.Coil
+import coil.ImageLoader
+import coil.util.Logger
 import com.orm.SugarApp
 import net.opendasharchive.openarchive.core.di.coreModule
 import net.opendasharchive.openarchive.core.di.featuresModule
@@ -38,6 +42,18 @@ class SaveApp : SugarApp() {
         if (BuildConfig.DEBUG){
             Timber.plant(Timber.DebugTree())
         }
+
+        val imageLoader = ImageLoader.Builder(this)
+            .logger(object : Logger {
+                override var level = Log.VERBOSE
+
+                override fun log(tag: String, priority: Int, message: String?, throwable: Throwable?) {
+                    Timber.tag("Coil").log(priority, throwable, message)
+                }
+            })
+            .build()
+
+        Coil.setImageLoader(imageLoader)
 
         Analytics.init(this)
 
