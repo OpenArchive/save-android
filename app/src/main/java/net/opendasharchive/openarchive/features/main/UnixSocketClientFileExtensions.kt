@@ -3,14 +3,18 @@ package net.opendasharchive.openarchive.features.main
 import android.net.LocalSocket
 import android.net.LocalSocketAddress
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.db.ApiError
 import net.opendasharchive.openarchive.db.SerializableMarker
 import timber.log.Timber
 import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import kotlin.coroutines.cancellation.CancellationException
 
 suspend fun UnixSocketClient.downloadFile(endpoint: String): ClientResponse<ByteArray> = withContext(Dispatchers.IO) {
     try {
@@ -28,7 +32,7 @@ suspend fun UnixSocketClient.downloadFile(endpoint: String): ClientResponse<Byte
                 flush()
             }
 
-            val (responseCode, _, bytes) = readBinaryResponse(socket.inputStream)
+            val (responseCode, _, bytes) = readBinaryResponseWithCancellation(socket.inputStream)
 
             Timber.d("File download response code: $responseCode")
 
@@ -92,11 +96,14 @@ suspend inline fun <reified RESPONSE : SerializableMarker> UnixSocketClient.uplo
     }
 }
 
-private fun readBinaryResponse(inputStream: InputStream): Triple<Int, Map<String, String>, ByteArray> {
+private suspend fun readBinaryResponseWithCancellation(
+    inputStream: InputStream,
+    onProgress: ((Long) -> Unit)? = null
+): Triple<Int, Map<String, String>, ByteArray> = withContext(Dispatchers.IO) {
     val reader = BufferedReader(InputStreamReader(inputStream))
 
     // Read status line
-    val statusLine = reader.readLine()
+    val statusLine = reader.readLine() ?: throw IOException("Empty response")
     val (_, statusCode, _) = statusLine.split(" ", limit = 3)
 
     // Read headers
@@ -108,18 +115,61 @@ private fun readBinaryResponse(inputStream: InputStream): Triple<Int, Map<String
         headers[key] = value
     }
 
-    // Get content length from headers
-    val contentLength = headers["Content-Length"]?.toIntOrNull()
-        ?: throw IOException("No content length specified")
+    val outputStream = ByteArrayOutputStream()
+    var totalBytesRead = 0L
 
-    // Read binary data
-    val imageBytes = ByteArray(contentLength)
-    var bytesRead = 0
-    while (bytesRead < contentLength) {
-        val count = inputStream.read(imageBytes, bytesRead, contentLength - bytesRead)
-        if (count == -1) break
-        bytesRead += count
+    val isChunked = headers["Transfer-Encoding"]?.equals("chunked", ignoreCase = true) ?: false
+    val contentLength = headers["Content-Length"]?.toLongOrNull()
+
+    try {
+        if (isChunked) {
+            // Handle chunked transfer encoding
+            while (isActive) {
+                ensureActive()
+                val chunkSizeLine = reader.readLine() ?: break
+                val chunkSize = chunkSizeLine.trim().toInt(16)
+                if (chunkSize == 0) break
+
+                val buffer = ByteArray(chunkSize)
+                var bytesRead = 0
+                while (bytesRead < chunkSize) {
+                    ensureActive()
+                    val count = inputStream.read(buffer, bytesRead, chunkSize - bytesRead)
+                    if (count == -1) break
+                    bytesRead += count
+                }
+                outputStream.write(buffer, 0, bytesRead)
+                totalBytesRead += bytesRead
+                onProgress?.invoke(totalBytesRead)
+
+                reader.readLine() // Read the CRLF after the chunk
+            }
+        } else if (contentLength != null) {
+            // Handle Content-Length specified
+            val buffer = ByteArray(8192) // 8KB buffer
+            var bytesRead = 0
+            while (totalBytesRead < contentLength && inputStream.read(buffer).also { bytesRead = it } != -1) {
+                ensureActive()
+                outputStream.write(buffer, 0, bytesRead)
+                totalBytesRead += bytesRead
+                onProgress?.invoke(totalBytesRead)
+            }
+        } else {
+            // Handle case where neither chunked nor Content-Length is specified
+            val buffer = ByteArray(8192) // 8KB buffer
+            var bytesRead: Int
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                ensureActive()
+                outputStream.write(buffer, 0, bytesRead)
+                totalBytesRead += bytesRead
+                onProgress?.invoke(totalBytesRead)
+            }
+        }
+    } catch (e: CancellationException) {
+        throw e
+    } finally {
+        inputStream.close()
     }
 
-    return Triple(statusCode.toInt(), headers, imageBytes)
+    Triple(statusCode.toInt(), headers, outputStream.toByteArray())
 }

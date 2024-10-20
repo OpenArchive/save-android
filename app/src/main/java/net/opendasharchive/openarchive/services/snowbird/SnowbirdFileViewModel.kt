@@ -5,11 +5,13 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.opendasharchive.openarchive.db.FileUploadResult
 import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdFileItem
@@ -17,7 +19,6 @@ import net.opendasharchive.openarchive.util.BaseViewModel
 import net.opendasharchive.openarchive.util.trackProcessingWithTimeout
 import timber.log.Timber
 import java.io.File
-import java.io.FileOutputStream
 
 class SnowbirdFileViewModel(
     private val application: Application,
@@ -28,7 +29,7 @@ class SnowbirdFileViewModel(
         data object Idle : State()
         data object Loading : State()
         data class DownloadSuccess(val uri: Uri) : State()
-        data class FetchSuccess(val media: List<SnowbirdFileItem>, var isRefresh: Boolean) : State()
+        data class FetchSuccess(val files: List<SnowbirdFileItem>, var isRefresh: Boolean) : State()
         data class UploadSuccess(val result: FileUploadResult) : State()
         data class Error(val error: SnowbirdError) : State()
     }
@@ -95,7 +96,7 @@ class SnowbirdFileViewModel(
         }
     }
 
-    private fun onDownload(bytes: ByteArray, filename: String): State {
+    private suspend fun onDownload(bytes: ByteArray, filename: String): State {
         Timber.d("Downloaded ${bytes.size} bytes")
         return saveByteArrayToFile(application.applicationContext, bytes, filename).fold(
             onSuccess = { uri -> State.DownloadSuccess(uri) },
@@ -103,23 +104,19 @@ class SnowbirdFileViewModel(
         )
     }
 
-    private fun saveByteArrayToFile(context: Context, byteArray: ByteArray, filename: String): Result<Uri> {
-        val directory = File(context.filesDir, "images")
+    private suspend fun saveByteArrayToFile(context: Context, byteArray: ByteArray, filename: String): Result<Uri> =
+        withContext(Dispatchers.IO) {
+            runCatching {
+                val directory = File(context.filesDir, "files").apply { mkdirs() }
+                val file = File(directory, filename)
 
-        if (!directory.exists()) {
-            directory.mkdirs()
+                file.outputStream().use { it.write(byteArray) }
+
+                FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    file
+                )
+            }
         }
-
-        val file = File(directory, filename)
-
-        FileOutputStream(file).use { fos ->
-            fos.write(byteArray)
-        }
-
-        return Result.success(FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.fileprovider",
-            file)
-        )
-    }
 }

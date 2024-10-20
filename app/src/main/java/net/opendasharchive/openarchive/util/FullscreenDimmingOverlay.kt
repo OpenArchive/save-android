@@ -27,7 +27,7 @@ class FullScreenDimmingOverlay @JvmOverloads constructor(
             Utility.showMaterialPrompt(
                 context,
                 title = "Confirm",
-                message = "Do you want to cancel this?",
+                message = "Do you want to cancel?",
                 positiveButtonText = "Yes",
                 negativeButtonText = "No") { affirm ->
                 if (affirm) {

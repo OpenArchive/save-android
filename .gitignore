@@ -1,5 +1,6 @@
 private-*
 openarchive-release.keystore
+.kotlin/
 
 # Built application files
 *.apk

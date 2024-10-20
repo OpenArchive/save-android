@@ -134,7 +134,7 @@ class SnowbirdFileListFragment : BaseSnowbirdFragment() {
     }
 
     private fun onClick(item: SnowbirdFileItem) {
-        if (!item.isDownloaded) {
+//        if (!item.isDownloaded) {
             Utility.showMaterialPrompt(
                 requireContext(),
                 title = "Download Media?",
@@ -145,17 +145,17 @@ class SnowbirdFileListFragment : BaseSnowbirdFragment() {
                     snowbirdFileViewModel.downloadFile(groupKey, repoKey, item.name)
                 }
             }
-        }
+//        }
     }
 
     private fun handleMediaStateUpdate(state: SnowbirdFileViewModel.State) {
         when (state) {
             is SnowbirdFileViewModel.State.Idle -> { /* Initial state */ }
             is SnowbirdFileViewModel.State.Loading -> onLoading()
-            is SnowbirdFileViewModel.State.FetchSuccess -> onMediaFetched(state.media, state.isRefresh)
-            is SnowbirdFileViewModel.State.UploadSuccess -> onMediaUploaded(state.result)
+            is SnowbirdFileViewModel.State.FetchSuccess -> onFilesFetched(state.files, state.isRefresh)
+            is SnowbirdFileViewModel.State.UploadSuccess -> onFileUploaded(state.result)
+            is SnowbirdFileViewModel.State.DownloadSuccess -> onFileDownloaded(state.uri)
             is SnowbirdFileViewModel.State.Error -> handleError(state.error)
-            else -> Unit
         }
     }
 
@@ -170,7 +170,7 @@ class SnowbirdFileListFragment : BaseSnowbirdFragment() {
         viewBinding.swipeRefreshLayout.isRefreshing = false
     }
 
-    private fun onMediaFetched(files: List<SnowbirdFileItem>, isRefresh: Boolean) {
+    private fun onFilesFetched(files: List<SnowbirdFileItem>, isRefresh: Boolean) {
         handleLoadingStatus(false)
 
         if (isRefresh) {
@@ -183,9 +183,18 @@ class SnowbirdFileListFragment : BaseSnowbirdFragment() {
         adapter.submitList(files)
     }
 
-    private fun onMediaUploaded(result: FileUploadResult) {
+    private fun onFileDownloaded(uri: Uri) {
         handleLoadingStatus(false)
-        Timber.d("Media successfully uploaded: $result")
+        Timber.d("File successfully downloaded: $uri")
+        Utility.showMaterialMessage(
+            requireContext(),
+            title = "Success",
+            message = "File successfully downloaded")
+    }
+
+    private fun onFileUploaded(result: FileUploadResult) {
+        handleLoadingStatus(false)
+        Timber.d("File successfully uploaded: $result")
         SnowbirdFileItem(
             name = result.name,
             hash = result.updatedCollectionHash,
