@@ -12,7 +12,8 @@ data class SnowbirdRepoList(
 data class SnowbirdRepo(
     var key: String = "",
     var name: String? = null,
-    var groupKey: String = ""
+    var groupKey: String = "",
+    var permissions: String = "READ_ONLY"
 ) : SugarRecord(), SerializableMarker {
     companion object {
         fun clear(groupKey: String) {

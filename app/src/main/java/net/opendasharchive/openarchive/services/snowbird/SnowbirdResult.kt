@@ -4,5 +4,5 @@ import net.opendasharchive.openarchive.db.SnowbirdError
 
 sealed class SnowbirdResult<out T> {
     data class Success<out T>(val value: T) : SnowbirdResult<T>()
-    data class Failure(val error: SnowbirdError) : SnowbirdResult<Nothing>()
+    data class Error(val error: SnowbirdError) : SnowbirdResult<Nothing>()
 }

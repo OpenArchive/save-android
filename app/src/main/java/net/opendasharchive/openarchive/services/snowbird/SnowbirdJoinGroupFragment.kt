@@ -67,6 +67,7 @@ class SnowbirdJoinGroupFragment : BaseSnowbirdFragment() {
     }
 
     private fun onGroupStateUpdate(state: SnowbirdGroupViewModel.GroupState) {
+        Timber.d("state = $state")
         when (state) {
             is SnowbirdGroupViewModel.GroupState.Loading -> onLoading()
             is SnowbirdGroupViewModel.GroupState.JoinGroupSuccess -> onJoinSuccess(state.group.group)
@@ -76,9 +77,10 @@ class SnowbirdJoinGroupFragment : BaseSnowbirdFragment() {
     }
 
     private fun onRepoStateUpdate(state: SnowbirdRepoViewModel.RepoState) {
+        Timber.d("state = $state")
         when (state) {
             is SnowbirdRepoViewModel.RepoState.Loading -> onLoading()
-            is SnowbirdRepoViewModel.RepoState.SingleRepoSuccess -> onRepoCreated(state.repo)
+            is SnowbirdRepoViewModel.RepoState.SingleRepoSuccess -> onRepoCreated(state.groupKey, state.repo)
             is SnowbirdRepoViewModel.RepoState.Error -> handleError(state.error)
             else -> Unit
         }
@@ -97,9 +99,12 @@ class SnowbirdJoinGroupFragment : BaseSnowbirdFragment() {
         handleLoadingStatus(true)
     }
 
-    private fun onRepoCreated(repo: SnowbirdRepo) {
+    private fun onRepoCreated(groupKey: String, repo: SnowbirdRepo) {
+        repo.permissions = "READ_WRITE"
+        repo.groupKey = groupKey
         repo.save()
         handleLoadingStatus(false)
+        snowbirdRepoViewModel.fetchRepos(groupKey, false)
         Utility.showMaterialMessage(
             requireContext(),
             title = "Success!",

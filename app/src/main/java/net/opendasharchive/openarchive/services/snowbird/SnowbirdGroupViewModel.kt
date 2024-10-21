@@ -47,7 +47,7 @@ class SnowbirdGroupViewModel(
 
                 _groupState.value = when (result) {
                     is SnowbirdResult.Success -> GroupState.SingleGroupSuccess(result.value)
-                    is SnowbirdResult.Failure -> GroupState.Error(result.error)
+                    is SnowbirdResult.Error -> GroupState.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
                 _groupState.value = GroupState.Error(SnowbirdError.TimedOut)
@@ -65,7 +65,7 @@ class SnowbirdGroupViewModel(
 
                 _groupState.value = when (result) {
                     is SnowbirdResult.Success -> GroupState.MultiGroupSuccess(result.value, forceRefresh)
-                    is SnowbirdResult.Failure -> GroupState.Error(result.error)
+                    is SnowbirdResult.Error -> GroupState.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
                 _groupState.value = GroupState.Error(SnowbirdError.TimedOut)
@@ -83,7 +83,7 @@ class SnowbirdGroupViewModel(
 
                 _groupState.value = when (result) {
                     is SnowbirdResult.Success -> GroupState.SingleGroupSuccess(result.value)
-                    is SnowbirdResult.Failure -> GroupState.Error(result.error)
+                    is SnowbirdResult.Error -> GroupState.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
                 _groupState.value = GroupState.Error(SnowbirdError.TimedOut)
@@ -95,13 +95,13 @@ class SnowbirdGroupViewModel(
         viewModelScope.launch {
             _groupState.value = GroupState.Loading
             try {
-                val result = processingTracker.trackProcessingWithTimeout(30_000, "join_group") {
+                val result = processingTracker.trackProcessingWithTimeout(60_000, "join_group") {
                     repository.joinGroup(uriString)
                 }
 
                 _groupState.value = when (result) {
                     is SnowbirdResult.Success -> GroupState.JoinGroupSuccess(result.value)
-                    is SnowbirdResult.Failure -> GroupState.Error(result.error)
+                    is SnowbirdResult.Error -> GroupState.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
                 _groupState.value = GroupState.Error(SnowbirdError.TimedOut)

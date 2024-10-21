@@ -18,7 +18,7 @@ class ProcessingTracker(private val logger: (String) -> Unit = { Timber.d(it) })
             val (result, duration) = measureTimedValue {
                 block()
             }
-            logger("$taskName completed in ${duration.formatToDecimalPlaces(1)} seconds")
+            logger("$taskName completed in ${duration.formatToDecimalPlaces(3)} seconds")
             return result
         } finally {
             _isProcessing.value = false

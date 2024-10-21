@@ -47,7 +47,7 @@ class SnowbirdFileViewModel(
 
                 _mediaState.value = when (result) {
                     is SnowbirdResult.Success -> onDownload(result.value, filename)
-                    is SnowbirdResult.Failure -> State.Error(result.error)
+                    is SnowbirdResult.Error -> State.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
                 _mediaState.value = State.Error(SnowbirdError.TimedOut)
@@ -65,7 +65,7 @@ class SnowbirdFileViewModel(
 
                 _mediaState.value = when (result) {
                     is SnowbirdResult.Success -> State.FetchSuccess(result.value, forceRefresh)
-                    is SnowbirdResult.Failure -> State.Error(result.error)
+                    is SnowbirdResult.Error -> State.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
                 _mediaState.value = State.Error(SnowbirdError.TimedOut)
@@ -77,7 +77,7 @@ class SnowbirdFileViewModel(
     //    {
     //        "updated_collection_hash": "7dkgeko3oeyyr5xympsg2mhbicb2k2ba4wqen6lpt6qs7mgza7vq"
     //    }
-
+    //
     fun uploadFile(groupKey: String, repoKey: String, uri: Uri) {
         viewModelScope.launch {
             _mediaState.value = State.Loading
@@ -88,7 +88,7 @@ class SnowbirdFileViewModel(
 
                 _mediaState.value = when (result) {
                     is SnowbirdResult.Success -> State.UploadSuccess(result.value)
-                    is SnowbirdResult.Failure -> State.Error(result.error)
+                    is SnowbirdResult.Error -> State.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
                 _mediaState.value = State.Error(SnowbirdError.TimedOut)

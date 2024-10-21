@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListReposBinding
 import net.opendasharchive.openarchive.db.SnowbirdError
-import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
@@ -53,9 +52,7 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
     }
 
     private fun handleRepoStateUpdate(state: SnowbirdRepoViewModel.RepoState) {
-        handleLoadingStatus(false)
         when (state) {
-            is SnowbirdRepoViewModel.RepoState.Idle -> { /* Initial state */ }
             is SnowbirdRepoViewModel.RepoState.Loading -> handleLoadingStatus(true)
             is SnowbirdRepoViewModel.RepoState.RepoFetchSuccess -> handleRepoUpdate(state.repos, state.isRefresh)
             is SnowbirdRepoViewModel.RepoState.Error -> handleError(state.error)
@@ -105,12 +102,13 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
     }
 
     private fun handleRepoUpdate(repos: List<SnowbirdRepo>, isRefresh: Boolean) {
+        handleLoadingStatus(false)
+
         if (isRefresh) {
             Timber.d("Clearing SnowbirdRepos for group $groupKey")
             SnowbirdRepo.clear(groupKey)
+            saveRepos(repos)
         }
-
-        saveRepos(repos)
 
         adapter.submitList(repos)
 
@@ -123,8 +121,9 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
     }
 
     override fun handleError(error: SnowbirdError) {
-        super.handleError(error)
+        handleLoadingStatus(false)
         viewBinding.swipeRefreshLayout.isRefreshing = false
+        super.handleError(error)
     }
 
     override fun handleLoadingStatus(isLoading: Boolean) {
@@ -134,6 +133,7 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
 
     private fun saveRepos(repos: List<SnowbirdRepo>) {
         repos.forEach { repo ->
+            repo.groupKey = groupKey
             repo.save()
         }
     }

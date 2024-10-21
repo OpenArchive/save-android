@@ -1,8 +1,10 @@
 package net.opendasharchive.openarchive.services.snowbird
 
-import net.opendasharchive.openarchive.db.SnowbirdError
+import net.opendasharchive.openarchive.db.RequestName
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.db.SnowbirdRepo
+import net.opendasharchive.openarchive.extensions.toSnowbirdError
+import net.opendasharchive.openarchive.services.snowbird.service.ISnowbirdAPI
 import timber.log.Timber
 
 interface ISnowbirdRepoRepository {
@@ -13,26 +15,12 @@ interface ISnowbirdRepoRepository {
 class SnowbirdRepoRepository(val api: ISnowbirdAPI) : ISnowbirdRepoRepository {
     override suspend fun createRepo(groupKey: String, repoName: String): SnowbirdResult<SnowbirdRepo> {
         Timber.d("Creating repo: groupKey=$groupKey, repoName=$repoName")
+
         return try {
-            val response = api.createRepo(groupKey, repoName)
-            Timber.d("Received response from API: $response")
-            when (response) {
-                is ApiResponse.SingleResponse -> {
-                    Timber.d("Repo created successfully: ${response.data}")
-                    SnowbirdResult.Success(response.data)
-                }
-                is ApiResponse.ErrorResponse -> {
-                    Timber.e("Error creating repo: ${response.error.friendlyMessage}")
-                    SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))
-                }
-                else -> {
-                    Timber.e("Unexpected response type: ${response::class.simpleName}")
-                    SnowbirdResult.Failure(SnowbirdError.GeneralError("Unexpected response type"))
-                }
-            }
+            val response = api.createRepo(groupKey, RequestName(repoName))
+            SnowbirdResult.Success(response)
         } catch (e: Exception) {
-            Timber.e("Exception while creating repo", e)
-            SnowbirdResult.Failure(SnowbirdError.GeneralError(e.message ?: "Unknown error"))
+            SnowbirdResult.Error(e.toSnowbirdError())
         }
     }
 
@@ -45,12 +33,11 @@ class SnowbirdRepoRepository(val api: ISnowbirdAPI) : ISnowbirdRepoRepository {
     }
 
     private suspend fun fetchFromNetwork(groupKey: String): SnowbirdResult<List<SnowbirdRepo>> {
-        return when (val response = api.fetchRepos(groupKey)) {
-            is ApiResponse.ListResponse -> {
-                SnowbirdResult.Success(response.data)
-            }
-            is ApiResponse.ErrorResponse -> SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))
-            else -> SnowbirdResult.Failure(SnowbirdError.GeneralError("Unexpected response type"))
+        return try {
+            val response = api.fetchRepos(groupKey)
+            SnowbirdResult.Success(response.repos)
+        } catch (e: Exception) {
+            SnowbirdResult.Error(e.toSnowbirdError())
         }
     }
 

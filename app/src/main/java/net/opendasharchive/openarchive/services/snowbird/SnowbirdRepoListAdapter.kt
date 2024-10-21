@@ -11,6 +11,7 @@ import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.db.shortHash
 import net.opendasharchive.openarchive.extensions.scaled
+import net.opendasharchive.openarchive.util.TwoLetterDrawable
 import java.lang.ref.WeakReference
 
 class SnowbirdRepoListAdapter(listener: ((String) -> Unit)? = null)
@@ -30,6 +31,12 @@ class SnowbirdRepoListAdapter(listener: ((String) -> Unit)? = null)
             binding.button.setBackgroundResource(R.drawable.button_outlined_ripple)
             binding.button.setTitle(repo.name)
             binding.button.setSubTitle(repo.shortHash())
+
+            if (repo.permissions == "READ_ONLY") {
+                binding.button.setRightIcon(TwoLetterDrawable.ReadOnly(context))
+            } else {
+                binding.button.setRightIcon(TwoLetterDrawable.ReadWrite(context))
+            }
 
             binding.button.setOnClickListener {
                 mListener.get()?.invoke(repo.key)

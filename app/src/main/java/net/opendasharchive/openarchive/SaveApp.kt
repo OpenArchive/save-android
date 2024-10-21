@@ -11,6 +11,8 @@ import coil.util.Logger
 import com.orm.SugarApp
 import net.opendasharchive.openarchive.core.di.coreModule
 import net.opendasharchive.openarchive.core.di.featuresModule
+import net.opendasharchive.openarchive.core.di.retrofitModule
+import net.opendasharchive.openarchive.core.di.unixSocketModule
 import net.opendasharchive.openarchive.extensions.getViewModel
 import net.opendasharchive.openarchive.services.tor.TorViewModel
 import net.opendasharchive.openarchive.upload.MediaUploadManager
@@ -36,7 +38,11 @@ class SaveApp : SugarApp() {
 
         startKoin {
             androidContext(this@SaveApp)
-            modules(coreModule, featuresModule)
+            modules(
+                coreModule,
+                featuresModule,
+                retrofitModule,
+                unixSocketModule)
         }
 
         if (BuildConfig.DEBUG){

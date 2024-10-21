@@ -20,7 +20,7 @@ class SnowbirdRepoViewModel(
     sealed class RepoState {
         data object Idle : RepoState()
         data object Loading : RepoState()
-        data class SingleRepoSuccess(val repo: SnowbirdRepo) : RepoState()
+        data class SingleRepoSuccess(val groupKey: String, val repo: SnowbirdRepo) : RepoState()
         data class MultiRepoSuccess(val repos: List<SnowbirdRepo>) : RepoState()
         data class RepoFetchSuccess(val repos: List<SnowbirdRepo>, val isRefresh: Boolean) : RepoState()
         data class Error(val error: SnowbirdError) : RepoState()
@@ -38,8 +38,8 @@ class SnowbirdRepoViewModel(
                 }
 
                 _repoState.value = when (result) {
-                    is SnowbirdResult.Success -> RepoState.SingleRepoSuccess(result.value)
-                    is SnowbirdResult.Failure -> RepoState.Error(result.error)
+                    is SnowbirdResult.Success -> RepoState.SingleRepoSuccess(groupKey, result.value)
+                    is SnowbirdResult.Error -> RepoState.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
                 _repoState.value = RepoState.Error(SnowbirdError.TimedOut)
@@ -57,7 +57,7 @@ class SnowbirdRepoViewModel(
 
                 _repoState.value = when (result) {
                     is SnowbirdResult.Success -> RepoState.RepoFetchSuccess(result.value, forceRefresh)
-                    is SnowbirdResult.Failure -> RepoState.Error(result.error)
+                    is SnowbirdResult.Error -> RepoState.Error(result.error)
                 }
             } catch (e: TimeoutCancellationException) {
                 _repoState.value = RepoState.Error(SnowbirdError.TimedOut)

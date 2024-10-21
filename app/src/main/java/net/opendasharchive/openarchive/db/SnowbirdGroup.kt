@@ -28,6 +28,17 @@ data class SnowbirdGroup(
             return findAll(SnowbirdGroup::class.java).asSequence().toList()
         }
 
+        fun exists(name: String): Boolean {
+            val whereClause = "name = ?"
+            val whereArgs = mutableListOf(name)
+
+            return find(
+                SnowbirdGroup::class.java, whereClause, whereArgs.toTypedArray(),
+                null,
+                null,
+                null).isNotEmpty()
+        }
+
         fun get(key: String): SnowbirdGroup? {
             val whereClause = "key = ?"
             val whereArgs = mutableListOf(key)

@@ -6,12 +6,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import net.opendasharchive.openarchive.db.ApiError
 import net.opendasharchive.openarchive.db.SerializableMarker
+import net.opendasharchive.openarchive.services.snowbird.service.HttpLikeException
 import timber.log.Timber
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.net.SocketTimeoutException
 
 enum class HttpMethod(val value: String) {
     GET("GET"), POST("POST"), PUT("PUT"), DELETE("DELETE"), PATCH("PATCH"),
@@ -24,10 +26,10 @@ enum class HttpMethod(val value: String) {
     }
 }
 
-sealed class ClientResponse<out T> {
-    data class SuccessResponse<T>(val data: T) : ClientResponse<T>()
-    data class ErrorResponse(val error: ApiError) : ClientResponse<Nothing>()
-}
+//sealed class ClientResponse<out T> {
+//    data class SuccessResponse<T>(val data: T) : ClientResponse<T>()
+//    data class ErrorResponse(val error: ApiError) : ClientResponse<Nothing>()
+//}
 
 class UnixSocketClient(val socketPath: String = "/data/user/0/net.opendasharchive.openarchive.debug/files/rust_server.sock") {
     val json = Json { ignoreUnknownKeys = true }
@@ -36,7 +38,7 @@ class UnixSocketClient(val socketPath: String = "/data/user/0/net.opendasharchiv
         endpoint: String,
         method: HttpMethod,
         body: REQUEST? = null
-    ): ClientResponse<RESPONSE> = withContext(Dispatchers.IO) {
+    ): RESPONSE = withContext(Dispatchers.IO) {
         Timber.d("$method $endpoint")
         sendRequestInternal(endpoint, method, body, { json.encodeToString(it) }, { json.decodeFromString<RESPONSE>(it) })
     }
@@ -47,7 +49,7 @@ class UnixSocketClient(val socketPath: String = "/data/user/0/net.opendasharchiv
         body: REQUEST?,
         serialize: (REQUEST) -> String,
         deserialize: (String) -> RESPONSE
-    ): ClientResponse<RESPONSE> {
+    ): RESPONSE {
         return try {
             LocalSocket().use { socket ->
                 socket.connect(LocalSocketAddress(socketPath, LocalSocketAddress.Namespace.FILESYSTEM))
@@ -58,13 +60,15 @@ class UnixSocketClient(val socketPath: String = "/data/user/0/net.opendasharchiv
 
                 when (responseCode) {
                     in 200..299 -> parseSuccessResponse(responseBody, deserialize)
-                    in 400..499 -> ClientResponse.ErrorResponse(ApiError.ClientError("Client error: $responseCode"))
-                    in 500..599 -> ClientResponse.ErrorResponse(ApiError.ServerError("Server error: $responseCode"))
-                    else -> ClientResponse.ErrorResponse(ApiError.UnexpectedError("Unexpected status code: $responseCode"))
+                    else -> throw HttpLikeException(responseCode)
                 }
             }
+        } catch (e: SocketTimeoutException) {
+            throw e
+        } catch (e: IOException) {
+            throw e
         } catch (e: Exception) {
-            ClientResponse.ErrorResponse(ApiError.UnexpectedError(e.localizedMessage ?: "Unknown error"))
+            throw IOException("Unexpected error during Unix socket communication: ${e.message}")
         }
     }
 
@@ -106,16 +110,16 @@ class UnixSocketClient(val socketPath: String = "/data/user/0/net.opendasharchiv
         }
 
         val responseBody = reader.readText()
+
         return Triple(statusCode.toInt(), headers, responseBody)
     }
 
-    fun <T> parseSuccessResponse(responseBody: String, deserialize: (String) -> T): ClientResponse<T> {
+    fun <T> parseSuccessResponse(responseBody: String, deserialize: (String) -> T): T {
         return try {
-            val obj = deserialize(responseBody)
-            ClientResponse.SuccessResponse(obj)
+            deserialize(responseBody)
         } catch (e: Exception) {
             Timber.e("error = $e")
-            ClientResponse.ErrorResponse(ApiError.UnexpectedError(e.localizedMessage ?: "Unknown error"))
+            throw e
         }
     }
 }

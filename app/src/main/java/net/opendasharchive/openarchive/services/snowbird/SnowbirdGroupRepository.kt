@@ -1,8 +1,11 @@
 package net.opendasharchive.openarchive.services.snowbird
 
 import net.opendasharchive.openarchive.db.JoinGroupResponse
-import net.opendasharchive.openarchive.db.SnowbirdError
+import net.opendasharchive.openarchive.db.MembershipRequest
+import net.opendasharchive.openarchive.db.RequestName
 import net.opendasharchive.openarchive.db.SnowbirdGroup
+import net.opendasharchive.openarchive.extensions.toSnowbirdError
+import net.opendasharchive.openarchive.services.snowbird.service.ISnowbirdAPI
 
 interface ISnowbirdGroupRepository {
     suspend fun createGroup(groupName: String): SnowbirdResult<SnowbirdGroup>
@@ -16,18 +19,21 @@ class SnowbirdGroupRepository(val api: ISnowbirdAPI) : ISnowbirdGroupRepository 
     private val cacheValidityPeriod: Long = 5 * 60 * 1000
 
     override suspend fun createGroup(groupName: String): SnowbirdResult<SnowbirdGroup> {
-        return when (val response = api.createGroup(groupName)) {
-            is ApiResponse.SingleResponse -> SnowbirdResult.Success(response.data)
-            is ApiResponse.ErrorResponse -> SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))
-            else -> SnowbirdResult.Failure(SnowbirdError.GeneralError("Unexpected response type"))
+        return try {
+            val response = api.createGroup(
+                RequestName(groupName))
+            SnowbirdResult.Success(response)
+        } catch (e: Exception) {
+            SnowbirdResult.Error(e.toSnowbirdError())
         }
     }
 
     override suspend fun fetchGroup(groupKey: String): SnowbirdResult<SnowbirdGroup> {
-        return when (val response = api.fetchGroup(groupKey)) {
-            is ApiResponse.SingleResponse -> SnowbirdResult.Success(response.data)
-            is ApiResponse.ErrorResponse -> SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))
-            else -> SnowbirdResult.Failure(SnowbirdError.GeneralError("Unexpected response type"))
+        return try {
+            val response = api.fetchGroup(groupKey)
+            SnowbirdResult.Success(response)
+        } catch (e: Exception) {
+            SnowbirdResult.Error(e.toSnowbirdError())
         }
     }
 
@@ -43,31 +49,25 @@ class SnowbirdGroupRepository(val api: ISnowbirdAPI) : ISnowbirdGroupRepository 
     }
 
     override suspend fun joinGroup(uriString: String): SnowbirdResult<JoinGroupResponse> {
-        return when (val response = api.joinGroup(uriString)) {
-            is ApiResponse.SingleResponse -> SnowbirdResult.Success(response.data)
-            is ApiResponse.ErrorResponse -> SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))
-            else -> SnowbirdResult.Failure(SnowbirdError.GeneralError("Unexpected response type"))
+        return try {
+            val response = api.joinGroup(
+                MembershipRequest(uriString))
+            SnowbirdResult.Success(response)
+        } catch (e: Exception) {
+            SnowbirdResult.Error(e.toSnowbirdError())
         }
     }
 
     private suspend fun fetchFromNetwork(): SnowbirdResult<List<SnowbirdGroup>> {
-        return when (val response = api.fetchGroups()) {
-            is ApiResponse.ListResponse -> {
-                lastFetchTime = System.currentTimeMillis()
-                SnowbirdResult.Success(response.data)
-            }
-            is ApiResponse.ErrorResponse -> SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))
-            else -> SnowbirdResult.Failure(SnowbirdError.GeneralError("Unexpected response type"))
+        return try {
+            val response = api.fetchGroups()
+            SnowbirdResult.Success(response.groups)
+        } catch (e: Exception) {
+            SnowbirdResult.Error(e.toSnowbirdError())
         }
     }
 
-    private suspend fun fetchFromCache(): SnowbirdResult<List<SnowbirdGroup>> {
+    private fun fetchFromCache(): SnowbirdResult<List<SnowbirdGroup>> {
         return SnowbirdResult.Success(SnowbirdGroup.getAll())
-//        val cachedGroups = SnowbirdGroup.getAll()
-//        return if (cachedGroups.isNotEmpty()) {
-//            SnowbirdResult.Success(cachedGroups)
-//        } else {
-//            fetchFromNetwork()
-//        }
     }
 }

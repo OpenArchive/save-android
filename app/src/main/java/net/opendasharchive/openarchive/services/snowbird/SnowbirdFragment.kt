@@ -12,7 +12,10 @@ import androidx.navigation.fragment.findNavController
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdBinding
+import net.opendasharchive.openarchive.db.SnowbirdGroup
+import net.opendasharchive.openarchive.extensions.getQueryParameter
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
+import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
 class SnowbirdFragment : BaseSnowbirdFragment() {
@@ -89,6 +92,22 @@ class SnowbirdFragment : BaseSnowbirdFragment() {
     }
 
     private fun processScannedData(uriString: String) {
+        val name = uriString.getQueryParameter("name")
+
+        if (name == null) {
+            Utility.showMaterialWarning(
+                requireContext(),
+                "Unable to determine group name from QR code.")
+            return
+        }
+
+        if (SnowbirdGroup.exists(name)) {
+            Utility.showMaterialWarning(
+                requireContext(),
+                "You have already joined this group.")
+            return
+        }
+
         findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdJoinGroupScreen(uriString))
     }
 }

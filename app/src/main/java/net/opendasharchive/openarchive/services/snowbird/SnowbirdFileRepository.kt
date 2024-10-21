@@ -2,8 +2,9 @@ package net.opendasharchive.openarchive.services.snowbird
 
 import android.net.Uri
 import net.opendasharchive.openarchive.db.FileUploadResult
-import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdFileItem
+import net.opendasharchive.openarchive.extensions.toSnowbirdError
+import net.opendasharchive.openarchive.services.snowbird.service.ISnowbirdAPI
 
 interface ISnowbirdFileRepository {
     suspend fun fetchFiles(groupKey: String, repoKey: String, forceRefresh: Boolean = false): SnowbirdResult<List<SnowbirdFileItem>>
@@ -25,26 +26,29 @@ class SnowbirdFileRepository(val api: ISnowbirdAPI) : ISnowbirdFileRepository {
     }
 
     private suspend fun fetchFilesFromNetwork(groupKey: String, repoKey: String): SnowbirdResult<List<SnowbirdFileItem>> {
-        return when (val response = api.fetchFiles(groupKey, repoKey)) {
-            is ApiResponse.ListResponse -> SnowbirdResult.Success(response.data)
-            is ApiResponse.ErrorResponse -> SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))
-            else -> SnowbirdResult.Failure(SnowbirdError.GeneralError("Unexpected response type"))
+        return try {
+            val response = api.fetchFiles(groupKey, repoKey)
+            SnowbirdResult.Success(response.files)
+        } catch (e: Exception) {
+            SnowbirdResult.Error(e.toSnowbirdError())
         }
     }
 
     override suspend fun downloadFile(groupKey: String, repoKey: String, filename: String): SnowbirdResult<ByteArray> {
-        return when (val response = api.downloadFile(groupKey, repoKey, filename)) {
-            is ApiResponse.SingleResponse -> SnowbirdResult.Success(response.data)
-            is ApiResponse.ErrorResponse -> SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))
-            else -> SnowbirdResult.Failure(SnowbirdError.GeneralError("Unexpected response type"))
+        return try {
+            val response = api.downloadFile(groupKey, repoKey, filename)
+            SnowbirdResult.Success(response)
+        } catch (e: Exception) {
+            SnowbirdResult.Error(e.toSnowbirdError())
         }
     }
 
     override suspend fun uploadFile(groupKey: String, repoKey: String, uri: Uri): SnowbirdResult<FileUploadResult> {
-        return when (val response = api.uploadFile(groupKey, repoKey, uri)) {
-            is ApiResponse.SingleResponse -> SnowbirdResult.Success(response.data)
-            is ApiResponse.ErrorResponse -> SnowbirdResult.Failure(SnowbirdError.GeneralError(response.error.friendlyMessage))
-            else -> SnowbirdResult.Failure(SnowbirdError.GeneralError("Unexpected response type"))
+        return try {
+            val response = api.uploadFile(groupKey, repoKey, uri)
+            SnowbirdResult.Success(response)
+        } catch (e: Exception) {
+            SnowbirdResult.Error(e.toSnowbirdError())
         }
     }
 

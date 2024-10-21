@@ -138,9 +138,8 @@ class SnowbirdGroupListFragment : BaseSnowbirdFragment() {
         if (isRefresh) {
             Timber.d("Clearing SnowbirdGroups")
             SnowbirdGroup.clear()
+            saveGroups(groups)
         }
-
-        saveGroups(groups)
 
         adapter.submitList(groups)
     }

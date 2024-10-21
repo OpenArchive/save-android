@@ -150,7 +150,7 @@
     <fragment
         android:id="@+id/snowbird_list_files_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFileListFragment"
-        android:label="My Media">
+        android:label="My Files">
         <argument
             android:name="groupKey"
             app:argType="string" />
@@ -161,7 +161,7 @@
     <fragment
         android:id="@+id/snowbird_list_repos_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdRepoListFragment"
-        android:label="Group Repositories">
+        android:label="Repositories">
         <argument
             android:name="groupKey"
             app:argType="string" />
