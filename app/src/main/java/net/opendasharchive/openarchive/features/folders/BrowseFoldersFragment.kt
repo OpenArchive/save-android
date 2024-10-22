@@ -26,7 +26,6 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.Utility.showMaterialPrompt
-import net.opendasharchive.openarchive.extensions.toggle
 import timber.log.Timber
 
 
@@ -87,9 +86,9 @@ class BrowseFoldersFragment : Fragment() {
             adapter.updateItems(items)
         }
 
-        viewModel.progressBarFlag.observe(viewLifecycleOwner) {
-            binding.progressBar.toggle(it)
-        }
+//        viewModel.progressBarFlag.observe(viewLifecycleOwner) {
+//            binding.progressBar.toggle(it)
+//        }
     }
 
     private fun onFolderSelected(folder: Folder) {

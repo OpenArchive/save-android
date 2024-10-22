@@ -5,17 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.extensions.toggle
 
 class BackendSelectionFragment : Fragment() {
 
@@ -38,16 +35,12 @@ class BackendSelectionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.progressBar.toggle(false)
-
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 requireActivity().finish()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-
-        val color = ContextCompat.getColor(requireContext(), R.color.c23_teal)
     }
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,
@@ -59,10 +52,6 @@ class BackendSelectionFragment : Fragment() {
 //        }
 
     private fun useBackend(backend: Backend) {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            backendViewModel.upsertBackend(backend)
-//        }
-
         if (backend.exists()) {
             findNavController().navigate(BackendSelectionFragmentDirections.navigateToCreateNewFolderScreen())
         } else {
