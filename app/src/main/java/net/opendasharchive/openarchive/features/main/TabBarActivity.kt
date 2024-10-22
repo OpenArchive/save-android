@@ -8,10 +8,13 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -81,6 +84,17 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.title = null
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // Adjust toolbar margin or padding to account for status bar
+            (view.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                topMargin = insets.top
+            }
+
+            windowInsets
+        }
+
         binding.bottomBar.addButton.setOnClickListener {
             didClickMediaButton()
         }
@@ -127,14 +141,6 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
                 }
             }
         }
-
-//        SnowbirdGroup.get(key = "Wzps6O5iixsc_Vuzar6Uv-fqF_L6tlXpECFlWnl4SgA")?.let { group ->
-//            SnowbirdRepo(
-//                "abc123",
-//                "My Mocked Up Repo",
-//                snowbirdGroup = group
-//            ).save()
-//        }
 
 //        val mediaUri = Uri.parse("file:///data/user/0/net.opendasharchive.openarchive.debug/cache/20240924_165908.riot3.jpg")
 //        MediaUploadManager.scheduleMediaUpload(mediaUri)

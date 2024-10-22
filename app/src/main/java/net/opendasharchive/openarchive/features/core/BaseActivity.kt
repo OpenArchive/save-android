@@ -26,6 +26,7 @@ import net.opendasharchive.openarchive.features.media.Picker.pickMedia
 import net.opendasharchive.openarchive.upload.BroadcastManager.Action
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.SystemBarsController
 import net.opendasharchive.openarchive.util.Utility
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -34,6 +35,7 @@ abstract class BaseActivity: AppCompatActivity() {
 
     private lateinit var mMediaPickerLauncher: ImagePickerLauncher
     private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
+    private lateinit var systemBarsController: SystemBarsController
     private val mediaActionsViewModel: MediaActionsViewModel by viewModel()
     private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
 
@@ -65,6 +67,13 @@ abstract class BaseActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        systemBarsController = SystemBarsController(this)
+
+        // Post to the UI thread to ensure window is ready
+        window.decorView.post {
+            systemBarsController.hideNavigationBar()
+        }
 
         val launchers = Picker.register(this, { Folder.current }, { media ->
             Timber.d("media = $media")
