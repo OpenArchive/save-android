@@ -194,6 +194,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.mixpanel.android.MPConfig.UseIpAddressForGeolocation"
+            android:value="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
