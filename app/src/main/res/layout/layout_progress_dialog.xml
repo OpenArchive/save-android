@@ -9,6 +9,7 @@
     android:visibility="visible">
 
     <ProgressBar
+        style="@style/ThinProgressBar"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:indeterminate="true"

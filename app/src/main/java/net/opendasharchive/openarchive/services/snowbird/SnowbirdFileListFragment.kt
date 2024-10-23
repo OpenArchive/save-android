@@ -149,6 +149,7 @@ class SnowbirdFileListFragment : BaseSnowbirdFragment() {
     }
 
     private fun handleMediaStateUpdate(state: SnowbirdFileViewModel.State) {
+        Timber.d("state = $state")
         when (state) {
             is SnowbirdFileViewModel.State.Idle -> { /* Initial state */ }
             is SnowbirdFileViewModel.State.Loading -> onLoading()

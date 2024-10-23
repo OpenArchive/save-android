@@ -33,6 +33,9 @@
         <action
             android:id="@+id/navigate_to_snowbird_screen"
             app:destination="@id/snowbird_screen" />
+        <action
+            android:id="@+id/navigate_to_web3_screen"
+            app:destination="@id/web3_screen" />
     </fragment>
     <fragment
         android:id="@+id/connect_new_backend_screen"
@@ -99,6 +102,10 @@
 
     <!-- Media Servers -->
 
+    <fragment
+        android:id="@+id/web3_screen"
+        android:name="net.opendasharchive.openarchive.services.web3.Web3FileUploadFragment"
+        android:label="Web3"/>
     <fragment
         android:id="@+id/snowbird_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFragment"

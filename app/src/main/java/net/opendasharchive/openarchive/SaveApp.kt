@@ -99,20 +99,29 @@ class SaveApp : SugarApp() {
     }
 
     private fun createSnowbirdNotificationChannel() {
-        val name = "Snowbird Service"
-        val descriptionText = "Keeps the Snowbird server running"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(SNOWBIRD_SERVICE_CHANNEL, name, importance).apply {
-            description = descriptionText
-        }
+        val silentChannel = NotificationChannel(
+            SNOWBIRD_SERVICE_CHANNEL_SILENT,
+            "Snowbird Service",
+            NotificationManager.IMPORTANCE_LOW
+        )
+
+        val chimeChannel = NotificationChannel(
+            SNOWBIRD_SERVICE_CHANNEL_CHIME,
+            "Snowbird Service",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
+
+        notificationManager.createNotificationChannel(chimeChannel)
+        notificationManager.createNotificationChannel(silentChannel)
     }
 
     companion object {
         const val SNOWBIRD_SERVICE_ID = 2601
-        const val SNOWBIRD_SERVICE_CHANNEL = "snowbird_service_channel"
+        const val SNOWBIRD_SERVICE_CHANNEL_CHIME = "snowbird_service_channel_chime"
+        const val SNOWBIRD_SERVICE_CHANNEL_SILENT = "snowbird_service_channel_silent"
 
         const val TOR_SERVICE_ID = 2602
         const val TOR_SERVICE_CHANNEL = "tor_service_channel"

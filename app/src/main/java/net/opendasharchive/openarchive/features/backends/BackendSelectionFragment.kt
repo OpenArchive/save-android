@@ -60,6 +60,7 @@ class BackendSelectionFragment : Fragment() {
                 Backend.Type.INTERNET_ARCHIVE -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToInternetArchiveScreen(backend, true))
                 Backend.Type.GDRIVE -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToGdriveScreen())
                 Backend.Type.SNOWBIRD -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToSnowbirdScreen())
+                Backend.Type.FILECOIN -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToWeb3Screen())
                 else -> Unit
             }
         }

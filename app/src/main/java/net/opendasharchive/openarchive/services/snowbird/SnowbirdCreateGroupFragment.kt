@@ -88,6 +88,7 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
         handleLoadingStatus(false)
         repo?.let {
             repo.groupKey = snowbirdGroupViewModel.currentGroup.value!!.key
+            repo.permissions = "READ_WRITE"
             repo.save()
             showConfirmation(repo)
         }

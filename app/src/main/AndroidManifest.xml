@@ -219,7 +219,7 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
-            android:name=".services.snowbird.SnowbirdService"
+            android:name=".services.snowbird.service.SnowbirdService"
             android:foregroundServiceType="dataSync"
             android:exported="false">
         </service>

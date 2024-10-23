@@ -39,9 +39,9 @@ val featuresModule = module {
     single<IFolderRepository> { FolderRepository() }
     single<ICollectionRepository> { CollectionRepository() }
     single<IMediaRepository> { MediaRepository() }
-    single<ISnowbirdFileRepository> { SnowbirdFileRepository(get(named("retrofit"))) }
-    single<ISnowbirdGroupRepository> { SnowbirdGroupRepository(get(named("retrofit"))) }
-    single<ISnowbirdRepoRepository> { SnowbirdRepoRepository(get(named("retrofit"))) }
+    single<ISnowbirdFileRepository> { SnowbirdFileRepository(get(named("unixSocket"))) }
+    single<ISnowbirdGroupRepository> { SnowbirdGroupRepository(get(named("unixSocket"))) }
+    single<ISnowbirdRepoRepository> { SnowbirdRepoRepository(get(named("unixSocket"))) }
     single<ITorRepository> { TorRepository(get()) }
     viewModel { (application: Application) -> TorViewModel(application, get()) }
     viewModel { MediaGridViewModel(get(), get()) }

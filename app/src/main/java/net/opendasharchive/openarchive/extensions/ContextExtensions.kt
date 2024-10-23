@@ -6,6 +6,21 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import net.opendasharchive.openarchive.R
+import java.io.File
+
+fun Context.assetToFile(assetName: String): File {
+    val file = File(filesDir, assetName)
+
+    if (!file.exists()) {
+        assets.open(assetName).use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+    }
+
+    return file
+}
 
 fun Context.openBrowser(link: String) {
     try {

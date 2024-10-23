@@ -22,8 +22,8 @@ android {
     localProps.load(localPropsFile.inputStream())
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     signingConfigs {
@@ -74,7 +74,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
     buildFeatures {
@@ -92,6 +92,13 @@ android {
     }
 
     namespace = "net.opendasharchive.openarchive"
+
+    configurations.all {
+        resolutionStrategy {
+            force("org.bouncycastle:bcprov-jdk15to18:1.72")
+            exclude(group = "org.bouncycastle", module = "bcprov-jdk15on")
+        }
+    }
 }
 
 dependencies {
@@ -226,6 +233,8 @@ dependencies {
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.2.0")
 
+    implementation("org.bitcoinj:bitcoinj-core:0.16.2")
+
     implementation("com.eclipsesource.j2v8:j2v8:6.2.1@aar")
 
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
@@ -284,9 +293,14 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    implementation("org.web3j:core:4.9.8")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1")
+
     // Tests
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.robolectric:robolectric:4.7.3")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")

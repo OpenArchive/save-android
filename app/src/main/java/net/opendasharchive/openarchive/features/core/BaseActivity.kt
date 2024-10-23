@@ -7,15 +7,20 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
+import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaActionsViewModel
@@ -72,6 +77,10 @@ abstract class BaseActivity: AppCompatActivity() {
 
         // Post to the UI thread to ensure window is ready
         window.decorView.post {
+            adjustToolbarInsets()
+        }
+
+        window.decorView.viewTreeObserver.addOnGlobalLayoutListener {
             systemBarsController.hideNavigationBar()
         }
 
@@ -91,21 +100,25 @@ abstract class BaseActivity: AppCompatActivity() {
         mFilePickerLauncher = launchers.second
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // updating this in onResume (previously was in onCreate) to make sure setting changes get
-        // applied instantly instead after the next app restart
-        //
-        // Commenting out since we are not currently support this feature.
-        //
-//        updateScreenshotPrevention()
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         Timber.d("onSupportNavigateUp")
         onBackPressedDispatcher.onBackPressed()
         return true
+    }
+
+    fun adjustToolbarInsets() {
+        findViewById<Toolbar>(R.id.toolbar)?.let { toolbar ->
+            ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+                // Adjust toolbar margin or padding to account for status bar
+                (view.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    topMargin = insets.top
+                }
+
+                windowInsets
+            }
+        }
     }
 
     private val getMultipleContents = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris: List<Uri> ->

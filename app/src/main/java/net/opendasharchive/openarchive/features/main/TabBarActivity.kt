@@ -8,13 +8,10 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -29,7 +26,7 @@ import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
 import net.opendasharchive.openarchive.services.snowbird.SnowbirdBridge
-import net.opendasharchive.openarchive.services.snowbird.SnowbirdService
+import net.opendasharchive.openarchive.services.snowbird.service.SnowbirdService
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.NetworkConnectivityViewModel
 import net.opendasharchive.openarchive.util.Utility
@@ -83,17 +80,6 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.title = null
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            // Adjust toolbar margin or padding to account for status bar
-            (view.layoutParams as ViewGroup.MarginLayoutParams).apply {
-                topMargin = insets.top
-            }
-
-            windowInsets
-        }
 
         binding.bottomBar.addButton.setOnClickListener {
             didClickMediaButton()
