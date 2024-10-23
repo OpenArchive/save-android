@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
+    <string name="fpo_short">Lorem ipsum</string>
+    <string name="fpo_long">Lorem ipsum dolor sit amet</string>
+
     <string name="app_subtext">Archiva tus medios <a href="#">aprende más</a></string>
+    <string name="web_client_id">741316235729-ohg8quvto8ajl8qpil4r9rm1o3gfml3t.apps.googleusercontent.com</string>
 
     <string name="title_activity_login">Iniciar sesión</string>
     <string name="title_activity_first_start">Primer inicio</string>
@@ -13,7 +17,6 @@
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Internet Archive</string>
-
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
 
     <!-- MainFragment -->
@@ -28,19 +31,11 @@
     <string name="lbl_ok">OK</string>
     <string name="archive_title">Confirmación de correo electrónico</string>
     <string name="archive_message">Confirma su dirección de correo electrónico y vuelva a conectar su cuenta de Internet Archive.</string>
-
-    <!-- original CC license questions
-    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
-    <string name="info_license_sharealike">Require modified versions to also share?</string>
-    <string name="info_license_comm">Allow commercial uses of your work?</string>
-    -->
-
     <string name="info_license_deriv">¿Permitir que cualquiera cambie y comparta?</string>
     <string name="info_license_sharealike">¿Solicitarles que compartan del mismo modo que tú?</string>
     <string name="info_license_comm">¿Permitir uso comercial?</string>
 
     <string name="menu_delete">Eliminar Medios</string>
-
     <string name="hint_flag">Pulsa para marcar como contenido significativo</string>
     <string name="answer_yes">Sí</string>
     <string name="answer_no">No</string>
@@ -58,7 +53,6 @@
     <string name="prefs_user_interface_title">Presentación</string>
     <string name="prefs_theme_title">Tema</string>
     <string name="prefs_theme_summary">Cambia el tema de \"Guardar\" a claro/oscuro</string>
-    <string name="prefs_theme_system">Sistema Controlado</string>
     <string name="prefs_theme_light">Claro</string>
     <string name="prefs_theme_dark">Oscuro</string>
     <string name="prefs_use_proofmode_title">Habilitar ProofMode</string>
@@ -73,6 +67,7 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Nombre de usuaria(o)</string>
     <string name="prompt_password">Contraseña</string>
+
     <string name="action_sign_in_short">Iniciar sesión</string>
     <string name="error_incorrect_username_or_password">Nombre de usuaria(o) o contraseña incorrectos</string>
     <string name="error_field_required">Este campo es obligatorio</string>
@@ -85,7 +80,6 @@
     <string name="action_about">Sobre %s</string>
     <string name="add_a_folder">Agregar una Carpeta</string>
     <string name="browse_existing_folders">Explorar Carpetas Existentes</string>
-    <string name="browse_existing">Navegar por los Existentes</string>
     <string name="title_activity_upload_manager">Gestor de Cargas</string>
 
     <string name="uploads">Cargas</string>
@@ -105,7 +99,6 @@
     <string name="action_next">Seguir</string>
     <string name="action_done">Listo</string>
     <string name="status_flagged">Contenido Significativo</string>
-    <string name="select_where_to_store_your_media">Selecciona dónde almacenar tus medios.</string>
     <string name="you_have_successfully_connected_to_a_private_server">¡Te has conectado exitosamente a un servidor privado!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">¡Te has conectado exitosamente a Internet Archive!</string>
     <string name="create_a_new_folder">Crear una Nueva Carpeta</string>
@@ -122,7 +115,6 @@
     <string name="info_archiveorg_keys"><b><i>Guardar </i></b>necesita las claves API de tu cuenta de Internet Archive para subir medios.</string>
     <string name="action_acquire_keys">Adquirir Claves</string>
     <string name="new_folder">Nuevo Directorio</string>
-    <string name="please_do_not_include_special_characters_in_the_name">Por favor no incluya caracteres especiales en este nombre</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">¿Estás segura(o) de querer eliminar este servidor de la app?</string>
     <string name="folder_name_already_exists">El nombre de la carpeta ya existe.</string>
     <string name="metadata">Metadatos</string>
@@ -232,10 +224,8 @@ sus intenciones para uso futuro.</string>
     <string name="edit_media">Editar Medios</string>
     <string name="uploading_is_paused">La carga está pausada</string>
     <string name="add_media_using">Agrega medios usando:</string>
-    <string name="photo_gallery">Galería de Fotos</string>
+    <string name="photo_gallery">Galería de la Cámara</string>
     <string name="files">Archivos</string>
-    <string name="contribute_your_data_to_be_part_of_the_solution">Aporta tus datos para ser parte de la solución.</string>
-    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">Con tu permiso, realizaremos una verificación cada vez que encuentres un error durante la carga.</string>
     <string name="error_description">-- Descripción del error</string>
     <string name="size_and_type_of_media">-- Tipo y tamaño de medios</string>
     <string name="number_of_retries">-- Número de reintentos</string>
@@ -243,5 +233,13 @@ sus intenciones para uso futuro.</string>
     <string name="locale">-- Ubicación</string>
     <string name="no_thanks">No gracias</string>
     <string name="undo">Deshacer</string>
+    <!-- Internet Archive Settings -->
+    <string name="label_email">Email</string>
+    <string name="label_login">Iniciar sesión</string>
+    <string name="label_create_login">Regístrate</string>
+    <string name="action_continue">Continuar</string>
+    <string name="title_home">Página principal</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notificaciones</string>
 
-</resources>
+    </resources>
