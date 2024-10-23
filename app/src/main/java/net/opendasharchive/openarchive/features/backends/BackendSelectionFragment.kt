@@ -4,26 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBackendSelectionBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.features.folders.FolderViewModel
-import net.opendasharchive.openarchive.util.extensions.tint
-import net.opendasharchive.openarchive.util.extensions.toggle
 
 class BackendSelectionFragment : Fragment() {
 
     private lateinit var viewBinding: FragmentBackendSelectionBinding
     private lateinit var recyclerView: RecyclerView
     private val backendViewModel: BackendViewModel by activityViewModels()
-    private val folderViewModel: FolderViewModel by activityViewModels()
     private val viewModel: BackendSelectionViewModel by viewModels()
     private val adapter = BackendSelectionAdapter { item ->
         useBackend(item.backend)
@@ -34,25 +29,18 @@ class BackendSelectionFragment : Fragment() {
 
         createBackendList()
 
-//        viewBinding.connectNewMediaServerButton.setOnClickListener {
-//            findNavController().navigate(BackendSelectionFragmentDirections.navigateToConnectNewBackendScreen())
-//        }
-
         return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.progressBar.toggle(false)
-
-        val color = ContextCompat.getColor(requireContext(), R.color.c23_teal)
-        val leftIcon = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_info_24)?.tint(color)
-
-        viewBinding.screenTitle.leftIcon.setImageDrawable(leftIcon)
-//        viewBinding.screenTitle.title.setTextColor(ContextCompat.getColor(requireContext(), R.color.c23_teal))
-        viewBinding.screenTitle.title.text = getString(R.string.select_where_to_store_your_media)
-        viewBinding.screenTitle.title.maxLines = 2
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
         // We cannot browse the Internet Archive. Directly forward to creating a project,
@@ -64,10 +52,6 @@ class BackendSelectionFragment : Fragment() {
 //        }
 
     private fun useBackend(backend: Backend) {
-//        viewBinding.progressBar.toggle(true)
-
-        backendViewModel.updateBackend { backend }
-
         if (backend.exists()) {
             findNavController().navigate(BackendSelectionFragmentDirections.navigateToCreateNewFolderScreen())
         } else {
@@ -75,6 +59,8 @@ class BackendSelectionFragment : Fragment() {
                 Backend.Type.WEBDAV -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToPrivateServerScreen())
                 Backend.Type.INTERNET_ARCHIVE -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToInternetArchiveScreen(backend, true))
                 Backend.Type.GDRIVE -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToGdriveScreen())
+                Backend.Type.SNOWBIRD -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToSnowbirdScreen())
+                Backend.Type.FILECOIN -> findNavController().navigate(BackendSelectionFragmentDirections.navigateToWeb3Screen())
                 else -> Unit
             }
         }

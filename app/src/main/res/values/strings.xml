@@ -213,10 +213,10 @@
     <string name="proofmode">ProofMode</string>
     <string name="no_webbrowser_found_error">No application can handle this request. Please install a webbrowser.</string>
 
-    <string name="intro_header_share" translatable="false">SHARE</string>
-    <string name="intro_header_archive" translatable="false">ARCHIVE</string>
-    <string name="intro_header_verify" translatable="false">VERIFY</string>
-    <string name="intro_header_encrypt" translatable="false">ENCRYPT</string>
+    <string name="intro_header_share" translatable="false">Secure</string>
+    <string name="intro_header_archive" translatable="false">Archive</string>
+    <string name="intro_header_verify" translatable="false">Verify</string>
+    <string name="intro_header_encrypt" translatable="false">Encrypt</string>
     <string name="intro_text_share">
         Upload verified media to your chosen server. Add a Creative Commons license to communicate
         your intentions for future use.
@@ -274,21 +274,13 @@
     <string name="edit_media">Edit Media</string>
     <string name="uploading_is_paused">Uploading is paused</string>
     <string name="add_media_using">Add Media using:</string>
-    <string name="photo_gallery">Photos and Videos</string>
+    <string name="photo_gallery">Camera Roll</string>
     <string name="files">Files</string>
-    <string name="health_checks">Health Checks</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Help improve the app by running health checks when uploads fail.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">Health checks help us understand why uploads fail.</string>
-    <string name="contribute_your_data_to_be_part_of_the_solution">Contribute your data to be part of the solution.</string>
-    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">With your permission, we\'ll run a check each time you encounter an error while uploading.</string>
-    <string name="health_checks_capture">Health checks capture</string>
     <string name="error_description">– Error description</string>
     <string name="size_and_type_of_media">– Size and type of media</string>
     <string name="number_of_retries">– Number of retries</string>
     <string name="network_type">– Network type</string>
     <string name="locale">– Locale</string>
-    <string name="allow_health_checks">Allow health checks?</string>
-    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">By allowing health checks, you give permission for the app to securely send health check data to the %s team.</string>
     <string name="no_thanks">No thanks</string>
     <string name="undo">Undo</string>
     <string name="gdrive_id">Google Drive ID</string>

@@ -12,6 +12,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginStart="10dp"
+        android:layout_marginBottom="@dimen/section_header_bottom_padding"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:src="@drawable/logo_drive_2020q4_color_2x_web_64dp" />
@@ -22,14 +23,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:textSize="22sp"
-        tools:text="Title"
+        app:layout_constraintBottom_toBottomOf="@id/leftIcon"
         app:layout_constraintStart_toEndOf="@+id/leftIcon"
         app:layout_constraintTop_toTopOf="@id/leftIcon"
-        app:layout_constraintBottom_toBottomOf="@id/leftIcon"/>
+        tools:text="Title" />
 
     <View
         android:layout_width="0dp"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         app:layout_constraintStart_toStartOf="@id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/leftIcon"

@@ -7,7 +7,6 @@ import android.os.Parcelable
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.amulyakhare.textdrawable.TextDrawable
 import com.github.abdularis.civ.AvatarImageView
 import com.orm.SugarRecord
 import kotlinx.parcelize.Parcelize
@@ -23,7 +22,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
-enum class BackendResult() {
+enum class BackendResult {
     Cancelled, Created, Deleted
 }
 
@@ -43,23 +42,16 @@ data class Backend(
     constructor(type: Type) : this() {
         tType = type
 
-        when (type) {
-            Type.WEBDAV -> {
-                name = WebDavConduit.NAME
-            }
-            Type.INTERNET_ARCHIVE -> {
-                name = IaConduit.NAME
-                host = IaConduit.ARCHIVE_API_ENDPOINT
-            }
-            Type.GDRIVE -> {
-                name = GDriveConduit.NAME
-            }
-            Type.SNOWBIRD -> {
-                name = "Snowbird"
-            }
-            Type.UNKNOWN -> {
-                name = "Unknown"
-            }
+        name = when (type) {
+            Type.WEBDAV -> WebDavConduit.NAME
+//            Type.INTERNET_ARCHIVE -> {
+//                name = IaConduit.NAME
+//                host = IaConduit.ARCHIVE_API_ENDPOINT
+//            }
+            Type.GDRIVE -> GDriveConduit.NAME
+            Type.SNOWBIRD -> "Snowbird"
+            Type.FILECOIN -> "Filecoin"
+            else -> "Unknown"
         }
     }
 
@@ -68,7 +60,8 @@ data class Backend(
         WEBDAV(0, WebDavConduit.NAME),
         INTERNET_ARCHIVE(1, IaConduit.NAME),
         GDRIVE(4, GDriveConduit.NAME),
-        SNOWBIRD(5, "Snowbird");
+        SNOWBIRD(5, "Snowbird"),
+        FILECOIN(6, "Filecoin");
 
         companion object {
             operator fun invoke(raw: Long): Type? = entries.firstOrNull { it.id == raw }
@@ -77,10 +70,11 @@ data class Backend(
 
     companion object {
         val ALL_BACKENDS = listOf(
-            Backend(Backend.Type.INTERNET_ARCHIVE),
+//            Backend(Backend.Type.INTERNET_ARCHIVE),
             Backend(Backend.Type.WEBDAV),
             Backend(Backend.Type.GDRIVE),
-//            Backend(Backend.Type.SNOWBIRD),
+            Backend(Backend.Type.SNOWBIRD),
+            Backend(Backend.Type.FILECOIN),
         )
 
         fun getAll(): List<Backend> {
@@ -197,14 +191,11 @@ data class Backend(
 
         return when (tType) {
             Type.WEBDAV -> ContextCompat.getDrawable(context, R.drawable.ic_private_server)
-
             Type.INTERNET_ARCHIVE -> ContextCompat.getDrawable(context, R.drawable.ic_internet_archive)
-
             Type.GDRIVE -> ContextCompat.getDrawable(context, R.drawable.logo_drive_2020q4_color_2x_web_64dp)
-
             Type.SNOWBIRD -> ContextCompat.getDrawable(context, R.drawable.snowbird)
-
-            else -> TextDrawable.builder().buildRound(initial, color)
+            Type.FILECOIN -> ContextCompat.getDrawable(context, R.drawable.ic_filecoin)
+            else -> null
         }
     }
 
@@ -260,5 +251,10 @@ data class Backend(
         }
 
         return super.delete()
+    }
+
+    fun updateFrom(other: Backend) {
+        this.license = other.license
+        this.nickname = other.nickname
     }
 }

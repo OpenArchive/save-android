@@ -106,13 +106,8 @@
 
     <string name="edit_media">تدوین رسانه</string>
     <string name="files">فايل‌ها</string>
-    <string name="health_checks">بررسی‌های سلامت</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">با انجام بررسی‌های سلامت در صورت عدم موفقیت در بارگذاری‌ها، به بهبود برنامه کمک کنید.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">بررسی‌های سلامت به ما کمک می‌کند تا بفهمیم چرا بارگذاری‌ها ناموفق هستند.</string>
     <string name="contribute_your_data_to_be_part_of_the_solution">کمک کنید مشارکت داده‌های شما بخشی از راه حل باشند.</string>
     <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">با اجازه شما، هر بار که هنگام بارگذاری با خطایی مواجه شدید، آن را بررسی خواهیم کرد.</string>
-    <string name="health_checks_capture">یافته‌های بررسی‌های سلامت</string>
-    <string name="allow_health_checks">بررسی سلامت مجاز است؟</string>
     <string name="no_thanks">نه، ممنون</string>
     <string name="undo">اصلاح</string>
 

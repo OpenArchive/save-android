@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:drawableStart="@drawable/logo_drive_2020q4_color_2x_web_64dp"
     android:drawableEnd="@drawable/button_with_right_icon"
+    android:background="@drawable/ripple_background"
     android:padding="16dp"
     android:text="@string/fpo_short"
     android:textAlignment="viewStart" />

@@ -26,17 +26,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <include
-            layout="@layout/layout_media"
-            android:id="@+id/media_container"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:clipToPadding="false"
+            android:padding="0dp" />
 
         <include
             layout="@layout/layout_media_hint"
             android:id="@+id/add_media_hint"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="40dp"/>
 
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

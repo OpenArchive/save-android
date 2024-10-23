@@ -11,7 +11,7 @@ import net.opendasharchive.openarchive.R
 class OABottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     enum class MediaSource {
-        Images, Camera
+        Images, Camera, Storage
     }
 
     var onMediaSourceSelected: ((MediaSource) -> Unit)? = null
@@ -23,10 +23,15 @@ class OABottomSheetDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.add_images_button).setOnClickListener {
-            onMediaSourceSelected?.invoke(MediaSource.Images)
+        view.findViewById<Button>(R.id.phone_storage_button).setOnClickListener {
+            onMediaSourceSelected?.invoke(MediaSource.Storage)
             dismiss()
         }
+
+//        view.findViewById<Button>(R.id.add_images_button).setOnClickListener {
+//            onMediaSourceSelected?.invoke(MediaSource.Images)
+//            dismiss()
+//        }
 
         view.findViewById<Button>(R.id.add_camera_button).setOnClickListener {
             onMediaSourceSelected?.invoke(MediaSource.Camera)

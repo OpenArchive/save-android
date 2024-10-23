@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.Backend
-import net.opendasharchive.openarchive.util.extensions.scaled
+import net.opendasharchive.openarchive.extensions.scaled
 
 enum class ItemAction {
     SELECTED

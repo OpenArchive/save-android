@@ -1,6 +1,9 @@
 package net.opendasharchive.openarchive.upload
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.job.JobInfo
 import android.app.job.JobParameters
 import android.app.job.JobScheduler
@@ -15,6 +18,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.work.Configuration
+import androidx.work.Constraints
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -27,7 +31,7 @@ import net.opendasharchive.openarchive.services.Conduit
 import net.opendasharchive.openarchive.util.Prefs
 import timber.log.Timber
 import java.io.IOException
-import java.util.*
+import java.util.Date
 
 //class StartTor(private val appContext: Context, workerParams: WorkerParameters) : Worker(appContext, workerParams) {
 //    override fun doWork(): Result {
@@ -61,13 +65,13 @@ class UploadService : JobService() {
         private const val MY_BACKGROUND_JOB = 0
         private const val NOTIFICATION_CHANNEL_ID = "oasave_channel_1"
 
-        fun startUploadService(activity: Activity) {
+        fun startUploadService(context: Context) {
             val jobScheduler =
-                ContextCompat.getSystemService(activity, JobScheduler::class.java) ?: return
+                ContextCompat.getSystemService(context, JobScheduler::class.java) ?: return
 
             var jobBuilder = JobInfo.Builder(
                 MY_BACKGROUND_JOB,
-                ComponentName(activity, UploadService::class.java)
+                ComponentName(context, UploadService::class.java)
             ).setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -75,6 +79,8 @@ class UploadService : JobService() {
             }
 
             jobScheduler.schedule(jobBuilder.build())
+
+            Timber.d("UploadService started")
         }
 
         fun stopUploadService(context: Context) {
@@ -90,7 +96,7 @@ class UploadService : JobService() {
     private val mConduits = ArrayList<Conduit>()
     private lateinit var notification: Notification
 
-//    private val constraints = Constraints.Builder()
+    private val constraints = Constraints.Builder()
 
     override fun onCreate() {
         super.onCreate()
@@ -161,9 +167,12 @@ class UploadService : JobService() {
             return completed()
         }
 
+        Timber.d("Should upload some media")
+
         // Get all media items that are set into queued state.
         val results = Media.getByStatus(
-            listOf(Media.Status.Queued, Media.Status.Uploading),
+            listOf(Media.Status.Queued,
+                   Media.Status.Uploading),
             Media.ORDER_PRIORITY
         ).toMutableList()
 
@@ -234,7 +243,9 @@ class UploadService : JobService() {
 
         if (isNetworkAvailable(requireUnmetered)) return true
 
-        if (Prefs.useTor && isTorAvailable()) return true
+        if (Prefs.useTor) {
+            return isTorAvailable()
+        }
 
         val type = if (requireUnmetered) {
             JobInfo.NETWORK_TYPE_UNMETERED

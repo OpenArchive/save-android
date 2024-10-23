@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import net.opendasharchive.openarchive.db.Backend
 import timber.log.Timber
 
-class FolderListViewModelFactory(private val backend: Backend) : ViewModelProvider.Factory {
+class FolderListViewModelFactory(private val backend: Backend?) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FolderListViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

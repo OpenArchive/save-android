@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentBackendMetadataBinding
 import net.opendasharchive.openarchive.features.folders.NewFolderNavigationAction
 import net.opendasharchive.openarchive.features.folders.NewFolderNavigationViewModel
@@ -43,18 +45,18 @@ class BackendMetadataFragment : Fragment() {
     }
 
     private fun getLicenseUrl(): String {
-        return backendViewModel.backend.value.license ?: CcSelector.get(binding.cc) ?: ""
+        return backendViewModel.backend.value?.license ?: CcSelector.get(binding.cc) ?: ""
     }
 
     private fun handleCreateButtonClicked() {
         val license = getLicenseUrl()
         val nickname = binding.nickname.text.toString()
 
-        backendViewModel.updateBackend { backend ->
-            backend.copy(
-                license = license,
-                nickname = nickname
-            )
+        viewLifecycleOwner.lifecycleScope.launch {
+            backendViewModel.updateBackend { backend ->
+                backend.license = license
+                backend.nickname = nickname
+            }
         }
 
         Utility.showMaterialMessage(
@@ -63,7 +65,6 @@ class BackendMetadataFragment : Fragment() {
             message = "You can now add folders to your server.",
             positiveButtonText = "ADD FOLDERS") {
 
-            backendViewModel.backend.value.save()
             navigateToNextScreen()
         }
     }

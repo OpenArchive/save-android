@@ -2,18 +2,22 @@ package net.opendasharchive.openarchive.features.settings
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.main.WebViewActivity
+import net.opendasharchive.openarchive.services.tor.TorViewModel
 import net.opendasharchive.openarchive.util.Prefs
 import net.opendasharchive.openarchive.util.Theme
-import net.opendasharchive.openarchive.util.extensions.getVersionName
+import net.opendasharchive.openarchive.extensions.getVersionName
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    val torViewModel: TorViewModel by viewModel { parametersOf(requireActivity().application) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.prefs_general, rootKey)
@@ -29,7 +33,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>(Prefs.USE_TOR)?.setOnPreferenceChangeListener { _, newValue ->
-            val activity = activity ?: return@setOnPreferenceChangeListener true
+            Prefs.useTor = (newValue as Boolean)
+            torViewModel.updateTorServiceState()
             true
         }
 
@@ -40,7 +45,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<Preference>(Prefs.UPLOAD_WIFI_ONLY)?.setOnPreferenceChangeListener { _, newValue ->
             val intent = Intent(Prefs.UPLOAD_WIFI_ONLY).apply{putExtra("value", newValue as Boolean)}
-            LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent)
+            // Replace with shared ViewModel + LiveData
+            // LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent)
+            true
+        }
+
+        findPreference<Preference>(Prefs.MEDIA_UPLOAD_POLICY)?.setOnPreferenceChangeListener { _, newValue ->
+            Prefs.mediaUploadPolicy = newValue as String
             true
         }
 

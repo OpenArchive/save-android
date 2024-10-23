@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -160,5 +161,17 @@ class CameraCaptureActivity : BaseActivity() {
                 }
             }
         )
+
+        showCameraEffect()
+    }
+
+    private fun showCameraEffect() {
+        binding.cameraEffect.alpha = 0.5f
+        binding.cameraEffect
+            .animate()
+            .setDuration(400)
+            .alpha(0f)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
     }
 }

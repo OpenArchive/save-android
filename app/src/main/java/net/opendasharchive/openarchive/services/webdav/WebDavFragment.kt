@@ -108,7 +108,7 @@ class WebDavFragment : Fragment() {
 
         newFolderNavigationViewModel.observeNavigation(viewLifecycleOwner) { action ->
             if (action == NewFolderNavigationAction.UserAuthenticated) {
-                backendViewModel.updateBackend { backend }
+                backendViewModel.upsertBackend(backend)
                 findNavController().navigate(WebDavFragmentDirections.navigateToBackendMetadataScreen())
             }
         }
@@ -168,6 +168,11 @@ class WebDavFragment : Fragment() {
         })
     }
 
+//    private fun testTor() {
+//        val intent = WebViewActivity.newIntent(requireContext(), "https://check.torproject.org/api/ip")
+//        startActivity(intent)
+//    }
+
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -220,6 +225,7 @@ class WebDavFragment : Fragment() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                //testTor()
                 testConnection()
                 navigate()
             } catch (exception: IOException) {

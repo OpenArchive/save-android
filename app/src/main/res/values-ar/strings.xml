@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="app_subtext">أرشِف وسائطك <a href="#">تعرف على المزيد</a></string>
-
     <string name="title_activity_login">تسجيل الدخول</string>
     <string name="title_activity_first_start">البدء الأول</string>
     <string name="title_media_list">التحميلات</string>
@@ -13,7 +12,6 @@
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">‫موقع Internet Archive</string>
-
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
 
     <!-- MainFragment -->
@@ -28,19 +26,11 @@
     <string name="lbl_ok">موافق</string>
     <string name="archive_title">تأكيد البريد الإلكتروني</string>
     <string name="archive_message">‫يرجى تأكيد عنوان بريدك الإلكتروني والعودة للدخول إلى حسابك في Internet Archive.</string>
-
-    <!-- original CC license questions
-    <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
-    <string name="info_license_sharealike">Require modified versions to also share?</string>
-    <string name="info_license_comm">Allow commercial uses of your work?</string>
-    -->
-
     <string name="info_license_deriv">السماح لأي شخص بالتعديل والمشاركة ؟</string>
     <string name="info_license_sharealike">اطلب من الأفراد المشاركة مثلما سبق لك أيضا المشاركة ؟</string>
     <string name="info_license_comm">السماح بالاستخدام التجاري ؟</string>
 
     <string name="menu_delete">أزِل الوسائط</string>
-
     <string name="hint_flag">اضغط لإضافة علامة محتوى مميز</string>
     <string name="answer_yes">نعم</string>
     <string name="answer_no">لا</string>
@@ -58,7 +48,6 @@
     <string name="prefs_user_interface_title">التقديم</string>
     <string name="prefs_theme_title">السمة</string>
     <string name="prefs_theme_summary">تغيير سِمة Save إلى نهارية أو ليلية</string>
-    <string name="prefs_theme_system">يتحكم فيها النظام</string>
     <string name="prefs_theme_light">نهاري</string>
     <string name="prefs_theme_dark">ليلي</string>
     <string name="prefs_use_proofmode_title">تفعيل ProofMode</string>
@@ -73,6 +62,7 @@
     <!-- Strings related to login -->
     <string name="prompt_email">اسم المستخدم</string>
     <string name="prompt_password">‮كلمة السر</string>
+
     <string name="action_sign_in_short">الولوج</string>
     <string name="error_incorrect_username_or_password">اسم المستخدم أو كلمة السر غير صحيحة</string>
     <string name="error_field_required">هذا الحقل مطلوب</string>
@@ -85,7 +75,6 @@
     <string name="action_about">‫عن %s</string>
     <string name="add_a_folder">إضافة مجلد</string>
     <string name="browse_existing_folders">تصفح المجلدات الموجودة</string>
-    <string name="browse_existing">تصفح الموجودة</string>
     <string name="title_activity_upload_manager">مدير التحميل</string>
 
     <string name="uploads">الملفات المُحمَّلة</string>
@@ -105,7 +94,6 @@
     <string name="action_next">التالي</string>
     <string name="action_done">تم</string>
     <string name="status_flagged">محتوى مميز</string>
-    <string name="select_where_to_store_your_media">حدِّد مكان تخزين وسائطك.</string>
     <string name="you_have_successfully_connected_to_a_private_server">لقد اتصلت بخادم خاص بنجاح !</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">لقد اتصلت بـ Internet Archive بنجاح !</string>
     <string name="create_a_new_folder">إنشاء مجلد جديد</string>
@@ -122,7 +110,6 @@
     <string name="info_archiveorg_keys">يحتاج <b><i>Save</i></b> إلى مفاتيح واجهة برمجة التطبيقات الخاصة بحسابك في Internet Archive حتى يتمكن من تحميل الوسائط.</string>
     <string name="action_acquire_keys">اكتسب المفاتيح</string>
     <string name="new_folder">مجلد جديد</string>
-    <string name="please_do_not_include_special_characters_in_the_name">يرجى عدم كتابة أحرف خاصة في الاسم.</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">هل أنت متأكد من أنك تريد إزالة هذا الخادم من التطبيق ؟</string>
     <string name="folder_name_already_exists">اسم المجلد موجود بالفعل.</string>
     <string name="metadata">البيانات الوصفية</string>
@@ -233,22 +220,22 @@
     <string name="edit_media">تحرير الوسائط</string>
     <string name="uploading_is_paused">التحميل متوقف مؤقتا</string>
     <string name="add_media_using">إضافة الوسائط باستخدام :</string>
-    <string name="photo_gallery">معرض الصور</string>
+    <string name="photo_gallery">فيلم الكاميرا</string>
     <string name="files">الملفات</string>
-    <string name="health_checks">التحقق من سلامة</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">ساعد في تحسين التطبيق من خلال إجراء التحقق من السلامة عند فشل عمليات التحميل.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">يساعدنا التحقق من السلامة في فهم أسباب فشل عمليات التحميل.</string>
-    <string name="contribute_your_data_to_be_part_of_the_solution">ساهم ببياناتك لتكون جزءًا من الحل.</string>
-    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">بعد الحصول على إذنك، سنجري تحقُّقا في كل مرة تواجه فيها خطأ أثناء التحميل.</string>
-    <string name="health_checks_capture">يلتقط التحقق من السلامة</string>
     <string name="error_description">– وصف الخطأ</string>
     <string name="size_and_type_of_media">– حجم ونوع الوسائط</string>
     <string name="number_of_retries">– عدد مرات إعادة المحاولة</string>
     <string name="network_type">– نوع الشبكة</string>
     <string name="locale">– التوطين</string>
-    <string name="allow_health_checks">السماح بالتحقق من السلامة؟</string>
-    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">من خلال السماح بالتحقق من السلامة، فأنت تعطي للتطبيق الإذن بإرسال بيانات التحقق من السلامة بشكل آمن إلى فريق عمل %s.</string>
     <string name="no_thanks">لا شكراً</string>
     <string name="undo">تراجَع</string>
+    <!-- Internet Archive Settings -->
+    <string name="label_email">البريد الإلكتروني</string>
+    <string name="label_login">الولوج</string>
+    <string name="label_create_login">سجل حساب</string>
+    <string name="action_continue">تابع (ي)</string>
+    <string name="title_home">الرئيسية</string>
+    <string name="title_dashboard">لوحة التحكم</string>
+    <string name="title_notifications">التنبيهات</string>
 
-</resources>
+    </resources>

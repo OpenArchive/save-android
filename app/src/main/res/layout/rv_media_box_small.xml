@@ -5,114 +5,109 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:padding="10dp"
+    android:padding="5dp"
     android:filterTouchesWhenObscured="true">
 
-<!--    <View-->
-<!--        android:id="@+id/selected_indicator"-->
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/media_view"-->
 <!--        android:layout_width="0dp"-->
 <!--        android:layout_height="0dp"-->
-<!--        android:alpha="0.25"-->
-<!--        android:background="@color/colorPrimary"-->
+<!--        android:background="@drawable/media_outline"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
 <!--        app:layout_constraintDimensionRatio="H,1:1"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/media_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="H,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.cardview.widget.CardView
+        <FrameLayout
+            android:id="@+id/image_border"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:cardCornerRadius="4dp"
+            android:padding="4dp"
+            app:cardCornerRadius="@dimen/smallCornerRadius"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/media_unselected"
                 android:scaleType="centerCrop"
                 android:src="@drawable/no_thumbnail"
+                app:shapeAppearanceOverlay="@style/RoundedImageView"
                 tools:ignore="ContentDescription" />
 
             <com.github.derlio.waveform.SimpleWaveformView
                 android:id="@+id/waveform"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
+                android:background="@color/colorOnBackgroundTonedDown"
+                android:visibility="invisible"
                 app:indicatorColor="#aa0000"
-                app:waveformColor="#999999" />
+                app:waveformColor="@color/transparent_white" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/progress"
+                android:id="@+id/circular_progress_indicator"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:indeterminate="true"
                 android:indeterminateBehavior="cycle"
-                android:max="100"
+                android:visibility="invisible"
                 app:indicatorColor="@color/colorPrimary"
                 app:indicatorSize="48dp"
                 app:trackThickness="3dp" />
 
             <ImageView
-                android:id="@+id/error"
+                android:id="@+id/error_indicator"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/error"
+                android:visibility="invisible"
                 android:src="@drawable/ic_error"
                 app:tint="@color/colorDanger" />
 
-            <TextView
-                android:id="@+id/progress_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="100%"
-                android:textSize="12sp"
-                android:visibility="visible"
-                android:textColor="@color/colorPrimary"
-                tools:ignore="HardcodedText" />
+<!--            <TextView-->
+<!--                android:id="@+id/progress_text"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:text="100%"-->
+<!--                android:textSize="12sp"-->
+<!--                android:visibility="visible"-->
+<!--                android:textColor="@color/colorPrimary"-->
+<!--                tools:ignore="HardcodedText" />-->
 
             <ImageView
                 android:id="@+id/video_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
-                android:layout_margin="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginStart="4dp"
                 android:contentDescription="@string/is_video"
                 android:src="@drawable/ic_videocam_black_24dp"
+                android:visibility="invisible"
                 app:tint="@color/colorMediaOverlayIcon" />
 
             <View
-                android:id="@+id/overlay_container"
+                android:id="@+id/overlay"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:alpha="0.25"
-                android:background="@color/colorPrimary"
+                android:background="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="H,1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </androidx.cardview.widget.CardView>
+        </FrameLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <ImageView
         android:id="@+id/delete_indicator"
@@ -120,8 +115,8 @@
         android:layout_height="20dp"
         android:layout_marginStart="-10dp"
         android:layout_marginTop="-10dp"
-        android:visibility="gone"
-        android:contentDescription="delete button"
+        android:visibility="invisible"
+        android:contentDescription="@string/menu_delete"
         android:src="@drawable/baseline_remove_circle_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

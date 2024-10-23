@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
+    <string name="fpo_short">Lorem ipsum</string>
+    <string name="fpo_long">Lorem ipsum dolor sit amet</string>
+
     <string name="app_subtext">Архівуйте Ваші медіа\n<a href="#">дізнайтеся більше</a></string>
+    <string name="web_client_id">741316235729-ohg8quvto8ajl8qpil4r9rm1o3gfml3t.apps.googleusercontent.com</string>
 
     <string name="title_activity_login">Увійти</string>
     <string name="title_activity_first_start">Перший початок</string>
@@ -13,6 +17,9 @@
 
     <!-- FirstStartActivity -->
     <string name="internet_archive">Сервіс Internet Archive</string>
+    <string name="internet_archive_description">Вивантажуйте свої медіа на публічний сервер.</string>
+    <string name="upload_to_gdrive">Вивантажуйте на Google Диск</string>
+    <string name="sign_in_or_create_an_account_with_gdrive">Створіть або увійдіть у наявний обліковий запис\nGoogle Диск</string>
 
     <!--<string name="sign_up_btn">Don\'t have a virtual library card?\n<a href="https://archive.org/account/login.createaccount.php">Register for free.</a></string>-->
 
@@ -28,6 +35,7 @@
     <string name="lbl_ok">Гаразд</string>
     <string name="archive_title">Підтвердження листом на електронну пошту</string>
     <string name="archive_message">Підтвердьте адресу електронної пошти та поверніться, щоб під\'єднати обліковий запис Internet Archive.</string>
+    <string name="current_folder_label">%1$s &gt; %2$s</string>
 
     <!-- original CC license questions
     <string name="info_license_deriv">Allow adaptations of your work to be shared?</string>
@@ -35,11 +43,15 @@
     <string name="info_license_comm">Allow commercial uses of your work?</string>
     -->
 
+    <!-- Accessibility (A11Y) Content Descriptions -->
+    <string name="a11y_media_storage">Екран налаштування зберігання медіа</string>
+
     <string name="info_license_deriv">Дозволити будь-кому видозмінювати та поширювати?</string>
     <string name="info_license_sharealike">Вимагати від них поширення файлів навзаєм?</string>
     <string name="info_license_comm">Дозволити комерційне використання?</string>
 
     <string name="menu_delete">Вилучити медіа</string>
+    <string name="no_wifi_indicator">Немає WiFi</string>
 
     <string name="hint_flag">Торкніться, щоб позначити як важливий вміст</string>
     <string name="answer_yes">Так</string>
@@ -58,7 +70,7 @@
     <string name="prefs_user_interface_title">Вигляд</string>
     <string name="prefs_theme_title">Тема</string>
     <string name="prefs_theme_summary">Зміна теми Save на світлу/темну</string>
-    <string name="prefs_theme_system">Контролюється системою</string>
+    <string name="prefs_theme_system">Системна тема</string>
     <string name="prefs_theme_light">Світла</string>
     <string name="prefs_theme_dark">Темна</string>
     <string name="prefs_use_proofmode_title">Увімкнути ProofMode</string>
@@ -73,6 +85,12 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Ім\'я користувача</string>
     <string name="prompt_password">Пароль</string>
+
+    <string name="label_username">\@string/prompt_email</string>
+    <string name="placeholder_email_or_username">Введіть адресу електронної пошти або ім\'я користувача</string>
+    <string name="label_password">\@string/prompt_password</string>
+    <string name="placeholder_password">Введіть пароль</string>
+
     <string name="action_sign_in_short">Увійти</string>
     <string name="error_incorrect_username_or_password">Неправильне ім\'я користувача або пароль</string>
     <string name="error_field_required">Треба заповнити це поле</string>
@@ -85,7 +103,7 @@
     <string name="action_about">Про %s</string>
     <string name="add_a_folder">Додати папку</string>
     <string name="browse_existing_folders">Переглянути створені папки</string>
-    <string name="browse_existing">Переглянути створені</string>
+    <string name="browse_existing">Ваше сховище медіафайлів</string>
     <string name="title_activity_upload_manager">Менеджер вивантаження</string>
 
     <string name="uploads">Вивантаження</string>
@@ -98,6 +116,7 @@
     <!-- Strings related to Settings -->
 
     <string name="tap_to_add">Натисніть на кнопку нижче для додавання медіа.</string>
+    <string name="tap_to_add_backend">Торкніться кнопки нижче для додавання сервера медіа.</string>
     <string name="to_get_started_connect_to_a_server_to_store_your_media">Щоб розпочати, під’єднайтесь до сервера для збереження медіа.</string>
     <string name="send_directly_to_a_private_server">Відправити на сервер WebDAV</string>
     <string name="upload_to_the_internet_archive">Вивантаження до IA</string>
@@ -105,9 +124,14 @@
     <string name="action_next">Вперед</string>
     <string name="action_done">Готово</string>
     <string name="status_flagged">Важливий вміст</string>
-    <string name="select_where_to_store_your_media">Обрати, де зберігати медіа.</string>
+    <string name="select_where_to_store_your_media">Будь ласка, оберіть сервер, який ви б хотіли використовувати.</string>
+    <string name="you_have_successfully_connected_to_a_veilid_group">Ви успішно долучились до групи Veilid!</string>
     <string name="you_have_successfully_connected_to_a_private_server">Ви успішно під’єднались до приватного сервера!</string>
     <string name="you_have_successfully_connected_to_the_internet_archive">Ви успішно під’єднались до Internet Archive!</string>
+    <string name="you_have_successfully_connected_to_gdrive">Ви успішно з\'єднались з Google Диск!</string>
+    <string name="you_have_successfully_connected_to_veilid">Ви успішно з\'єднались з Veilid!</string>
+    <string name="you_have_successfully_connected_to_filecoin">Ви успішно з\'єднались з Filecoin!</string>
+    <string name="you_have_successfully_connected_to">Ви успішно з\'єднались з %1$s!</string>
     <string name="create_a_new_folder">Створити нову папку</string>
     <string name="edit">Змінити</string>
     <string name="menu_done">Готово</string>
@@ -122,7 +146,7 @@
     <string name="info_archiveorg_keys"><b><i>Save</i></b> потребує ключів API акаунта Internet Archive для вивантаження файлів.</string>
     <string name="action_acquire_keys">Отримати ключі</string>
     <string name="new_folder">Нова папка</string>
-    <string name="please_do_not_include_special_characters_in_the_name">Будь ласка, не використовуйте спеціальні символи в назві.</string>
+    <string name="please_do_not_include_special_characters_in_the_name">Будь ласка, використовуйте лише літери та цифри в імені.</string>
     <string name="are_you_sure_you_want_to_remove_this_server_from_the_app">Ви впевнені, що хочете видалити цей сервер із застосунку?</string>
     <string name="folder_name_already_exists">Така папка вже існує.</string>
     <string name="metadata">Метадані</string>
@@ -224,27 +248,36 @@
     <string name="ia_learn_how_summary_step_3">Крок 3. Згенеруйте свої API-ключі, поставивши галочку, і вони автоматично завантажаться в застосунок!</string>
 
     <string name="upload_unsuccessful">Не вдалось вивантажити</string>
+    <string name="upload_unsuccessful_description">Не вдалось завантажити через помилку сесії; будь ласка, спробуйте знов або зв\'яжіться з підтримкою.</string>
     <string name="retry">Повторити</string>
 
     <string name="edit_media">Редагувати медіафайл</string>
     <string name="uploading_is_paused">Вивантаження призупинено</string>
     <string name="add_media_using">Додати медіафайл з:</string>
-    <string name="photo_gallery">Галерея</string>
+    <string name="photo_gallery">Фотографії</string>
     <string name="files">Файли</string>
-    <string name="health_checks">Перевірки стану</string>
-    <string name="help_improve_the_app_by_running_health_checks_when_uploads_fail">Допоможіть покращити застосунок, запустивши перевірку його стану, якщо вивантаження зазнає збою.</string>
-    <string name="health_checks_help_us_understand_why_uploads_fail">Перевірка стану застосунку допомагає нам зрозуміти, чому вивантаження не вдається.</string>
-    <string name="contribute_your_data_to_be_part_of_the_solution">Надайте дані застосунку, щоб допомогти розібратись.</string>
-    <string name="with_your_permission_we_ll_run_a_check_each_time_you_encounter_an_error_while_uploading">З вашого дозволу ми запускатимемо перевірку щоразу, коли ви зіткнетеся з помилкою під час вивантаження.</string>
-    <string name="health_checks_capture">Перевірка стану включатиме</string>
     <string name="error_description">– Опис помилки</string>
     <string name="size_and_type_of_media">– Розмір і тип медіафайла</string>
     <string name="number_of_retries">– Кількість спроб</string>
     <string name="network_type">– Тип мережі</string>
     <string name="locale">– Локаль</string>
-    <string name="allow_health_checks">Дозволити перевірки стану?</string>
-    <string name="by_allowing_health_checks_you_give_permission_for_the_app_to_securely_send_health_check_data_to_the_s_team">Дозволяючи перевірку стану, ви надаєте застосунку право безпечно надсилати дані про перевірку стану команді %s.</string>
     <string name="no_thanks">Ні, дякую</string>
     <string name="undo">Скасувати</string>
+    <string name="gdrive_id">Google Диск ID</string>
+    <string name="new_user">новий користувач</string>
 
+    <!-- Internet Archive Settings -->
+    <string name="label_email">Email</string>
+    <string name="label_screen_name">Ім\'я для показу</string>
+    <string name="label_login">Увійти</string>
+    <string name="label_create_login">Підписатись</string>
+    <string name="prompt_no_account">Немає облікового запису\?</string>
+    <string name="action_continue">Продовжити</string>
+    <string name="title_activity_tab_bar">TabBarActivity</string>
+    <string name="title_home">Домівка</string>
+    <string name="title_dashboard">Панель управління</string>
+    <string name="title_notifications">Сповіщення</string>
+
+    <string name="pref_media_servers">Бажані сервери медіа</string>
+    <string name="my_connected_media_servers">Керувати своїми серверами медіа.</string>
 </resources>

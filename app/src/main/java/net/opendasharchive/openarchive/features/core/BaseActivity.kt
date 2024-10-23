@@ -7,35 +7,42 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.Media
+import net.opendasharchive.openarchive.db.MediaActionsViewModel
 import net.opendasharchive.openarchive.features.main.CameraCaptureActivity
 import net.opendasharchive.openarchive.features.main.ui.OABottomSheetDialogFragment
 import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.Picker.pickMedia
 import net.opendasharchive.openarchive.upload.BroadcastManager.Action
+import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.SystemBarsController
 import net.opendasharchive.openarchive.util.Utility
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 abstract class BaseActivity: AppCompatActivity() {
 
-    companion object {
-        const val EXTRA_DATA_BACKEND = "space"
-    }
-
     private lateinit var mMediaPickerLauncher: ImagePickerLauncher
     private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
+    private lateinit var systemBarsController: SystemBarsController
+    private val mediaActionsViewModel: MediaActionsViewModel by viewModel()
+    private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
 
     private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
@@ -66,7 +73,16 @@ abstract class BaseActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.colorBottomNavbar)
+        systemBarsController = SystemBarsController(this)
+
+        // Post to the UI thread to ensure window is ready
+        window.decorView.post {
+            adjustToolbarInsets()
+        }
+
+        window.decorView.viewTreeObserver.addOnGlobalLayoutListener {
+            systemBarsController.hideNavigationBar()
+        }
 
         val launchers = Picker.register(this, { Folder.current }, { media ->
             Timber.d("media = $media")
@@ -84,26 +100,37 @@ abstract class BaseActivity: AppCompatActivity() {
         mFilePickerLauncher = launchers.second
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // updating this in onResume (previously was in onCreate) to make sure setting changes get
-        // applied instantly instead after the next app restart
-        updateScreenshotPrevention()
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         Timber.d("onSupportNavigateUp")
         onBackPressedDispatcher.onBackPressed()
         return true
     }
 
-    val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
-        handleSelectedImages(uris)
+    fun adjustToolbarInsets() {
+        findViewById<Toolbar>(R.id.toolbar)?.let { toolbar ->
+            ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, windowInsets ->
+                val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+                // Adjust toolbar margin or padding to account for status bar
+                (view.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    topMargin = insets.top
+                }
+
+                windowInsets
+            }
+        }
     }
 
-    val legacyPickMultipleMedia = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
-        handleSelectedImages(uris)
+    private val getMultipleContents = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris: List<Uri> ->
+        handleSelectedFiles(uris)
+    }
+
+    private val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
+        handleSelectedFiles(uris)
+    }
+
+    private val legacyPickMultipleMedia = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        handleSelectedFiles(uris)
     }
 
     private val requestPermissionLauncher =
@@ -115,29 +142,39 @@ abstract class BaseActivity: AppCompatActivity() {
             }
         }
 
+    // Media types are split out in case we ever need custom
+    // handling by media type.
+    //
+    private fun handleAudio(uri: Uri) {
+        handleMedia(uri)
+    }
+
     private fun handleImage(uri: Uri) {
-        Picker.import(this@BaseActivity, Folder.current, uri)?.let { media ->
-            media.status = Media.Status.Local
-            media.selected = false
-            media.save()
-        }
+        handleMedia(uri)
     }
 
     private fun handleVideo(uri: Uri) {
+        handleMedia(uri)
+    }
+
+    private fun handleMedia(uri: Uri) {
         Picker.import(this@BaseActivity, Folder.current, uri)?.let { media ->
-            media.status = Media.Status.Local
+            media.status = if (Prefs.mediaUploadPolicy == "upload_media_automatically") Media.Status.Queued else Media.Status.Local
             media.selected = false
-            media.save()
+
+            mediaActionsViewModel.saveMedia(media)
+//            mediaUploadViewModel.scheduleUpload(media)
         }
     }
 
-    fun handleSelectedImages(uris: List<Uri>) {
+    private fun handleSelectedFiles(uris: List<Uri>) {
         if (uris.isNotEmpty()) {
             for (uri in uris) {
                 val mimeType = contentResolver.getType(uri)
                 when {
                     mimeType?.startsWith("image/") == true -> handleImage(uri)
                     mimeType?.startsWith("video/") == true -> handleVideo(uri)
+                    mimeType?.startsWith("audio/") == true -> handleAudio(uri)
                     else -> {
                         Timber.d("Unknown type picked: $mimeType")
                     }
@@ -149,7 +186,11 @@ abstract class BaseActivity: AppCompatActivity() {
         }
     }
 
-    fun launchImagePicker() {
+    private fun openFilePicker() {
+        getMultipleContents.launch("*/*")
+    }
+
+    private fun launchImagePicker() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
         } else {
@@ -165,7 +206,7 @@ abstract class BaseActivity: AppCompatActivity() {
         legacyPickMultipleMedia.launch("image/*")
     }
 
-    fun processIntentResult(result: Intent?) {
+    private fun processIntentResult(result: Intent?) {
         Timber.d("Got camera results")
 
         result?.let { intent ->
@@ -177,12 +218,12 @@ abstract class BaseActivity: AppCompatActivity() {
             }
 
             returnedUris?.let { uris ->
-                handleSelectedImages(uris)
+                handleSelectedFiles(uris)
             }
         }
     }
 
-    fun requestCameraPermission() {
+    private fun requestCameraPermission() {
         when {
             ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
                 cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
@@ -208,6 +249,7 @@ abstract class BaseActivity: AppCompatActivity() {
             when (source) {
                 OABottomSheetDialogFragment.MediaSource.Camera -> requestCameraPermission()
                 OABottomSheetDialogFragment.MediaSource.Images -> launchImagePicker()
+                OABottomSheetDialogFragment.MediaSource.Storage -> openFilePicker()
             }
         }
 
@@ -235,18 +277,4 @@ abstract class BaseActivity: AppCompatActivity() {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
     }
-
-//    fun alertUserOfError(e: Error) {
-//        val builder: AlertDialog.Builder = AlertDialog.Builder(baseContext)
-//
-//        builder
-//            .setTitle("Oops")
-//            .setMessage(e.localizedMessage)
-//            .setPositiveButton("OK") { dialog, which ->
-//            }
-//
-//        val dialog: AlertDialog = builder.create()
-//
-//        dialog.show()
-//    }
 }

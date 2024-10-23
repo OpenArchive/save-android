@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:lines="3"
-                android:text="Snowbird is Open Archive's decentralized web service built with Iroh and Veilid."
+                android:text="Snowbird is OpenArchive's decentralized web (DWeb) service built with Iroh and Veilid."
                 android:textColor="@color/colorSectionHeaderText"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/snowbird_logo"
@@ -46,40 +46,42 @@
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/OATextInputLayoutStyle"
-            android:id="@+id/server_text_input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            app:endIconDrawable="@drawable/padded_qr_button"
-            app:endIconMode="custom"
-            app:endIconTint="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_container">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/server_uri"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:focusedByDefault="false"
-                android:hint="@string/enter_url"
-                android:inputType="textUri"
-                android:maxLines="1"
-                android:singleLine="true" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton
+            style="@style/OAMaterialSignInButtonStyle"
+            android:id="@+id/my_groups_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:text="My Groups"
+            app:layout_constraintTop_toBottomOf="@id/header_container" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/OAMaterialSignInButtonStyle"
-            android:id="@+id/ok_button"
+            android:id="@+id/join_group_button"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="20dp"
-            android:enabled="false"
-            android:text="Next"
-            app:layout_constraintTop_toBottomOf="@id/server_text_input" />
+            android:layout_marginTop="40dp"
+            android:text="join group"
+            app:layout_constraintTop_toBottomOf="@id/my_groups_button" />
+
+<!--        <include-->
+<!--            layout="@layout/layout_divider"-->
+<!--            android:id="@+id/divider"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/join_group_button"/>-->
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/OAMaterialSignInButtonStyle"
+            android:id="@+id/create_group_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:text="Create Group"
+            app:layout_constraintTop_toBottomOf="@id/join_group_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

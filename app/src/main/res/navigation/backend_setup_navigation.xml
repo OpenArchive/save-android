@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/backend_setup_navigation"
-    app:startDestination="@id/browse_folders_screen">
+    app:startDestination="@id/select_backend_screen">
 
     <activity
         android:id="@+id/backend_setup_activity"
@@ -30,6 +30,12 @@
         <action
             android:id="@+id/navigate_to_internet_archive_screen"
             app:destination="@id/internet_archive_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_screen"
+            app:destination="@id/snowbird_screen" />
+        <action
+            android:id="@+id/navigate_to_web3_screen"
+            app:destination="@id/web3_screen" />
     </fragment>
     <fragment
         android:id="@+id/connect_new_backend_screen"
@@ -97,9 +103,93 @@
     <!-- Media Servers -->
 
     <fragment
+        android:id="@+id/web3_screen"
+        android:name="net.opendasharchive.openarchive.services.web3.Web3FileUploadFragment"
+        android:label="Web3"/>
+    <fragment
         android:id="@+id/snowbird_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFragment"
-        android:label="Snowbird"/>
+        android:label="Snowbird">
+        <action
+            android:id="@+id/navigate_to_snowbird_create_group_screen"
+            app:destination="@id/snowbird_create_group_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_group_selection_screen"
+            app:destination="@id/snowbird_group_selection_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_group_overview_screen"
+            app:destination="@id/snowbird_group_overview_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_join_group_screen"
+            app:destination="@id/snowbird_join_group_screen" />
+    </fragment>
+    <fragment
+        android:id="@+id/snowbird_join_group_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdJoinGroupFragment"
+        android:label="Join Group">
+        <argument
+            android:name="uriString"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/snowbird_group_overview_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupOverviewFragment"
+        android:label="Snowbird Group Overview">
+    </fragment>
+    <fragment
+        android:id="@+id/snowbird_share_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdShareFragment"
+        android:label="Share Snowbird Group">
+        <argument
+            android:name="groupKey"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/snowbird_create_group_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdCreateGroupFragment"
+        android:label="Create Snowbird Group">
+        <action
+            android:id="@+id/navigate_to_share_screen"
+            app:destination="@id/snowbird_share_screen"
+            app:popUpTo="@id/snowbird_screen"
+            app:popUpToInclusive="false"/>
+    </fragment>
+    <fragment
+        android:id="@+id/snowbird_list_files_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFileListFragment"
+        android:label="My Files">
+        <argument
+            android:name="groupKey"
+            app:argType="string" />
+        <argument
+            android:name="repoKey"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/snowbird_list_repos_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdRepoListFragment"
+        android:label="Repositories">
+        <argument
+            android:name="groupKey"
+            app:argType="string" />
+        <action
+            android:id="@+id/navigate_to_snowbird_list_files_screen"
+            app:destination="@id/snowbird_list_files_screen" />
+    </fragment>
+    <fragment
+        android:id="@+id/snowbird_group_selection_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupListFragment"
+        android:label="My Groups">
+        <action
+            android:id="@+id/navigate_to_snowbird_share_screen"
+            app:destination="@id/snowbird_share_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_list_repos_screen"
+            app:destination="@id/snowbird_list_repos_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_create_group_screen"
+            app:destination="@id/snowbird_create_group_screen" />
+    </fragment>
     <fragment
         android:id="@+id/internet_archive_screen"
         android:name="net.opendasharchive.openarchive.features.internetarchive.presentation.InternetArchiveFragment"

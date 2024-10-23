@@ -22,13 +22,13 @@
 <!--                android:textColor="@color/colorOnBackgroundTonedDown"-->
 <!--                android:textSize="18sp" />-->
 
-            <include
-                layout="@layout/backend_item"
-                android:id="@+id/screen_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"/>
+<!--            <include-->
+<!--                layout="@layout/backend_item"-->
+<!--                android:id="@+id/screen_title"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginEnd="20dp"/>-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/backend_list"
@@ -37,12 +37,4 @@
                 android:layout_marginTop="0dp" />
         </LinearLayout>
     </ScrollView>
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="8dp" />
 </FrameLayout>

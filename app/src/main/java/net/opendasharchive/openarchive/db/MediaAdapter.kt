@@ -38,10 +38,12 @@ class MediaAdapter(
 
     private var mActivity = WeakReference(activity)
 
+    object UPDATE_STATE_PAYLOAD
+
     var deleteMode = false
         set(value) {
             field = value
-            notifyDataSetChanged()
+            notifyItemRangeChanged(0, itemCount, UPDATE_STATE_PAYLOAD)
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
@@ -56,7 +58,8 @@ class MediaAdapter(
 
                 when (media[pos].status) {
                     Media.Status.Local -> handleLocalItemAt(index = pos)
-                    Media.Status.Queued, Media.Status.Uploading -> handleQueuedItemAt(index = pos)
+                    Media.Status.Queued,
+                    Media.Status.Uploading -> handleQueuedItemAt(index = pos)
                     Media.Status.Error -> handleErrorCaseAt(index = pos)
 
                     else -> {
@@ -71,7 +74,6 @@ class MediaAdapter(
         if (checkSelecting != null) {
             mediaViewHolder.itemView.setOnLongClickListener { v ->
                 selectView(v)
-
                 true
             }
         }
@@ -140,6 +142,26 @@ class MediaAdapter(
 
     override fun getItemCount(): Int = media.size
 
+    override fun onBindViewHolder(holder: MediaViewHolder, position: Int, payloads: List<Any>) {
+        if (payloads.isEmpty()) {
+            // Full update
+            onBindViewHolder(holder, position)
+        } else {
+            // Partial update
+            val payload = payloads[0]
+
+            if (payload == UPDATE_STATE_PAYLOAD) {
+                holder.deleteIndicator?.visibility = if (canDeleteMediaAt(position)) View.VISIBLE else View.GONE
+
+                if (canDeleteMediaAt(position)) {
+                    startStaggeredAnimation(holder)
+                } else {
+//                    holder.mediaView?.clearAnimation()
+                }
+            }
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
         holder.bind(media[position], selecting, doImageFade)
@@ -148,8 +170,8 @@ class MediaAdapter(
 
         holder.deleteIndicator?.visibility = if (deleteMode) View.VISIBLE else View.GONE
 
-        if (deleteMode) {
-            startStaggeredAnimation(holder, position)
+        if (canDeleteMediaAt(position)) {
+            startStaggeredAnimation(holder)
         } else {
             holder.image.clearAnimation()
         }
@@ -179,10 +201,25 @@ class MediaAdapter(
         }
     }
 
-    private fun startStaggeredAnimation(holder: MediaViewHolder, position: Int) {
+    private fun canDeleteMediaAt(position: Int): Boolean {
+        if (!deleteMode) {
+            return false
+        }
+
+        val mediaItem = media[position]
+
+        return when (mediaItem.status) {
+            Media.Status.Local,
+            Media.Status.Queued -> true
+            else -> false
+        }
+    }
+
+    private fun startStaggeredAnimation(holder: MediaViewHolder) {
+        Timber.d("Starting wiggle")
         val delay = (0L..125L).random()
-        holder.image.clearAnimation()
-        holder.image.postDelayed({ holder.mediaView?.startAnimation(holder.wiggleAnimation) }, delay)
+//        holder.mediaView?.clearAnimation()
+//        holder.mediaView?.postDelayed({ holder.mediaView?.startAnimation(holder.wiggleAnimation) }, delay)
     }
 
     fun updateItem(mediaId: Long, progress: Long): Boolean {
@@ -213,6 +250,7 @@ class MediaAdapter(
         return true
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(media: List<Media>) {
         this.media = ArrayList(media)
 

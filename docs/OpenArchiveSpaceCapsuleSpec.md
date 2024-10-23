@@ -1,4 +1,4 @@
-# Open Archive "SAVE Space" Specification
+# OpenArchive "SAVE Space" Specification
 
 Nathan Freitas aka @n8fr8
 Guardian Project
@@ -7,10 +7,10 @@ Updated: 9 July 2019
 
 ## Summary
 
-This document is for outlining the folder and file structure for the publishing of an Open Archive
+This document is for outlining the folder and file structure for the publishing of an OpenArchive
 (OA) project, otherwise known as a "SAVE Space". This specifies how to serialize to a disk
 (or a tar/zip archive file) the set of media files and metadata imported, organized and curated in
-the Open Archive app.
+the OpenArchive app.
 It will also specify the format of the metadata included, and what extra data can also be included, 
 such as OpenPGP signatures.
 

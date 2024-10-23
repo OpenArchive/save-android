@@ -5,24 +5,23 @@
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:node="remove" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.RUN_USER_INITIATED_JOBS" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RUN_USER_INITIATED_JOBS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <queries>
         <package android:name="org.torproject.android" />
@@ -48,6 +47,7 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
+        android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute,LockedOrientationActivity"
         tools:replace="android:icon,android:allowBackup">
         <!--
@@ -56,26 +56,33 @@
         Trail of bits ticket: https://github.com/OpenArchive/OA-Trail-of-Bits/issues/23
         -->
         <activity
+            android:name=".features.core.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.App.Starting">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".features.folders.BrowseFoldersFragment"
             android:exported="false"
             android:label="@string/browse_existing"
-            android:taskAffinity=""
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:taskAffinity="" />
         <activity
             android:name=".upload.UploadManagerActivity"
             android:exported="false"
             android:label="@string/title_activity_upload_manager"
-            android:taskAffinity=""
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:taskAffinity="" />
         <activity
             android:name=".features.main.TabBarActivity"
             android:exported="true"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
 
             <!-- filter for sending text or images; accepts SEND action and audio/photo/video data -->
             <intent-filter>
@@ -87,9 +94,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="application/*" />
                 <data android:mimeType="audio/*" />
                 <data android:mimeType="image/*" />
@@ -97,6 +102,13 @@
                 <data android:mimeType="multipart/*" />
                 <data android:mimeType="text/*" />
                 <data android:mimeType="video/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="save+dweb" />
             </intent-filter>
         </activity>
         <activity
@@ -145,12 +157,14 @@
             android:name=".features.onboarding.Onboarding23Activity"
             android:exported="false"
             android:noHistory="true"
-            android:taskAffinity="" />
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.Onboarding" />
         <activity
             android:name=".features.onboarding.Onboarding23InstructionsActivity"
             android:exported="false"
             android:noHistory="true"
-            android:taskAffinity="" />
+            android:taskAffinity=""
+            android:theme="@style/AppTheme.Onboarding" />
         <activity
             android:name=".features.folders.CreateNewFolderFragment"
             android:label="@string/new_folder"
@@ -176,19 +190,22 @@
             android:value="openarchive.db" />
         <meta-data
             android:name="VERSION"
-            android:value="37" />
+            android:value="38" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="com.mixpanel.android.MPConfig.UseIpAddressForGeolocation"
+            android:value="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
+                android:resource="@xml/file_paths" />
         </provider>
         <provider
             android:name=".provider.TorStatusContentProvider"
@@ -202,10 +219,16 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
-            android:name=".services.snowbird.SnowbirdService"
+            android:name=".services.snowbird.service.SnowbirdService"
             android:foregroundServiceType="dataSync"
             android:exported="false">
         </service>
+
+        <service
+            android:name=".services.tor.TorForegroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
 
     </application>
 

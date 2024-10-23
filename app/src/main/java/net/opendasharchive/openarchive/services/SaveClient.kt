@@ -125,12 +125,13 @@ class SaveClient(context: Context) : StrongBuilderBase<SaveClient, OkHttpClient>
                 }
 
                 if (Prefs.useTor) {
-                    if (!OrbotHelper.requestStartTor(context)) {
-                        callback.onInvalid()
-                    }
-                    else {
-                        strongBuilder.build(callback)
-                    }
+                    callback.onConnected(strongBuilder.build(Intent()))
+//                    if (!OrbotHelper.requestStartTor(context)) {
+//                        callback.onInvalid()
+//                    }
+//                    else {
+//                        strongBuilder.build(callback)
+//                    }
                 }
                 else {
                     callback.onConnected(strongBuilder.build(Intent()))

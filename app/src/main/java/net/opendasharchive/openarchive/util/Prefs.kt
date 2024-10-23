@@ -12,16 +12,15 @@ object Prefs {
     const val LOCK_WITH_PASSCODE = "lock_with_passcode"
     const val DID_COMPLETE_ONBOARDING = "did_complete_onboarding"
     const val UPLOAD_WIFI_ONLY = "upload_wifi_only"
+    const val MEDIA_UPLOAD_POLICY = "media_upload_policy"
     const val NEARBY_USE_BLUETOOTH = "nearby_use_bluetooth"
     const val NEARBY_USE_WIFI = "nearby_use_wifi"
     const val USE_TOR = "use_tor"
     const val PROHIBIT_SCREENSHOTS = "prohibit_screenshots"
     const val USE_PROOFMODE = "use_proofmode"
     const val USE_PROOFMODE_KEY_ENCRYPTION = "proofmode_key_encryption"
-    // private const val USE_NEXTCLOUD_CHUNKING = "upload_nextcloud_chunks"
     const val THEME = "theme"
     const val CURRENT_FOLDER_ID = "current_folder"
-//    const val CURRENT_BACKEND_ID = "current_backend"
     const val FLAG_HINT_SHOWN = "ft.flag"
     const val BATCH_HINT_SHOWN = "ft.batch"
     const val DONT_SHOW_UPLOAD_HINT = "ft.upload"
@@ -41,6 +40,12 @@ object Prefs {
     fun store() {
         manager?.edit()?.commit()
     }
+
+    var mediaUploadPolicy: String
+        get() = manager?.getString(MEDIA_UPLOAD_POLICY, "upload_media_automatically").toString()
+        set(value) {
+            manager?.edit()?.putString(MEDIA_UPLOAD_POLICY, value)?.apply()
+        }
 
     var didCompleteOnboarding: Boolean
         get() = manager?.getBoolean(DID_COMPLETE_ONBOARDING, false) ?: false

@@ -5,10 +5,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.ActivityBackendSetupBinding
-import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.features.core.BaseActivity
 
 
@@ -17,6 +17,7 @@ class BackendSetupActivity : BaseActivity() {
     private lateinit var binding: ActivityBackendSetupBinding
     private lateinit var navController: NavController
     private lateinit var navGraph: NavGraph
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,13 +45,8 @@ class BackendSetupActivity : BaseActivity() {
         navController = navHostFragment.navController
         navGraph = navController.navInflater.inflate(R.navigation.backend_setup_navigation)
 
-        setupActionBarWithNavController(navController)
+        appBarConfiguration = AppBarConfiguration(emptySet())
 
-        showTheCorrectFragment()
-    }
-
-    private fun showTheCorrectFragment() {
-        navGraph.setStartDestination(if (Backend.getAll().isEmpty()) R.id.connect_new_backend_screen else R.id.browse_folders_screen)
-        navController.graph = navGraph
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 }

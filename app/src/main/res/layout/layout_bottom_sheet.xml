@@ -19,15 +19,27 @@
 
     <com.google.android.material.button.MaterialButton
         style="@style/OAMediaSelectionButtonStyle"
-        android:id="@+id/add_images_button"
+        android:id="@+id/phone_storage_button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="30dp"
         android:layout_marginHorizontal="20dp"
-        android:text="@string/photo_gallery"
+        android:text="Phone Storage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/drag_handle"/>
+
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        style="@style/OAMediaSelectionButtonStyle"-->
+<!--        android:id="@+id/add_images_button"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:layout_marginHorizontal="20dp"-->
+<!--        android:text="@string/photo_gallery"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/phone_storage_button"/>-->
 
     <com.google.android.material.button.MaterialButton
         style="@style/OAMediaSelectionButtonStyle"
@@ -39,7 +51,7 @@
         android:text="@string/ef_camera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_images_button"
+        app:layout_constraintTop_toBottomOf="@id/phone_storage_button"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -71,8 +71,7 @@ abstract class Conduit(
                 hash = ProofMode.generateProof(mContext, mMedia.fileUri, proofHash)
             }
 
-            return ProofMode.getProofFileSystem().listFiles() ?: emptyArray()
-            // return ProofMode.getProofDir(mContext, hash).listFiles() ?: emptyArray()
+            return ProofMode.getProofDir(mContext, hash).listFiles() ?: emptyArray()
         } catch (exception: FileNotFoundException) {
             Timber.e(exception)
 

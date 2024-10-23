@@ -35,13 +35,6 @@ class UploadManagerActivity : BaseActivity() {
                 else {
                     handler.post { mFrag?.updateItem(mediaId) }
                 }
-
-//                if (media?.sStatus == Media.Status.Error) {
-//                    CleanInsightsManager.getConsent(this@UploadManagerActivity) {
-//                        // TODO: Record metadata. See iOS implementation.
-//                        CleanInsightsManager.measureEvent("upload", "upload_failed")
-//                    }
-//                }
             }
 
             handler.post {

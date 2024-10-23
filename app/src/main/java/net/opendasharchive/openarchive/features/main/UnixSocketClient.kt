@@ -4,73 +4,122 @@ import android.net.LocalSocket
 import android.net.LocalSocketAddress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import net.opendasharchive.openarchive.util.Jsonable
+import net.opendasharchive.openarchive.db.SerializableMarker
+import net.opendasharchive.openarchive.services.snowbird.service.HttpLikeException
+import timber.log.Timber
 import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStream
 import java.io.InputStreamReader
-import java.io.PrintWriter
+import java.net.SocketTimeoutException
 
-sealed class ApiResponse<out T> {
-    data class Success<T>(val data: T) : ApiResponse<T>()
-    data class Error(val code: Int, val message: String) : ApiResponse<Nothing>()
+enum class HttpMethod(val value: String) {
+    GET("GET"), POST("POST"), PUT("PUT"), DELETE("DELETE"), PATCH("PATCH"),
+    HEAD("HEAD"), OPTIONS("OPTIONS"), TRACE("TRACE");
+
+    override fun toString() = value
+
+    companion object {
+        fun fromString(method: String) = entries.find { it.value.equals(method, ignoreCase = true) }
+    }
 }
 
-class UnixSocketClient(val socketPath: String) {
+//sealed class ClientResponse<out T> {
+//    data class SuccessResponse<T>(val data: T) : ClientResponse<T>()
+//    data class ErrorResponse(val error: ApiError) : ClientResponse<Nothing>()
+//}
+
+class UnixSocketClient(val socketPath: String = "/data/user/0/net.opendasharchive.openarchive.debug/files/rust_server.sock") {
     val json = Json { ignoreUnknownKeys = true }
 
-    suspend inline fun <reified T> sendRequest(endpoint: String, method: String = "GET", body: Jsonable? = null): ApiResponse<T> = withContext(Dispatchers.IO) {
-        try {
+    suspend inline fun <reified REQUEST : SerializableMarker, reified RESPONSE : SerializableMarker> sendRequest(
+        endpoint: String,
+        method: HttpMethod,
+        body: REQUEST? = null
+    ): RESPONSE = withContext(Dispatchers.IO) {
+        Timber.d("$method $endpoint")
+        sendRequestInternal(endpoint, method, body, { json.encodeToString(it) }, { json.decodeFromString<RESPONSE>(it) })
+    }
+
+    fun <REQUEST : SerializableMarker, RESPONSE : Any> sendRequestInternal(
+        endpoint: String,
+        method: HttpMethod,
+        body: REQUEST?,
+        serialize: (REQUEST) -> String,
+        deserialize: (String) -> RESPONSE
+    ): RESPONSE {
+        return try {
             LocalSocket().use { socket ->
                 socket.connect(LocalSocketAddress(socketPath, LocalSocketAddress.Namespace.FILESYSTEM))
 
-                val output = PrintWriter(socket.outputStream.bufferedWriter())
-                val input = BufferedReader(InputStreamReader(socket.inputStream))
+                val (responseCode, _, responseBody) = sendJsonRequestAndGetResponse(socket, endpoint, method, body, serialize)
 
-                val content = body?.toJson()
+                Timber.d("response body = $responseBody")
 
-                // Send request
-                output.apply {
-                    println("$method $endpoint HTTP/1.1")
-                    println("Content-Type: application/json")
-                    if (body != null) {
-                        println("Content-Length: ${content.toString().length}")
-                        println()
-                        println(content)
-                    } else {
-                        println()
-                    }
-                    flush()
-                }
-
-                // Read response
-                val statusLine = input.readLine()
-                val (_, statusCode, _) = statusLine.split(" ", limit = 3)
-                val headers = mutableMapOf<String, String>()
-                var line: String?
-
-                // Read headers
-                while (input.readLine().also { line = it } != null) {
-                    if (line.isNullOrBlank()) break
-                    val (key, value) = line!!.split(": ", limit = 2)
-                    headers[key] = value
-                }
-
-                // Read body
-                val responseBody = input.readText()
-
-                if (statusCode.toInt() in 200..299) {
-                    val data = parseResponse<T>(responseBody)
-                    ApiResponse.Success(data)
-                } else {
-                    ApiResponse.Error(statusCode.toInt(), responseBody)
+                when (responseCode) {
+                    in 200..299 -> parseSuccessResponse(responseBody, deserialize)
+                    else -> throw HttpLikeException(responseCode)
                 }
             }
+        } catch (e: SocketTimeoutException) {
+            throw e
+        } catch (e: IOException) {
+            throw e
         } catch (e: Exception) {
-            ApiResponse.Error(-1, e.message ?: "Unknown error occurred")
+            throw IOException("Unexpected error during Unix socket communication: ${e.message}")
         }
     }
 
-    inline fun <reified T> parseResponse(responseBody: String): T {
-        return json.decodeFromString(responseBody)
+    private fun <REQUEST : SerializableMarker> sendJsonRequestAndGetResponse(
+        socket: LocalSocket,
+        endpoint: String,
+        method: HttpMethod,
+        body: REQUEST?,
+        serialize: (REQUEST) -> String
+    ): Triple<Int, Map<String, String>, String> {
+        val output = socket.outputStream
+        val jsonBody = body?.let { serialize(it) } ?: ""
+
+        val requestHeaders = buildString {
+            append("$method $endpoint HTTP/1.1\r\n")
+            append("Content-Type: application/json\r\n")
+            append("Content-Length: ${jsonBody.length}\r\n")
+            append("\r\n")
+        }
+
+        output.write(requestHeaders.toByteArray())
+        output.write(jsonBody.toByteArray())
+        output.flush()
+
+        return readResponse(socket.inputStream)
+    }
+
+    fun readResponse(inputStream: InputStream): Triple<Int, Map<String, String>, String> {
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        val statusLine = reader.readLine()
+        val (_, statusCode, _) = statusLine.split(" ", limit = 3)
+
+        val headers = mutableMapOf<String, String>()
+        var line: String?
+        while (reader.readLine().also { line = it } != null) {
+            if (line.isNullOrBlank()) break
+            val (key, value) = line!!.split(": ", limit = 2)
+            headers[key] = value
+        }
+
+        val responseBody = reader.readText()
+
+        return Triple(statusCode.toInt(), headers, responseBody)
+    }
+
+    fun <T> parseSuccessResponse(responseBody: String, deserialize: (String) -> T): T {
+        return try {
+            deserialize(responseBody)
+        } catch (e: Exception) {
+            Timber.e("error = $e")
+            throw e
+        }
     }
 }

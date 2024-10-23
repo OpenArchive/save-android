@@ -1,5 +1,6 @@
 private-*
 openarchive-release.keystore
+.kotlin/
 
 # Built application files
 *.apk
@@ -12,9 +13,11 @@ openarchive-release.keystore
 *.class
 
 # Generated files
+app/build/
+app/debug/
+app/release/
 bin/
 gen/
-app/build/
 release/
 spoon-output/
 screenshots/

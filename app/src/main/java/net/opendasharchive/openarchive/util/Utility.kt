@@ -2,11 +2,20 @@ package net.opendasharchive.openarchive.util
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.OpenableColumns
+import android.view.Gravity
+import android.view.View
+import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.skydoves.powermenu.MenuAnimation
+import com.skydoves.powermenu.PowerMenu
+import com.skydoves.powermenu.PowerMenuItem
+import net.opendasharchive.openarchive.R
 import timber.log.Timber
 import java.io.File
 import java.io.FileNotFoundException
@@ -17,7 +26,22 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+
 object Utility {
+
+    fun buildUri(
+        scheme: String,
+        host: String? = null,
+        path: String? = null,
+        queryParams: Map<String, String?> = emptyMap()
+    ): Uri = Uri.Builder().apply {
+        scheme(scheme)
+        authority(host)
+        path?.let { path(it) }
+        queryParams.forEach { (key, value) ->
+            value?.let { appendQueryParameter(key, it) }
+        }
+    }.build()
 
     fun getMimeType(context: Context, uri: Uri?): String? {
         val cR = context.contentResolver
@@ -54,6 +78,25 @@ object Utility {
         return File(dir, "$timeStamp.$fileName")
     }
 
+    fun getContextMenu(context: Context, anchorView: View): PowerMenu {
+        return PowerMenu.Builder(context)
+            .addItem(PowerMenuItem("Remove", true, iconRes = R.drawable.outline_delete_24))
+            .setAnimation(MenuAnimation.DROP_DOWN)
+            .setMenuRadius(10f)
+            .setMenuShadow(10f)
+            .setAnimation(MenuAnimation.FADE)
+            .setTextColor(ContextCompat.getColor(context, R.color.c23_grey))
+            .setTextGravity(Gravity.START)
+            .setTextSize(18)
+            .setTextTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD))
+            .setSelectedTextColor(Color.WHITE)
+            .setMenuColor(Color.WHITE)
+            .setSelectedMenuColor(ContextCompat.getColor(context, R.color.colorOnBackground))
+            .build()
+
+            // .showAtCenter(anchorView, 0, 18) // Center of screen
+    }
+
     fun showMaterialWarning(context: Context, message: String? = null, positiveButtonText: String = "Ok", completion: (() -> Unit)? = null) {
         showMaterialMessage(context, "Oops", message, positiveButtonText, completion)
     }
@@ -75,10 +118,12 @@ object Utility {
             MaterialAlertDialogBuilder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(positiveButtonText) { _, _ ->
+                .setPositiveButton(positiveButtonText) { dialog, _ ->
+                    dialog.dismiss()
                     completion.invoke(true)
                 }
-                .setNegativeButton(negativeButtonText) { _, _ ->
+                .setNegativeButton(negativeButtonText) { dialog, _ ->
+                    dialog.dismiss()
                     completion.invoke(false)
                 }
                 .show()

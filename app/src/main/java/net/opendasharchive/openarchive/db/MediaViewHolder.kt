@@ -12,11 +12,13 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import com.bumptech.glide.Glide
+import coil.ImageLoader
+import coil.decode.VideoFrameDecoder
+import coil.load
+import coil.request.videoFrameMillis
 import com.github.derlio.waveform.SimpleWaveformView
 import com.github.derlio.waveform.soundfile.SoundFile
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -24,9 +26,9 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.RvMediaBoxSmallBinding
 import net.opendasharchive.openarchive.databinding.RvMediaRowSmallBinding
-import net.opendasharchive.openarchive.fragments.VideoRequestHandler
-import net.opendasharchive.openarchive.util.extensions.hide
-import net.opendasharchive.openarchive.util.extensions.show
+import net.opendasharchive.openarchive.extensions.uriToPath
+import net.opendasharchive.openarchive.extensions.hide
+import net.opendasharchive.openarchive.extensions.show
 import timber.log.Timber
 import java.io.InputStream
 import kotlin.math.roundToInt
@@ -46,16 +48,16 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             get() = (binding as RvMediaBoxSmallBinding).videoIndicator
 
         override val overlayContainer: View
-            get() = (binding as RvMediaBoxSmallBinding).overlayContainer
+            get() = (binding as RvMediaBoxSmallBinding).overlay
 
         override val progress: CircularProgressIndicator
-            get() = (binding as RvMediaBoxSmallBinding).progress
+            get() = (binding as RvMediaBoxSmallBinding).circularProgressIndicator
 
-        override val progressText: TextView
-            get() = (binding as RvMediaBoxSmallBinding).progressText
+//        override val progressText: TextView
+//            get() = (binding as RvMediaBoxSmallBinding).progressText
 
         override val error: ImageView
-            get() = (binding as RvMediaBoxSmallBinding).error
+            get() = (binding as RvMediaBoxSmallBinding).errorIndicator
 
         override val title: TextView?
             get() = null //(binding as RvMediaBoxSmallBinding).title
@@ -75,14 +77,11 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val flagIndicator: ImageView?
             get() = null
 
-        override val deleteIndicator: View?
+        override val deleteIndicator: View
             get() = (binding as RvMediaBoxSmallBinding).deleteIndicator
 
         override val handle: ImageView?
             get() = null
-
-        override val mediaView: View
-            get() = (binding as RvMediaBoxSmallBinding).mediaView
     }
 
     class SmallRow(parent: ViewGroup): MediaViewHolder(
@@ -103,8 +102,8 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         override val progress: CircularProgressIndicator
             get() = (binding as RvMediaRowSmallBinding).progress
 
-        override val progressText: TextView
-            get() = (binding as RvMediaRowSmallBinding).progressText
+//        override val progressText: TextView
+//            get() = (binding as RvMediaRowSmallBinding).progressText
 
         override val error: ImageView
             get() = (binding as RvMediaRowSmallBinding).error
@@ -132,8 +131,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
         override val handle: ImageView
             get() = (binding as RvMediaRowSmallBinding).handle
-
-        override val mediaView: View? = null
     }
 
     companion object {
@@ -145,7 +142,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     abstract val videoIndicator: ImageView?
     abstract val overlayContainer: View?
     abstract val progress: CircularProgressIndicator?
-    abstract val progressText: TextView?
+//    abstract val progressText: TextView?
     abstract val error: ImageView?
     abstract val title: TextView?
     abstract val fileInfo: TextView?
@@ -155,14 +152,15 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     abstract val flagIndicator: ImageView?
     abstract val deleteIndicator: View?
     abstract val handle: ImageView?
-    abstract val mediaView: View?
 
     private val mContext = itemView.context
 
     val wiggleAnimation: Animation = AnimationUtils.loadAnimation(itemView.context, R.anim.wiggle)
 
-    private val mPicasso = Picasso.Builder(mContext)
-        .addRequestHandler(VideoRequestHandler(mContext))
+    private val imageLoader = ImageLoader.Builder(mContext)
+        .components {
+            add(VideoFrameDecoder.Factory())
+        }
         .build()
 
     @SuppressLint("SetTextI18n")
@@ -170,16 +168,13 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         itemView.tag = media?.id
 
         if (batchMode && media?.selected == true) {
-            itemView.setBackgroundResource(R.color.c23_teal)
-//            selectedIndicator?.show()
+            val border = ContextCompat.getDrawable(mContext, R.drawable.media_selected)
         }
         else {
             itemView.setBackgroundResource(R.color.transparent)
-//            selectedIndicator?.hide()
         }
 
         image.alpha = if (media?.status == Media.Status.Uploaded || !doImageFade) 1f else 0.75f
-        image.setClipToOutline(true)
 
         if (media?.mimeType?.startsWith("image") == true) {
             handleImageMediaType(media)
@@ -291,7 +286,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
             CoroutineScope(Dispatchers.IO).launch {
                 @Suppress("NAME_SHADOWING")
                 val soundFile = try {
-                    SoundFile.create(media.originalFilePath) {
+                    SoundFile.create(media.originalFilePath.uriToPath()) {
                         return@create true
                     }
                 }
@@ -314,49 +309,35 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
     }
 
     private fun handleImageMediaType(media: Media) {
-        //            val progress = CircularProgressDrawable(mContext)
-//            progress.strokeWidth = 5f
-//            progress.centerRadius = 30f
-//            progress.start()
+        image.load(media.fileUri, imageLoader)
 
-        Glide.with(mContext)
-            .load(media.fileUri)
-            .fitCenter()
-            .into(image)
-
-        image.show()
         waveform.hide()
         videoIndicator?.hide()
     }
 
     private fun handleUnknownMediaType() {
         image.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_thumbnail))
-        image.show()
         waveform.hide()
         videoIndicator?.hide()
     }
 
     private fun handleVideoMediaType(media: Media) {
-        mPicasso.load(VideoRequestHandler.SCHEME_VIDEO + ":" + media.originalFilePath)
-            .fit()
-            .centerCrop()
-            .into(image)
+        image.load(media.originalFilePath, imageLoader) {
+            videoFrameMillis(0)
+        }
 
-        image.show()
         waveform.hide()
         videoIndicator?.show()
     }
 
     private fun handleError(media: Media) {
         Timber.d("Media has error")
-        //sbTitle.append(mContext.getString(R.string.error))
-
         overlayContainer?.show()
         progress?.hide()
-        progressText?.hide()
         error?.show()
 
         if (media.statusMessage.isNotBlank()) {
+            Timber.d("Media error: ${media.statusMessage}")
             fileInfo?.text = media.statusMessage
             fileInfo?.show()
         }
@@ -366,7 +347,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media is local")
         overlayContainer?.hide()
         progress?.hide()
-        progressText?.hide()
         error?.hide()
     }
 
@@ -374,7 +354,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media is queued")
         overlayContainer?.show()
         progress?.show()
-        progressText?.hide()
         error?.hide()
     }
 
@@ -382,7 +361,6 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media is uploaded")
         overlayContainer?.hide()
         progress?.hide()
-        progressText?.hide()
         error?.hide()
     }
 
@@ -395,7 +373,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
 
         overlayContainer?.show()
         progress?.show()
-        progressText?.show()
+//        progressText?.show()
 
         // Make sure to keep spinning until the upload has made some noteworthy progress.
         if (progressValue > 2) {
@@ -404,7 +382,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         else {
             progress?.isIndeterminate = true
         }
-        progressText?.text = "${progressValue}%"
+//        progressText?.text = "${progressValue}%"
 
         error?.hide()
     }
@@ -414,7 +392,7 @@ abstract class MediaViewHolder(protected val binding: ViewBinding): RecyclerView
         Timber.d("Media status is unknown")
         overlayContainer?.hide()
         progress?.hide()
-        progressText?.hide()
+//        progressText?.hide()
         error?.hide()
     }
 }

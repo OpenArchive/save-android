@@ -16,11 +16,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.skydoves.powermenu.OnMenuItemClickListener
+import com.skydoves.powermenu.PowerMenu
+import com.skydoves.powermenu.PowerMenuItem
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBrowseFoldersBinding
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.util.Analytics
+import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.Utility.showMaterialPrompt
-import net.opendasharchive.openarchive.util.extensions.toggle
 import timber.log.Timber
 
 
@@ -29,10 +34,11 @@ class BrowseFoldersFragment : Fragment() {
     private val viewModel: BrowseFoldersViewModel by activityViewModels()
     private lateinit var binding: FragmentBrowseFoldersBinding
     private lateinit var adapter: BrowseFoldersAdapter
+    private lateinit var headerContextMenu: PowerMenu
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentBrowseFoldersBinding.inflate(layoutInflater)
-
         return binding.root
     }
 
@@ -61,7 +67,7 @@ class BrowseFoldersFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         setupRecyclerView()
-        setupSwipeRefresh()
+//        setupSwipeRefresh()
 
         try {
             viewModel.loadData(requireContext())
@@ -75,14 +81,14 @@ class BrowseFoldersFragment : Fragment() {
             Timber.d("Loaded ${viewModel.items.value?.size} items")
 
             // Stop the refreshing indicator
-            binding.swipeRefreshLayout.isRefreshing = false
+//            binding.swipeRefreshLayout.isRefreshing = false
 
             adapter.updateItems(items)
         }
 
-        viewModel.progressBarFlag.observe(viewLifecycleOwner) {
-            binding.progressBar.toggle(it)
-        }
+//        viewModel.progressBarFlag.observe(viewLifecycleOwner) {
+//            binding.progressBar.toggle(it)
+//        }
     }
 
     private fun onFolderSelected(folder: Folder) {
@@ -118,16 +124,23 @@ class BrowseFoldersFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val recyclerView = binding.folderList
+        recyclerView = binding.folderList
 
         adapter = BrowseFoldersAdapter(
-            onClick = { folder ->
+            onItemClick = { folder ->
                 onFolderSelected(folder)
             },
-            onLongPress = { _, view ->
+            onItemLongPress = { _, view ->
                 Timber.d("long press!")
-                showContextMenu(view)
+                showItemContextMenu(view)
                 //folderContextMenu?.showAsAnchorCenter(view)
+            },
+            onHeaderLongPress = { backend, view ->
+                Timber.d("long press on header!")
+                showHeaderContextMenu(view) { _ ->
+                    Analytics.log(Analytics.BACKEND_DISCONNECTED, mapOf("type" to backend.name))
+                    backend.delete()
+                }
             }
         )
 
@@ -136,9 +149,19 @@ class BrowseFoldersFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun showContextMenu(anchorView: View) {
-//        Toast.makeText(requireContext(), "Context menu coming soon", Toast.LENGTH_LONG).show()
-//
+    private fun showHeaderContextMenu(anchorView: View, completion: (Boolean) -> Unit) {
+        headerContextMenu = Utility.getContextMenu(requireContext(), anchorView)
+        headerContextMenu.onMenuItemClickListener = OnMenuItemClickListener<PowerMenuItem> { position, item ->
+            headerContextMenu.dismiss()
+            completion.invoke(true)
+            viewModel.loadData(requireContext(), false)
+        }
+        headerContextMenu.showAsDropDown(anchorView)
+    }
+
+    private fun showItemContextMenu(anchorView: View) {
+        Toast.makeText(requireContext(), "Context menu coming soon", Toast.LENGTH_LONG).show()
+
 //        val menuItems = listOf(
 //            CustomPopupMenuDialog.MenuItem(R.drawable.ic_description, "Edit"),
 //            CustomPopupMenuDialog.MenuItem(R.drawable.ic_error, "Share"),
@@ -156,16 +179,16 @@ class BrowseFoldersFragment : Fragment() {
 //        popupMenu.show(anchorView)
     }
 
-    private fun setupSwipeRefresh() {
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            refreshFolders()
-        }
-
-        binding.swipeRefreshLayout.setColorSchemeResources(
-            R.color.colorPrimary,
-            R.color.colorPrimaryDark
-        )
-    }
+//    private fun setupSwipeRefresh() {
+//        binding.swipeRefreshLayout.setOnRefreshListener {
+//            refreshFolders()
+//        }
+//
+//        binding.swipeRefreshLayout.setColorSchemeResources(
+//            R.color.colorPrimary,
+//            R.color.colorPrimaryDark
+//        )
+//    }
 
     private fun addFolder() {
         findNavController().navigate(BrowseFoldersFragmentDirections.navigateToAddBackendScreen())

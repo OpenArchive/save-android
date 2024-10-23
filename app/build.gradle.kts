@@ -1,23 +1,19 @@
-import java.io.FileOutputStream
 import java.util.Properties
 
 plugins {
-    id("kotlin-android")
     id("com.android.application")
     id("com.google.devtools.ksp")
-    id("org.jetbrains.kotlin.android")
-    id("androidx.navigation.safeargs.kotlin")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.10"
-    kotlin("plugin.serialization") version "1.8.10"
+    id("kotlin-android")
     id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.10"
+    id("androidx.navigation.safeargs.kotlin")
+    kotlin("plugin.serialization") version "1.8.10"
 }
 
-android {
-    val patch: String
-    val major: String
-    val minor: String
-    val newVersionCode: String
+apply(from = rootProject.file("app/version.gradle.kts"))
 
+android {
     val localPropsFile = file("../local.properties")
     val localProps = Properties()
     if (!localPropsFile.canRead()) {
@@ -25,27 +21,9 @@ android {
     }
     localProps.load(localPropsFile.inputStream())
 
-    val versionPropsFile = file("version.properties")
-    val versionProps = Properties()
-    if (!versionPropsFile.canRead()) {
-        throw GradleException("Could not read version.properties!")
-    }
-    versionProps.load(versionPropsFile.inputStream())
-
-    patch = versionProps["PATCH"] as String? ?: ""
-    major = versionProps["MAJOR"] as String? ?: ""
-    minor = versionProps["MINOR"] as String? ?: ""
-    newVersionCode = versionProps["VERSION_CODE"] as String? ?: "0"
-
-    versionProps["VERSION_CODE"] = (newVersionCode.toInt() + 1).toString()
-
-    versionProps.store(FileOutputStream(versionPropsFile), null)
-
-    val newVersionName = "${major}.${minor}.${patch}.${newVersionCode}"
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     signingConfigs {
@@ -53,13 +31,16 @@ android {
 
     compileSdk = 34
 
+    base {
+        archivesName.set("save-${project.version}")
+    }
+
     defaultConfig {
         applicationId = "net.opendasharchive.openarchive"
         minSdk = 28
         targetSdk = 34
-        versionCode = newVersionCode.toInt()
-        versionName = newVersionName
-        project.setProperty("archivesBaseName", "save-$versionName")
+        versionCode = project.extra["versionCode"] as Int
+        versionName = project.version as String
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resValue("string", "mixpanel_key", localProps.getProperty("mixpanel.key") ?: "")
@@ -93,7 +74,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
     buildFeatures {
@@ -111,25 +92,31 @@ android {
     }
 
     namespace = "net.opendasharchive.openarchive"
+
+    configurations.all {
+        resolutionStrategy {
+            force("org.bouncycastle:bcprov-jdk15to18:1.72")
+            exclude(group = "org.bouncycastle", module = "bcprov-jdk15on")
+        }
+    }
 }
 
 dependencies {
-    implementation("androidx.navigation:navigation-compose:2.8.0")
-
     val cameraxVersion = "1.3.4"
     implementation("androidx.camera:camera-core:${cameraxVersion}")
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
     implementation("androidx.camera:camera-view:${cameraxVersion}")
 
-    val navigationVersion = "2.8.0"
+    val navigationVersion = "2.8.3"
+    implementation("androidx.navigation:navigation-compose:$navigationVersion")
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
     implementation("org.aviran.cookiebar2:cookiebar2:1.1.5")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.10")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -138,25 +125,27 @@ dependencies {
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
 
-    val lifecycleVersion = "2.8.5"
+    val lifecycleVersion = "2.8.6"
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
 
+    val workManagerVersion = "2.9.1"
+    implementation("androidx.work:work-runtime:$workManagerVersion")
+    implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
+    implementation("androidx.work:work-testing:$workManagerVersion")
+
+    implementation("androidx.compose.material3:material3:1.3.0")
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.multidex:multidex:2.0.1")
-    implementation("androidx.work:work-runtime:2.9.1")
-    implementation("androidx.work:work-runtime-ktx:2.9.1")
-    implementation("androidx.work:work-testing:2.9.1")
-    implementation("androidx.compose.material3:material3:1.3.0")
 
-    val composeVersion = "1.7.1"
+    val composeVersion = "1.7.4"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
-    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.activity:activity-compose:1.9.3")
 
     val koinVersion = "3.5.3"
     implementation("io.insert-koin:koin-core:$koinVersion")
@@ -171,19 +160,21 @@ dependencies {
     implementation("com.github.guardianproject:sardine-android:89f7eae512")
 
     implementation("com.google.android.material:material:1.12.0")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("com.github.derlio:audio-waveform:v1.0.1")
     implementation("com.github.esafirm:android-image-picker:3.0.0")
-    implementation("com.squareup.picasso:picasso:2.5.2")
 
-    implementation("com.amulyakhare:com.amulyakhare.textdrawable:1.0.1")
+    // Coil (image processing)
+    val coilVersion = "2.7.0"
+    implementation("io.coil-kt:coil-compose:$coilVersion")
+    implementation("io.coil-kt:coil-video:$coilVersion")
+
     implementation("com.github.abdularis:circularimageview:1.4")
 
     implementation("info.guardianproject.netcipher:netcipher:2.2.0-alpha")
 
     //from here: https://github.com/guardianproject/proofmode
-    implementation("org.proofmode:android-libproofmode:1.0.29") {
+    // implementation("org.proofmode:android-libproofmode:1.0.29") {
+    implementation("org.proofmode:android-libproofmode:1.0.26") {
 
         isTransitive = false
 
@@ -199,7 +190,7 @@ dependencies {
         exclude(group = "com.squareup.okio", module = "okio")
     }
 
-    implementation("com.google.guava:guava:32.0.1-jre")
+    implementation("com.google.guava:guava:32.1.2-jre")
     implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 
     implementation("org.bouncycastle:bcpkix-jdk15to18:1.72")
@@ -218,7 +209,7 @@ dependencies {
     implementation("com.google.apis:google-api-services-drive:v3-rev136-1.25.0")
 
     // Tor
-    implementation("info.guardianproject:tor-android:0.4.7.14")
+    implementation("info.guardianproject:tor-android:0.4.8.11")
     implementation("info.guardianproject:jtorctl:0.4.5.7")
 
     // New Play libraries
@@ -228,8 +219,9 @@ dependencies {
     implementation("com.google.android.play:feature-delivery:2.1.0")
     implementation("com.google.android.play:feature-delivery-ktx:2.1.0")
 
-    implementation("com.google.android.play:review:2.0.1")
-    implementation("com.google.android.play:review-ktx:2.0.1")
+    val playVersion = "2.0.2"
+    implementation("com.google.android.play:review:$playVersion")
+    implementation("com.google.android.play:review-ktx:$playVersion")
 
     implementation("com.google.android.play:app-update:2.1.0")
     implementation("com.google.android.play:app-update-ktx:2.1.0")
@@ -241,8 +233,9 @@ dependencies {
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.2.0")
 
-    implementation("com.eclipsesource.j2v8:j2v8:6.2.1@aar")
+    implementation("org.bitcoinj:bitcoinj-core:0.16.2")
 
+    implementation("com.eclipsesource.j2v8:j2v8:6.2.1@aar")
 
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     implementation(composeBom)
@@ -264,26 +257,26 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+//    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+//    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Optional - Included automatically by material, only add when you need
     // the icons but not the material library (e.g. when using Material3 or a
     // custom design system based on Foundation)
-    implementation("androidx.compose.material:material-icons-core")
+    // implementation("androidx.compose.material:material-icons-core")
     // Optional - Add full set of material icons
-    implementation("androidx.compose.material:material-icons-extended")
+    // implementation("androidx.compose.material:material-icons-extended")
     // Optional - Add window size utils
-    implementation("androidx.compose.material3:material3-window-size-class")
+    // implementation("androidx.compose.material3:material3-window-size-class")
 
     // Optional - Integration with activities
-    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.activity:activity-compose:1.9.3")
     // Optional - Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
     // Optional - Integration with LiveData
     implementation("androidx.compose.runtime:runtime-livedata")
     // Optional - Integration with RxJava
-    implementation("androidx.compose.runtime:runtime-rxjava2")
+    // implementation("androidx.compose.runtime:runtime-rxjava2")
 
     // A more customization popup menu
     implementation("com.github.skydoves:powermenu:2.2.4")
@@ -291,11 +284,24 @@ dependencies {
     // Mixpanel analytics
     implementation("com.mixpanel.android:mixpanel-android:7.5.2")
 
-    implementation("androidx.webkit:webkit:1.11.0")
+    implementation("androidx.webkit:webkit:1.12.1")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    implementation(kotlin("reflect"))
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation("org.web3j:core:4.9.8")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1")
 
     // Tests
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.robolectric:robolectric:4.7.3")
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
 }

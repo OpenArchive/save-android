@@ -1,23 +1,37 @@
 package net.opendasharchive.openarchive.services.snowbird
 
-import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.zxing.integration.android.IntentIntegrator
-import com.google.zxing.integration.android.IntentResult
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdBinding
+import net.opendasharchive.openarchive.db.SnowbirdGroup
+import net.opendasharchive.openarchive.extensions.getQueryParameter
 import net.opendasharchive.openarchive.features.main.QRScannerActivity
-import net.opendasharchive.openarchive.services.webdav.ReadyToAuthTextWatcher
+import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
-
-class SnowbirdFragment : Fragment() {
-
+class SnowbirdFragment : BaseSnowbirdFragment() {
+    private val CANNED_URI = "save+dweb::?dht=82fd345d484393a96b6e0c5d5e17a85a61c9184cc5a3311ab069d6efa0bf1410&enc=6fa27396fe298f92c91013ac54d8f316c2d45dc3bed0edec73078040aa10feed&pk=f4b404d294817cf11ea7f8ef7231626e03b74f6fafe3271b53918608afa82d12&sk=5482a8f490081be684fbadb8bde7f0a99bab8acdcf1ec094826f0f18e327e399"
     private lateinit var viewBinding: FragmentSnowbirdBinding
+    private var canNavigate = false
+    private val qrCodeLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val scanResult = IntentIntegrator.parseActivityResult(result.resultCode, result.data)
+        if (scanResult != null) {
+            if (scanResult.contents != null) {
+                processScannedData(scanResult.contents)
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewBinding = FragmentSnowbirdBinding.inflate(inflater)
@@ -28,36 +42,39 @@ class SnowbirdFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding.serverTextInput.setEndIconOnClickListener {
-            startQRScanner()
-        }
-
-        setupTextListener()
-
-        viewBinding.okButton.setOnClickListener {
-            val uri = viewBinding.serverUri.text.toString()
-
-            pushSnowbirdGroupSelectionFragment(uri)
-        }
-
-        viewBinding.serverUri.requestFocus()
-    }
-
-    private fun enableIfReady() {
-        val isComplete = !viewBinding.serverUri.text.isNullOrEmpty()
-
-        viewBinding.okButton.isEnabled = isComplete
-    }
-
-    private fun pushSnowbirdGroupSelectionFragment(uri: String) {
-    }
-
-    private fun setupTextListener() {
-        viewBinding.serverUri.addTextChangedListener(object : ReadyToAuthTextWatcher() {
-            override fun afterTextChanged(s: Editable?) {
-                enableIfReady()
+        viewBinding.joinGroupButton.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                startQRScanner()
             }
-        })
+        }
+
+        viewBinding.myGroupsButton.setOnClickListener {
+            findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdGroupSelectionScreen())
+        }
+
+        viewBinding.createGroupButton.setOnClickListener {
+            findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdCreateGroupScreen())
+        }
+
+        initializeViewModelObservers()
+    }
+
+    private fun initializeViewModelObservers() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch { snowbirdGroupViewModel.groupState.collect { state -> handleGroupStateUpdate(state) } }
+            }
+        }
+    }
+
+    private fun handleGroupStateUpdate(state: SnowbirdGroupViewModel.GroupState) {
+        handleLoadingStatus(false)
+        Timber.d("group state = $state")
+        when (state) {
+            is SnowbirdGroupViewModel.GroupState.Loading -> handleLoadingStatus(true)
+            is SnowbirdGroupViewModel.GroupState.Error -> handleError(state.error)
+            else -> Unit
+        }
     }
 
     private fun startQRScanner() {
@@ -68,34 +85,29 @@ class SnowbirdFragment : Fragment() {
         integrator.setBeepEnabled(false)
         integrator.setBarcodeImageEnabled(true)
         integrator.setCaptureActivity(QRScannerActivity::class.java)
-        integrator.initiateScan()
+
+        val scanningIntent = integrator.createScanIntent()
+
+        qrCodeLauncher.launch(scanningIntent)
     }
 
-    @Deprecated("")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result: IntentResult? = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+    private fun processScannedData(uriString: String) {
+        val name = uriString.getQueryParameter("name")
 
-        if (result != null) {
-            if (result.contents == null) {
-                Timber.d("Cancelled")
-            } else {
-                val scannedUrl = result.contents
-
-                viewBinding.serverUri.setText(scannedUrl)
-                viewBinding.okButton.isEnabled = true
-
-                if (isValidUrl(scannedUrl)) {
-                    Timber.d("Scanned URL: $scannedUrl")
-                } else {
-                    Timber.d("Invalid URL in QR Code: $scannedUrl")
-                }
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
+        if (name == null) {
+            Utility.showMaterialWarning(
+                requireContext(),
+                "Unable to determine group name from QR code.")
+            return
         }
-    }
 
-    private fun isValidUrl(url: String): Boolean {
-        return android.util.Patterns.WEB_URL.matcher(url).matches()
+        if (SnowbirdGroup.exists(name)) {
+            Utility.showMaterialWarning(
+                requireContext(),
+                "You have already joined this group.")
+            return
+        }
+
+        findNavController().navigate(SnowbirdFragmentDirections.navigateToSnowbirdJoinGroupScreen(uriString))
     }
 }

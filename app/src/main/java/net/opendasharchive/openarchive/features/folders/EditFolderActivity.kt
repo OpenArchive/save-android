@@ -9,8 +9,8 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.extensions.Position
-import net.opendasharchive.openarchive.util.extensions.setDrawable
+import net.opendasharchive.openarchive.extensions.Position
+import net.opendasharchive.openarchive.extensions.setDrawable
 
 class EditFolderActivity : BaseActivity() {
 

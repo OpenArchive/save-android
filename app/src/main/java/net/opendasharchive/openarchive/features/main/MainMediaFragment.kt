@@ -6,21 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.work.WorkInfo
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
-import net.opendasharchive.openarchive.databinding.MediaGroupBinding
-import net.opendasharchive.openarchive.db.Collection
 import net.opendasharchive.openarchive.db.Folder
-import net.opendasharchive.openarchive.db.Media
-import net.opendasharchive.openarchive.db.MediaAdapter
-import net.opendasharchive.openarchive.db.MediaViewHolder
+import net.opendasharchive.openarchive.db.MediaActionsViewModel
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
-import net.opendasharchive.openarchive.util.extensions.cloak
-import net.opendasharchive.openarchive.util.extensions.show
-import net.opendasharchive.openarchive.util.extensions.toggle
+import net.opendasharchive.openarchive.features.main.ui.GridSectionAdapter
+import net.opendasharchive.openarchive.features.main.ui.GridSectionLayoutDecoration
+import net.opendasharchive.openarchive.features.main.ui.MediaGridViewModel
+import net.opendasharchive.openarchive.features.main.ui.SectionedGridLayoutManager
+import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
+import net.opendasharchive.openarchive.extensions.cloak
+import net.opendasharchive.openarchive.extensions.show
+import net.opendasharchive.openarchive.extensions.toggle
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 import java.text.NumberFormat
-import kotlin.collections.set
 
 class MainMediaFragment : Fragment() {
 
@@ -39,82 +45,33 @@ class MainMediaFragment : Fragment() {
         }
     }
 
-    private var mAdapters = HashMap<Long, MediaAdapter>()
-    private var mSection = HashMap<Long, SectionViewHolder>()
-    private var mFolderId = -1L
-    private var mCollections = mutableMapOf<Long, Collection>()
+//    private var mAdapters = HashMap<Long, MediaAdapter>()
+//    private var mSection = HashMap<Long, SectionViewHolder>()
+//    private var mFolderId = -1L
+//    private var mCollections = mutableMapOf<Long, Collection>()
 
-    private lateinit var mBinding: FragmentMainMediaBinding
-
-//    private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-//        private val handler = Handler(Looper.getMainLooper())
-//        override fun onReceive(context: Context, intent: Intent) {
-//            Timber.d("Got a broadcast!")
-//
-//            val action = BroadcastManager.getAction(intent) ?: return
-//
-//            when (action) {
-//                BroadcastManager.Action.Add -> {
-//                    handler.post {
-//                        refresh()
-//                    }
-//                }
-//
-//                BroadcastManager.Action.Change -> {
-//                    handler.post {
-//                        updateItem(action.collectionId, action.mediaId, action.progress)
-//                    }
-//                }
-//
-//                BroadcastManager.Action.Delete -> {
-//                    handler.post {
-//                        refresh()
-//                    }
-//                }
-//            }
-//        }
+//    private val mediaUploadViewModel: MediaUploadViewModel by activityViewModels() {
+//        MediaUploadViewModelFactory(MediaUploadRepository(MediaUploadManager))
 //    }
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setHasOptionsMenu(true)
-//    }
-
-//    override fun onStart() {
-//        super.onStart()
-//        BroadcastManager.register(requireContext(), mMessageReceiver)
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        BroadcastManager.unregister(requireContext(), mMessageReceiver)
-//    }
-
-//    @Deprecated("Deprecated in Java")
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return when (item.itemId) {
-//            R.id.menu_delete -> {
-//                AlertHelper.show(
-//                    requireContext(), R.string.confirm_remove_media, null, buttons = listOf(
-//                        AlertHelper.positiveButton(R.string.remove) { _, _ ->
-//                            deleteSelected()
-//                        },
-//                        AlertHelper.negativeButton()
-//                    )
-//                )
-//                true
-//            }
-//
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
+    private val mediaActionsViewModel: MediaActionsViewModel by viewModel()
+    private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
+    private val mediaGridViewModel: MediaGridViewModel by viewModel()
+//    private val gridSectionItemsViewModel: GridSectionViewModel by viewModel()
+    private lateinit var adapter: GridSectionAdapter
+    private lateinit var viewBinding: FragmentMainMediaBinding
 
     override fun onResume() {
         super.onResume()
 
-        setCurrentFolderState()
-        refreshCurrentFolderCount()
         refresh()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (savedInstanceState == null) {
+            mediaGridViewModel.loadItems()
+        }
     }
 
     override fun onCreateView(
@@ -122,104 +79,169 @@ class MainMediaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mFolderId = arguments?.getLong(ARG_FOLDER_ID, -1) ?: -1
+//        mFolderId = arguments?.getLong(ARG_FOLDER_ID, -1) ?: -1
 
-        mBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
+        viewBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
 
-        return mBinding.root
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        observeViewModels()
         refresh()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = GridSectionAdapter(mediaGridViewModel.selectedItems) { position, isSelected ->
+            Timber.d("Cleeek !")
+        }
+
+        val layoutManager = SectionedGridLayoutManager(requireContext(), 4, adapter)
+        viewBinding.recyclerView.layoutManager = layoutManager
+        viewBinding.recyclerView.adapter = adapter
+
+        val sectionSpacing = resources.getDimensionPixelSize(R.dimen.grid_layout_section_spacing)
+        val headerBottomMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_header_bottom_margin)
+        val itemTopMargin = resources.getDimensionPixelSize(R.dimen.grid_layout_item_top_margin)
+        viewBinding.recyclerView.addItemDecoration(GridSectionLayoutDecoration(sectionSpacing, headerBottomMargin, itemTopMargin))
+    }
+
+    private fun observeViewModels() {
+        // Note that this might look like we're chaining things together here,
+        // this does not represent any kind of logic chain. Each launch provides
+        // its own functionality.
+        //
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    // When new media is selected and is then saved, add it
+                    // to our media grid and schedule it to be uploaded.
+                    //
+                    mediaActionsViewModel.saveFlow.collect { savedMedia ->
+                        Timber.d("Media saved to DB: $savedMedia")
+                        mediaGridViewModel.addNewMedia(savedMedia)
+                        mediaUploadStatusViewModel.scheduleUpload(savedMedia)
+                    }
+                }
+
+                launch {
+                    // Provides the entire media catalog.
+                    //
+                    mediaGridViewModel.items.collect { gridSectionItems ->
+                        Timber.d("grid view model changed: ${gridSectionItems.size}")
+                        adapter.submitList(gridSectionItems)
+                    }
+                }
+
+                launch {
+                    // As in-flight media status changes, we observe those changes
+                    // and then handle it. This should *not* change the number of
+                    // items in the media grid - it will only change how the
+                    // media thumbnails look (plus other side-effects that
+                    // aren't important here).
+                    //
+                    mediaUploadStatusViewModel.combinedMediaStatus.collect { items ->
+                        Timber.d("Media upload status changed: $items")
+
+                        items.forEach { item ->
+                            when (item.state) {
+                                WorkInfo.State.ENQUEUED -> Timber.d("enqueued")
+                                WorkInfo.State.RUNNING -> Timber.d("running")
+                                WorkInfo.State.SUCCEEDED -> Timber.d("succeeded")
+                                WorkInfo.State.FAILED -> Timber.d("failed")
+                                WorkInfo.State.BLOCKED -> Timber.d("blocked")
+                                WorkInfo.State.CANCELLED -> Timber.d("cancelled")
+                                null -> Unit
+                            }
+                        }
+                    }
+                }
+
+                launch { // Only needed to tap the upstream Combine.
+                    mediaUploadStatusViewModel.mediaStates.collect {
+                        // Timber.d("states = $it")
+                    }
+                }
+
+                launch { // Only needed to tap the upstream Combine.
+                    mediaUploadStatusViewModel.mediaItems.collect {
+                        // Timber.d("items = $it")
+                    }
+                }
+            }
+        }
     }
 
     private fun refreshCurrentFolderCount() {
         Folder.current?.let { folder ->
-            mBinding.currentFolder.currentFolderCount.text = NumberFormat.getInstance().format(
+            viewBinding.currentFolder.currentFolderCount.text = NumberFormat.getInstance().format(
                 folder.collections.map { it.size }
                     .reduceOrNull { acc, count -> acc + count } ?: 0)
-            mBinding.currentFolder.currentFolderCount.show()
-//            mBinding.uploadEditButton.toggle(project.isUploading)
+            viewBinding.currentFolder.currentFolderCount.show()
+//            viewBinding.uploadEditButton.toggle(project.isUploading)
         } ?: {
-            mBinding.currentFolder.currentFolderCount.cloak()
-//            mBinding.uploadEditButton.hide()
+            viewBinding.currentFolder.currentFolderCount.cloak()
+//            viewBinding.uploadEditButton.hide()
         }
     }
 
-//    fun updateItem(collectionId: Long, mediaId: Long, progress: Long) {
-//        mAdapters[collectionId]?.apply {
-//            updateItem(mediaId, progress)
-//            if (progress == -1L) {
-//                updateHeader(collectionId, media)
-//            }
-//        }
-//    }
-//
-//    private fun updateHeader(collectionId: Long, media: ArrayList<Media>) {
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            Collection.get(collectionId)?.let { collection ->
-//                mCollections[collectionId] = collection
-//                withContext(Dispatchers.Main) {
-//                    mSection[collectionId]?.setHeader(collection, media)
-//                }
-//            }
-//        }
-//    }
-
     fun refresh() {
-        val folder = Folder.current ?: return
+        setCurrentFolderState()
+        refreshCurrentFolderCount()
 
-        mCollections = Collection.getByFolder(folder.id).associateBy { it.id }.toMutableMap()
-
-        // Remove all sections for which collections don't exist anymore.
-        val toDelete = mAdapters.keys.filter { id ->
-            mCollections.containsKey(id).not()
-        }.toMutableList()
-
-        mCollections.forEach { (id, collection) ->
-            val media = collection.media
-
-            // Also remove all empty collections.
-            if (media.isEmpty()) {
-                toDelete.add(id)
-                return@forEach
-            }
-
-            val adapter = mAdapters[id]
-            val holder = mSection[id]
-
-            if (adapter != null) {
-                adapter.updateData(media)
-                holder?.setHeader(collection, media)
-            } else if (media.isNotEmpty()) {
-                val view = createMediaGroupView(collection, media)
-                mBinding.mediaContainer.mediaContainerLayout.addView(view, 0)
-            }
-        }
+//        val folder = Folder.current ?: return
+//
+//        mCollections = Collection.getByFolder(folder.id).associateBy { it.id }.toMutableMap()
+//
+//        // Remove all sections for which collections don't exist anymore.
+//        val toDelete = mAdapters.keys.filter { id ->
+//            mCollections.containsKey(id).not()
+//        }.toMutableList()
+//
+//        mCollections.forEach { (id, collection) ->
+//            val media = collection.media
+//
+//            // Also remove all empty collections.
+//            if (media.isEmpty()) {
+//                toDelete.add(id)
+//                return@forEach
+//            }
+//
+//            val adapter = mAdapters[id]
+//            val holder = mSection[id]
+//
+//            if (adapter != null) {
+//                adapter.updateData(media)
+//                holder?.setHeader(collection, media)
+//            } else if (media.isNotEmpty()) {
+//                val view = createMediaGroupView(collection, media)
+//                viewBinding.mediaContainer.mediaContainerLayout.addView(view, 0)
+//            }
+//        }
 
         // DO NOT delete the collection here, this could lead to a race condition
         // while adding images.
-        deleteCollections(toDelete, false)
-
-        setCurrentFolderState()
+//        deleteCollections(toDelete, false)
     }
 
     private fun setCurrentFolderState() {
         Folder.current?.let { folder ->
-            mBinding.currentFolder.currentBackendButton.icon = folder.backend?.getAvatar(requireContext())
-            mBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
-            mBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
-            mBinding.addMediaHint.addMediaHint.toggle(mCollections.isEmpty())
-            mBinding.currentFolder.currentBackendButton.text = getString(R.string.current_folder_label, folder.backend?.friendlyName, folder.name)
+            viewBinding.currentFolder.currentBackendButton.icon = folder.backend?.getAvatar(requireContext())
+            viewBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
+            viewBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
+            viewBinding.addMediaHint.addMediaHint.toggle(false)
+            viewBinding.currentFolder.currentBackendButton.text = getString(R.string.current_folder_label, folder.backend?.friendlyName, folder.name)
 
-            mBinding.currentFolder.currentBackendButton.setOnClickListener {
+            viewBinding.currentFolder.currentBackendButton.setOnClickListener {
                 startActivity(Intent(context, BackendSetupActivity::class.java))
             }
-        } ?: {
-            mBinding.currentFolder.currentBackendButton.visibility = View.GONE
-            mBinding.currentFolder.currentFolderCount.visibility = View.GONE
-            mBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
+        } ?: run {
+            viewBinding.currentFolder.currentBackendButton.visibility = View.GONE
+            viewBinding.currentFolder.currentFolderCount.visibility = View.GONE
+            viewBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
         }
     }
 
@@ -241,43 +263,40 @@ class MainMediaFragment : Fragment() {
 //        deleteCollections(toDelete, true)
 //    }
 
-    private fun createMediaGroupView(collection: Collection, media: List<Media>): View {
-        val holder = SectionViewHolder(MediaGroupBinding.inflate(layoutInflater))
+//    private fun createMediaGroupView(collection: Collection, media: List<Media>): View {
+//        val holder = SectionViewHolder(MediaGroupBinding.inflate(layoutInflater))
+//
+//        holder.recyclerView.layoutManager = GridLayoutManager(activity, COLUMN_COUNT)
+//
+//        holder.setHeader(collection, media)
+//
+//        val mediaAdapter = MediaAdapter(
+//            requireActivity(),
+//            { MediaViewHolder.SmallBox(it) },
+//            media,
+//            holder.recyclerView
+//        )
+//
+//        holder.recyclerView.adapter = mediaAdapter
+//        mAdapters[collection.id] = mediaAdapter
+//        mSection[collection.id] = holder
+//
+//        return holder.root
+//    }
 
-//        val spacing = Math.round(5 * resources.displayMetrics.density)
-
-        holder.recyclerView.layoutManager = GridLayoutManager(activity, COLUMN_COUNT)
-//        holder.recyclerView.addItemDecoration(GridSpacingItemDecoration(COLUMN_COUNT, spacing, false))
-
-        holder.setHeader(collection, media)
-
-        val mediaAdapter = MediaAdapter(
-            requireActivity(),
-            { MediaViewHolder.SmallBox(it) },
-            media,
-            holder.recyclerView
-        )
-
-        holder.recyclerView.adapter = mediaAdapter
-        mAdapters[collection.id] = mediaAdapter
-        mSection[collection.id] = holder
-
-        return holder.root
-    }
-
-    private fun deleteCollections(collectionIds: List<Long>, cleanup: Boolean) {
-        collectionIds.forEach { collectionId ->
-            mAdapters.remove(collectionId)
-
-            val holder = mSection.remove(collectionId)
-            (holder?.root?.parent as? ViewGroup)?.removeView(holder.root)
-
-            mCollections[collectionId]?.let {
-                mCollections.remove(collectionId)
-                if (cleanup) {
-                    it.delete()
-                }
-            }
-        }
-    }
+//    private fun deleteCollections(collectionIds: List<Long>, cleanup: Boolean) {
+//        collectionIds.forEach { collectionId ->
+//            mAdapters.remove(collectionId)
+//
+//            val holder = mSection.remove(collectionId)
+//            (holder?.root?.parent as? ViewGroup)?.removeView(holder.root)
+//
+//            mCollections[collectionId]?.let {
+//                mCollections.remove(collectionId)
+//                if (cleanup) {
+//                    it.delete()
+//                }
+//            }
+//        }
+//    }
 }

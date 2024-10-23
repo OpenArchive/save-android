@@ -14,6 +14,7 @@ import androidx.core.os.bundleOf
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -34,7 +35,6 @@ import net.opendasharchive.openarchive.features.backends.BackendViewModel
 import net.opendasharchive.openarchive.services.CommonServiceFragment
 import net.opendasharchive.openarchive.util.Analytics
 import net.opendasharchive.openarchive.util.Utility
-import net.opendasharchive.openarchive.util.extensions.toggle
 import timber.log.Timber
 
 class GDriveSignInFragment : CommonServiceFragment() {
@@ -100,7 +100,7 @@ class GDriveSignInFragment : CommonServiceFragment() {
             }
 
             Activity.RESULT_CANCELED -> {
-                Timber.d("Sign in failed")
+                Timber.d("Sign in canceled")
                 Toast.makeText(requireContext(), "Sign in canceled", Toast.LENGTH_LONG).show()
                 setFragmentResult(RESP_CANCEL, bundleOf())
             }
@@ -133,14 +133,10 @@ class GDriveSignInFragment : CommonServiceFragment() {
             if (GDriveConduit.permissionsGranted(requireContext())) {
                 saveNewBackend(backend)
 
-                binding.progressBar.toggle(true)
-
                 CoroutineScope(Dispatchers.IO).launch {
                     syncGDrive(requireContext(), backend)
 
                     MainScope().launch {
-                        binding.progressBar.toggle(false)
-
                         Utility.showMaterialMessage(
                             requireContext(),
                             title = "Success!",
@@ -157,9 +153,11 @@ class GDriveSignInFragment : CommonServiceFragment() {
     }
 
     private fun saveNewBackend(backend: Backend) {
-        backend.save()
-        backendViewModel.updateBackend { backend }
-        Analytics.log(Analytics.NEW_BACKEND_CONNECTED, mutableMapOf("type" to backend.name))
+        viewLifecycleOwner.lifecycleScope.launch {
+            backendViewModel.saveNewBackend(backend)
+        }
+
+        Analytics.log(Analytics.BACKEND_CONNECTED, mapOf("type" to backend.name))
     }
 
     private fun syncGDrive(context: Context, backend: Backend): Int {

@@ -3,8 +3,6 @@ package net.opendasharchive.openarchive.util
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.security.keystore.UserNotAuthenticatedException
-import androidx.fragment.app.FragmentActivity
 import net.opendasharchive.openarchive.features.main.TabBarActivity
 import org.witness.proofmode.crypto.pgp.PgpUtils
 import org.witness.proofmode.service.MediaWatcher
@@ -15,47 +13,49 @@ object ProofModeHelper {
 
     private var initialized = false
 
-    fun init(activity: FragmentActivity, completed: () -> Unit) {
+    fun init(context: Context, completed: () -> Unit) {
         if (initialized) return completed()
 
         // Disable ProofMode GPS data tracking by default.
         if (Prefs.proofModeLocation) Prefs.proofModeLocation = false
 
-        val encryptedPassphrase = Prefs.proofModeEncryptedPassphrase
+        finishInit(context, completed)
 
-        if (encryptedPassphrase?.isNotEmpty() == true) {
-            // Sometimes this gets out of sync because of the restarts.
-            Prefs.useProofModeKeyEncryption = true
-
-            val key = Hbks.loadKey()
-
-            if (key != null) {
-                Hbks.decrypt(encryptedPassphrase, Hbks.loadKey(), activity) { plaintext, e ->
-                    // User failed or denied authentication. Stop app in that case.
-                    if (e is UserNotAuthenticatedException) {
-                        Runtime.getRuntime().exit(0)
-                    }
-                    else {
-                        finishInit(activity, completed, plaintext)
-                    }
-                }
-            }
-            else {
-                // Oh, oh. User removed passphrase lock.
-                Prefs.proofModeEncryptedPassphrase = null
-                Prefs.useProofModeKeyEncryption = false
-
-                removePgpKey(activity)
-
-                finishInit(activity, completed)
-            }
-        }
-        else {
-            // Sometimes this gets out of sync because of the restarts.
-            Prefs.useProofModeKeyEncryption = false
-
-            finishInit(activity, completed)
-        }
+//        val encryptedPassphrase = Prefs.proofModeEncryptedPassphrase
+//
+//        if (encryptedPassphrase?.isNotEmpty() == true) {
+//            // Sometimes this gets out of sync because of the restarts.
+//            Prefs.useProofModeKeyEncryption = true
+//
+//            val key = Hbks.loadKey()
+//
+//            if (key != null) {
+//                Hbks.decrypt(encryptedPassphrase, Hbks.loadKey(), context) { plaintext, e ->
+//                    // User failed or denied authentication. Stop app in that case.
+//                    if (e is UserNotAuthenticatedException) {
+//                        Runtime.getRuntime().exit(0)
+//                    }
+//                    else {
+//                        finishInit(context, completed, plaintext)
+//                    }
+//                }
+//            }
+//            else {
+//                // Oh, oh. User removed passphrase lock.
+//                Prefs.proofModeEncryptedPassphrase = null
+//                Prefs.useProofModeKeyEncryption = false
+//
+//                removePgpKey(context)
+//
+//                finishInit(context, completed)
+//            }
+//        }
+//        else {
+//            // Sometimes this gets out of sync because of the restarts.
+//            Prefs.useProofModeKeyEncryption = false
+//
+//            finishInit(context, completed)
+//        }
     }
 
     private fun finishInit(context: Context, completed: () -> Unit, passphrase: String? = null) {

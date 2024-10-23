@@ -1,17 +1,12 @@
 package net.opendasharchive.openarchive.services.internetarchive
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.os.Build
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.CookieManager
 import android.webkit.WebView
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
 import java.security.SecureRandom
-import java.util.*
+import java.util.Random
 
 object Util {
 
@@ -46,16 +41,16 @@ object Util {
         }
     }
 
-    @SuppressLint("UseCompatLoadingForColorStateLists")
-    @JvmStatic
-    fun setBackgroundTint(view: View, @ColorRes color: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            view.backgroundTintList = view.resources.getColorStateList(color, view.context.theme)
-        }
-        else {
-            view.backgroundTintList = ContextCompat.getColorStateList(view.context, color)
-        }
-    }
+//    @SuppressLint("UseCompatLoadingForColorStateLists")
+//    @JvmStatic
+//    fun setBackgroundTint(view: View, @ColorRes color: Int) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            view.backgroundTintList = view.resources.getColorStateList(color, view.context.theme)
+//        }
+//        else {
+//            view.backgroundTintList = ContextCompat.getColorStateList(view.context, color)
+//        }
+//    }
 
     @JvmStatic
     fun hideSoftKeyboard(activity: Activity) {

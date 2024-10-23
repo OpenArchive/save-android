@@ -12,10 +12,12 @@ import net.opendasharchive.openarchive.databinding.LayoutFolderRowBinding
 import net.opendasharchive.openarchive.databinding.LayoutFolderSectionHeaderBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Folder
+import timber.log.Timber
 import java.text.SimpleDateFormat
 
 typealias OnFolderSelectedCallback = (folder: Folder) -> Unit
 typealias OnFolderLongPressCallback = (folder: Folder, view: View) -> Unit
+typealias OnBackendLongPressCallback = (backend: Backend, view: View) -> Unit
 
 sealed class ListItem {
     data class SectionHeader(val backend: Backend) : ListItem()
@@ -23,20 +25,32 @@ sealed class ListItem {
 }
 
 class HeaderViewHolder(
-    private val binding: LayoutFolderSectionHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
-
+    private val binding: LayoutFolderSectionHeaderBinding,
+    private val onHeaderLongPress: OnBackendLongPressCallback) : RecyclerView.ViewHolder(binding.root)
+{
     companion object {
-        fun from(parent: ViewGroup): HeaderViewHolder {
+        fun from(parent: ViewGroup, onHeaderLongPress: OnBackendLongPressCallback): HeaderViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = LayoutFolderSectionHeaderBinding.inflate(layoutInflater, parent, false)
-            return HeaderViewHolder(binding)
+            return HeaderViewHolder(binding, onHeaderLongPress)
         }
     }
 
+    lateinit var backend: Backend
+
     fun bind(item: ListItem.SectionHeader) {
+        backend = item.backend
+
         binding.apply {
             title.text = item.backend.friendlyName
             leftIcon.setImageDrawable(item.backend.getAvatar(root.context))
+        }
+
+        binding.root.setOnLongClickListener { view ->
+            Timber.d("preesss!")
+            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+            onHeaderLongPress.invoke(backend, binding.root)
+            true
         }
     }
 }
@@ -85,8 +99,11 @@ class ContentViewHolder(
     }
 }
 
-class BrowseFoldersAdapter(private val onClick: OnFolderSelectedCallback, private val onLongPress: OnFolderLongPressCallback) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class BrowseFoldersAdapter(
+    private val onItemClick: OnFolderSelectedCallback,
+    private val onItemLongPress: OnFolderLongPressCallback,
+    private val onHeaderLongPress: OnBackendLongPressCallback) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
+{
     companion object {
         private const val VIEW_TYPE_HEADER = 0
         private const val VIEW_TYPE_CONTENT = 1
@@ -105,8 +122,8 @@ class BrowseFoldersAdapter(private val onClick: OnFolderSelectedCallback, privat
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            VIEW_TYPE_HEADER -> HeaderViewHolder.from(parent)
-            VIEW_TYPE_CONTENT -> ContentViewHolder.from(parent, onClick, onLongPress)
+            VIEW_TYPE_HEADER -> HeaderViewHolder.from(parent, onHeaderLongPress)
+            VIEW_TYPE_CONTENT -> ContentViewHolder.from(parent, onItemClick, onItemLongPress)
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -127,4 +144,12 @@ class BrowseFoldersAdapter(private val onClick: OnFolderSelectedCallback, privat
         items = newItems
         notifyDataSetChanged()
     }
+
+//    fun removeItemAt(index: Int) {
+//        if (index in items.indices) {
+//            items.removeAt(index)
+//            notifyItemRemoved(index)
+//            notifyItemRangeChanged(index, items.size)
+//        }
+//    }
 }

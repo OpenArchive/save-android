@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         app:layout="@layout/prefs_title"
@@ -40,6 +41,18 @@
             app:singleLineTitle="true"
             app:summary="%s"
             app:title="Media Compression" />
+
+<!--        <ListPreference-->
+<!--            app:allowDividerAbove="true"-->
+<!--            app:allowDividerBelow="false"-->
+<!--            app:defaultValue="upload_media_automatically"-->
+<!--            app:entries="@array/prefs_new_media_upload_options_labels"-->
+<!--            app:entryValues="@array/prefs_new_media_upload_options_values"-->
+<!--            app:iconSpaceReserved="false"-->
+<!--            app:key="media_upload_policy"-->
+<!--            app:singleLineTitle="true"-->
+<!--            app:summary="%s"-->
+<!--            app:title="Media Upload Policy" />-->
     </PreferenceCategory>
 
     <PreferenceCategory
