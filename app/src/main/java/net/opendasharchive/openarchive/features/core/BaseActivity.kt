@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,8 +19,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
-import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.db.FolderRepository
 import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaActionsViewModel
 import net.opendasharchive.openarchive.features.main.CameraCaptureActivity
@@ -30,9 +32,10 @@ import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.Picker.pickMedia
 import net.opendasharchive.openarchive.upload.BroadcastManager.Action
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
-import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.AppSettings
 import net.opendasharchive.openarchive.util.SystemBarsController
 import net.opendasharchive.openarchive.util.Utility
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -41,8 +44,10 @@ abstract class BaseActivity: AppCompatActivity() {
     private lateinit var mMediaPickerLauncher: ImagePickerLauncher
     private lateinit var mFilePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var systemBarsController: SystemBarsController
+    private val folderRepository: FolderRepository by inject()
     private val mediaActionsViewModel: MediaActionsViewModel by viewModel()
     private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
+    protected val settings: AppSettings by inject()
 
     private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
@@ -84,20 +89,24 @@ abstract class BaseActivity: AppCompatActivity() {
             systemBarsController.hideNavigationBar()
         }
 
-        val launchers = Picker.register(this, { Folder.current }, { media ->
-            Timber.d("media = $media")
+        CoroutineScope(Dispatchers.IO).launch {
+            val launchers = Picker.register(
+                this@BaseActivity,
+                folder = { folderRepository.getCurrentFolder() }, { media ->
+                Timber.d("media = $media")
 
-            val i = Intent(Action.Add.id)
+                val i = Intent(Action.Add.id)
 
-            LocalBroadcastManager.getInstance(this).sendBroadcastSync(i)
+                LocalBroadcastManager.getInstance(this@BaseActivity).sendBroadcastSync(i)
 
 //            if (media.isNotEmpty()) {
 //                preview()
 //            }
-        })
+            })
 
-        mMediaPickerLauncher = launchers.first
-        mFilePickerLauncher = launchers.second
+            mMediaPickerLauncher = launchers.first
+            mFilePickerLauncher = launchers.second
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -158,12 +167,14 @@ abstract class BaseActivity: AppCompatActivity() {
     }
 
     private fun handleMedia(uri: Uri) {
-        Picker.import(this@BaseActivity, Folder.current, uri)?.let { media ->
-            media.status = if (Prefs.mediaUploadPolicy == "upload_media_automatically") Media.Status.Queued else Media.Status.Local
-            media.selected = false
+        CoroutineScope(Dispatchers.IO).launch {
+            Picker.import(this@BaseActivity, folderRepository.getCurrentFolder(), uri)?.let { media ->
+                media.status = if (settings.mediaUploadPolicy == "upload_media_automatically") Media.Status.Queued else Media.Status.Local
+                media.selected = false
 
-            mediaActionsViewModel.saveMedia(media)
+                mediaActionsViewModel.saveMedia(media)
 //            mediaUploadViewModel.scheduleUpload(media)
+            }
         }
     }
 
@@ -264,17 +275,6 @@ abstract class BaseActivity: AppCompatActivity() {
             positiveButtonText = "TRY AGAIN") {
 
             cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-        }
-    }
-
-    private fun updateScreenshotPrevention() {
-        if (Prefs.prohibitScreenshots) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
-        } else {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
     }
 }

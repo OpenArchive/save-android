@@ -1,29 +1,35 @@
 package net.opendasharchive.openarchive.util
 
-import android.annotation.SuppressLint
 import android.content.Context
 import com.mixpanel.android.mpmetrics.MixpanelAPI
 import net.opendasharchive.openarchive.R
 import org.json.JSONObject
+import timber.log.Timber
 
-@SuppressLint("StaticFieldLeak")
-object Analytics {
+interface IAnalytics {
+    fun log(eventName: String, params: Map<String, Any> = emptyMap())
+}
 
-    const val BACKEND_CONNECTED = "backend_connected"
-    const val BACKEND_DISCONNECTED = "backend_disconnected"
+class Analytics(
+    private val context: Context
+) : IAnalytics {
 
-    private var mixpanel: MixpanelAPI? = null
-
-    fun init(context: Context) {
-        val token = context.getString(R.string.mixpanel_key)
-        mixpanel = MixpanelAPI.getInstance(context, token, false)
+    private companion object {
+        const val SCREEN_PARAM_KEY = "screen"
+        const val VALUE_PARAM_KEY = "value"
     }
 
-    fun log(eventName: String, props: Map<String?, Any?>? = null) {
-        val jsonObject = props?.let { strongProps ->
-            JSONObject(strongProps)
-        }
+    private val mixpanel: MixpanelAPI by lazy {
+        val token = context.getString(R.string.mixpanel_key)
+        MixpanelAPI.getInstance(context, token, true)
+    }
 
-        mixpanel?.track(eventName, jsonObject)
+    override fun log(eventName: String, params: Map<String, Any>) {
+        Timber.d("Event: $eventName, Params: $params")
+        mixpanel.track(eventName, JSONObject(params))
+    }
+
+    fun cleanup() {
+        mixpanel.flush()
     }
 }

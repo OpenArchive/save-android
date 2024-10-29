@@ -21,6 +21,8 @@ import net.opendasharchive.openarchive.db.FileUploadResult
 import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdFileItem
 import net.opendasharchive.openarchive.extensions.androidViewModel
+import net.opendasharchive.openarchive.util.Analytics
+import net.opendasharchive.openarchive.util.AnalyticsTags
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
@@ -224,6 +226,9 @@ class SnowbirdFileListFragment : BaseSnowbirdFragment() {
     private fun setupSwipeRefresh() {
         viewBinding.swipeRefreshLayout.setOnRefreshListener {
             lifecycleScope.launch {
+                Analytics.log(
+                    AnalyticsTags.UserActions.SWIPE_TO_REFRESH,
+                    screen = AnalyticsTags.Screens.FILE_LIST)
                 snowbirdFileViewModel.fetchFiles(groupKey, repoKey, forceRefresh = true)
             }
         }

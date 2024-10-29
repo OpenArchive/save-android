@@ -25,8 +25,8 @@ import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.core.BaseActivity
 import net.opendasharchive.openarchive.features.settings.SettingsFragment
-import net.opendasharchive.openarchive.services.snowbird.SnowbirdBridge
 import net.opendasharchive.openarchive.services.snowbird.service.SnowbirdService
+import net.opendasharchive.openarchive.services.snowbird.service.SnowbirdServiceViewModel
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.NetworkConnectivityViewModel
 import net.opendasharchive.openarchive.util.Utility
@@ -51,6 +51,8 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
 
     private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
     private val networkConnectivityViewModel: NetworkConnectivityViewModel by viewModels()
+    private val snowbirdServiceViewModel: SnowbirdServiceViewModel by viewModels()
+    private val serviceIntent by lazy { Intent(this, SnowbirdService::class.java) }
 
     private val _uriStateFlow = MutableStateFlow<Uri?>(null)
 
@@ -107,16 +109,32 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
             }
         }
 
-        networkConnectivityViewModel.networkStatusLiveData.observe(this) { gotWifi ->
-            Timber.d("Got wifi? $gotWifi")
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                networkConnectivityViewModel.networkStatusFlow
+                    .collect { gotWifi ->
+                        Timber.d("Got wifi? $gotWifi")
+                    }
+            }
         }
 
-        checkNotificationPermissions()
+        lifecycleScope.launch {
+            snowbirdServiceViewModel.serviceEvent.collect { command ->
+                when (command) {
+                    is SnowbirdServiceViewModel.ServiceCommand.Start -> {
+                        startForegroundService(serviceIntent)
+                    }
+                    is SnowbirdServiceViewModel.ServiceCommand.Stop -> {
+                        stopService(serviceIntent)
+                    }
+                }
+            }
+        }
 
-        SnowbirdBridge.getInstance().initialize()
-
-        val intent = Intent(this, SnowbirdService::class.java)
-        startForegroundService(intent)
+        if (savedInstanceState == null) {
+            checkNotificationPermissions()
+            snowbirdServiceViewModel.startService()
+        }
 
         handleIntent(intent)
 
@@ -180,23 +198,10 @@ class TabBarActivity : BaseActivity(), ActivityCompat.OnRequestPermissionsResult
         outState.putInt("VISIBLE_SCREEN", visibleScreen.value)
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//
-//        networkRequest = NetworkRequest.Builder()
-//            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-//            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-//            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-//            .build()
-//
-//        connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-//        connectivityManager.requestNetwork(networkRequest, networkCallback)
-//    }
-
     private fun handleIntent(intent: Intent?) {
         if (intent?.action == Intent.ACTION_VIEW) {
             val uri = intent.data
-            if (uri?.scheme == "save-veilid") {
+            if (uri?.scheme == "save+dweb") {
                 _uriStateFlow.update { uri }
             }
         }

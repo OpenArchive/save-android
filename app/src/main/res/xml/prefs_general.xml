@@ -111,11 +111,8 @@
         <ListPreference
             app:allowDividerAbove="true"
             app:allowDividerBelow="false"
-            app:defaultValue="@string/prefs_theme_val_system"
-            app:entries="@array/ar_prefs_theme_labels"
-            app:entryValues="@array/ar_prefs_theme_val"
             app:iconSpaceReserved="false"
-            app:key="theme"
+            app:key="app_theme"
             app:singleLineTitle="false"
             app:summary="%s"
             app:title="@string/prefs_theme_title" />

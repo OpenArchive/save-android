@@ -9,22 +9,25 @@ import coil.Coil
 import coil.ImageLoader
 import coil.util.Logger
 import com.orm.SugarApp
+import net.opendasharchive.openarchive.core.di.analyticsModule
 import net.opendasharchive.openarchive.core.di.coreModule
 import net.opendasharchive.openarchive.core.di.featuresModule
 import net.opendasharchive.openarchive.core.di.retrofitModule
 import net.opendasharchive.openarchive.core.di.unixSocketModule
+import net.opendasharchive.openarchive.extensions.apply
 import net.opendasharchive.openarchive.extensions.getViewModel
 import net.opendasharchive.openarchive.services.tor.TorViewModel
 import net.opendasharchive.openarchive.upload.MediaUploadManager
-import net.opendasharchive.openarchive.util.Analytics
-import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.AppSettings
 import net.opendasharchive.openarchive.util.ProofModeHelper
-import net.opendasharchive.openarchive.util.Theme
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
 class SaveApp : SugarApp() {
+
+    private val settings: AppSettings by inject()
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
@@ -39,6 +42,7 @@ class SaveApp : SugarApp() {
         startKoin {
             androidContext(this@SaveApp)
             modules(
+                analyticsModule,
                 coreModule,
                 featuresModule,
                 retrofitModule,
@@ -61,10 +65,6 @@ class SaveApp : SugarApp() {
 
         Coil.setImageLoader(imageLoader)
 
-        Analytics.init(this)
-
-        Prefs.load(this)
-
         ProofModeHelper.init(this) {
             // Check for any queued uploads and restart, only after ProofMode is correctly initialized.
             // UploadService.startUploadService(this)
@@ -76,7 +76,7 @@ class SaveApp : SugarApp() {
         createTorNotificationChannel()
         createSnowbirdNotificationChannel()
 
-        Theme.set(Prefs.theme)
+        settings.theme.apply()
 
         Timber.d("Starting app $packageName ")
     }
@@ -101,13 +101,13 @@ class SaveApp : SugarApp() {
     private fun createSnowbirdNotificationChannel() {
         val silentChannel = NotificationChannel(
             SNOWBIRD_SERVICE_CHANNEL_SILENT,
-            "Snowbird Service",
+            "Raven Service",
             NotificationManager.IMPORTANCE_LOW
         )
 
         val chimeChannel = NotificationChannel(
             SNOWBIRD_SERVICE_CHANNEL_CHIME,
-            "Snowbird Service",
+            "Raven Service",
             NotificationManager.IMPORTANCE_DEFAULT
         )
 

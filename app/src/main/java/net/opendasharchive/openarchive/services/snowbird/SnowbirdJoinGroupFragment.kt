@@ -14,6 +14,8 @@ import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.extensions.getQueryParameter
 import net.opendasharchive.openarchive.extensions.showKeyboard
+import net.opendasharchive.openarchive.util.Analytics
+import net.opendasharchive.openarchive.util.AnalyticsTags
 import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
@@ -87,6 +89,8 @@ class SnowbirdJoinGroupFragment : BaseSnowbirdFragment() {
     }
 
     private fun onJoinSuccess(group: SnowbirdGroup) {
+        Analytics.log(AnalyticsTags.UserActions.JOIN_GROUP)
+
         // Group name doesn't come back from backend by default so
         // we poke it in here.
         //

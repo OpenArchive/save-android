@@ -35,7 +35,7 @@ import java.util.Date
 
 object Picker {
 
-    fun register(activity: ComponentActivity, folder: () -> Folder?, completed: (List<Media>) -> Unit): Pair<ImagePickerLauncher, ActivityResultLauncher<Intent>> {
+    fun register(activity: ComponentActivity, folder: suspend () -> Folder?, completed: (List<Media>) -> Unit): Pair<ImagePickerLauncher, ActivityResultLauncher<Intent>> {
         val mpl = activity.registerImagePicker { result ->
             CoroutineScope(Dispatchers.IO).launch {
                 val media = import(activity, folder(), result.map { it.uri })

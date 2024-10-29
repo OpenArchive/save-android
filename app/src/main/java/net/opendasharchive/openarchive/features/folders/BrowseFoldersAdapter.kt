@@ -12,6 +12,7 @@ import net.opendasharchive.openarchive.databinding.LayoutFolderRowBinding
 import net.opendasharchive.openarchive.databinding.LayoutFolderSectionHeaderBinding
 import net.opendasharchive.openarchive.db.Backend
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.db.FolderRepository
 import timber.log.Timber
 import java.text.SimpleDateFormat
 
@@ -57,16 +58,17 @@ class HeaderViewHolder(
 
 class ContentViewHolder(
     private val binding: LayoutFolderRowBinding,
+    private val folderRepo: FolderRepository,
     private val onClick: OnFolderSelectedCallback,
     private val onLongPress: OnFolderLongPressCallback) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         private val formatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.MEDIUM) //.getDateTimeInstance(SimpleDateFormat.LONG, SimpleDateFormat.)
 
-        fun from(parent: ViewGroup, onClick: OnFolderSelectedCallback, onLongPress: OnFolderLongPressCallback): ContentViewHolder {
+        fun from(parent: ViewGroup, folderRepo: FolderRepository, onClick: OnFolderSelectedCallback, onLongPress: OnFolderLongPressCallback): ContentViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = LayoutFolderRowBinding.inflate(layoutInflater, parent, false)
-            return ContentViewHolder(binding, onClick, onLongPress)
+            return ContentViewHolder(binding, folderRepo, onClick, onLongPress)
         }
     }
 
@@ -83,7 +85,7 @@ class ContentViewHolder(
                 onClick.invoke(folder)
             }
 
-            if (folder == Folder.current) {
+            if (folderRepo.currentFolder.value == folder) {
                 name.setTextColor(ContextCompat.getColor(itemView.context, R.color.c23_teal))
                 timestamp.setTextColor(ContextCompat.getColor(itemView.context, R.color.c23_teal))
             }
@@ -100,6 +102,7 @@ class ContentViewHolder(
 }
 
 class BrowseFoldersAdapter(
+    private val folderRepo: FolderRepository,
     private val onItemClick: OnFolderSelectedCallback,
     private val onItemLongPress: OnFolderLongPressCallback,
     private val onHeaderLongPress: OnBackendLongPressCallback) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
@@ -123,7 +126,7 @@ class BrowseFoldersAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder.from(parent, onHeaderLongPress)
-            VIEW_TYPE_CONTENT -> ContentViewHolder.from(parent, onItemClick, onItemLongPress)
+            VIEW_TYPE_CONTENT -> ContentViewHolder.from(parent, folderRepo, onItemClick, onItemLongPress)
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }

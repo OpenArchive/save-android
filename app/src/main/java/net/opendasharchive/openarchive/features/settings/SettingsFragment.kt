@@ -6,24 +6,33 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import net.opendasharchive.openarchive.R
+import net.opendasharchive.openarchive.extensions.apply
+import net.opendasharchive.openarchive.extensions.getVersionName
 import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
 import net.opendasharchive.openarchive.features.main.WebViewActivity
 import net.opendasharchive.openarchive.services.tor.TorViewModel
-import net.opendasharchive.openarchive.util.Prefs
-import net.opendasharchive.openarchive.util.Theme
-import net.opendasharchive.openarchive.extensions.getVersionName
+import net.opendasharchive.openarchive.util.Analytics
+import net.opendasharchive.openarchive.util.AnalyticsTags
+import net.opendasharchive.openarchive.util.AppSettings
+import net.opendasharchive.openarchive.util.AppSettingsTags
+import net.opendasharchive.openarchive.util.AppTheme
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    val torViewModel: TorViewModel by viewModel { parametersOf(requireActivity().application) }
+    private val torViewModel: TorViewModel by viewModel { parametersOf(requireActivity().application) }
+    private val settings: AppSettings by inject()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.prefs_general, rootKey)
 
-        findPreference<Preference>(Prefs.LOCK_WITH_PASSCODE)?.setOnPreferenceChangeListener { _, newValue ->
-            Prefs.lockWithPasscode = newValue as Boolean
+        findPreference<Preference>(AppSettingsTags.LOCK_WITH_PASSCODE)?.setOnPreferenceChangeListener { _, newValue ->
+            settings.lockWithPasscode = newValue as Boolean
+            Analytics.log(
+                AnalyticsTags.Settings.USE_PASSCODE,
+                value = newValue)
             true
         }
 
@@ -32,40 +41,53 @@ class SettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference<Preference>(Prefs.USE_TOR)?.setOnPreferenceChangeListener { _, newValue ->
-            Prefs.useTor = (newValue as Boolean)
+        findPreference<Preference>(AppSettingsTags.USE_TOR)?.setOnPreferenceChangeListener { _, newValue ->
+            settings.useTor = (newValue as Boolean)
             torViewModel.updateTorServiceState()
+            Analytics.log(
+                AnalyticsTags.Settings.USE_TOR,
+                value = newValue)
             true
         }
 
-        findPreference<Preference>(Prefs.USE_PROOFMODE)?.setOnPreferenceClickListener {
+        findPreference<Preference>(AppSettingsTags.ProofMode.USE_PROOFMODE)?.setOnPreferenceClickListener {
             startActivity(Intent(context, ProofModeSettingsActivity::class.java))
             true
         }
 
-        findPreference<Preference>(Prefs.UPLOAD_WIFI_ONLY)?.setOnPreferenceChangeListener { _, newValue ->
-            val intent = Intent(Prefs.UPLOAD_WIFI_ONLY).apply{putExtra("value", newValue as Boolean)}
-            // Replace with shared ViewModel + LiveData
+        findPreference<Preference>(AppSettingsTags.UPLOAD_WIFI_ONLY)?.setOnPreferenceChangeListener { _, newValue ->
+            val intent = Intent(AppSettingsTags.UPLOAD_WIFI_ONLY).apply{putExtra("value", newValue as Boolean)}
+            // Replace with LiveData
             // LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intent)
+            Analytics.log(
+                AnalyticsTags.Settings.REQUIRE_WIFI,
+                value = newValue)
             true
         }
 
-        findPreference<Preference>(Prefs.MEDIA_UPLOAD_POLICY)?.setOnPreferenceChangeListener { _, newValue ->
-            Prefs.mediaUploadPolicy = newValue as String
+        findPreference<Preference>(AppSettingsTags.MEDIA_UPLOAD_POLICY)?.setOnPreferenceChangeListener { _, newValue ->
+            settings.mediaUploadPolicy = newValue as String
             true
         }
 
-        findPreference<Preference>(Prefs.PRIVACY_POLICY)?.setOnPreferenceClickListener {
+        findPreference<Preference>(AppSettingsTags.PRIVACY_POLICY)?.setOnPreferenceClickListener {
             val intent = WebViewActivity.newIntent(requireContext(), "https://open-archive.org/privacy")
             startActivity(intent)
             true
         }
 
-        val themePreference = findPreference<ListPreference>(Prefs.THEME)
-        themePreference?.summaryProvider = ListPreferenceSummaryProvider()
-        themePreference?.setOnPreferenceChangeListener { _, newValue ->
-            Theme.set(Theme.get(newValue as? String))
-            true
+        findPreference<ListPreference>(AppSettingsTags.APP_THEME)?.apply {
+            entries = AppTheme.getEntries(requireContext())
+            entryValues = AppTheme.getEntryValues(requireContext())
+            value = context.getString(settings.theme.valueResId)
+            summaryProvider = ListPreferenceSummaryProvider()
+
+            setOnPreferenceChangeListener { _, newValue ->
+                val newTheme = AppTheme.fromPreferenceValue(requireContext(), newValue as String)
+                settings.theme = newTheme
+                newTheme.apply()
+                true
+            }
         }
 
         activity?.let { activity ->

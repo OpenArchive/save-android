@@ -21,6 +21,8 @@ import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListGroupsBin
 import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.services.CommonServiceFragment.Companion.RESP_CREATED
+import net.opendasharchive.openarchive.util.Analytics
+import net.opendasharchive.openarchive.util.AnalyticsTags
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
@@ -96,7 +98,6 @@ class SnowbirdGroupListFragment : BaseSnowbirdFragment() {
     }
 
     private fun onLongPress(groupKey: String) {
-        Timber.d("Lomg press!")
         Utility.showMaterialPrompt(
             requireContext(),
             title = "Share Group",
@@ -104,6 +105,9 @@ class SnowbirdGroupListFragment : BaseSnowbirdFragment() {
             positiveButtonText = "Yes",
             negativeButtonText = "No") { affirm ->
             if (affirm) {
+                Analytics.log(
+                    AnalyticsTags.UserActions.SHARE_GROUP,
+                    screen = AnalyticsTags.Screens.GROUP_LIST)
                 findNavController().navigate(SnowbirdGroupListFragmentDirections.navigateToSnowbirdShareScreen(groupKey))
             }
         }

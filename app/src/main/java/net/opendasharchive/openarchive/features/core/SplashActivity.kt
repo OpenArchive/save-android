@@ -6,7 +6,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.features.main.TabBarActivity
 import net.opendasharchive.openarchive.features.onboarding.Onboarding23Activity
-import net.opendasharchive.openarchive.util.Prefs
 
 class SplashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +26,6 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun requiresOnboarding(): Boolean {
-        return !Prefs.didCompleteOnboarding
+        return !settings.didCompleteOnboarding
     }
 }

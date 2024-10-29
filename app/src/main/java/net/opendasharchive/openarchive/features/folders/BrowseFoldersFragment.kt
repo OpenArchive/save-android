@@ -23,15 +23,20 @@ import com.skydoves.powermenu.PowerMenuItem
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentBrowseFoldersBinding
 import net.opendasharchive.openarchive.db.Folder
-import net.opendasharchive.openarchive.util.Analytics
+import net.opendasharchive.openarchive.db.FolderRepository
+import net.opendasharchive.openarchive.util.AnalyticsTags
+import net.opendasharchive.openarchive.util.IAnalytics
 import net.opendasharchive.openarchive.util.Utility
 import net.opendasharchive.openarchive.util.Utility.showMaterialPrompt
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 
 class BrowseFoldersFragment : Fragment() {
 
+    private val analytics: IAnalytics by inject()
     private val viewModel: BrowseFoldersViewModel by activityViewModels()
+    private val folderRepo: FolderRepository by inject()
     private lateinit var binding: FragmentBrowseFoldersBinding
     private lateinit var adapter: BrowseFoldersAdapter
     private lateinit var headerContextMenu: PowerMenu
@@ -80,21 +85,14 @@ class BrowseFoldersFragment : Fragment() {
 
             Timber.d("Loaded ${viewModel.items.value?.size} items")
 
-            // Stop the refreshing indicator
-//            binding.swipeRefreshLayout.isRefreshing = false
-
             adapter.updateItems(items)
         }
-
-//        viewModel.progressBarFlag.observe(viewLifecycleOwner) {
-//            binding.progressBar.toggle(it)
-//        }
     }
 
     private fun onFolderSelected(folder: Folder) {
         Timber.d("Selected folder!")
 
-        if (folder != Folder.current) {
+        if (folder != folderRepo.currentFolder.value) {
             showMaterialPrompt(
                 requireContext(),
                 "Question",
@@ -110,7 +108,7 @@ class BrowseFoldersFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setFolderAsDefault(folder: Folder) {
-        Folder.current = folder
+        folderRepo.setCurrentFolder(folder)
         adapter.notifyDataSetChanged()
     }
 
@@ -127,6 +125,7 @@ class BrowseFoldersFragment : Fragment() {
         recyclerView = binding.folderList
 
         adapter = BrowseFoldersAdapter(
+            folderRepo,
             onItemClick = { folder ->
                 onFolderSelected(folder)
             },
@@ -138,7 +137,9 @@ class BrowseFoldersFragment : Fragment() {
             onHeaderLongPress = { backend, view ->
                 Timber.d("long press on header!")
                 showHeaderContextMenu(view) { _ ->
-                    Analytics.log(Analytics.BACKEND_DISCONNECTED, mapOf("type" to backend.name))
+                    analytics.log(
+                        AnalyticsTags.UserActions.DISCONNECTED_BACKEND,
+                        mapOf("type" to backend.name))
                     backend.delete()
                 }
             }

@@ -8,16 +8,6 @@
         <item>Smaller size</item>
         <item>Higher quality</item>
     </string-array>
-    <string-array name="ar_prefs_theme_val">
-        <item>@string/prefs_theme_val_system</item>
-        <item>@string/prefs_theme_val_light</item>
-        <item>@string/prefs_theme_val_dark</item>
-    </string-array>
-    <string-array name="ar_prefs_theme_labels">
-        <item>@string/prefs_theme_system</item>
-        <item>@string/prefs_theme_light</item>
-        <item>@string/prefs_theme_dark</item>
-    </string-array>
     <string-array name="prefs_new_media_upload_options_labels">
         <item>Automatic</item>
         <item>Manual</item>

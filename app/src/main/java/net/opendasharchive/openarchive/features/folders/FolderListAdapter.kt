@@ -11,10 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.OneLineRowBinding
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.db.FolderRepository
 import net.opendasharchive.openarchive.features.backends.ItemAction
 import java.text.SimpleDateFormat
 
-class FolderListAdapter(private val onItemAction: ((View, Folder, ItemAction) -> Unit)? = null) : ListAdapter<Folder, FolderListAdapter.ViewHolder>(DIFF_CALLBACK) {
+class FolderListAdapter(
+    private val folderRepo: FolderRepository,
+    private val onItemAction: ((View, Folder, ItemAction) -> Unit)? = null
+) : ListAdapter<Folder, FolderListAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     inner class ViewHolder(private val binding: OneLineRowBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -36,7 +40,7 @@ class FolderListAdapter(private val onItemAction: ((View, Folder, ItemAction) ->
 
             folder.name?.let { name ->
                 if (name.isNotEmpty()) {
-                    if (folder.isCurrent) {
+                    if (folderRepo.currentFolder.value == folder) {
                         changeStrokeColor(binding.button, 3, ContextCompat.getColor(itemView.context, R.color.c23_teal))
                     }
                 }

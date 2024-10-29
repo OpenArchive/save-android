@@ -43,7 +43,7 @@ class BackendSetupActivity : BaseActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
         navController = navHostFragment.navController
-        navGraph = navController.navInflater.inflate(R.navigation.backend_setup_navigation)
+        navGraph = navController.navInflater.inflate(R.navigation.app_navigation)
 
         appBarConfiguration = AppBarConfiguration(emptySet())
 

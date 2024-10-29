@@ -71,7 +71,7 @@ class SnowbirdService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        startForeground(SaveApp.SNOWBIRD_SERVICE_ID, createNotification("Snowbird Server is starting up."))
+        startForeground(SaveApp.SNOWBIRD_SERVICE_ID, createNotification("Raven Server is starting up."))
         startServer(DEFAULT_BACKEND_DIRECTORY, DEFAULT_SOCKET_PATH)
         startPolling()
         return START_STICKY
@@ -131,7 +131,7 @@ class SnowbirdService : Service() {
         }
 
         return NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Snowbird Service")
+            .setContentTitle("Raven Service")
             .setContentText(text)
             .setSmallIcon(R.drawable.ic_app_notify)
             .setContentIntent(pendingIntent)
@@ -188,21 +188,24 @@ class SnowbirdService : Service() {
     }
 
     private fun startServer(baseDirectory: String, socketPath: String) {
+        SnowbirdBridge.getInstance().initialize()
+
         serverJob = serviceScope.launch {
-            Timber.d("Starting Snowbird Service")
+            Timber.d("Raven Service: Starting")
             val result = SnowbirdBridge.getInstance().startServer(applicationContext, baseDirectory, socketPath)
-            Timber.d("Snowbird Service: $result")
+            Timber.d("Raven Service: $result")
         }
     }
 
     private fun stopPolling() {
-        Timber.d("Stopping polling")
+        Timber.d("Stopped polling")
         pollingJob?.cancel()
         pollingJob = null
     }
 
     private fun stopServer() {
         serverJob?.cancel()
+        SnowbirdBridge.getInstance().stopServer()
     }
 
     private fun updateNotification(status: String, withSound: Boolean = false) {

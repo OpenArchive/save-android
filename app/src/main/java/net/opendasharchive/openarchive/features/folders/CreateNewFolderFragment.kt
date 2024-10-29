@@ -14,12 +14,12 @@ import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentCreateNewFolderBinding
 import net.opendasharchive.openarchive.db.Folder
+import net.opendasharchive.openarchive.extensions.hide
 import net.opendasharchive.openarchive.features.backends.BackendViewModel
 import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.services.webdav.ReadyToAuthTextWatcher
 import net.opendasharchive.openarchive.util.Utility.showMaterialPrompt
 import net.opendasharchive.openarchive.util.Utility.showMaterialWarning
-import net.opendasharchive.openarchive.extensions.hide
 
 class CreateNewFolderFragment : Fragment() {
 
@@ -135,8 +135,9 @@ class CreateNewFolderFragment : Fragment() {
 
     private fun setFolderAsCurrent() {
         lifecycleScope.launch {
-            val folder = folderViewModel.folder.value
-            Folder.current = folder
+//            val folder = folderViewModel.folder.value
+//            folderRepo.setCurrentFolder(folder)
+
         }
     }
 

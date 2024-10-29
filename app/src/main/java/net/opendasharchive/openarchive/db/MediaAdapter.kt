@@ -13,12 +13,13 @@ import net.opendasharchive.openarchive.upload.BroadcastManager
 import net.opendasharchive.openarchive.upload.UploadManagerActivity
 import net.opendasharchive.openarchive.upload.UploadService
 import net.opendasharchive.openarchive.util.AlertHelper
-import net.opendasharchive.openarchive.util.Prefs
+import net.opendasharchive.openarchive.util.AppSettings
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
 class MediaAdapter(
     activity: Activity?,
+    private val settings: AppSettings,
     private val generator: (parent: ViewGroup) -> MediaViewHolder,
     data: List<Media>,
     private val recyclerView: RecyclerView,
@@ -258,12 +259,12 @@ class MediaAdapter(
     }
 
     private fun showFirstTimeFlag() {
-        if (Prefs.flagHintShown) return
+        if (settings.flagHintShown) return
         val activity = mActivity.get() ?: return
 
         AlertHelper.show(activity, R.string.popup_flag_desc, R.string.popup_flag_title)
 
-        Prefs.flagHintShown = true
+        settings.flagHintShown = true
     }
 
     private fun selectView(view: View) {

@@ -99,7 +99,7 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
 
         Utility.showMaterialPrompt(
             requireContext(),
-            title = "Snowbird Group Created",
+            title = "Success!",
             message = "Would you like to share your new group with a QR code?",
             positiveButtonText = "Yes",
             negativeButtonText = "No") { affirm ->

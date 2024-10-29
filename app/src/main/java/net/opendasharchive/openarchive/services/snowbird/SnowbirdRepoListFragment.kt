@@ -18,6 +18,8 @@ import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentSnowbirdListReposBinding
 import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdRepo
+import net.opendasharchive.openarchive.util.Analytics
+import net.opendasharchive.openarchive.util.AnalyticsTags
 import net.opendasharchive.openarchive.util.SpacingItemDecoration
 import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
@@ -45,7 +47,9 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupMenu()
+        // Removing "add" menu since user should already have "own" repo by
+        // this point.
+        // setupMenu()
         setupSwipeRefresh()
         setupViewModel()
         initializeViewModelObservers()
@@ -78,12 +82,17 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.action_add -> {
+                        addNewRepo()
                         true
                     }
                     else -> false
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun addNewRepo() {
+        findNavController().navigate(SnowbirdRepoListFragmentDirections.navigateToSnowbirdCreateRepoScreen(groupKey))
     }
 
     private fun setupViewModel() {
@@ -141,6 +150,9 @@ class SnowbirdRepoListFragment : BaseSnowbirdFragment() {
     private fun setupSwipeRefresh() {
         viewBinding.swipeRefreshLayout.setOnRefreshListener {
             lifecycleScope.launch {
+                Analytics.log(
+                    AnalyticsTags.UserActions.SWIPE_TO_REFRESH,
+                    screen = AnalyticsTags.Screens.REPO_LIST)
                 snowbirdRepoViewModel.fetchRepos(groupKey, forceRefresh = true)
             }
         }

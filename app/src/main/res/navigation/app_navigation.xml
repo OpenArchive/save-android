@@ -109,7 +109,7 @@
     <fragment
         android:id="@+id/snowbird_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFragment"
-        android:label="Snowbird">
+        android:label="Raven">
         <action
             android:id="@+id/navigate_to_snowbird_create_group_screen"
             app:destination="@id/snowbird_create_group_screen" />
@@ -132,14 +132,22 @@
             app:argType="string" />
     </fragment>
     <fragment
+        android:id="@+id/snowbird_create_repo_screen"
+        android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdCreateRepoFragment"
+        android:label="Create Repository">
+        <argument
+            android:name="groupKey"
+            app:argType="string" />
+    </fragment>
+    <fragment
         android:id="@+id/snowbird_group_overview_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupOverviewFragment"
-        android:label="Snowbird Group Overview">
+        android:label="Group Overview">
     </fragment>
     <fragment
         android:id="@+id/snowbird_share_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdShareFragment"
-        android:label="Share Snowbird Group">
+        android:label="Share Group">
         <argument
             android:name="groupKey"
             app:argType="string" />
@@ -147,7 +155,7 @@
     <fragment
         android:id="@+id/snowbird_create_group_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdCreateGroupFragment"
-        android:label="Create Snowbird Group">
+        android:label="Create Group">
         <action
             android:id="@+id/navigate_to_share_screen"
             app:destination="@id/snowbird_share_screen"
@@ -175,6 +183,9 @@
         <action
             android:id="@+id/navigate_to_snowbird_list_files_screen"
             app:destination="@id/snowbird_list_files_screen" />
+        <action
+            android:id="@+id/navigate_to_snowbird_create_repo_screen"
+            app:destination="@id/snowbird_create_repo_screen" />
     </fragment>
     <fragment
         android:id="@+id/snowbird_group_selection_screen"

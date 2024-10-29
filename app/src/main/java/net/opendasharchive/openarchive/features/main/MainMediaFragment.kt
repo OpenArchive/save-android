@@ -1,6 +1,5 @@
 package net.opendasharchive.openarchive.features.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,20 +12,16 @@ import androidx.work.WorkInfo
 import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.databinding.FragmentMainMediaBinding
-import net.opendasharchive.openarchive.db.Folder
 import net.opendasharchive.openarchive.db.MediaActionsViewModel
-import net.opendasharchive.openarchive.features.backends.BackendSetupActivity
+import net.opendasharchive.openarchive.features.folders.FolderViewModel
 import net.opendasharchive.openarchive.features.main.ui.GridSectionAdapter
 import net.opendasharchive.openarchive.features.main.ui.GridSectionLayoutDecoration
 import net.opendasharchive.openarchive.features.main.ui.MediaGridViewModel
 import net.opendasharchive.openarchive.features.main.ui.SectionedGridLayoutManager
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
-import net.opendasharchive.openarchive.extensions.cloak
-import net.opendasharchive.openarchive.extensions.show
-import net.opendasharchive.openarchive.extensions.toggle
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-import java.text.NumberFormat
 
 class MainMediaFragment : Fragment() {
 
@@ -45,18 +40,10 @@ class MainMediaFragment : Fragment() {
         }
     }
 
-//    private var mAdapters = HashMap<Long, MediaAdapter>()
-//    private var mSection = HashMap<Long, SectionViewHolder>()
-//    private var mFolderId = -1L
-//    private var mCollections = mutableMapOf<Long, Collection>()
-
-//    private val mediaUploadViewModel: MediaUploadViewModel by activityViewModels() {
-//        MediaUploadViewModelFactory(MediaUploadRepository(MediaUploadManager))
-//    }
+    private val folderViewModel: FolderViewModel by activityViewModel()
     private val mediaActionsViewModel: MediaActionsViewModel by viewModel()
     private val mediaUploadStatusViewModel: MediaUploadStatusViewModel by viewModel()
     private val mediaGridViewModel: MediaGridViewModel by viewModel()
-//    private val gridSectionItemsViewModel: GridSectionViewModel by viewModel()
     private lateinit var adapter: GridSectionAdapter
     private lateinit var viewBinding: FragmentMainMediaBinding
 
@@ -79,8 +66,6 @@ class MainMediaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        mFolderId = arguments?.getLong(ARG_FOLDER_ID, -1) ?: -1
-
         viewBinding = FragmentMainMediaBinding.inflate(inflater, container, false)
 
         return viewBinding.root
@@ -176,16 +161,16 @@ class MainMediaFragment : Fragment() {
     }
 
     private fun refreshCurrentFolderCount() {
-        Folder.current?.let { folder ->
-            viewBinding.currentFolder.currentFolderCount.text = NumberFormat.getInstance().format(
-                folder.collections.map { it.size }
-                    .reduceOrNull { acc, count -> acc + count } ?: 0)
-            viewBinding.currentFolder.currentFolderCount.show()
-//            viewBinding.uploadEditButton.toggle(project.isUploading)
-        } ?: {
-            viewBinding.currentFolder.currentFolderCount.cloak()
-//            viewBinding.uploadEditButton.hide()
-        }
+//        Folder.current?.let { folder ->
+//            viewBinding.currentFolder.currentFolderCount.text = NumberFormat.getInstance().format(
+//                folder.collections.map { it.size }
+//                    .reduceOrNull { acc, count -> acc + count } ?: 0)
+//            viewBinding.currentFolder.currentFolderCount.show()
+////            viewBinding.uploadEditButton.toggle(project.isUploading)
+//        } ?: {
+//            viewBinding.currentFolder.currentFolderCount.cloak()
+////            viewBinding.uploadEditButton.hide()
+//        }
     }
 
     fun refresh() {
@@ -228,21 +213,21 @@ class MainMediaFragment : Fragment() {
     }
 
     private fun setCurrentFolderState() {
-        Folder.current?.let { folder ->
-            viewBinding.currentFolder.currentBackendButton.icon = folder.backend?.getAvatar(requireContext())
-            viewBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
-            viewBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
-            viewBinding.addMediaHint.addMediaHint.toggle(false)
-            viewBinding.currentFolder.currentBackendButton.text = getString(R.string.current_folder_label, folder.backend?.friendlyName, folder.name)
-
-            viewBinding.currentFolder.currentBackendButton.setOnClickListener {
-                startActivity(Intent(context, BackendSetupActivity::class.java))
-            }
-        } ?: run {
-            viewBinding.currentFolder.currentBackendButton.visibility = View.GONE
-            viewBinding.currentFolder.currentFolderCount.visibility = View.GONE
-            viewBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
-        }
+//        Folder.current?.let { folder ->
+//            viewBinding.currentFolder.currentBackendButton.icon = folder.backend?.getAvatar(requireContext())
+//            viewBinding.currentFolder.currentBackendButton.visibility = View.VISIBLE
+//            viewBinding.currentFolder.currentFolderCount.visibility = View.VISIBLE
+//            viewBinding.addMediaHint.addMediaHint.toggle(false)
+//            viewBinding.currentFolder.currentBackendButton.text = getString(R.string.current_folder_label, folder.backend?.friendlyName, folder.name)
+//
+//            viewBinding.currentFolder.currentBackendButton.setOnClickListener {
+//                startActivity(Intent(context, BackendSetupActivity::class.java))
+//            }
+//        } ?: run {
+//            viewBinding.currentFolder.currentBackendButton.visibility = View.GONE
+//            viewBinding.currentFolder.currentFolderCount.visibility = View.GONE
+//            viewBinding.addMediaHint.addMediaTitle.text = getString(R.string.tap_to_add_backend)
+//        }
     }
 
 //    private fun deleteSelected() {
