@@ -109,7 +109,7 @@
     <fragment
         android:id="@+id/snowbird_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFragment"
-        android:label="Snowbird">
+        android:label="Raven">
         <action
             android:id="@+id/navigate_to_snowbird_create_group_screen"
             app:destination="@id/snowbird_create_group_screen" />
@@ -139,7 +139,7 @@
     <fragment
         android:id="@+id/snowbird_share_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdShareFragment"
-        android:label="Share Snowbird Group">
+        android:label="Share Group">
         <argument
             android:name="groupKey"
             app:argType="string" />

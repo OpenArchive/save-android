@@ -8,7 +8,7 @@ buildscript {
         classpath("com.android.tools.build:gradle:8.5.2")
         classpath("com.neenbedankt.gradle.plugins:android-apt:1.8")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.10")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.8.1")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.8.3")
         classpath("gradle.plugin.com.browserstack.gradle:browserstack-gradle-plugin:2.3.1")
     }
 }
