@@ -49,7 +49,7 @@ data class Backend(
 //                host = IaConduit.ARCHIVE_API_ENDPOINT
 //            }
             Type.GDRIVE -> GDriveConduit.NAME
-            Type.SNOWBIRD -> "Snowbird"
+            Type.SNOWBIRD -> "Raven"
             Type.FILECOIN -> "Filecoin"
             else -> "Unknown"
         }
@@ -60,7 +60,7 @@ data class Backend(
         WEBDAV(0, WebDavConduit.NAME),
         INTERNET_ARCHIVE(1, IaConduit.NAME),
         GDRIVE(4, GDriveConduit.NAME),
-        SNOWBIRD(5, "Snowbird"),
+        SNOWBIRD(5, "Raven"),
         FILECOIN(6, "Filecoin");
 
         companion object {
@@ -74,7 +74,7 @@ data class Backend(
             Backend(Backend.Type.WEBDAV),
             Backend(Backend.Type.GDRIVE),
             Backend(Backend.Type.SNOWBIRD),
-            Backend(Backend.Type.FILECOIN),
+            //Backend(Backend.Type.FILECOIN),
         )
 
         fun getAll(): List<Backend> {

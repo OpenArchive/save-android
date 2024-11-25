@@ -131,7 +131,7 @@ class SnowbirdService : Service() {
         }
 
         return NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Snowbird Service")
+            .setContentTitle("Raven Service")
             .setContentText(text)
             .setSmallIcon(R.drawable.ic_app_notify)
             .setContentIntent(pendingIntent)
@@ -189,9 +189,9 @@ class SnowbirdService : Service() {
 
     private fun startServer(baseDirectory: String, socketPath: String) {
         serverJob = serviceScope.launch {
-            Timber.d("Starting Snowbird Service")
+            Timber.d("Starting Raven Service")
             val result = SnowbirdBridge.getInstance().startServer(applicationContext, baseDirectory, socketPath)
-            Timber.d("Snowbird Service: $result")
+            Timber.d("Raven Service: $result")
         }
     }
 

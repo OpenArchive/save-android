@@ -101,13 +101,13 @@ class SaveApp : SugarApp() {
     private fun createSnowbirdNotificationChannel() {
         val silentChannel = NotificationChannel(
             SNOWBIRD_SERVICE_CHANNEL_SILENT,
-            "Snowbird Service",
+            "Raven Service",
             NotificationManager.IMPORTANCE_LOW
         )
 
         val chimeChannel = NotificationChannel(
             SNOWBIRD_SERVICE_CHANNEL_CHIME,
-            "Snowbird Service",
+            "Raven Service",
             NotificationManager.IMPORTANCE_DEFAULT
         )
 

@@ -14,6 +14,8 @@ import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.db.SnowbirdRepo
 import net.opendasharchive.openarchive.extensions.getQueryParameter
 import net.opendasharchive.openarchive.extensions.showKeyboard
+import net.opendasharchive.openarchive.services.snowbird.SnowbirdCreateGroupFragment
+import net.opendasharchive.openarchive.util.FullScreenOverlayCreateGroupManager
 import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
@@ -62,7 +64,7 @@ class SnowbirdJoinGroupFragment : BaseSnowbirdFragment() {
     }
 
     override fun handleError(error: SnowbirdError) {
-        handleLoadingStatus(false)
+        handleCreateGroupLoadingStatus(false)
         super.handleError(error)
     }
 
@@ -96,19 +98,28 @@ class SnowbirdJoinGroupFragment : BaseSnowbirdFragment() {
     }
 
     private fun onLoading() {
-        handleLoadingStatus(true)
+        handleCreateGroupLoadingStatus(true)
+    }
+
+    private fun handleCreateGroupLoadingStatus(isLoading: Boolean) {
+        if (isLoading) {
+            FullScreenOverlayCreateGroupManager.show(this@SnowbirdJoinGroupFragment)
+        } else {
+            FullScreenOverlayCreateGroupManager.hide()
+        }
     }
 
     private fun onRepoCreated(groupKey: String, repo: SnowbirdRepo) {
         repo.permissions = "READ_WRITE"
         repo.groupKey = groupKey
         repo.save()
-        handleLoadingStatus(false)
+        handleCreateGroupLoadingStatus(false)
         snowbirdRepoViewModel.fetchRepos(groupKey, false)
         Utility.showMaterialMessage(
             requireContext(),
             title = "Success!",
-            message = "Successfully joined $groupName!") {
+           // message = "Successfully joined"
+        ) {
             parentFragmentManager.popBackStack()
         }
     }

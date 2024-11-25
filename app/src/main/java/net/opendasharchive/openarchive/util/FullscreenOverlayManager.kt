@@ -23,3 +23,23 @@ object FullScreenOverlayManager {
         fragment.activity?.let { show(it) }
     }
 }
+
+object FullScreenOverlayCreateGroupManager {
+    private var overlay: FullScreenCreateGroupDimmingOverlay? = null
+
+    fun show(activity: Activity) {
+        if (overlay == null) {
+            overlay = FullScreenCreateGroupDimmingOverlay(activity)
+            (activity.window.decorView as ViewGroup).addView(overlay)
+        }
+        overlay?.show()
+    }
+
+    fun hide() {
+        overlay?.hide()
+    }
+
+    fun show(fragment: Fragment) {
+        fragment.activity?.let { show(it) }
+    }
+}

@@ -13,6 +13,8 @@ import net.opendasharchive.openarchive.databinding.FragmentSnowbirdCreateGroupBi
 import net.opendasharchive.openarchive.db.SnowbirdError
 import net.opendasharchive.openarchive.db.SnowbirdGroup
 import net.opendasharchive.openarchive.db.SnowbirdRepo
+import net.opendasharchive.openarchive.services.snowbird.BaseSnowbirdFragment
+import net.opendasharchive.openarchive.util.FullScreenOverlayCreateGroupManager
 import net.opendasharchive.openarchive.util.Utility
 import timber.log.Timber
 
@@ -49,17 +51,26 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
     private fun handleGroupStateUpdate(state: SnowbirdGroupViewModel.GroupState) {
         Timber.d("group state = $state")
         when (state) {
-            is SnowbirdGroupViewModel.GroupState.Loading -> handleLoadingStatus(true)
+            is SnowbirdGroupViewModel.GroupState.Loading -> handleCreateGroupLoadingStatus(true)
             is SnowbirdGroupViewModel.GroupState.SingleGroupSuccess -> handleGroupCreated(state.group)
             is SnowbirdGroupViewModel.GroupState.Error -> handleError(state.error)
             else -> Unit
         }
     }
 
+    private fun handleCreateGroupLoadingStatus(isLoading: Boolean) {
+        if (isLoading) {
+            FullScreenOverlayCreateGroupManager.show(this@SnowbirdCreateGroupFragment)
+        } else {
+            FullScreenOverlayCreateGroupManager.hide()
+        }
+    }
+
+
     private fun handleRepoStateUpdate(state: SnowbirdRepoViewModel.RepoState) {
         Timber.d("repo state = $state")
         when (state) {
-            is SnowbirdRepoViewModel.RepoState.Loading -> handleLoadingStatus(true)
+            is SnowbirdRepoViewModel.RepoState.Loading -> handleCreateGroupLoadingStatus(true)
             is SnowbirdRepoViewModel.RepoState.SingleRepoSuccess -> handleRepoCreated(state.repo)
             is SnowbirdRepoViewModel.RepoState.Error -> handleError(state.error)
             else -> Unit
@@ -67,7 +78,7 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
     }
 
     override fun handleError(error: SnowbirdError) {
-        handleLoadingStatus(false)
+        handleCreateGroupLoadingStatus(false)
         super.handleError(error)
     }
 
@@ -85,7 +96,7 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
     }
 
     private fun handleRepoCreated(repo: SnowbirdRepo?) {
-        handleLoadingStatus(false)
+        handleCreateGroupLoadingStatus(false)
         repo?.let {
             repo.groupKey = snowbirdGroupViewModel.currentGroup.value!!.key
             repo.permissions = "READ_WRITE"
@@ -99,7 +110,7 @@ class SnowbirdCreateGroupFragment : BaseSnowbirdFragment() {
 
         Utility.showMaterialPrompt(
             requireContext(),
-            title = "Snowbird Group Created",
+            title = "Raven Group Created",
             message = "Would you like to share your new group with a QR code?",
             positiveButtonText = "Yes",
             negativeButtonText = "No") { affirm ->

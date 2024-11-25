@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/backend_setup_navigation"
     app:startDestination="@id/select_backend_screen">
 
@@ -11,7 +12,8 @@
     <fragment
         android:id="@+id/select_backend_screen"
         android:name="net.opendasharchive.openarchive.features.backends.BackendSelectionFragment"
-        android:label="Media Servers">
+        android:label="Media Servers"
+        tools:layout="@layout/fragment_backend_selection">
         <action
             android:id="@+id/navigate_to_folder_selection_screen"
             app:destination="@id/folder_selection_screen" />
@@ -40,7 +42,8 @@
     <fragment
         android:id="@+id/connect_new_backend_screen"
         android:name="net.opendasharchive.openarchive.features.backends.ConnectNewBackend"
-        android:label="All Media Servers">
+        android:label="All Media Servers"
+        tools:layout="@layout/fragment_connect_new_backend">
         <action
             android:id="@+id/navigate_to_gdrive_screen"
             app:destination="@id/gdrive_screen" />
@@ -57,7 +60,8 @@
     <fragment
         android:id="@+id/backend_metadata_screen"
         android:name="net.opendasharchive.openarchive.features.backends.BackendMetadataFragment"
-        android:label="Server Info">
+        android:label="Server Info"
+        tools:layout="@layout/fragment_backend_metadata">
         <action
             android:id="@+id/navigate_to_create_new_folder_screen"
             app:destination="@id/create_new_folder_screen" />
@@ -71,7 +75,8 @@
     <fragment
         android:id="@+id/browse_folders_screen"
         android:name="net.opendasharchive.openarchive.features.folders.BrowseFoldersFragment"
-        android:label="Servers and Folders">
+        android:label="Servers and Folders"
+        tools:layout="@layout/fragment_browse_folders">
         <action
             android:id="@+id/navigate_to_add_backend_screen"
             app:destination="@id/select_backend_screen" />
@@ -82,7 +87,8 @@
     <fragment
         android:id="@+id/folder_selection_screen"
         android:name="net.opendasharchive.openarchive.features.folders.FolderSelectionFragment"
-        android:label="Folder Selection">
+        android:label="Folder Selection"
+        tools:layout="@layout/fragment_folder_selection">
         <action
             android:id="@+id/navigate_to_create_new_folder_screen"
             app:destination="@id/create_new_folder_screen" />
@@ -94,7 +100,8 @@
     <fragment
         android:id="@+id/create_new_folder_screen"
         android:name="net.opendasharchive.openarchive.features.folders.CreateNewFolderFragment"
-        android:label="Create New Folder">
+        android:label="Create New Folder"
+        tools:layout="@layout/fragment_create_new_folder">
         <action
             android:id="@+id/navigate_to_success_screen"
             app:destination="@id/success_screen" />
@@ -105,11 +112,13 @@
     <fragment
         android:id="@+id/web3_screen"
         android:name="net.opendasharchive.openarchive.services.web3.Web3FileUploadFragment"
-        android:label="Web3"/>
+        android:label="Web3"
+        tools:layout="@layout/fragment_web3" />
     <fragment
         android:id="@+id/snowbird_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFragment"
-        android:label="Snowbird">
+        android:label="Raven"
+        tools:layout="@layout/fragment_snowbird">
         <action
             android:id="@+id/navigate_to_snowbird_create_group_screen"
             app:destination="@id/snowbird_create_group_screen" />
@@ -126,7 +135,8 @@
     <fragment
         android:id="@+id/snowbird_join_group_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdJoinGroupFragment"
-        android:label="Join Group">
+        android:label="Join Group"
+        tools:layout="@layout/fragment_snowbird_join_group">
         <argument
             android:name="uriString"
             app:argType="string" />
@@ -134,12 +144,13 @@
     <fragment
         android:id="@+id/snowbird_group_overview_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupOverviewFragment"
-        android:label="Snowbird Group Overview">
-    </fragment>
+        android:label="Raven Group Overview"
+        tools:layout="@layout/fragment_snowbird_group_overview" />
     <fragment
         android:id="@+id/snowbird_share_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdShareFragment"
-        android:label="Share Snowbird Group">
+        android:label="Share Raven Group"
+        tools:layout="@layout/fragment_snowbird_share_group">
         <argument
             android:name="groupKey"
             app:argType="string" />
@@ -147,17 +158,19 @@
     <fragment
         android:id="@+id/snowbird_create_group_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdCreateGroupFragment"
-        android:label="Create Snowbird Group">
+        android:label="Create Raven Group"
+        tools:layout="@layout/fragment_snowbird_create_group">
         <action
             android:id="@+id/navigate_to_share_screen"
             app:destination="@id/snowbird_share_screen"
             app:popUpTo="@id/snowbird_screen"
-            app:popUpToInclusive="false"/>
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/snowbird_list_files_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdFileListFragment"
-        android:label="My Files">
+        android:label="My Files"
+        tools:layout="@layout/fragment_snowbird_list_media">
         <argument
             android:name="groupKey"
             app:argType="string" />
@@ -168,7 +181,8 @@
     <fragment
         android:id="@+id/snowbird_list_repos_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdRepoListFragment"
-        android:label="Repositories">
+        android:label="Repositories"
+        tools:layout="@layout/fragment_snowbird_list_repos">
         <argument
             android:name="groupKey"
             app:argType="string" />
@@ -179,7 +193,8 @@
     <fragment
         android:id="@+id/snowbird_group_selection_screen"
         android:name="net.opendasharchive.openarchive.services.snowbird.SnowbirdGroupListFragment"
-        android:label="My Groups">
+        android:label="My Groups"
+        tools:layout="@layout/fragment_snowbird_list_groups">
         <action
             android:id="@+id/navigate_to_snowbird_share_screen"
             app:destination="@id/snowbird_share_screen" />
@@ -212,7 +227,8 @@
     <fragment
         android:id="@+id/gdrive_screen"
         android:name="net.opendasharchive.openarchive.services.gdrive.GDriveSignInFragment"
-        android:label="@string/gdrive">
+        android:label="@string/gdrive"
+        tools:layout="@layout/fragment_gdrive_sign_in">
         <action
             android:id="@+id/navigate_to_backend_metadata_screen"
             app:destination="@id/backend_metadata_screen" />
@@ -223,6 +239,5 @@
     <fragment
         android:id="@+id/success_screen"
         android:name="net.opendasharchive.openarchive.features.backends.BackendSetupSuccessFragment"
-        android:label="Success!">
-    </fragment>
+        android:label="Success!" />
 </navigation>

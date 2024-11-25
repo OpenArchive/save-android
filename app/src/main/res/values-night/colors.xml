@@ -9,6 +9,7 @@
     <color name="colorOnPrimary">@color/c24_cream_95</color>
     <color name="colorText">@color/c23_light_grey</color>
     <color name="colorBottomNavbar">#000A0A</color>
+    <color name="colorOnBottomNavbar">@color/white</color>
     <color name="colorAddButton">@color/colorPrimary</color>
     <color name="colorOnAddButton">@color/colorBackground</color>
     <color name="colorOnboarding23GetStarted">@color/colorPrimary</color>

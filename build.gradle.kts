@@ -7,16 +7,17 @@ buildscript {
         classpath("com.testdroid:gradle:2.63.1")
         classpath("com.android.tools.build:gradle:8.5.2")
         classpath("com.neenbedankt.gradle.plugins:android-apt:1.8")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.10")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.8.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0-RC2")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.8.4")
         classpath("gradle.plugin.com.browserstack.gradle:browserstack-gradle-plugin:2.3.1")
     }
 }
 
 plugins {
-    id("com.google.devtools.ksp") version "2.0.10-1.0.24" apply false
-    id("org.jetbrains.kotlin.android") version "2.0.10" apply false
+    id("com.google.devtools.ksp") version "2.1.0-RC2-1.0.28" apply false
+    id("org.jetbrains.kotlin.android") version "2.1.0-RC2" apply false
     kotlin("plugin.serialization") version "1.8.10" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.0-RC2" apply false
 }
 
 allprojects {
