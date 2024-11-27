@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath("com.testdroid:gradle:2.63.1")
-        classpath("com.android.tools.build:gradle:8.5.2")
+        classpath("com.android.tools.build:gradle:8.7.1")
         classpath("com.neenbedankt.gradle.plugins:android-apt:1.8")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.10")
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.8.1")
