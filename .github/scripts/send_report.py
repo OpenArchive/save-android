@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from github import Github
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, Email, To, Content
@@ -10,7 +10,8 @@ def get_project_stats(repo):
     closed_issues = repo.get_issues(state='closed')
     
     # Get recent activity
-    recent_commits = list(repo.get_commits(since=datetime.now().replace(hour=0, minute=0)))
+    twenty_four_hours_ago = datetime.now() - timedelta(days=1)
+    recent_commits = list(repo.get_commits(since=twenty_four_hours_ago))
     
     stats = {
         'open_issues_count': repo.open_issues_count,
@@ -29,7 +30,7 @@ def create_email_body(repo_name, stats):
     Project Statistics:
     - Open Issues: {stats['open_issues_count']}
     - Closed Issues: {stats['closed_issues_count']}
-    - Commits Today: {stats['recent_commits']}
+    - Commits (Last 24h): {stats['recent_commits']}
     
     View project: https://github.com/{repo_name}
     """
