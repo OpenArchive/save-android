@@ -7,6 +7,8 @@ on:
 jobs:
   send-report:
     runs-on: ubuntu-latest
+    environment: project-reporting
+
     steps:
       - uses: actions/checkout@v4
       
