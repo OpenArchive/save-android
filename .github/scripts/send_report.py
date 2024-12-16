@@ -15,9 +15,7 @@ def get_project_stats(repo):
     stats = {
         'open_issues_count': repo.open_issues_count,
         'closed_issues_count': len(list(closed_issues)),
-        'recent_commits': len(recent_commits),
-        'watchers': repo.watchers_count,
-        'stars': repo.stargazers_count
+        'recent_commits': len(recent_commits)
     }
     
     return stats
@@ -32,8 +30,6 @@ def create_email_body(repo_name, stats):
     - Open Issues: {stats['open_issues_count']}
     - Closed Issues: {stats['closed_issues_count']}
     - Commits Today: {stats['recent_commits']}
-    - Watchers: {stats['watchers']}
-    - Stars: {stats['stars']}
     
     View project: https://github.com/{repo_name}
     """
