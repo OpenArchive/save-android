@@ -36,15 +36,44 @@ def create_email_body(repo_name, stats):
     """
     return body
 
-def send_email(recipient_email, subject, body):
-    """Send email using SendGrid"""
+# def send_email(recipient_email, subject, body):
+#     """Send email using SendGrid"""
+#     sg = SendGridAPIClient(os.environ['SENDGRID_API_KEY'])
+    
+#     from_email = Email(os.environ['SENDER_EMAIL'])
+#     to_email = To(recipient_email)
+#     content = Content("text/plain", body)
+    
+#     mail = Mail(from_email, to_email, subject, content)
+    
+#     try:
+#         response = sg.client.mail.send.post(request_body=mail.get())
+#         print(f"Email sent successfully. Status code: {response.status_code}")
+#     except Exception as e:
+#         print(f"Error sending email: {e}")
+
+def send_email(recipient_emails, subject, body):
+    """Send email using SendGrid to multiple recipients"""
     sg = SendGridAPIClient(os.environ['SENDGRID_API_KEY'])
     
     from_email = Email(os.environ['SENDER_EMAIL'])
-    to_email = To(recipient_email)
-    content = Content("text/plain", body)
     
-    mail = Mail(from_email, to_email, subject, content)
+    # Convert string to list if a single string is provided
+    if isinstance(recipient_emails, str):
+        recipient_emails = [recipient_emails]
+        
+    # Create personalization object with multiple recipients
+    mail = Mail(
+        from_email=from_email,
+        subject=subject,
+    )
+    
+    personalization = Personalization()
+    for email in recipient_emails:
+        personalization.add_to(To(email))
+    
+    mail.add_personalization(personalization)
+    mail.add_content(Content("text/plain", body))
     
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
