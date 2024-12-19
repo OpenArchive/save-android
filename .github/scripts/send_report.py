@@ -52,17 +52,15 @@ def create_email_body(repo_name, stats):
 #     except Exception as e:
 #         print(f"Error sending email: {e}")
 
-def send_email(recipient_emails, subject, body):
+def send_email(recipient_emails_str, subject, body):
     """Send email using SendGrid to multiple recipients"""
     sg = SendGridAPIClient(os.environ['SENDGRID_API_KEY'])
     
     from_email = Email(os.environ['SENDER_EMAIL'])
     
-    # Convert string to list if a single string is provided
-    if isinstance(recipient_emails, str):
-        recipient_emails = [recipient_emails]
+    # Split comma-separated string into list and strip whitespace
+    recipient_emails = [email.strip() for email in recipient_emails_str.split(',')]
         
-    # Create personalization object with multiple recipients
     mail = Mail(
         from_email=from_email,
         subject=subject,
