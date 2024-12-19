@@ -44,7 +44,8 @@ class BackendSetupSuccessFragment : Fragment() {
     }
 
     private fun getBackendName(): String {
-        return folderViewModel.folder.value.backend?.friendlyName ?: "an unknown server"
+        // return folderViewModel.folder.value.backend?.friendlyName ?: "an unknown server"
+        return "foo"
     }
 
     fun navigateBackToMain() {

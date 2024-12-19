@@ -72,7 +72,7 @@ data class Backend(
         val ALL_BACKENDS = listOf(
             Backend(Backend.Type.INTERNET_ARCHIVE),
             Backend(Backend.Type.WEBDAV),
-            Backend(Backend.Type.GDRIVE),
+            // Backend(Backend.Type.GDRIVE),
             Backend(Backend.Type.SNOWBIRD),
         )
 

@@ -17,20 +17,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.esafirm.imagepicker.features.ImagePickerLauncher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import net.opendasharchive.openarchive.R
 import net.opendasharchive.openarchive.db.FolderRepository
-import net.opendasharchive.openarchive.db.Media
 import net.opendasharchive.openarchive.db.MediaActionsViewModel
 import net.opendasharchive.openarchive.features.main.CameraCaptureActivity
 import net.opendasharchive.openarchive.features.main.ui.OABottomSheetDialogFragment
-import net.opendasharchive.openarchive.features.media.Picker
 import net.opendasharchive.openarchive.features.media.Picker.pickMedia
-import net.opendasharchive.openarchive.upload.BroadcastManager.Action
 import net.opendasharchive.openarchive.upload.MediaUploadStatusViewModel
 import net.opendasharchive.openarchive.util.AppSettings
 import net.opendasharchive.openarchive.util.SystemBarsController
@@ -89,24 +82,24 @@ abstract class BaseActivity: AppCompatActivity() {
             systemBarsController.hideNavigationBar()
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val launchers = Picker.register(
-                this@BaseActivity,
-                folder = { folderRepository.getCurrentFolder() }, { media ->
-                Timber.d("media = $media")
-
-                val i = Intent(Action.Add.id)
-
-                LocalBroadcastManager.getInstance(this@BaseActivity).sendBroadcastSync(i)
-
-//            if (media.isNotEmpty()) {
-//                preview()
-//            }
-            })
-
-            mMediaPickerLauncher = launchers.first
-            mFilePickerLauncher = launchers.second
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val launchers = Picker.register(
+//                this@BaseActivity,
+//                folder = { folderRepository.getCurrentFolder() }, { media ->
+//                Timber.d("media = $media")
+//
+//                val i = Intent(Action.Add.id)
+//
+//                LocalBroadcastManager.getInstance(this@BaseActivity).sendBroadcastSync(i)
+//
+////            if (media.isNotEmpty()) {
+////                preview()
+////            }
+//            })
+//
+//            mMediaPickerLauncher = launchers.first
+//            mFilePickerLauncher = launchers.second
+//        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -167,15 +160,15 @@ abstract class BaseActivity: AppCompatActivity() {
     }
 
     private fun handleMedia(uri: Uri) {
-        CoroutineScope(Dispatchers.IO).launch {
-            Picker.import(this@BaseActivity, folderRepository.getCurrentFolder(), uri)?.let { media ->
-                media.status = if (settings.mediaUploadPolicy == "upload_media_automatically") Media.Status.Queued else Media.Status.Local
-                media.selected = false
-
-                mediaActionsViewModel.saveMedia(media)
-//            mediaUploadViewModel.scheduleUpload(media)
-            }
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            Picker.import(this@BaseActivity, folderRepository.getCurrentFolder(), uri)?.let { media ->
+//                media.status = if (settings.mediaUploadPolicy == "upload_media_automatically") Media.Status.Queued else Media.Status.Local
+//                media.selected = false
+//
+//                mediaActionsViewModel.saveMedia(media)
+////            mediaUploadViewModel.scheduleUpload(media)
+//            }
+//        }
     }
 
     private fun handleSelectedFiles(uris: List<Uri>) {

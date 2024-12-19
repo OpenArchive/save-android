@@ -11,6 +11,7 @@ import net.opendasharchive.openarchive.features.settings.CcSelector
 import net.opendasharchive.openarchive.util.AlertHelper
 import net.opendasharchive.openarchive.extensions.Position
 import net.opendasharchive.openarchive.extensions.setDrawable
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditFolderActivity : BaseActivity() {
 
@@ -20,14 +21,15 @@ class EditFolderActivity : BaseActivity() {
 
     private lateinit var mFolder: Folder
     private lateinit var mBinding: ActivityEditFolderBinding
+    private val viewModel: FolderViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val folder = Folder.getById(intent.getLongExtra(EXTRA_CURRENT_FOLDER_ID, -1L))
-            ?: return finish()
-
-        mFolder = folder
+//        val folder = Folder.getById(intent.getLongExtra(EXTRA_CURRENT_FOLDER_ID, -1L))
+//            ?: return finish()
+//
+//        mFolder = folder
 
         mBinding = ActivityEditFolderBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
