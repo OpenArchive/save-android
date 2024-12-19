@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 from github import Github
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Email, To, Content
+from sendgrid.helpers.mail import Mail, Email, To, Content, Personalization
 
 def get_project_stats(repo):
     """Gather project statistics"""
